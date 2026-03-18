@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AgroPredict</string>
+
+    <!-- Authentication -->
+    <string name="login_title">Iniciar Sesión</string>
+    <string name="register_title">Registro</string>
+    <string name="email_hint">Correo electrónico</string>
+    <string name="password_hint">Contraseña</string>
+    <string name="confirm_password_hint">Confirmar contraseña</string>
+    <string name="full_name_hint">Nombre completo</string>
+    <string name="username_hint">Nombre de usuario</string>
+    <string name="phone_hint">Teléfono (opcional)</string>
+    <string name="occupation_hint">Ocupación</string>
+    <string name="login_button">Iniciar Sesión</string>
+    <string name="register_button">Registrarse</string>
+    <string name="no_account">¿No tienes cuenta? Regístrate</string>
+    <string name="has_account">¿Ya tienes cuenta? Inicia sesión</string>
+    <string name="login_success">Inicio de sesión exitoso</string>
+    <string name="login_failure">Credenciales incorrectas</string>
+    <string name="registration_success">Registro exitoso</string>
+    <string name="email_exists">Este correo ya está registrado</string>
+    <string name="username_exists">Este nombre de usuario ya existe</string>
+    <string name="passwords_mismatch">Las contraseñas no coinciden</string>
+    <string name="invalid_email">Correo electrónico inválido</string>
+    <string name="invalid_password">La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial</string>
+    <string name="invalid_username">El nombre de usuario debe tener entre 5 y 32 caracteres alfanuméricos</string>
+    <string name="invalid_name">Nombre inválido</string>
+    <string name="invalid_phone">Número de teléfono inválido</string>
+    <string name="field_required">Este campo es obligatorio</string>
+
+    <!-- Home -->
+    <string name="home_title">AgroPredict</string>
+    <string name="new_prediction">Nueva Predicción</string>
+    <string name="new_prediction_description">Captura una imagen para diagnóstico</string>
+    <string name="view_history">Consultar Historial</string>
+    <string name="view_history_description">Ver diagnósticos anteriores</string>
+    <string name="generate_report">Generar Reporte</string>
+    <string name="generate_report_description">Exportar a PDF o CSV</string>
+    <string name="pest_guide">Guía de Plagas</string>
+    <string name="pest_guide_description">Tratamientos y recomendaciones</string>
+    <string name="add_field">Agregar Nuevo Campo</string>
+    <string name="logout">Cerrar Sesión</string>
+
+    <!-- Prediction -->
+    <string name="prediction_title">Nueva Predicción</string>
+    <string name="capture_image">Capturar Imagen</string>
+    <string name="select_gallery">Seleccionar de Galería</string>
+    <string name="crop_type_hint">Tipo de cultivo</string>
+    <string name="location_hint">Ubicación del campo</string>
+    <string name="soil_type_hint">Tipo de suelo</string>
+    <string name="phenological_stage_hint">Etapa fenológica</string>
+    <string name="planting_date_hint">Fecha de siembra</string>
+    <string name="submit_diagnosis">Enviar Diagnóstico</string>
+    <string name="analyzing">Analizando imagen…</string>
+    <string name="classification_success">Cultivo detectado: %1$s (%.0f%%)</string>
+    <string name="classification_low_confidence">No se pudo identificar el cultivo con certeza</string>
+    <string name="image_invalid">La imagen no es válida para diagnóstico</string>
+    <string name="diagnosis_success">Diagnóstico generado exitosamente</string>
+    <string name="diagnosis_failure">Error al generar el diagnóstico</string>
+
+    <!-- Questionnaire -->
+    <string name="soil_moisture_hint">Humedad del suelo</string>
+    <string name="soil_ph_hint">pH del suelo</string>
+    <string name="irrigation_hint">Frecuencia de riego</string>
+    <string name="fertilization_hint">Fertilización</string>
+    <string name="symptom_hint">Síntoma observado</string>
+    <string name="severity_hint">Severidad</string>
+    <string name="temperature_hint">Temperatura</string>
+    <string name="humidity_hint">Humedad ambiental</string>
+    <string name="spraying_hint">Aspersión/fumigación</string>
+    <string name="weeds_hint">Malezas</string>
+    <string name="insects_hint">Insectos</string>
+    <string name="animals_hint">Animales</string>
+    <string name="rain_hint">Lluvia reciente</string>
+
+    <!-- Result -->
+    <string name="result_title">Resultado del Diagnóstico</string>
+    <string name="detected_crop">Cultivo Detectado</string>
+    <string name="confidence_level">Nivel de Confianza</string>
+    <string name="severity_label">Severidad</string>
+    <string name="summary_label">Resumen</string>
+    <string name="recommendations_label">Recomendaciones</string>
+    <string name="back_to_home">Volver al Inicio</string>
+
+    <!-- History -->
+    <string name="history_title">Historial de Diagnósticos</string>
+    <string name="filter_all">Todos</string>
+    <string name="no_diagnostics">No hay diagnósticos registrados</string>
+    <string name="delete_diagnostic">Eliminar Diagnóstico</string>
+    <string name="delete_confirmation">¿Estás seguro de que deseas eliminar este diagnóstico?</string>
+    <string name="deleted_successfully">Diagnóstico eliminado exitosamente</string>
+    <string name="delete_error">Error al eliminar el diagnóstico</string>
+    <string name="confirm">Confirmar</string>
+    <string name="cancel">Cancelar</string>
+
+    <!-- Field Details -->
+    <string name="field_detail_title">Detalles del Campo</string>
+    <string name="edit_field">Editar Campo</string>
+    <string name="crop_info">Información del Cultivo</string>
+    <string name="diagnostic_info">Información del Diagnóstico</string>
+    <string name="field_name_label">Nombre del Campo</string>
+    <string name="crop_type_label">Tipo de Cultivo</string>
+    <string name="location_label">Ubicación</string>
+    <string name="planting_date_label">Fecha de Siembra</string>
+    <string name="soil_type_label">Tipo de Suelo</string>
+    <string name="stage_label">Etapa Fenológica</string>
+    <string name="not_specified">No especificado</string>
+    <string name="save_changes">Guardar Cambios</string>
+    <string name="changes_saved">Cambios guardados exitosamente</string>
+
+    <!-- Reports -->
+    <string name="report_title">Generar Reporte</string>
+    <string name="select_crop">Seleccionar Cultivo</string>
+    <string name="format_pdf">PDF</string>
+    <string name="format_csv">CSV</string>
+    <string name="generate_button">Generar</string>
+    <string name="report_generated">Reporte generado exitosamente</string>
+    <string name="report_error">Error al generar el reporte</string>
+    <string name="share_report">Compartir Reporte</string>
+    <string name="no_crops">No hay cultivos registrados</string>
+
+    <!-- Severity values -->
+    <string name="severity_low">Bajo</string>
+    <string name="severity_moderate">Moderado</string>
+    <string name="severity_high">Alto</string>
+
+    <!-- General -->
+    <string name="loading">Cargando…</string>
+    <string name="error_general">Ocurrió un error inesperado</string>
+    <string name="select_option">Seleccione una opción</string>
+</resources>

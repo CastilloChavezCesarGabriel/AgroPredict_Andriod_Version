@@ -1,0 +1,46 @@
+# Built outputs
+*.apk
+*.aab
+*.ap_
+*.dex
+bin/
+build/
+out/
+
+# Gradle
+.gradle/
+gradle-app.setting
+!gradle-wrapper.jar
+!gradle-wrapper.properties
+
+# Local configuration (never commit these)
+local.properties
+*.jks
+*.keystore
+keystore.properties
+
+# Android Studio / IntelliJ
+*.iml
+.idea/
+*.hprof
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Kotlin
+*.kotlin_module
+
+# OS
+.DS_Store
+.DS_Store?
+Thumbs.db
+ehthumbs.db
+
+# Logs
+*.log
+
+# Dependencies cached by NDK / CMake
+cmake-build-*/
+
+# Test results
+test-results/

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Stem -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,80 Q54,60 54,45" />
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3"
+        android:pathData="M54,80 Q54,60 54,45" />
+
+    <!-- Left leaf -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,55 Q40,48 36,36 Q48,38 54,55 Z" />
+
+    <!-- Right leaf -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,62 Q68,55 72,43 Q60,45 54,62 Z" />
+
+    <!-- Soil baseline -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M38,80 Q54,76 70,80 Q54,84 38,80 Z" />
+
+</vector>

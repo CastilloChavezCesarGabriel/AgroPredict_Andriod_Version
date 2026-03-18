@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <!-- Storage: Android 6–12 -->
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
+
+    <!-- Storage: Android 13+ -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+
+    <application
+        android:name=".AgroPredictApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.AgroPredict">
+
+        <activity
+            android:name=".presentation.user_interface.SplashActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".presentation.user_interface.LoginActivity" />
+        <activity android:name=".presentation.user_interface.RegisterActivity" />
+        <activity android:name=".presentation.user_interface.HomeActivity" />
+        <activity android:name=".presentation.user_interface.PredictionActivity" />
+        <activity android:name=".presentation.user_interface.PredictionResultActivity" />
+        <activity android:name=".presentation.user_interface.HistoryActivity" />
+        <activity android:name=".presentation.user_interface.FieldDetailActivity" />
+        <activity android:name=".presentation.user_interface.EditFieldActivity" />
+        <activity android:name=".presentation.user_interface.ReportActivity" />
+
+    </application>
+
+</manifest>

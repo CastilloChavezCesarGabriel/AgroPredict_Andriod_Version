@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/green_primary"
+        app:title="Generar Reporte"
+        app:titleTextColor="@color/white" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <Spinner
+            android:id="@+id/spnCropSelection"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginBottom="24dp"
+            android:background="@android:drawable/btn_dropdown" />
+
+        <RadioGroup
+            android:id="@+id/radioGroupFormat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:orientation="horizontal">
+
+            <com.google.android.material.radiobutton.MaterialRadioButton
+                android:id="@+id/radioPdf"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:text="PDF"
+                android:textColor="@color/dark_gray"
+                android:textSize="16sp" />
+
+            <com.google.android.material.radiobutton.MaterialRadioButton
+                android:id="@+id/radioCsv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="CSV"
+                android:textColor="@color/dark_gray"
+                android:textSize="16sp" />
+
+        </RadioGroup>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnGenerate"
+            style="@style/AgroPredict.Button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:padding="12dp"
+            android:text="Generar" />
+
+        <ProgressBar
+            android:id="@+id/progressGeneration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="16dp"
+            android:indeterminateTint="@color/green_primary"
+            android:visibility="invisible" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnShare"
+            style="@style/AgroPredict.Button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/soil_brown"
+            android:padding="12dp"
+            android:text="Compartir"
+            android:visibility="invisible" />
+
+    </LinearLayout>
+
+</LinearLayout>
