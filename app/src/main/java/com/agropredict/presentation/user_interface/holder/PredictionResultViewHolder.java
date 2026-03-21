@@ -7,6 +7,7 @@ import android.widget.TextView;
 import com.agropredict.R;
 import java.io.File;
 import java.util.Locale;
+import android.view.View;
 import com.agropredict.domain.component.diagnostic.DiagnosticAssessment;
 import com.agropredict.domain.component.diagnostic.DiagnosticConditions;
 import com.agropredict.domain.component.diagnostic.DiagnosticContent;
@@ -94,7 +95,7 @@ public final class PredictionResultViewHolder implements IDiagnosticVisitor,
         File file = new File(filePath);
         if (file.exists()) {
             cropPhotoView.setImageBitmap(BitmapFactory.decodeFile(filePath));
-            cropPhotoView.setVisibility(android.view.View.VISIBLE);
+            cropPhotoView.setVisibility(View.VISIBLE);
         }
     }
 
