@@ -41,8 +41,8 @@ public final class ServiceFactory {
 
     private File resolve() {
         File directory = new File(applicationContext.getExternalFilesDir(null), "reports");
-        if (!directory.exists()) {
-            directory.mkdirs();
+        if (!directory.exists() && !directory.mkdirs()) {
+            throw new RuntimeException("Cannot create reports directory");
         }
         return directory;
     }
