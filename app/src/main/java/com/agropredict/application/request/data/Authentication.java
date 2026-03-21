@@ -1,6 +1,6 @@
 package com.agropredict.application.request.data;
 
-import com.agropredict.application.Hasher;
+import com.agropredict.application.PasswordHasher;
 import com.agropredict.application.repository.IUserRepository;
 import com.agropredict.application.request.RegistrationException;
 import com.agropredict.domain.component.user.Credential;
@@ -26,7 +26,7 @@ public final class Authentication {
     }
 
     public Credential hash() {
-        String passwordHash = new Hasher().hash(password);
+        String passwordHash = new PasswordHasher().hash(password);
         return new Credential(email, passwordHash);
     }
 }

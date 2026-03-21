@@ -2,18 +2,18 @@ package com.agropredict;
 
 import android.app.Application;
 import com.agropredict.application.IFactoryConsumer;
-import com.agropredict.core.DependencyProvider;
+import com.agropredict.core.Configuration;
 
 public final class AgroPredictApplication extends Application {
-    private DependencyProvider dependencyProvider;
+    private Configuration configuration;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        dependencyProvider = new DependencyProvider(this);
+        configuration = new Configuration(this);
     }
 
     public void provide(IFactoryConsumer consumer) {
-        dependencyProvider.provide(consumer);
+        configuration.provide(consumer);
     }
 }

@@ -16,6 +16,6 @@ public final class UserData {
     }
 
     public boolean authenticate(String candidateHash) {
-        return credential.isHashMatched(candidateHash);
+        return credential.matches(candidateHash);
     }
 }

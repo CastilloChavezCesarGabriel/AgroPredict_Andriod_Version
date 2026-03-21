@@ -2,22 +2,13 @@ package com.agropredict.infrastructure.persistence;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import com.agropredict.application.PasswordHasher;
 import com.agropredict.application.repository.IUserRepository;
 import com.agropredict.domain.entity.User;
-import com.agropredict.domain.component.user.Credential;
-import com.agropredict.domain.component.user.UserContact;
-import com.agropredict.domain.component.user.UserData;
-import com.agropredict.domain.component.user.UserIdentity;
-import com.agropredict.domain.component.user.UserProfile;
 
 public final class SqliteUserRepository implements IUserRepository {
     private static final int COLUMN_IDENTIFIER = 0;
-    private static final int COLUMN_FULL_NAME = 1;
-    private static final int COLUMN_EMAIL = 2;
-    private static final int COLUMN_PASSWORD_HASH = 3;
-    private static final int COLUMN_USERNAME = 4;
-    private static final int COLUMN_PHONE_NUMBER = 5;
-    private static final int COLUMN_OCCUPATION_ID = 6;
+    private static final int COLUMN_PASSWORD_HASH = 1;
 
     private final DatabaseHelper databaseHelper;
 
@@ -26,21 +17,19 @@ public final class SqliteUserRepository implements IUserRepository {
     }
 
     @Override
-    public String authenticate(String email, String passwordHash) {
+    public String authenticate(String email, String password) {
         SQLiteDatabase database = databaseHelper.getReadableDatabase();
-        String query = "SELECT id, full_name, email, password_hash, "
-                + "username, phone_number, occupation_id "
-                + "FROM user WHERE email = ? AND is_active = 1";
+        String query = "SELECT id, password_hash FROM user WHERE email = ? AND is_active = 1";
         Cursor cursor = database.rawQuery(query, new String[]{email});
-        String identifier = verify(cursor, passwordHash);
+        String identifier = verify(cursor, password);
         cursor.close();
         return identifier;
     }
 
-    private String verify(Cursor cursor, String passwordHash) {
+    private String verify(Cursor cursor, String password) {
         if (!cursor.moveToFirst()) return null;
-        User user = build(cursor);
-        if (!user.authenticate(passwordHash)) return null;
+        String storedHash = cursor.getString(COLUMN_PASSWORD_HASH);
+        if (!new PasswordHasher().verify(password, storedHash)) return null;
         return cursor.getString(COLUMN_IDENTIFIER);
     }
 
@@ -64,18 +53,6 @@ public final class SqliteUserRepository implements IUserRepository {
     @Override
     public boolean isTaken(String username) {
         return existsByUsername(username);
-    }
-
-    private User build(Cursor cursor) {
-        UserIdentity identity = new UserIdentity(
-                cursor.getString(COLUMN_IDENTIFIER), cursor.getString(COLUMN_FULL_NAME));
-        Credential credential = new Credential(
-                cursor.getString(COLUMN_EMAIL), cursor.getString(COLUMN_PASSWORD_HASH));
-        UserContact contact = new UserContact(
-                cursor.getString(COLUMN_USERNAME), cursor.getString(COLUMN_PHONE_NUMBER));
-        UserProfile profile = new UserProfile(contact, cursor.getString(COLUMN_OCCUPATION_ID));
-        UserData data = new UserData(credential, profile);
-        return User.create(identity, data);
     }
 
     private boolean existsByEmail(String email) {

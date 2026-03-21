@@ -1,16 +1,16 @@
 package com.agropredict.domain;
 
-public final class LoginAttemptTracker {
+public final class LoginAttempt {
     private static final int MAXIMUM_ATTEMPTS = 5;
     private static final long BLOCK_DURATION_MILLIS = 5 * 60 * 1000;
     private final int failedAttempts;
     private final long blockedUntil;
 
-    public LoginAttemptTracker() {
+    public LoginAttempt() {
         this(0, 0);
     }
 
-    private LoginAttemptTracker(int failedAttempts, long blockedUntil) {
+    private LoginAttempt(int failedAttempts, long blockedUntil) {
         this.failedAttempts = failedAttempts;
         this.blockedUntil = blockedUntil;
     }
@@ -23,19 +23,19 @@ public final class LoginAttemptTracker {
         return failedAttempts >= MAXIMUM_ATTEMPTS;
     }
 
-    public LoginAttemptTracker fail(long currentTime) {
+    public LoginAttempt fail(long currentTime) {
         if (!isBlocked(currentTime) && blockedUntil > 0) {
-            return new LoginAttemptTracker(0, 0);
+            return new LoginAttempt(0, 0);
         }
         if (isBlocked(currentTime)) return this;
         int updated = failedAttempts + 1;
         if (updated >= MAXIMUM_ATTEMPTS) {
-            return new LoginAttemptTracker(updated, currentTime + BLOCK_DURATION_MILLIS);
+            return new LoginAttempt(updated, currentTime + BLOCK_DURATION_MILLIS);
         }
-        return new LoginAttemptTracker(updated, blockedUntil);
+        return new LoginAttempt(updated, blockedUntil);
     }
 
-    public LoginAttemptTracker succeed() {
-        return new LoginAttemptTracker();
+    public LoginAttempt succeed() {
+        return new LoginAttempt();
     }
 }

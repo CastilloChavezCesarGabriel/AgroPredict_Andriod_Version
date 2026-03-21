@@ -1,15 +1,14 @@
 package com.agropredict.application.usecase.authentication;
 
-import com.agropredict.application.Hasher;
 import com.agropredict.application.repository.ISessionRepository;
 import com.agropredict.application.repository.IUserRepository;
 import com.agropredict.application.result.OperationResult;
-import com.agropredict.domain.LoginAttemptTracker;
+import com.agropredict.domain.LoginAttempt;
 
 public final class LoginUseCase {
     private final IUserRepository userRepository;
     private final ISessionRepository sessionRepository;
-    private LoginAttemptTracker tracker = new LoginAttemptTracker();
+    private LoginAttempt tracker = new LoginAttempt();
 
     public LoginUseCase(IUserRepository userRepository, ISessionRepository sessionRepository) {
         this.userRepository = userRepository;
@@ -19,12 +18,13 @@ public final class LoginUseCase {
     public OperationResult authenticate(String email, String password) {
         long currentTime = System.currentTimeMillis();
         if (tracker.isBlocked(currentTime))
-            return OperationResult.fail();
-        String passwordHash = new Hasher().hash(password);
-        String identifier = userRepository.authenticate(email, passwordHash);
+            return OperationResult.reject("Cuenta bloqueada. Intenta en unos minutos.");
+        String identifier = userRepository.authenticate(email, password);
         if (identifier == null) {
             tracker = tracker.fail(currentTime);
-            return OperationResult.fail();
+            if (tracker.isExhausted())
+                return OperationResult.reject("Has agotado tus intentos. Cuenta bloqueada por 5 minutos.");
+            return OperationResult.reject("Credenciales incorrectas");
         }
         tracker = tracker.succeed();
         sessionRepository.save(identifier);

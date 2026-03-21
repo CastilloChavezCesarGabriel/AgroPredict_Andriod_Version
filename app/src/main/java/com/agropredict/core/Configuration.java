@@ -6,10 +6,10 @@ import com.agropredict.application.IFactoryConsumer;
 import com.agropredict.infrastructure.RepositoryFactory;
 import com.agropredict.infrastructure.persistence.DatabaseHelper;
 
-public final class DependencyProvider {
+public final class Configuration {
     private final IRepositoryFactory repositoryFactory;
 
-    public DependencyProvider(Context context) {
+    public Configuration(Context context) {
         DatabaseHelper databaseHelper = new DatabaseHelper(context);
         this.repositoryFactory = new RepositoryFactory(databaseHelper, context);
     }
