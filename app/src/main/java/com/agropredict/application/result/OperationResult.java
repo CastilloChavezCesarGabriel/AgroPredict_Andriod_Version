@@ -19,6 +19,10 @@ public final class OperationResult {
         return new OperationResult(false, null);
     }
 
+    public static OperationResult reject(String reason) {
+        return new OperationResult(false, reason);
+    }
+
     public void accept(IOperationResultVisitor visitor) {
         visitor.visit(completed, resultIdentifier);
     }
