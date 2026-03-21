@@ -1,8 +1,8 @@
 package com.agropredict.presentation.viewmodel.authentication;
 
-import com.agropredict.application.consumer.IRegistrationResultConsumer;
+import com.agropredict.application.visitor.IRegistrationResultVisitor;
 
-public final class RegistrationResultStrategy implements IRegistrationResultConsumer {
+public final class RegistrationResultStrategy implements IRegistrationResultVisitor {
 
     private final IRegisterView view;
 
@@ -14,7 +14,7 @@ public final class RegistrationResultStrategy implements IRegistrationResultCons
     public void visit(boolean completed, String errorMessage) {
         if (completed) {
             view.notify("Registro exitoso");
-            view.navigateToLogin();
+            view.dismiss();
         } else {
             view.notify(errorMessage);
         }

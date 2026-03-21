@@ -11,6 +11,15 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+        <ImageView
+            android:id="@+id/ivCropPhoto"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
+            android:contentDescription="@string/crop_photo"
+            android:layout_marginBottom="16dp" />
+
         <!-- Cultivo Detectado -->
 
         <com.google.android.material.card.MaterialCardView
@@ -29,7 +38,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Cultivo Detectado"
+                    android:text="@string/detected_crop"
                     android:textColor="@color/medium_gray"
                     android:textSize="14sp" />
 
@@ -72,7 +81,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Severidad"
+                    android:text="@string/severity_label"
                     android:textColor="@color/medium_gray"
                     android:textSize="14sp" />
 
@@ -112,7 +121,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Resumen"
+                    android:text="@string/summary_label"
                     android:textColor="@color/medium_gray"
                     android:textSize="14sp" />
 
@@ -147,7 +156,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Recomendaciones"
+                    android:text="@string/recommendations_label"
                     android:textColor="@color/medium_gray"
                     android:textSize="14sp" />
 
@@ -170,7 +179,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="12dp"
-            android:text="Volver al Inicio" />
+            android:text="@string/back_to_home" />
 
     </LinearLayout>
 

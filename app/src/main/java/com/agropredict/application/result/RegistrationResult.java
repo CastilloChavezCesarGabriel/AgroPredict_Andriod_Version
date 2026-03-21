@@ -1,6 +1,6 @@
 package com.agropredict.application.result;
 
-import com.agropredict.application.consumer.IRegistrationResultConsumer;
+import com.agropredict.application.visitor.IRegistrationResultVisitor;
 
 public final class RegistrationResult {
     private final boolean completed;
@@ -15,11 +15,11 @@ public final class RegistrationResult {
         return new RegistrationResult(true, null);
     }
 
-    public static RegistrationResult fail(String errorMessage) {
-        return new RegistrationResult(false, errorMessage);
+    public static RegistrationResult fail(String message) {
+        return new RegistrationResult(false, message);
     }
 
-    public void accept(IRegistrationResultConsumer visitor) {
+    public void accept(IRegistrationResultVisitor visitor) {
         visitor.visit(completed, errorMessage);
     }
 }

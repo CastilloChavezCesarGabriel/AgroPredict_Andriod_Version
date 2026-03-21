@@ -1,98 +1,96 @@
 package com.agropredict.presentation.viewmodel.report;
 
-import android.app.Activity;
 import com.agropredict.application.IRepositoryFactory;
+import com.agropredict.application.request.ReportRequest;
 import com.agropredict.application.result.OperationResult;
 import com.agropredict.application.usecase.crop.ListCropUseCase;
+import com.agropredict.application.usecase.crop.FindCropUseCase;
+import com.agropredict.application.usecase.diagnostic.FindDiagnosticUseCase;
 import com.agropredict.application.usecase.report.GenerateReportUseCase;
-import com.agropredict.application.usecase.report.ShareReportUseCase;
-import com.agropredict.application.service.IReportGeneratorService;
+import com.agropredict.application.usecase.report.StoreReportUseCase;
+import com.agropredict.application.service.IReportService;
+import com.agropredict.application.visitor.IOperationResultVisitor;
+import com.agropredict.domain.component.report.ReportContext;
+import com.agropredict.domain.component.report.ReportDetail;
+import com.agropredict.domain.component.report.ReportIdentity;
+import com.agropredict.domain.component.report.ReportStorage;
 import com.agropredict.domain.entity.Crop;
-import com.agropredict.domain.entity.Report;
-import com.agropredict.domain.value.report.ReportDetail;
-import com.agropredict.domain.value.report.ReportIdentity;
-import com.agropredict.domain.value.report.ReportContext;
-import com.agropredict.presentation.mapping.CropMapping;
-import java.util.ArrayList;
-import java.util.HashMap;
+import com.agropredict.domain.entity.Diagnostic;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public final class ReportViewModel {
-
+public final class ReportViewModel implements IOperationResultVisitor {
     private final IRepositoryFactory factory;
-    private final ListCropUseCase listCropUseCase;
+    private final IReportView view;
     private final ExecutorService executor;
-    private IReportView view;
+    private String userIdentifier;
+    private String cropIdentifier;
+    private String format;
 
-    public ReportViewModel(IRepositoryFactory factory, ListCropUseCase listCropUseCase) {
+    public ReportViewModel(IRepositoryFactory factory, IReportView view) {
         this.factory = factory;
-        this.listCropUseCase = listCropUseCase;
+        this.view = view;
         this.executor = Executors.newSingleThreadExecutor();
     }
 
-    public void bind(IReportView view) {
-        this.view = view;
+    public void load(ListCropUseCase listCrops, String userIdentifier) {
+        this.userIdentifier = userIdentifier;
+        List<Crop> crops = listCrops.list(userIdentifier);
+        view.populate(crops);
     }
 
-    public void load(String userIdentifier) {
-        List<Crop> crops = listCropUseCase.list(userIdentifier);
-        if (view != null) {
-            view.populateCrops(map(crops));
-        }
-    }
-
-    public void generate(Map<String, String> reportOptions, Activity activity) {
-        if (view != null) view.showLoading();
-        executor.execute(() -> generateInBackground(reportOptions, activity));
+    public void generate(String cropIdentifier, String format) {
+        this.cropIdentifier = cropIdentifier;
+        this.format = format;
+        view.load();
+        executor.execute(() -> export(cropIdentifier, format));
     }
 
     public void release() {
         executor.shutdown();
     }
 
-    private void generateInBackground(Map<String, String> reportOptions, Activity activity) {
-        GenerateReportUseCase generateUseCase = resolve(reportOptions.get("format"));
-        Map<String, Object> reportData = new HashMap<>(reportOptions);
-        OperationResult result = generateUseCase.generate(reportData);
-        store(reportData);
-        activity.runOnUiThread(() -> present(result));
+    @Override
+    public void visit(boolean completed, String filePath) {
+        view.idle();
+        if (completed) {
+            persist(filePath);
+            view.notify("Reporte generado exitosamente");
+            view.offer(filePath);
+        } else {
+            view.notify("Error al generar el reporte");
+        }
     }
 
-    private GenerateReportUseCase resolve(String format) {
-        IReportGeneratorService service = "csv".equals(format)
+    private void export(String cropIdentifier, String format) {
+        FindCropUseCase cropLoader = new FindCropUseCase(factory.createCropRepository());
+        FindDiagnosticUseCase diagnosticLoader = new FindDiagnosticUseCase(factory.createDiagnosticRepository());
+        Crop crop = cropLoader.find(cropIdentifier);
+        Diagnostic diagnostic = diagnosticLoader.find(cropIdentifier);
+        if (crop == null || diagnostic == null) {
+            view.notify("No se encontraron datos para exportar");
+            return;
+        }
+        IReportService service = resolve(format);
+        GenerateReportUseCase generateUseCase = new GenerateReportUseCase(service);
+        OperationResult result = generateUseCase.generate(crop, diagnostic);
+        result.accept(this);
+    }
+
+    private void persist(String filePath) {
+        ReportIdentity identity = new ReportIdentity("rpt_" + System.currentTimeMillis(), format);
+        ReportContext context = new ReportContext(cropIdentifier, cropIdentifier);
+        ReportStorage storage = new ReportStorage(userIdentifier, filePath);
+        ReportDetail detail = new ReportDetail(context, storage);
+        ReportRequest request = new ReportRequest(identity, detail);
+        StoreReportUseCase storeUseCase = new StoreReportUseCase(factory.createReportRepository());
+        storeUseCase.store(request);
+    }
+
+    private IReportService resolve(String format) {
+        return "csv".equals(format)
                 ? factory.createCsvReportGenerator()
                 : factory.createPdfReportGenerator();
-        return new GenerateReportUseCase(service);
-    }
-
-    private void store(Map<String, Object> reportData) {
-        ShareReportUseCase shareUseCase = new ShareReportUseCase(factory.createReportRepository());
-        String identifier = "report_" + System.currentTimeMillis();
-        String format = String.valueOf(reportData.getOrDefault("format", "pdf"));
-        String cropIdentifier = String.valueOf(reportData.get("crop_identifier"));
-        ReportIdentity identity = new ReportIdentity(identifier, format);
-        ReportContext context = new ReportContext(null, cropIdentifier);
-        ReportDetail detail = new ReportDetail(context, null);
-        Report report = Report.create(identity, detail);
-        shareUseCase.record(report);
-    }
-
-    private void present(OperationResult result) {
-        if (view != null) {
-            view.hideLoading();
-            result.accept(new ReportResultStrategy(view));
-        }
-    }
-
-    private List<Map<String, String>> map(List<Crop> crops) {
-        CropMapping mapping = new CropMapping();
-        List<Map<String, String>> mapped = new ArrayList<>();
-        for (Crop crop : crops) {
-            mapped.add(mapping.map(crop));
-        }
-        return mapped;
     }
 }

@@ -1,12 +1,12 @@
 package com.agropredict.presentation.viewmodel.field;
 
+import com.agropredict.domain.entity.Crop;
 import java.util.List;
-import java.util.Map;
 
 public interface IEditFieldView {
-    void notify(String message);
-    void populate(Map<String, String> cropData);
+    void populate(Crop crop);
     void populateSoilTypes(List<String> soilTypes);
     void populateStages(List<String> stages);
-    void navigateBack();
+    void notify(String message);
+    void dismiss();
 }

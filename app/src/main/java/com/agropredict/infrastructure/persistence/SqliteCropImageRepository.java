@@ -1,6 +1,5 @@
 package com.agropredict.infrastructure.persistence;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import com.agropredict.application.repository.ICropImageRepository;
@@ -15,13 +14,12 @@ public final class SqliteCropImageRepository implements ICropImageRepository {
 
     @Override
     public void store(CropImage image) {
-        SQLiteDatabase database = databaseHelper.getWritableDatabase();
-        ContentValues values = record(image);
-        database.insert("image", null, values);
+        Recorder recorder = record(image);
+        recorder.flush("image");
     }
 
     @Override
-    public CropImage load(String imageIdentifier) {
+    public CropImage find(String imageIdentifier) {
         SQLiteDatabase database = databaseHelper.getReadableDatabase();
         Cursor cursor = database.rawQuery(
                 "SELECT id, file_path FROM image WHERE id = ?",
@@ -31,11 +29,10 @@ public final class SqliteCropImageRepository implements ICropImageRepository {
         return image;
     }
 
-    private ContentValues record(CropImage image) {
-        ContentValues values = new ContentValues();
-        CropImageRecorder recorder = new CropImageRecorder(values);
-        image.accept(recorder);
-        return values;
+    private Recorder record(CropImage image) {
+        Recorder recorder = new Recorder(databaseHelper.getWritableDatabase());
+        image.accept(new CropImageRecorder(recorder));
+        return recorder;
     }
 
     private CropImage extractImage(Cursor cursor) {

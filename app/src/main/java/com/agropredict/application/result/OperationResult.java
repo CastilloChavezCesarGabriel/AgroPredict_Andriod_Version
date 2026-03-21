@@ -1,6 +1,6 @@
 package com.agropredict.application.result;
 
-import com.agropredict.application.consumer.IOperationResultConsumer;
+import com.agropredict.application.visitor.IOperationResultVisitor;
 
 public final class OperationResult {
     private final boolean completed;
@@ -19,7 +19,7 @@ public final class OperationResult {
         return new OperationResult(false, null);
     }
 
-    public void accept(IOperationResultConsumer visitor) {
+    public void accept(IOperationResultVisitor visitor) {
         visitor.visit(completed, resultIdentifier);
     }
 }

@@ -1,6 +1,5 @@
 package com.agropredict.infrastructure.persistence;
 
-import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import com.agropredict.application.repository.IReportRepository;
 import com.agropredict.domain.entity.Report;
@@ -14,14 +13,13 @@ public final class SqliteReportRepository implements IReportRepository {
 
     @Override
     public void store(Report report) {
-        SQLiteDatabase database = databaseHelper.getWritableDatabase();
-        ContentValues values = record(report);
-        database.insert("report", null, values);
+        Recorder recorder = record(report);
+        recorder.flush("report");
     }
 
-    private ContentValues record(Report report) {
-        ContentValues values = new ContentValues();
-        report.accept(new ReportRecorder(values));
-        return values;
+    private Recorder record(Report report) {
+        Recorder recorder = new Recorder(databaseHelper.getWritableDatabase());
+        report.accept(new ReportRecorder(recorder));
+        return recorder;
     }
 }

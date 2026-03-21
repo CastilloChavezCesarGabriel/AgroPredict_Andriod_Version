@@ -42,7 +42,18 @@
         <activity android:name=".presentation.user_interface.HistoryActivity" />
         <activity android:name=".presentation.user_interface.FieldDetailActivity" />
         <activity android:name=".presentation.user_interface.EditFieldActivity" />
+        <activity android:name=".presentation.user_interface.CropHistoryActivity" />
         <activity android:name=".presentation.user_interface.ReportActivity" />
+        <activity android:name=".presentation.user_interface.RecoveryActivity" />
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
 
     </application>
 

@@ -1,17 +1,19 @@
 package com.agropredict.infrastructure.persistence;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import com.agropredict.application.repository.ICropRepository;
+import com.agropredict.application.result.HistoryRecord;
+import com.agropredict.application.result.HistoryTransition;
+import com.agropredict.application.result.Modification;
 import com.agropredict.domain.entity.Crop;
-import com.agropredict.domain.value.crop.CropContent;
-import com.agropredict.domain.value.crop.CropData;
-import com.agropredict.domain.value.crop.CropDetail;
-import com.agropredict.domain.value.crop.CropEnvironment;
-import com.agropredict.domain.value.crop.CropLocation;
-import com.agropredict.domain.value.crop.CropOwnership;
-import com.agropredict.domain.value.crop.CropSoil;
+import com.agropredict.domain.component.crop.CropContent;
+import com.agropredict.domain.component.crop.CropData;
+import com.agropredict.domain.component.crop.CropDetail;
+import com.agropredict.domain.component.crop.CropEnvironment;
+import com.agropredict.domain.component.crop.CropLocation;
+import com.agropredict.domain.component.crop.CropOwnership;
+import com.agropredict.domain.component.crop.CropSoil;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,17 +44,14 @@ public final class SqliteCropRepository implements ICropRepository {
 
     @Override
     public void store(Crop crop) {
-        SQLiteDatabase database = databaseHelper.getWritableDatabase();
-        ContentValues values = record(crop);
-        database.insert("crop", null, values);
+        Recorder recorder = record(crop);
+        recorder.flush("crop");
     }
 
     @Override
     public void update(Crop crop) {
-        SQLiteDatabase database = databaseHelper.getWritableDatabase();
-        ContentValues values = record(crop);
-        String identifier = values.getAsString("id");
-        database.update("crop", values, "id = ?", new String[]{identifier});
+        Recorder recorder = record(crop);
+        recorder.overwrite("crop", "id");
     }
 
     @Override
@@ -67,7 +66,23 @@ public final class SqliteCropRepository implements ICropRepository {
     }
 
     @Override
-    public Crop load(String cropIdentifier) {
+    public List<HistoryRecord> trace(String cropIdentifier) {
+        SQLiteDatabase database = databaseHelper.getReadableDatabase();
+        String query = "SELECT field_modified, old_value, new_value, modified_at "
+                + "FROM crop_history WHERE crop_id = ? ORDER BY modified_at DESC";
+        Cursor cursor = database.rawQuery(query, new String[]{cropIdentifier});
+        List<HistoryRecord> records = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            Modification modification = new Modification(cursor.getString(0), cursor.getString(3));
+            HistoryTransition transition = new HistoryTransition(cursor.getString(1), cursor.getString(2));
+            records.add(new HistoryRecord(modification, transition));
+        }
+        cursor.close();
+        return records;
+    }
+
+    @Override
+    public Crop find(String cropIdentifier) {
         SQLiteDatabase database = databaseHelper.getReadableDatabase();
         String query = SELECT_CROP + "WHERE c.id = ?";
         Cursor cursor = database.rawQuery(query, new String[]{cropIdentifier});
@@ -76,10 +91,10 @@ public final class SqliteCropRepository implements ICropRepository {
         return crop;
     }
 
-    private ContentValues record(Crop crop) {
-        ContentValues values = new ContentValues();
-        crop.accept(new CropRecorder(values));
-        return values;
+    private Recorder record(Crop crop) {
+        Recorder recorder = new Recorder(databaseHelper.getWritableDatabase());
+        crop.accept(new CropRecorder(recorder));
+        return recorder;
     }
 
     private List<Crop> extractCrops(Cursor cursor) {

@@ -1,23 +1,22 @@
 package com.agropredict.infrastructure.persistence;
 
-import android.content.ContentValues;
-import com.agropredict.domain.value.report.ReportContext;
-import com.agropredict.domain.value.report.ReportDetail;
-import com.agropredict.domain.value.report.ReportIdentity;
-import com.agropredict.domain.value.report.ReportStorage;
-import com.agropredict.domain.visitor.IReportContextVisitor;
-import com.agropredict.domain.visitor.IReportDetailVisitor;
-import com.agropredict.domain.visitor.IReportIdentityVisitor;
-import com.agropredict.domain.visitor.IReportStorageVisitor;
-import com.agropredict.domain.visitor.IReportVisitor;
+import com.agropredict.domain.component.report.ReportContext;
+import com.agropredict.domain.component.report.ReportDetail;
+import com.agropredict.domain.component.report.ReportIdentity;
+import com.agropredict.domain.component.report.ReportStorage;
+import com.agropredict.domain.visitor.report.IReportContextVisitor;
+import com.agropredict.domain.visitor.report.IReportDetailVisitor;
+import com.agropredict.domain.visitor.report.IReportIdentityVisitor;
+import com.agropredict.domain.visitor.report.IReportStorageVisitor;
+import com.agropredict.domain.visitor.report.IReportVisitor;
 
 public final class ReportRecorder implements IReportVisitor, IReportDetailVisitor,
         IReportIdentityVisitor, IReportContextVisitor, IReportStorageVisitor {
 
-    private final ContentValues values;
+    private final IRecord record;
 
-    public ReportRecorder(ContentValues values) {
-        this.values = values;
+    public ReportRecorder(IRecord record) {
+        this.record = record;
     }
 
     @Override
@@ -34,19 +33,19 @@ public final class ReportRecorder implements IReportVisitor, IReportDetailVisito
 
     @Override
     public void visitIdentity(String identifier, String format) {
-        values.put("id", identifier);
-        values.put("format", format);
+        record.record("id", identifier);
+        record.record("format", format);
     }
 
     @Override
-    public void visitReportContext(String diagnosticIdentifier, String cropIdentifier) {
-        values.put("diagnostic_id", diagnosticIdentifier);
-        values.put("crop_id", cropIdentifier);
+    public void visitContext(String diagnosticIdentifier, String cropIdentifier) {
+        record.record("diagnostic_id", diagnosticIdentifier);
+        record.record("crop_id", cropIdentifier);
     }
 
     @Override
     public void visitStorage(String userIdentifier, String filePath) {
-        values.put("user_id", userIdentifier);
-        values.put("file_path", filePath);
+        record.record("user_id", userIdentifier);
+        record.record("file_path", filePath);
     }
 }

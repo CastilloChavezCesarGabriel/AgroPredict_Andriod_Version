@@ -1,8 +1,8 @@
 package com.agropredict.presentation.viewmodel.prediction;
 
-import com.agropredict.application.consumer.IClassificationResultConsumer;
+import com.agropredict.application.visitor.IClassificationResultVisitor;
 
-public final class ClassificationResultStrategy implements IClassificationResultConsumer {
+public final class ClassificationResultStrategy implements IClassificationResultVisitor {
     private static final double MINIMUM_CONFIDENCE_THRESHOLD = 0.6;
     private static final double PERCENTAGE_MULTIPLIER = 100;
     private final IPredictionView view;
@@ -13,11 +13,18 @@ public final class ClassificationResultStrategy implements IClassificationResult
 
     @Override
     public void visit(String predictedCrop, double confidence) {
+        view.idle();
         if (confidence >= MINIMUM_CONFIDENCE_THRESHOLD) {
             String confidenceText = String.format("%.0f%%", confidence * PERCENTAGE_MULTIPLIER);
-            view.displayClassification(predictedCrop, confidenceText);
+            view.classify(predictedCrop, confidenceText);
         } else {
             view.notify("No se pudo identificar el cultivo con certeza");
         }
+    }
+
+    @Override
+    public void reject(String errorMessage) {
+        view.idle();
+        view.notify(errorMessage);
     }
 }

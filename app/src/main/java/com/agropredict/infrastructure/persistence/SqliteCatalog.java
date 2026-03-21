@@ -4,13 +4,18 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import com.agropredict.application.repository.ICatalogRepository;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public final class SqliteCatalog implements ICatalogRepository {
+    private static final List<String> ALLOWED_TABLES = Arrays.asList(
+            "soil_type", "phenological_stage", "occupation");
     private final DatabaseHelper databaseHelper;
     private final String tableName;
 
     public SqliteCatalog(DatabaseHelper databaseHelper, String tableName) {
+        if (!ALLOWED_TABLES.contains(tableName))
+            throw new IllegalArgumentException("Invalid catalog table: " + tableName);
         this.databaseHelper = databaseHelper;
         this.tableName = tableName;
     }
@@ -26,7 +31,7 @@ public final class SqliteCatalog implements ICatalogRepository {
     }
 
     @Override
-    public String findIdentifier(String name) {
+    public String resolve(String name) {
         SQLiteDatabase database = databaseHelper.getReadableDatabase();
         Cursor cursor = database.rawQuery(
                 "SELECT id FROM " + tableName + " WHERE name = ? LIMIT 1",

@@ -9,7 +9,7 @@ public final class LogoutUseCase {
         this.sessionRepository = sessionRepository;
     }
 
-    public void execute() {
+    public void logout() {
         sessionRepository.clear();
     }
 }

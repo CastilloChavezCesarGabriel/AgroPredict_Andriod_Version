@@ -33,7 +33,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_weight="1"
-                android:text="Capturar" />
+                android:text="@string/capture_image" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnGallery"
@@ -43,7 +43,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
                 android:backgroundTint="@color/soil_brown"
-                android:text="Galería" />
+                android:text="@string/select_gallery" />
 
         </LinearLayout>
 
@@ -53,7 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:text="Información del Cultivo"
+            android:text="@string/crop_info"
             android:textColor="@color/green_primary"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -64,7 +64,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            android:hint="Tipo de cultivo">
+            android:hint="@string/crop_type_hint">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etCropType"
@@ -80,7 +80,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            android:hint="Ubicación">
+            android:hint="@string/location_hint">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etLocation"
@@ -110,7 +110,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:hint="Fecha de siembra">
+            android:hint="@string/planting_date_hint">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etPlantingDate"
@@ -128,7 +128,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:text="Condiciones Ambientales"
+            android:text="@string/environmental_conditions"
             android:textColor="@color/green_primary"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -160,7 +160,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:text="Condiciones del Suelo"
+            android:text="@string/soil_conditions"
             android:textColor="@color/green_primary"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -185,7 +185,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:text="Manejo del Cultivo"
+            android:text="@string/crop_management"
             android:textColor="@color/green_primary"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -224,7 +224,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:text="Síntomas"
+            android:text="@string/symptoms"
             android:textColor="@color/green_primary"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -263,7 +263,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="12dp"
-            android:text="Enviar Diagnóstico" />
+            android:text="@string/submit_diagnosis" />
 
         <ProgressBar
             android:id="@+id/progressLoading"

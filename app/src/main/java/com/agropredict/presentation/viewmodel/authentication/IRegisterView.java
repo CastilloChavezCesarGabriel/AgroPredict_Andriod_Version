@@ -4,6 +4,6 @@ import java.util.List;
 
 public interface IRegisterView {
     void notify(String message);
-    void navigateToLogin();
-    void populateOccupations(List<String> occupations);
+    void dismiss();
+    void populate(List<String> occupations);
 }

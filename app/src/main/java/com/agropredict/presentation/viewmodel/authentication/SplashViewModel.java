@@ -1,7 +1,7 @@
 package com.agropredict.presentation.viewmodel.authentication;
 
 import com.agropredict.application.usecase.authentication.CheckSessionUseCase;
-import com.agropredict.application.consumer.ISessionResultConsumer;
+import com.agropredict.application.visitor.ISessionResultVisitor;
 
 public final class SplashViewModel {
 
@@ -11,7 +11,7 @@ public final class SplashViewModel {
         this.checkSessionUseCase = checkSessionUseCase;
     }
 
-    public void check(ISessionResultConsumer consumer) {
+    public void check(ISessionResultVisitor consumer) {
         checkSessionUseCase.check(consumer);
     }
 }

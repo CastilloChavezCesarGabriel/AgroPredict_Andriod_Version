@@ -1,9 +1,8 @@
 package com.agropredict.presentation.viewmodel.prediction;
 
-import java.util.Map;
+import com.agropredict.domain.entity.Diagnostic;
 
 public interface IPredictionResultView {
-    void display(Map<String, Object> diagnosticDetail);
-    void warnLowConfidence();
-    void navigateToHome();
+    void display(Diagnostic diagnostic);
+    void warn();
 }

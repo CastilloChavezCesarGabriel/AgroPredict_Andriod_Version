@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">AgroPredict</string>
+    <string name="app_tagline">Diagnóstico agrícola inteligente</string>
 
     <!-- Authentication -->
     <string name="login_title">Iniciar Sesión</string>
@@ -14,6 +15,12 @@
     <string name="occupation_hint">Ocupación</string>
     <string name="login_button">Iniciar Sesión</string>
     <string name="register_button">Registrarse</string>
+    <string name="forgot_password">¿Olvidaste tu contraseña?</string>
+    <string name="recovery_title">Recuperar Contraseña</string>
+    <string name="recovery_instruction">Ingresa tu correo y una nueva contraseña</string>
+    <string name="new_password_hint">Nueva contraseña</string>
+    <string name="reset_password">Restablecer Contraseña</string>
+    <string name="back_to_login">Volver al inicio de sesión</string>
     <string name="no_account">¿No tienes cuenta? Regístrate</string>
     <string name="has_account">¿Ya tienes cuenta? Inicia sesión</string>
     <string name="login_success">Inicio de sesión exitoso</string>
@@ -39,6 +46,9 @@
     <string name="generate_report_description">Exportar a PDF o CSV</string>
     <string name="pest_guide">Guía de Plagas</string>
     <string name="pest_guide_description">Tratamientos y recomendaciones</string>
+    <string name="agronomy_resources">Recursos Agronomía</string>
+    <string name="resources">Recursos</string>
+    <string name="sustainable_manual">Manual Sostenible</string>
     <string name="add_field">Agregar Nuevo Campo</string>
     <string name="logout">Cerrar Sesión</string>
 
@@ -51,6 +61,10 @@
     <string name="soil_type_hint">Tipo de suelo</string>
     <string name="phenological_stage_hint">Etapa fenológica</string>
     <string name="planting_date_hint">Fecha de siembra</string>
+    <string name="environmental_conditions">Condiciones Ambientales</string>
+    <string name="soil_conditions">Condiciones del Suelo</string>
+    <string name="crop_management">Manejo del Cultivo</string>
+    <string name="symptoms">Síntomas</string>
     <string name="submit_diagnosis">Enviar Diagnóstico</string>
     <string name="analyzing">Analizando imagen…</string>
     <string name="classification_success">Cultivo detectado: %1$s (%.0f%%)</string>
@@ -87,6 +101,7 @@
     <string name="history_title">Historial de Diagnósticos</string>
     <string name="filter_all">Todos</string>
     <string name="no_diagnostics">No hay diagnósticos registrados</string>
+    <string name="no_modifications">Sin modificaciones registradas</string>
     <string name="delete_diagnostic">Eliminar Diagnóstico</string>
     <string name="delete_confirmation">¿Estás seguro de que deseas eliminar este diagnóstico?</string>
     <string name="deleted_successfully">Diagnóstico eliminado exitosamente</string>
@@ -96,6 +111,7 @@
 
     <!-- Field Details -->
     <string name="field_detail_title">Detalles del Campo</string>
+    <string name="crop_photo">Foto del cultivo</string>
     <string name="edit_field">Editar Campo</string>
     <string name="crop_info">Información del Cultivo</string>
     <string name="diagnostic_info">Información del Diagnóstico</string>
@@ -106,6 +122,8 @@
     <string name="soil_type_label">Tipo de Suelo</string>
     <string name="stage_label">Etapa Fenológica</string>
     <string name="not_specified">No especificado</string>
+    <string name="view_change_history">Ver Historial de Cambios</string>
+    <string name="area_label">Área (hectáreas)</string>
     <string name="save_changes">Guardar Cambios</string>
     <string name="changes_saved">Cambios guardados exitosamente</string>
 

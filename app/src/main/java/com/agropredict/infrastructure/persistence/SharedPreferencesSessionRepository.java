@@ -20,7 +20,7 @@ public final class SharedPreferencesSessionRepository implements ISessionReposit
     }
 
     @Override
-    public String load() {
+    public String recall() {
         return preferences.getString(USER_IDENTIFIER_KEY, null);
     }
 

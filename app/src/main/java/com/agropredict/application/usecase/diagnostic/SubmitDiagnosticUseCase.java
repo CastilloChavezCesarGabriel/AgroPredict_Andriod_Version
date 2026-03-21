@@ -1,49 +1,28 @@
 package com.agropredict.application.usecase.diagnostic;
 
-import com.agropredict.application.IRepositoryFactory;
+import com.agropredict.application.repository.IDiagnosticWorkflow;
+import com.agropredict.application.request.SubmissionRequest;
 import com.agropredict.application.result.OperationResult;
-import com.agropredict.domain.entity.Crop;
-import com.agropredict.domain.entity.CropImage;
+import com.agropredict.application.service.IDiagnosticApiService;
 import com.agropredict.domain.entity.Diagnostic;
-import com.agropredict.domain.value.diagnostic.DiagnosticData;
-import com.agropredict.domain.value.ISubmissionContextVisitor;
-import com.agropredict.domain.value.SubmissionContext;
-import com.agropredict.domain.visitor.IDiagnosticVisitor;
 
-public final class SubmitDiagnosticUseCase implements IDiagnosticVisitor,
-        ISubmissionContextVisitor {
+public final class SubmitDiagnosticUseCase {
+    private final IDiagnosticApiService apiService;
+    private final IDiagnosticWorkflow workflow;
 
-    private final IRepositoryFactory factory;
-    private OperationResult operationResult;
-
-    public SubmitDiagnosticUseCase(IRepositoryFactory factory) {
-        this.factory = factory;
+    public SubmitDiagnosticUseCase(IDiagnosticApiService apiService, IDiagnosticWorkflow workflow) {
+        this.apiService = apiService;
+        this.workflow = workflow;
     }
 
-    public OperationResult submit(Diagnostic diagnostic, SubmissionContext context) {
+    public OperationResult submit(SubmissionRequest request) {
         try {
-            context.accept(this);
-            Diagnostic enriched = factory.createApiService().submit(diagnostic);
-            factory.createDiagnosticRepository().store(enriched);
-            enriched.accept(this);
-            return operationResult;
+            Diagnostic diagnostic = request.diagnose();
+            Diagnostic enriched = apiService.submit(diagnostic, request);
+            String identifier = workflow.persist(request, enriched);
+            return OperationResult.succeed(identifier);
         } catch (RuntimeException exception) {
             return OperationResult.fail();
         }
-    }
-
-    @Override
-    public void visit(Crop crop, CropImage image) {
-        if (crop != null) {
-            factory.createCropRepository().store(crop);
-        }
-        if (image != null) {
-            factory.createCropImageRepository().store(image);
-        }
-    }
-
-    @Override
-    public void visit(String identifier, DiagnosticData data) {
-        this.operationResult = OperationResult.succeed(identifier);
     }
 }

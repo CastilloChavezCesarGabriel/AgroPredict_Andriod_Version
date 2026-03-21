@@ -1,8 +1,8 @@
 package com.agropredict.domain.entity;
 
-import com.agropredict.domain.value.user.UserData;
-import com.agropredict.domain.value.user.UserIdentity;
-import com.agropredict.domain.visitor.IUserVisitor;
+import com.agropredict.domain.component.user.UserData;
+import com.agropredict.domain.component.user.UserIdentity;
+import com.agropredict.domain.visitor.user.IUserVisitor;
 
 public final class User {
     private final UserIdentity identity;

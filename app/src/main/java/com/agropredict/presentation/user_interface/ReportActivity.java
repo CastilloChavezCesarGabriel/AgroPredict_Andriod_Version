@@ -1,96 +1,82 @@
 package com.agropredict.presentation.user_interface;
+import com.agropredict.presentation.user_interface.holder.ReportViewHolder;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import androidx.core.content.FileProvider;
 import com.agropredict.AgroPredictApplication;
 import com.agropredict.R;
 import com.agropredict.application.usecase.authentication.CheckSessionUseCase;
 import com.agropredict.application.usecase.crop.ListCropUseCase;
+import com.agropredict.domain.entity.Crop;
 import com.agropredict.presentation.viewmodel.report.IReportView;
 import com.agropredict.presentation.viewmodel.report.ReportViewModel;
 import java.io.File;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public final class ReportActivity extends BaseActivity implements IReportView {
-
     private ReportViewModel viewModel;
     private ReportViewHolder holder;
+    private ListCropUseCase listCrops;
     private String generatedFilePath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report);
-        compose();
-        bind();
-    }
-
-    private void compose() {
-        AgroPredictApplication application = (AgroPredictApplication) getApplication();
-        application.provide(factory -> {
-            ListCropUseCase listCrops = new ListCropUseCase(factory.createCropRepository());
-            CheckSessionUseCase checkSession = new CheckSessionUseCase(factory.createSessionRepository());
-            viewModel = new ReportViewModel(factory, listCrops);
-            viewModel.bind(this);
-            checkSession.check(this::start);
+        holder = new ReportViewHolder(this);
+        holder.listen(view -> share());
+        ((AgroPredictApplication) getApplication()).provide(factory -> {
+            listCrops = new ListCropUseCase(factory.createCropRepository());
+            CheckSessionUseCase sessionUseCase = new CheckSessionUseCase(factory.createSessionRepository());
+            viewModel = new ReportViewModel(factory, this);
+            sessionUseCase.check(this::start);
         });
+        findViewById(R.id.btnGenerate).setOnClickListener(view -> generate());
     }
 
     private void start(boolean hasSession, String userIdentifier) {
-        viewModel.load(userIdentifier);
+        viewModel.load(listCrops, userIdentifier);
     }
 
-    private void bind() {
-        holder = new ReportViewHolder(this);
-        holder.attachShareListener(clickedView -> onShareClicked());
-        findViewById(R.id.btnGenerate).setOnClickListener(clickedView -> onGenerateClicked());
+    private void generate() {
+        holder.generate(viewModel);
     }
 
-    private void onGenerateClicked() {
-        if (!holder.hasCropSelected()) {
-            notify(getString(R.string.select_crop));
-            return;
-        }
-        viewModel.generate(collect(), this);
-    }
-
-    private Map<String, String> collect() {
-        Map<String, String> options = new HashMap<>();
-        options.put("crop_identifier", holder.selectedCropIdentifier());
-        options.put("format", holder.selectedFormat());
-        return options;
-    }
-
-    private void onShareClicked() {
+    private void share() {
         if (generatedFilePath == null) return;
-        Intent shareIntent = new Intent(Intent.ACTION_SEND);
-        shareIntent.setType("application/octet-stream");
-        shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(generatedFilePath)));
-        startActivity(Intent.createChooser(shareIntent, getString(R.string.share_report)));
+        Uri uri = FileProvider.getUriForFile(this,
+                getPackageName() + ".fileprovider", new File(generatedFilePath));
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("application/octet-stream");
+        intent.putExtra(Intent.EXTRA_STREAM, uri);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        startActivity(Intent.createChooser(intent, getString(R.string.share_report)));
     }
 
     @Override
-    public void showLoading() {
-        holder.showLoading();
+    public void load() {
+        runOnUiThread(() -> holder.load());
     }
 
     @Override
-    public void hideLoading() {
-        holder.hideLoading();
+    public void idle() {
+        runOnUiThread(() -> holder.idle());
     }
 
     @Override
-    public void populateCrops(List<Map<String, String>> crops) {
-        holder.populateCrops(crops);
+    public void populate(List<Crop> crops) {
+        holder.populate(crops);
     }
 
     @Override
-    public void showShareOption(String filePath) {
+    public void offer(String filePath) {
         generatedFilePath = filePath;
-        holder.showShareOption(filePath);
+        runOnUiThread(() -> {
+            holder.offer(filePath);
+            if (filePath.endsWith(".pdf")) PdfLauncher.open(this, filePath);
+        });
     }
 
     @Override

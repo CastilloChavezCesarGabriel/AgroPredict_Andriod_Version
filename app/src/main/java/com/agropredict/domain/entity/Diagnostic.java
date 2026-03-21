@@ -1,7 +1,7 @@
 package com.agropredict.domain.entity;
 
-import com.agropredict.domain.value.diagnostic.DiagnosticData;
-import com.agropredict.domain.visitor.IDiagnosticVisitor;
+import com.agropredict.domain.component.diagnostic.DiagnosticData;
+import com.agropredict.domain.visitor.diagnostic.IDiagnosticVisitor;
 
 public final class Diagnostic {
     private final String identifier;
@@ -22,5 +22,9 @@ public final class Diagnostic {
 
     public boolean isConfident() {
         return data.isConfident();
+    }
+
+    public boolean isSevere() {
+        return data.isSevere();
     }
 }

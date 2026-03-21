@@ -1,19 +1,15 @@
 package com.agropredict.application.usecase.authentication;
 
-import com.agropredict.application.PasswordHasher;
+import com.agropredict.application.Hasher;
 import com.agropredict.application.repository.ISessionRepository;
 import com.agropredict.application.repository.IUserRepository;
 import com.agropredict.application.result.OperationResult;
-import com.agropredict.domain.entity.User;
-import com.agropredict.domain.value.user.UserData;
-import com.agropredict.domain.value.user.UserIdentity;
-import com.agropredict.domain.visitor.IUserIdentityVisitor;
-import com.agropredict.domain.visitor.IUserVisitor;
+import com.agropredict.domain.LoginAttemptTracker;
 
-public final class LoginUseCase implements IUserVisitor, IUserIdentityVisitor {
+public final class LoginUseCase {
     private final IUserRepository userRepository;
     private final ISessionRepository sessionRepository;
-    private OperationResult operationResult;
+    private LoginAttemptTracker tracker = new LoginAttemptTracker();
 
     public LoginUseCase(IUserRepository userRepository, ISessionRepository sessionRepository) {
         this.userRepository = userRepository;
@@ -21,21 +17,17 @@ public final class LoginUseCase implements IUserVisitor, IUserIdentityVisitor {
     }
 
     public OperationResult authenticate(String email, String password) {
-        String passwordHash = new PasswordHasher().hash(password);
-        User user = userRepository.authenticate(email, passwordHash);
-        if (user == null) return OperationResult.fail();
-        user.accept(this);
-        return operationResult;
-    }
-
-    @Override
-    public void visit(UserIdentity identity, UserData data) {
-        identity.accept(this);
-    }
-
-    @Override
-    public void visitIdentity(String identifier, String fullName) {
+        long currentTime = System.currentTimeMillis();
+        if (tracker.isBlocked(currentTime))
+            return OperationResult.fail();
+        String passwordHash = new Hasher().hash(password);
+        String identifier = userRepository.authenticate(email, passwordHash);
+        if (identifier == null) {
+            tracker = tracker.fail(currentTime);
+            return OperationResult.fail();
+        }
+        tracker = tracker.succeed();
         sessionRepository.save(identifier);
-        this.operationResult = OperationResult.succeed(identifier);
+        return OperationResult.succeed(identifier);
     }
 }

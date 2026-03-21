@@ -1,5 +1,7 @@
 package com.agropredict.presentation.user_interface;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import com.agropredict.AgroPredictApplication;
 import com.agropredict.R;
@@ -8,51 +10,46 @@ import com.agropredict.presentation.viewmodel.home.HomeViewModel;
 import com.agropredict.presentation.viewmodel.home.IHomeView;
 
 public final class HomeActivity extends BaseActivity implements IHomeView {
-
     private HomeViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        compose();
-        bind();
-    }
-
-    private void compose() {
-        AgroPredictApplication application = (AgroPredictApplication) getApplication();
-        application.provide(factory -> {
-            LogoutUseCase logoutUseCase = new LogoutUseCase(factory.createSessionRepository());
-            viewModel = new HomeViewModel(logoutUseCase);
-            viewModel.bind(this);
+        ((AgroPredictApplication) getApplication()).provide(factory -> {
+            LogoutUseCase useCase = new LogoutUseCase(factory.createSessionRepository());
+            viewModel = new HomeViewModel(useCase, this);
         });
+        findViewById(R.id.cardNewPrediction).setOnClickListener(view -> predict());
+        findViewById(R.id.cardHistory).setOnClickListener(view -> review());
+        findViewById(R.id.cardReport).setOnClickListener(view -> report());
+        findViewById(R.id.btnLogout).setOnClickListener(view -> viewModel.logout());
+        findViewById(R.id.fabAddField).setOnClickListener(view -> predict());
+        findViewById(R.id.cardResources).setOnClickListener(view -> browse("https://www.fao.org/agriculture/es"));
+        findViewById(R.id.cardManual).setOnClickListener(view -> browse("https://www.inia.gob.pe"));
     }
 
-    private void bind() {
-        findViewById(R.id.cardNewPrediction).setOnClickListener(clickedView -> navigateToPrediction());
-        findViewById(R.id.cardHistory).setOnClickListener(clickedView -> navigateToHistory());
-        findViewById(R.id.cardReport).setOnClickListener(clickedView -> navigateToReport());
-        findViewById(R.id.btnLogout).setOnClickListener(clickedView -> viewModel.logout());
-        findViewById(R.id.fabAddField).setOnClickListener(clickedView -> navigateToPrediction());
+    private void browse(String url) {
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
     }
 
     @Override
-    public void navigateToPrediction() {
+    public void predict() {
         navigate(PredictionActivity.class);
     }
 
     @Override
-    public void navigateToHistory() {
+    public void review() {
         navigate(HistoryActivity.class);
     }
 
     @Override
-    public void navigateToReport() {
+    public void report() {
         navigate(ReportActivity.class);
     }
 
     @Override
-    public void navigateToLogin() {
+    public void logout() {
         redirect(LoginActivity.class);
     }
 }

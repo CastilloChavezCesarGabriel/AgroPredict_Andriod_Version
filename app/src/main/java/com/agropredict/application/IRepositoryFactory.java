@@ -7,10 +7,10 @@ import com.agropredict.application.repository.IDiagnosticRepository;
 import com.agropredict.application.repository.IReportRepository;
 import com.agropredict.application.repository.ISessionRepository;
 import com.agropredict.application.repository.IUserRepository;
+import com.agropredict.application.repository.IDiagnosticWorkflow;
 import com.agropredict.application.service.IDiagnosticApiService;
-import com.agropredict.application.service.IImageClassifierService;
-import com.agropredict.application.service.IImageValidatorService;
-import com.agropredict.application.service.IReportGeneratorService;
+import com.agropredict.application.service.IImageService;
+import com.agropredict.application.service.IReportService;
 
 public interface IRepositoryFactory {
     IUserRepository createUserRepository();
@@ -22,9 +22,9 @@ public interface IRepositoryFactory {
     ICatalogRepository createStageCatalog();
     ICatalogRepository createOccupationCatalog();
     ISessionRepository createSessionRepository();
-    IImageClassifierService createClassifierService();
+    IImageService createImageService();
     IDiagnosticApiService createApiService();
-    IImageValidatorService createImageValidatorService();
-    IReportGeneratorService createPdfReportGenerator();
-    IReportGeneratorService createCsvReportGenerator();
+    IReportService createPdfReportGenerator();
+    IReportService createCsvReportGenerator();
+    IDiagnosticWorkflow createDiagnosticWorkflow();
 }

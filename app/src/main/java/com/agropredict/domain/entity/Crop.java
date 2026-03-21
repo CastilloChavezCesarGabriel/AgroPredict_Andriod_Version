@@ -1,7 +1,7 @@
 package com.agropredict.domain.entity;
 
-import com.agropredict.domain.value.crop.CropData;
-import com.agropredict.domain.visitor.ICropVisitor;
+import com.agropredict.domain.component.crop.CropData;
+import com.agropredict.domain.visitor.crop.ICropVisitor;
 
 public final class Crop {
     private final String identifier;
@@ -14,6 +14,10 @@ public final class Crop {
 
     public static Crop create(String identifier, CropData data) {
         return new Crop(identifier, data);
+    }
+
+    public boolean isComplete() {
+        return data != null && data.isComplete();
     }
 
     public void accept(ICropVisitor visitor) {

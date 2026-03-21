@@ -2,74 +2,47 @@ package com.agropredict.presentation.user_interface;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.TextView;
 import com.agropredict.AgroPredictApplication;
 import com.agropredict.R;
-import com.agropredict.application.usecase.diagnostic.LoadDiagnosticDetailUseCase;
+import com.agropredict.application.usecase.diagnostic.FindDiagnosticUseCase;
+import com.agropredict.domain.entity.Diagnostic;
+import com.agropredict.presentation.user_interface.holder.FieldDetailViewHolder;
 import com.agropredict.presentation.viewmodel.field.FieldDetailViewModel;
 import com.agropredict.presentation.viewmodel.field.IFieldDetailView;
-import java.util.Map;
 
 public final class FieldDetailActivity extends BaseActivity implements IFieldDetailView {
-
     private FieldDetailViewModel viewModel;
-    private TextView cropNameLabel;
-    private TextView soilTypeLabel;
-    private TextView stageLabel;
-    private TextView severityLabel;
-    private TextView summaryLabel;
-    private TextView recommendationsLabel;
+    private FieldDetailViewHolder holder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_field_detail);
-        compose();
-        bind();
-        load();
-    }
-
-    private void compose() {
-        AgroPredictApplication application = (AgroPredictApplication) getApplication();
-        application.provide(factory -> {
-            LoadDiagnosticDetailUseCase loadDetail = new LoadDiagnosticDetailUseCase(factory.createDiagnosticRepository());
-            viewModel = new FieldDetailViewModel(loadDetail);
-            viewModel.bind(this);
+        findViewById(R.id.btnEditField).setOnClickListener(view -> {
+            String cropIdentifier = getIntent().getStringExtra("diagnostic_identifier");
+            if (cropIdentifier != null) navigate(cropIdentifier);
         });
-    }
-
-    private void bind() {
-        cropNameLabel = findViewById(R.id.tvCropType);
-        soilTypeLabel = findViewById(R.id.tvSoilType);
-        stageLabel = findViewById(R.id.tvStage);
-        severityLabel = findViewById(R.id.tvSeverity);
-        summaryLabel = findViewById(R.id.tvRecommendations);
-        recommendationsLabel = findViewById(R.id.tvRecommendations);
-        findViewById(R.id.btnEditField).setOnClickListener(clickedView -> onEditClicked());
-    }
-
-    private void load() {
-        String diagnosticIdentifier = getIntent().getStringExtra("diagnostic_identifier");
-        if (diagnosticIdentifier != null) viewModel.load(diagnosticIdentifier);
-    }
-
-    private void onEditClicked() {
-        String cropIdentifier = getIntent().getStringExtra("diagnostic_identifier");
-        if (cropIdentifier != null) navigateToEdit(cropIdentifier);
+        ((AgroPredictApplication) getApplication()).provide(factory -> {
+            holder = new FieldDetailViewHolder(this, factory.createCropImageRepository());
+            FindDiagnosticUseCase useCase = new FindDiagnosticUseCase(factory.createDiagnosticRepository());
+            viewModel = new FieldDetailViewModel(useCase, this);
+        });
+        String identifier = getIntent().getStringExtra("diagnostic_identifier");
+        if (identifier != null) viewModel.load(identifier);
     }
 
     @Override
-    public void display(Map<String, Object> fieldDetail) {
-        cropNameLabel.setText(String.valueOf(fieldDetail.get("crop_name")));
-        soilTypeLabel.setText(String.valueOf(fieldDetail.get("soil_type")));
-        stageLabel.setText(String.valueOf(fieldDetail.get("stage")));
-        severityLabel.setText(String.valueOf(fieldDetail.get("severity")));
-        summaryLabel.setText(String.valueOf(fieldDetail.get("summary")));
-        recommendationsLabel.setText(String.valueOf(fieldDetail.get("recommendations")));
+    public void display(Diagnostic diagnostic) {
+        holder.display(diagnostic);
     }
 
     @Override
-    public void navigateToEdit(String cropIdentifier) {
+    public void warn() {
+        notify(getString(R.string.severity_high));
+    }
+
+    @Override
+    public void navigate(String cropIdentifier) {
         Intent intent = new Intent(this, EditFieldActivity.class);
         intent.putExtra("crop_identifier", cropIdentifier);
         startActivity(intent);

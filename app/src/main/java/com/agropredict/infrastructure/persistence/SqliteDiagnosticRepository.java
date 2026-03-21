@@ -1,19 +1,18 @@
 package com.agropredict.infrastructure.persistence;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import com.agropredict.application.repository.IDiagnosticRepository;
 import com.agropredict.domain.entity.Diagnostic;
-import com.agropredict.domain.value.diagnostic.DiagnosticAssessment;
-import com.agropredict.domain.value.diagnostic.DiagnosticConditions;
-import com.agropredict.domain.value.diagnostic.DiagnosticContent;
-import com.agropredict.domain.value.diagnostic.DiagnosticContext;
-import com.agropredict.domain.value.diagnostic.DiagnosticData;
-import com.agropredict.domain.value.diagnostic.DiagnosticEnvironment;
-import com.agropredict.domain.value.diagnostic.DiagnosticOwnership;
-import com.agropredict.domain.value.diagnostic.DiagnosticSummary;
-import com.agropredict.domain.value.diagnostic.Prediction;
+import com.agropredict.domain.component.diagnostic.DiagnosticAssessment;
+import com.agropredict.domain.component.diagnostic.DiagnosticConditions;
+import com.agropredict.domain.component.diagnostic.DiagnosticContent;
+import com.agropredict.domain.component.diagnostic.DiagnosticContext;
+import com.agropredict.domain.component.diagnostic.DiagnosticData;
+import com.agropredict.domain.component.diagnostic.DiagnosticEnvironment;
+import com.agropredict.domain.component.diagnostic.DiagnosticOwnership;
+import com.agropredict.domain.component.diagnostic.DiagnosticSummary;
+import com.agropredict.domain.component.diagnostic.Prediction;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,9 +47,8 @@ public final class SqliteDiagnosticRepository implements IDiagnosticRepository {
 
     @Override
     public void store(Diagnostic diagnostic) {
-        SQLiteDatabase database = databaseHelper.getWritableDatabase();
-        ContentValues values = record(diagnostic);
-        database.insert("diagnostic", null, values);
+        Recorder recorder = record(diagnostic);
+        recorder.flush("diagnostic");
     }
 
     @Override
@@ -73,7 +71,7 @@ public final class SqliteDiagnosticRepository implements IDiagnosticRepository {
     }
 
     @Override
-    public Diagnostic load(String diagnosticIdentifier) {
+    public Diagnostic find(String diagnosticIdentifier) {
         SQLiteDatabase database = databaseHelper.getReadableDatabase();
         String query = SELECT_DIAGNOSTIC + "WHERE d.id = ?";
         Cursor cursor = database.rawQuery(query, new String[]{diagnosticIdentifier});
@@ -82,10 +80,10 @@ public final class SqliteDiagnosticRepository implements IDiagnosticRepository {
         return diagnostic;
     }
 
-    private ContentValues record(Diagnostic diagnostic) {
-        ContentValues values = new ContentValues();
-        diagnostic.accept(new DiagnosticRecorder(values));
-        return values;
+    private Recorder record(Diagnostic diagnostic) {
+        Recorder recorder = new Recorder(databaseHelper.getWritableDatabase());
+        diagnostic.accept(new DiagnosticRecorder(recorder));
+        return recorder;
     }
 
     private void deleteRelatedImage(SQLiteDatabase database, String diagnosticIdentifier) {

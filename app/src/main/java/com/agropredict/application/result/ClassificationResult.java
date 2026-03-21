@@ -1,6 +1,6 @@
 package com.agropredict.application.result;
 
-import com.agropredict.application.consumer.IClassificationResultConsumer;
+import com.agropredict.application.visitor.IClassificationResultVisitor;
 
 public final class ClassificationResult {
     private final String predictedCrop;
@@ -11,7 +11,7 @@ public final class ClassificationResult {
         this.confidence = confidence;
     }
 
-    public void accept(IClassificationResultConsumer visitor) {
-        visitor.visit(predictedCrop, confidence);
+    public void accept(IClassificationResultVisitor consumer) {
+        consumer.visit(predictedCrop, confidence);
     }
 }

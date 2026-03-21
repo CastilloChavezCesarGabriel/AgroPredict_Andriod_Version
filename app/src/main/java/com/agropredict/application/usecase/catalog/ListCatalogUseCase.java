@@ -13,8 +13,4 @@ public final class ListCatalogUseCase {
     public List<String> list() {
         return catalogRepository.list();
     }
-
-    public String findIdentifier(String name) {
-        return catalogRepository.findIdentifier(name);
-    }
 }

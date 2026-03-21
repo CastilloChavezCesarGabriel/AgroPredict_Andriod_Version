@@ -1,17 +1,18 @@
 package com.agropredict.application.usecase.report;
 
 import com.agropredict.application.result.OperationResult;
-import com.agropredict.application.service.IReportGeneratorService;
-import java.util.Map;
+import com.agropredict.application.service.IReportService;
+import com.agropredict.domain.entity.Crop;
+import com.agropredict.domain.entity.Diagnostic;
 
 public final class GenerateReportUseCase {
-    private final IReportGeneratorService reportGenerator;
+    private final IReportService reportGenerator;
 
-    public GenerateReportUseCase(IReportGeneratorService reportGenerator) {
+    public GenerateReportUseCase(IReportService reportGenerator) {
         this.reportGenerator = reportGenerator;
     }
 
-    public OperationResult generate(Map<String, Object> reportData) {
-        return reportGenerator.generate(reportData);
+    public OperationResult generate(Crop crop, Diagnostic diagnostic) {
+        return reportGenerator.generate(crop, diagnostic);
     }
 }

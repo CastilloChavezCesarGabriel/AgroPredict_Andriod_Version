@@ -1,8 +1,8 @@
 package com.agropredict.presentation.viewmodel.prediction;
 
-import com.agropredict.application.consumer.IOperationResultConsumer;
+import com.agropredict.application.visitor.IOperationResultVisitor;
 
-public final class DiagnosticResultStrategy implements IOperationResultConsumer {
+public final class DiagnosticResultStrategy implements IOperationResultVisitor {
 
     private final IPredictionView view;
 
@@ -13,7 +13,7 @@ public final class DiagnosticResultStrategy implements IOperationResultConsumer 
     @Override
     public void visit(boolean completed, String resultIdentifier) {
         if (completed) {
-            view.navigateToResult(resultIdentifier);
+            view.reveal(resultIdentifier);
         } else {
             view.notify("Error al generar el diagnostico");
         }

@@ -7,5 +7,5 @@ public interface IDiagnosticRepository {
     void store(Diagnostic diagnostic);
     void delete(String diagnosticIdentifier);
     List<Diagnostic> list(String userIdentifier);
-    Diagnostic load(String diagnosticIdentifier);
+    Diagnostic find(String diagnosticIdentifier);
 }

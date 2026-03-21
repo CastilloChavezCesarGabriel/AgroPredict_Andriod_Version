@@ -1,7 +1,7 @@
 package com.agropredict.application.usecase.crop;
 
 import com.agropredict.application.repository.ICropRepository;
-import com.agropredict.domain.entity.Crop;
+import com.agropredict.application.request.CropUpdateRequest;
 
 public final class UpdateCropUseCase {
     private final ICropRepository cropRepository;
@@ -10,7 +10,7 @@ public final class UpdateCropUseCase {
         this.cropRepository = cropRepository;
     }
 
-    public void update(Crop crop) {
-        cropRepository.update(crop);
+    public void update(CropUpdateRequest request) {
+        cropRepository.update(request.apply());
     }
 }

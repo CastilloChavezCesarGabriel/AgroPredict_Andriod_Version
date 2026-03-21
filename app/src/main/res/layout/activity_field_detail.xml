@@ -66,7 +66,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="12dp"
-                        android:text="Información del Cultivo"
+                        android:text="@string/crop_info"
                         android:textColor="@color/green_primary"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -141,7 +141,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="12dp"
-                        android:text="Diagnóstico"
+                        android:text="@string/diagnostic_info"
                         android:textColor="@color/green_primary"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -192,7 +192,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
-                        android:text="Recomendaciones"
+                        android:text="@string/recommendations_label"
                         android:textColor="@color/green_primary"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -210,12 +210,22 @@
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnViewHistory"
+                style="@style/AgroPredict.Button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:backgroundTint="@color/soil_brown"
+                android:padding="12dp"
+                android:text="@string/view_change_history" />
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnEditField"
                 style="@style/AgroPredict.Button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="12dp"
-                android:text="Editar Campo" />
+                android:text="@string/edit_field" />
 
         </LinearLayout>
 

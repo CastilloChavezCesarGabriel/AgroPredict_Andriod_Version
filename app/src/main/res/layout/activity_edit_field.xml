@@ -18,7 +18,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="24dp"
-            android:text="Editar Campo"
+            android:text="@string/edit_field"
             android:textColor="@color/green_primary"
             android:textSize="24sp"
             android:textStyle="bold" />
@@ -29,7 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            android:hint="Nombre del campo">
+            android:hint="@string/field_name_label">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etFieldName"
@@ -45,7 +45,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            android:hint="Tipo de cultivo">
+            android:hint="@string/crop_type_label">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etCropType"
@@ -61,7 +61,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            android:hint="Ubicación">
+            android:hint="@string/location_label">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etLocation"
@@ -77,7 +77,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            android:hint="Fecha de siembra">
+            android:hint="@string/planting_date_label">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etPlantingDate"
@@ -86,6 +86,22 @@
                 android:clickable="true"
                 android:focusable="false"
                 android:inputType="none" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilArea"
+            style="@style/AgroPredict.TextInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:hint="@string/area_label">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etArea"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -109,7 +125,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="12dp"
-            android:text="Guardar Cambios" />
+            android:text="@string/save_changes" />
 
     </LinearLayout>
 

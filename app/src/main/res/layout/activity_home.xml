@@ -72,7 +72,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="12dp"
                             android:gravity="center"
-                            android:text="Nueva Predicción"
+                            android:text="@string/new_prediction"
                             android:textColor="@color/dark_gray"
                             android:textSize="14sp"
                             android:textStyle="bold" />
@@ -109,7 +109,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="12dp"
                             android:gravity="center"
-                            android:text="Consultar Historial"
+                            android:text="@string/view_history"
                             android:textColor="@color/dark_gray"
                             android:textSize="14sp"
                             android:textStyle="bold" />
@@ -146,7 +146,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="12dp"
                             android:gravity="center"
-                            android:text="Generar Reporte"
+                            android:text="@string/generate_report"
                             android:textColor="@color/dark_gray"
                             android:textSize="14sp"
                             android:textStyle="bold" />
@@ -183,7 +183,81 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="12dp"
                             android:gravity="center"
-                            android:text="Guía de Plagas"
+                            android:text="@string/pest_guide"
+                            android:textColor="@color/dark_gray"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardResources"
+                    style="@style/AgroPredict.Card"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="24dp">
+
+                        <ImageView
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:contentDescription="Recursos"
+                            android:src="@android:drawable/ic_menu_mapmode"
+                            android:tint="@color/green_primary" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:gravity="center"
+                            android:text="@string/agronomy_resources"
+                            android:textColor="@color/dark_gray"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardManual"
+                    style="@style/AgroPredict.Card"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="24dp">
+
+                        <ImageView
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:contentDescription="Manual"
+                            android:src="@android:drawable/ic_menu_agenda"
+                            android:tint="@color/soil_brown" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:gravity="center"
+                            android:text="@string/sustainable_manual"
                             android:textColor="@color/dark_gray"
                             android:textSize="14sp"
                             android:textStyle="bold" />
@@ -207,6 +281,6 @@
         android:contentDescription="Agregar Nuevo Campo"
         android:src="@android:drawable/ic_input_add"
         app:backgroundTint="@color/green_primary"
-        app:tint="@color/white" />
+        android:tint="@color/white" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

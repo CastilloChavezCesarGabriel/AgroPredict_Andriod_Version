@@ -1,8 +1,8 @@
 package com.agropredict.presentation.viewmodel.authentication;
 
-import com.agropredict.application.consumer.IOperationResultConsumer;
+import com.agropredict.application.visitor.IOperationResultVisitor;
 
-public final class LoginResultStrategy implements IOperationResultConsumer {
+public final class LoginResultStrategy implements IOperationResultVisitor {
 
     private final ILoginView view;
 
@@ -13,7 +13,7 @@ public final class LoginResultStrategy implements IOperationResultConsumer {
     @Override
     public void visit(boolean completed, String resultIdentifier) {
         if (completed) {
-            view.navigateToHome();
+            view.proceed();
         } else {
             view.notify("Credenciales incorrectas");
         }

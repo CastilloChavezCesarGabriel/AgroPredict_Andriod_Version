@@ -1,8 +1,9 @@
 package com.agropredict.presentation.viewmodel.field;
 
-import java.util.Map;
+import com.agropredict.domain.entity.Diagnostic;
 
 public interface IFieldDetailView {
-    void display(Map<String, Object> fieldDetail);
-    void navigateToEdit(String cropIdentifier);
+    void display(Diagnostic diagnostic);
+    void warn();
+    void navigate(String cropIdentifier);
 }

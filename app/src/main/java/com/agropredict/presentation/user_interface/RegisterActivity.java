@@ -1,4 +1,5 @@
 package com.agropredict.presentation.user_interface;
+import com.agropredict.presentation.user_interface.holder.RegisterViewHolder;
 
 import android.os.Bundle;
 import com.agropredict.AgroPredictApplication;
@@ -17,29 +18,20 @@ public final class RegisterActivity extends BaseActivity implements IRegisterVie
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        compose();
-        bind();
-    }
-
-    private void compose() {
-        AgroPredictApplication application = (AgroPredictApplication) getApplication();
-        application.provide(factory -> {
-            RegisterUseCase registerUseCase = new RegisterUseCase(factory.createUserRepository());
-            ListCatalogUseCase listOccupations = new ListCatalogUseCase(factory.createOccupationCatalog());
-            viewModel = new RegisterViewModel(registerUseCase, listOccupations);
-            viewModel.bind(this);
-        });
-    }
-
-    private void bind() {
         holder = new RegisterViewHolder(this);
-        findViewById(R.id.btnRegister).setOnClickListener(clickedView -> onRegisterClicked());
-        findViewById(R.id.tvGoToLogin).setOnClickListener(clickedView -> navigateToLogin());
-        viewModel.populate();
+        ((AgroPredictApplication) getApplication()).provide(factory -> {
+            RegisterUseCase useCase = new RegisterUseCase(
+                    factory.createUserRepository(), factory.createOccupationCatalog());
+            ListCatalogUseCase occupations = new ListCatalogUseCase(factory.createOccupationCatalog());
+            viewModel = new RegisterViewModel(useCase, this);
+            viewModel.populate(occupations);
+        });
+        findViewById(R.id.btnRegister).setOnClickListener(view -> register());
+        findViewById(R.id.tvGoToLogin).setOnClickListener(view -> dismiss());
     }
 
-    private void onRegisterClicked() {
-        if (!holder.matchPasswords()) {
+    private void register() {
+        if (!holder.match()) {
             notify(getString(R.string.passwords_mismatch));
             return;
         }
@@ -47,13 +39,13 @@ public final class RegisterActivity extends BaseActivity implements IRegisterVie
     }
 
     @Override
-    public void navigateToLogin() {
+    public void dismiss() {
         navigate(LoginActivity.class);
         finish();
     }
 
     @Override
-    public void populateOccupations(List<String> occupations) {
-        holder.populateOccupations(occupations);
+    public void populate(List<String> occupations) {
+        holder.populate(occupations);
     }
 }

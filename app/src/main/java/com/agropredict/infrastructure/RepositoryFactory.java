@@ -6,113 +6,93 @@ import com.agropredict.application.repository.ICatalogRepository;
 import com.agropredict.application.repository.ICropImageRepository;
 import com.agropredict.application.repository.ICropRepository;
 import com.agropredict.application.repository.IDiagnosticRepository;
+import com.agropredict.application.repository.IDiagnosticWorkflow;
 import com.agropredict.application.repository.IReportRepository;
 import com.agropredict.application.repository.ISessionRepository;
 import com.agropredict.application.repository.IUserRepository;
 import com.agropredict.application.service.IDiagnosticApiService;
-import com.agropredict.application.service.IImageClassifierService;
-import com.agropredict.application.service.IImageValidatorService;
-import com.agropredict.application.service.IReportGeneratorService;
-import com.agropredict.infrastructure.classifier.ImageClassifierService;
-import com.agropredict.infrastructure.export.CsvReportGeneratorService;
-import com.agropredict.infrastructure.export.PdfReportGeneratorService;
-import com.agropredict.infrastructure.network.HttpDiagnosticApiService;
+import com.agropredict.application.service.IImageService;
+import com.agropredict.application.service.IReportService;
+import com.agropredict.infrastructure.factory.PersistenceFactory;
+import com.agropredict.infrastructure.factory.ServiceFactory;
 import com.agropredict.infrastructure.persistence.DatabaseHelper;
-import com.agropredict.infrastructure.persistence.SharedPreferencesSessionRepository;
-import com.agropredict.infrastructure.persistence.SqliteCatalog;
-import com.agropredict.infrastructure.persistence.SqliteCropImageRepository;
-import com.agropredict.infrastructure.persistence.SqliteCropRepository;
-import com.agropredict.infrastructure.persistence.SqliteDiagnosticRepository;
-import com.agropredict.infrastructure.persistence.SqliteReportRepository;
-import com.agropredict.infrastructure.persistence.SqliteUserRepository;
-import com.agropredict.infrastructure.validation.AndroidImageValidatorService;
-
-import java.io.File;
 
 public final class RepositoryFactory implements IRepositoryFactory {
-    private final DatabaseHelper databaseHelper;
-    private final Context applicationContext;
+    private final PersistenceFactory persistence;
+    private final ServiceFactory services;
 
     public RepositoryFactory(DatabaseHelper databaseHelper, Context applicationContext) {
-        this.databaseHelper = databaseHelper;
-        this.applicationContext = applicationContext;
+        this.persistence = new PersistenceFactory(databaseHelper);
+        this.services = new ServiceFactory(applicationContext);
     }
 
     @Override
     public IUserRepository createUserRepository() {
-        return new SqliteUserRepository(databaseHelper);
+        return persistence.createUserRepository();
     }
 
     @Override
     public ICropRepository createCropRepository() {
-        return new SqliteCropRepository(databaseHelper);
+        return persistence.createCropRepository();
     }
 
     @Override
     public IDiagnosticRepository createDiagnosticRepository() {
-        return new SqliteDiagnosticRepository(databaseHelper);
+        return persistence.createDiagnosticRepository();
     }
 
     @Override
     public ICropImageRepository createCropImageRepository() {
-        return new SqliteCropImageRepository(databaseHelper);
+        return persistence.createCropImageRepository();
     }
 
     @Override
     public IReportRepository createReportRepository() {
-        return new SqliteReportRepository(databaseHelper);
+        return persistence.createReportRepository();
     }
 
     @Override
     public ICatalogRepository createSoilTypeCatalog() {
-        return new SqliteCatalog(databaseHelper, "soil_type");
+        return persistence.createCatalog("soil_type");
     }
 
     @Override
     public ICatalogRepository createStageCatalog() {
-        return new SqliteCatalog(databaseHelper, "phenological_stage");
+        return persistence.createCatalog("phenological_stage");
     }
 
     @Override
     public ICatalogRepository createOccupationCatalog() {
-        return new SqliteCatalog(databaseHelper, "occupation");
+        return persistence.createCatalog("occupation");
     }
 
     @Override
     public ISessionRepository createSessionRepository() {
-        return new SharedPreferencesSessionRepository(applicationContext);
+        return services.createSessionRepository();
     }
 
     @Override
-    public IImageClassifierService createClassifierService() {
-        return new ImageClassifierService(applicationContext.getAssets());
+    public IImageService createImageService() {
+        return services.createImageService();
     }
 
     @Override
     public IDiagnosticApiService createApiService() {
-        return new HttpDiagnosticApiService();
+        return services.createApiService();
     }
 
     @Override
-    public IImageValidatorService createImageValidatorService() {
-        return new AndroidImageValidatorService();
+    public IReportService createPdfReportGenerator() {
+        return services.createPdfReportGenerator();
     }
 
     @Override
-    public IReportGeneratorService createPdfReportGenerator() {
-        return new PdfReportGeneratorService(resolveReportsDirectory());
+    public IReportService createCsvReportGenerator() {
+        return services.createCsvReportGenerator();
     }
 
     @Override
-    public IReportGeneratorService createCsvReportGenerator() {
-        return new CsvReportGeneratorService(resolveReportsDirectory());
-    }
-
-    private File resolveReportsDirectory() {
-        File directory = new File(applicationContext.getExternalFilesDir(null), "reports");
-        if (!directory.exists()) {
-            directory.mkdirs();
-        }
-        return directory;
+    public IDiagnosticWorkflow createDiagnosticWorkflow() {
+        return persistence.createDiagnosticWorkflow();
     }
 }

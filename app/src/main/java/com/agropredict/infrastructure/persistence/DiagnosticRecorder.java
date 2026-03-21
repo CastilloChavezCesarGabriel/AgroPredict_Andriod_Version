@@ -1,25 +1,24 @@
 package com.agropredict.infrastructure.persistence;
 
-import android.content.ContentValues;
-import com.agropredict.domain.value.diagnostic.DiagnosticAssessment;
-import com.agropredict.domain.value.diagnostic.DiagnosticConditions;
-import com.agropredict.domain.value.diagnostic.DiagnosticContent;
-import com.agropredict.domain.value.diagnostic.DiagnosticContext;
-import com.agropredict.domain.value.diagnostic.DiagnosticData;
-import com.agropredict.domain.value.diagnostic.DiagnosticEnvironment;
-import com.agropredict.domain.value.diagnostic.DiagnosticOwnership;
-import com.agropredict.domain.value.diagnostic.DiagnosticSummary;
-import com.agropredict.domain.value.diagnostic.Prediction;
-import com.agropredict.domain.visitor.IDiagnosticAssessmentVisitor;
-import com.agropredict.domain.visitor.IDiagnosticConditionsVisitor;
-import com.agropredict.domain.visitor.IDiagnosticContentVisitor;
-import com.agropredict.domain.visitor.IDiagnosticContextVisitor;
-import com.agropredict.domain.visitor.IDiagnosticDataVisitor;
-import com.agropredict.domain.visitor.IDiagnosticEnvironmentVisitor;
-import com.agropredict.domain.visitor.IDiagnosticOwnershipVisitor;
-import com.agropredict.domain.visitor.IDiagnosticSummaryVisitor;
-import com.agropredict.domain.visitor.IDiagnosticVisitor;
-import com.agropredict.domain.visitor.IPredictionVisitor;
+import com.agropredict.domain.component.diagnostic.DiagnosticAssessment;
+import com.agropredict.domain.component.diagnostic.DiagnosticConditions;
+import com.agropredict.domain.component.diagnostic.DiagnosticContent;
+import com.agropredict.domain.component.diagnostic.DiagnosticContext;
+import com.agropredict.domain.component.diagnostic.DiagnosticData;
+import com.agropredict.domain.component.diagnostic.DiagnosticEnvironment;
+import com.agropredict.domain.component.diagnostic.DiagnosticOwnership;
+import com.agropredict.domain.component.diagnostic.DiagnosticSummary;
+import com.agropredict.domain.component.diagnostic.Prediction;
+import com.agropredict.domain.visitor.diagnostic.IDiagnosticAssessmentVisitor;
+import com.agropredict.domain.visitor.diagnostic.IDiagnosticConditionsVisitor;
+import com.agropredict.domain.visitor.diagnostic.IDiagnosticContentVisitor;
+import com.agropredict.domain.visitor.diagnostic.IDiagnosticContextVisitor;
+import com.agropredict.domain.visitor.diagnostic.IDiagnosticDataVisitor;
+import com.agropredict.domain.visitor.diagnostic.IDiagnosticEnvironmentVisitor;
+import com.agropredict.domain.visitor.diagnostic.IDiagnosticOwnershipVisitor;
+import com.agropredict.domain.visitor.diagnostic.IDiagnosticSummaryVisitor;
+import com.agropredict.domain.visitor.diagnostic.IDiagnosticVisitor;
+import com.agropredict.domain.visitor.diagnostic.IPredictionVisitor;
 
 public final class DiagnosticRecorder implements IDiagnosticVisitor,
         IDiagnosticDataVisitor, IDiagnosticContentVisitor,
@@ -27,15 +26,15 @@ public final class DiagnosticRecorder implements IDiagnosticVisitor,
         IPredictionVisitor, IDiagnosticContextVisitor, IDiagnosticEnvironmentVisitor,
         IDiagnosticSummaryVisitor, IDiagnosticOwnershipVisitor {
 
-    private final ContentValues values;
+    private final IRecord record;
 
-    public DiagnosticRecorder(ContentValues values) {
-        this.values = values;
+    public DiagnosticRecorder(IRecord record) {
+        this.record = record;
     }
 
     @Override
     public void visit(String identifier, DiagnosticData data) {
-        values.put("id", identifier);
+        record.record("id", identifier);
         data.accept(this);
     }
 
@@ -65,31 +64,31 @@ public final class DiagnosticRecorder implements IDiagnosticVisitor,
 
     @Override
     public void visitPrediction(String predictedCrop, double confidence) {
-        values.put("predicted_crop", predictedCrop);
-        values.put("confidence", confidence);
+        record.record("predicted_crop", predictedCrop);
+        record.record("confidence", String.valueOf(confidence));
     }
 
     @Override
     public void visitContext(String cropIdentifier, String imageIdentifier) {
-        values.put("crop_id", cropIdentifier);
-        values.put("image_id", imageIdentifier);
+        record.record("crop_id", cropIdentifier);
+        record.record("image_id", imageIdentifier);
     }
 
     @Override
     public void visitEnvironment(double temperature, double humidity) {
-        values.put("temperature", temperature);
-        values.put("humidity", humidity);
+        record.record("temperature", String.valueOf(temperature));
+        record.record("humidity", String.valueOf(humidity));
     }
 
     @Override
     public void visitSummary(String severity, String shortSummary) {
-        values.put("severity", severity);
-        values.put("short_summary", shortSummary);
+        record.record("severity", severity);
+        record.record("short_summary", shortSummary);
     }
 
     @Override
     public void visitOwnership(String userIdentifier, String recommendationText) {
-        values.put("user_id", userIdentifier);
-        values.put("recommendation_text", recommendationText);
+        record.record("user_id", userIdentifier);
+        record.record("recommendation_text", recommendationText);
     }
 }
