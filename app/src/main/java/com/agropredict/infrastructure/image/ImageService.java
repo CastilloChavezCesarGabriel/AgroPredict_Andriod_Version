@@ -87,7 +87,7 @@ public final class ImageService implements IImageService {
     private void initialize() {
         try {
             interpreter = load();
-            classLabels = read();
+            classLabels = parse(read());
         } catch (IOException | JSONException exception) {
             interpreter = null;
             classLabels = new String[0];
@@ -106,14 +106,18 @@ public final class ImageService implements IImageService {
         return new Interpreter(modelBuffer);
     }
 
-    private String[] read() throws IOException, JSONException {
+    private String read() throws IOException {
         StringBuilder builder = new StringBuilder();
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(assetManager.open(CLASSES_PATH)))) {
             String line;
             while ((line = reader.readLine()) != null) builder.append(line);
         }
-        JSONArray jsonArray = new JSONArray(builder.toString());
+        return builder.toString();
+    }
+
+    private String[] parse(String json) throws JSONException {
+        JSONArray jsonArray = new JSONArray(json);
         String[] labels = new String[jsonArray.length()];
         for (int index = 0; index < jsonArray.length(); index++) {
             labels[index] = jsonArray.getString(index);

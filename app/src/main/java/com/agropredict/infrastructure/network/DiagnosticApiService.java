@@ -2,6 +2,7 @@ package com.agropredict.infrastructure.network;
 
 import com.agropredict.application.request.SubmissionRequest;
 import com.agropredict.application.service.IDiagnosticApiService;
+import com.agropredict.application.visitor.ISubmissionVisitor;
 import com.agropredict.domain.entity.Diagnostic;
 import com.agropredict.domain.component.diagnostic.DiagnosticAssessment;
 import com.agropredict.domain.component.diagnostic.DiagnosticContent;
@@ -9,7 +10,7 @@ import com.agropredict.domain.component.diagnostic.DiagnosticData;
 import com.agropredict.domain.component.diagnostic.DiagnosticOwnership;
 import com.agropredict.domain.component.diagnostic.DiagnosticSummary;
 import com.agropredict.domain.component.diagnostic.Prediction;
-import com.agropredict.domain.visitor.diagnostic.IDiagnosticVisitor;
+import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,53 +20,96 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
-public final class DiagnosticApiService implements IDiagnosticApiService,
-        IDiagnosticVisitor {
+public final class DiagnosticApiService implements IDiagnosticApiService, ISubmissionVisitor {
 
     private static final String ENDPOINT = "https://proyecto-diagnostico.onrender.com/diagnostic";
     private static final int CONNECTION_TIMEOUT = 30000;
     private static final int READ_TIMEOUT = 30000;
-    private JSONObject pendingResponse;
-    private Diagnostic enrichedDiagnostic;
+    private final JSONObject payload;
+
+    public DiagnosticApiService() {
+        this.payload = new JSONObject();
+    }
 
     @Override
     public Diagnostic submit(Diagnostic diagnostic, SubmissionRequest request) {
         try {
-            RequestExtractor extractor = new RequestExtractor();
-            String response = send(extractor.extract(request));
-            this.pendingResponse = new JSONObject(response);
-            diagnostic.accept(this);
-            return enrichedDiagnostic;
-        } catch (IOException | org.json.JSONException exception) {
+            request.accept(this);
+            JSONObject response = new JSONObject(send(payload));
+            String[] holder = new String[1];
+            diagnostic.accept((identifier, data) -> holder[0] = identifier);
+            return parse(holder[0], response);
+        } catch (IOException | JSONException exception) {
             return diagnostic;
         }
     }
 
     @Override
-    public void visit(String identifier, DiagnosticData data) {
-        Prediction updated = predict();
-        DiagnosticAssessment assessment = assess();
-        DiagnosticContent content = new DiagnosticContent(null, assessment);
-        DiagnosticData enrichedData = new DiagnosticData(updated, content);
-        enrichedDiagnostic = Diagnostic.create(identifier, enrichedData);
+    public void visitPrediction(String predictedCrop, double confidence) {
+        append("cultivo_detectado", predictedCrop);
+        append("confianza", String.valueOf(confidence));
     }
 
-    private DiagnosticAssessment assess() {
-        DiagnosticSummary summary = summarize();
-        String recommendation = pendingResponse.optString("texto_largo");
+    @Override
+    public void visitEnvironment(String temperature, String humidity) {
+        append("temperature", temperature);
+        append("humidity", humidity);
+    }
+
+    @Override
+    public void visitRain(String precipitation) {
+        append("rain", precipitation);
+    }
+
+    @Override
+    public void visitSoil(String moisture, String acidity) {
+        append("soilMoisture", moisture);
+        append("ph", acidity);
+    }
+
+    @Override
+    public void visitIrrigation(String irrigation, String fertilization) {
+        append("irrigation", irrigation);
+        append("fertilization", fertilization);
+    }
+
+    @Override
+    public void visitPestControl(String spraying, String weeds) {
+        append("spraying", spraying);
+        append("weeds", weeds);
+    }
+
+    @Override
+    public void visitSymptom(String symptomType, String severity) {
+        append("symptom", symptomType);
+        append("severity", severity);
+    }
+
+    @Override
+    public void visitPest(String insects, String animals) {
+        append("insects", insects);
+        append("animals", animals);
+    }
+
+    private void append(String key, String value) {
+        try {
+            payload.put(key, value);
+        } catch (JSONException ignored) {
+        }
+    }
+
+    private Diagnostic parse(String identifier, JSONObject response) {
+        String crop = response.optString("cultivo_detectado");
+        double confidence = response.optDouble("confianza");
+        String summary = response.optString("reporte_resumido");
+        String recommendation = response.optString("texto_largo");
+        Prediction prediction = new Prediction(crop, confidence);
+        DiagnosticSummary diagnosticSummary = new DiagnosticSummary("moderate", summary);
         DiagnosticOwnership ownership = new DiagnosticOwnership(null, recommendation);
-        return new DiagnosticAssessment(summary, ownership);
-    }
-
-    private Prediction predict() {
-        String predictedCrop = pendingResponse.optString("cultivo_detectado");
-        double confidence = pendingResponse.optDouble("confianza");
-        return new Prediction(predictedCrop, confidence);
-    }
-
-    private DiagnosticSummary summarize() {
-        String summary = pendingResponse.optString("reporte_resumido");
-        return new DiagnosticSummary("moderate", summary);
+        DiagnosticAssessment assessment = new DiagnosticAssessment(diagnosticSummary, ownership);
+        DiagnosticContent content = new DiagnosticContent(null, assessment);
+        DiagnosticData data = new DiagnosticData(prediction, content);
+        return Diagnostic.create(identifier, data);
     }
 
     private String send(JSONObject body) throws IOException {
