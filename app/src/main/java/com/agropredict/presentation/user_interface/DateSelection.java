@@ -1,11 +1,12 @@
 package com.agropredict.presentation.user_interface;
 
 import android.app.DatePickerDialog;
+import android.app.DatePickerDialog.OnDateSetListener;
 import android.content.Context;
 import java.util.Calendar;
 import java.util.Locale;
 
-public final class DateSelection implements DatePickerDialog.OnDateSetListener {
+public final class DateSelection implements OnDateSetListener {
     private final IDateSelectionListener listener;
 
     public DateSelection(IDateSelectionListener listener) {

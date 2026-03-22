@@ -33,7 +33,11 @@ public final class RecoveryActivity extends BaseActivity implements IRecoveryVie
         String email = emailField.getText().toString().trim();
         String password = passwordField.getText().toString();
         String confirmation = confirmationField.getText().toString();
-        viewModel.reset(email, password, confirmation);
+        if (!password.equals(confirmation)) {
+            notify(getString(R.string.passwords_mismatch));
+            return;
+        }
+        viewModel.reset(email, password);
     }
 
     @Override

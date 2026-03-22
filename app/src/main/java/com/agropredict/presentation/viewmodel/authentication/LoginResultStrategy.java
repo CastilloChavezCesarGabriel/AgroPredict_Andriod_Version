@@ -3,7 +3,6 @@ package com.agropredict.presentation.viewmodel.authentication;
 import com.agropredict.application.visitor.IOperationResultVisitor;
 
 public final class LoginResultStrategy implements IOperationResultVisitor {
-
     private final ILoginView view;
 
     public LoginResultStrategy(ILoginView view) {

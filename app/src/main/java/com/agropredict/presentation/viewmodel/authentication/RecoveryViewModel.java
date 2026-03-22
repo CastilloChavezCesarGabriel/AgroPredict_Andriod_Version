@@ -12,11 +12,7 @@ public final class RecoveryViewModel {
         this.view = view;
     }
 
-    public void reset(String email, String newPassword, String confirmation) {
-        if (!newPassword.equals(confirmation)) {
-            view.notify("Las contraseñas no coinciden");
-            return;
-        }
+    public void reset(String email, String newPassword) {
         OperationResult result = resetUseCase.reset(email, newPassword);
         result.accept(new RecoveryResultStrategy(view));
     }

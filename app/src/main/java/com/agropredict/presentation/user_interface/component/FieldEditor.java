@@ -1,4 +1,4 @@
-package com.agropredict.presentation.user_interface.holder;
+package com.agropredict.presentation.user_interface.component;
 
 import android.app.Activity;
 import android.widget.EditText;
@@ -23,10 +23,10 @@ import com.agropredict.domain.visitor.crop.ICropLocationVisitor;
 import com.agropredict.domain.visitor.crop.ICropOwnershipVisitor;
 import com.agropredict.domain.visitor.crop.ICropSoilVisitor;
 import com.agropredict.domain.visitor.crop.ICropVisitor;
-import com.agropredict.presentation.user_interface.input.SoilTypeCatalog;
-import com.agropredict.presentation.user_interface.input.StageCatalog;
+import com.agropredict.presentation.user_interface.component.input.SoilTypeCatalog;
+import com.agropredict.presentation.user_interface.component.input.StageCatalog;
 
-public final class EditFieldViewHolder implements ICropVisitor, ICropDataVisitor,
+public final class FieldEditor implements ICropVisitor, ICropDataVisitor,
         ICropDetailVisitor, ICropContentVisitor, ICropEnvironmentVisitor,
         ICropSoilVisitor, ICropOwnershipVisitor, ICropLocationVisitor {
     private final EditText cropNameInput;
@@ -34,7 +34,7 @@ public final class EditFieldViewHolder implements ICropVisitor, ICropDataVisitor
     private final Spinner soilTypeSpinner;
     private final Spinner stageSpinner;
 
-    public EditFieldViewHolder(Activity activity) {
+    public FieldEditor(Activity activity) {
         cropNameInput = activity.findViewById(R.id.etFieldName);
         areaInput = activity.findViewById(R.id.etArea);
         soilTypeSpinner = activity.findViewById(R.id.spnSoilType);

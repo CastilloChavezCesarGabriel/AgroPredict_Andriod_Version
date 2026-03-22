@@ -1,4 +1,4 @@
-package com.agropredict.presentation.user_interface.input;
+package com.agropredict.presentation.utilities;
 
 import android.content.Context;
 import android.widget.ArrayAdapter;
@@ -6,10 +6,6 @@ import android.widget.Spinner;
 import java.util.List;
 
 public final class SpinnerPopulator {
-
-    private SpinnerPopulator() {
-    }
-
     public static void populate(Spinner spinner, List<String> items) {
         Context context = spinner.getContext();
         ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, items);

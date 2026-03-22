@@ -1,4 +1,4 @@
-package com.agropredict.presentation.user_interface.input;
+package com.agropredict.presentation.user_interface.component.input;
 
 import android.app.Activity;
 import android.widget.EditText;
@@ -16,7 +16,7 @@ public final class CredentialInput {
         this.confirmPasswordInput = activity.findViewById(R.id.etConfirmPassword);
     }
 
-    public boolean match() {
+    public boolean matches() {
         String password = passwordInput.getText().toString();
         String confirmation = confirmPasswordInput.getText().toString();
         return password.equals(confirmation);

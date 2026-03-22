@@ -1,4 +1,4 @@
-package com.agropredict.presentation.user_interface.holder;
+package com.agropredict.presentation.user_interface.component;
 
 import android.app.Activity;
 import android.view.View;
@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public final class HistoryViewHolder implements IDiagnosticVisitor,
+public final class DiagnosticHistory implements IDiagnosticVisitor,
         IDiagnosticDataVisitor, IPredictionVisitor,
         IDiagnosticContentVisitor, IDiagnosticAssessmentVisitor,
         IDiagnosticSummaryVisitor {
@@ -34,7 +34,7 @@ public final class HistoryViewHolder implements IDiagnosticVisitor,
     private final List<String> identifiers;
     private final StringBuilder builder;
 
-    public HistoryViewHolder(Activity activity) {
+    public DiagnosticHistory(Activity activity) {
         this.diagnosticListView = activity.findViewById(R.id.recyclerHistory);
         this.emptyLabel = activity.findViewById(R.id.tvEmptyState);
         this.identifiers = new ArrayList<>();
@@ -43,19 +43,19 @@ public final class HistoryViewHolder implements IDiagnosticVisitor,
         diagnosticListView.setAdapter(listAdapter);
     }
 
-    public void listen(ISelectionAction action) {
+    public void listen(ISelectionListener action) {
         diagnosticListView.setOnItemClickListener(
                 (parent, view, position, id) -> resolve(position, action));
     }
 
-    public void observe(ISelectionAction action) {
+    public void observe(ISelectionListener action) {
         diagnosticListView.setOnItemLongClickListener(
                 (parent, view, position, id) -> resolve(position, action));
     }
 
-    private boolean resolve(int position, ISelectionAction action) {
+    private boolean resolve(int position, ISelectionListener action) {
         if (position >= identifiers.size()) return false;
-        action.select(identifiers.get(position));
+        action.onSelect(identifiers.get(position));
         return true;
     }
 

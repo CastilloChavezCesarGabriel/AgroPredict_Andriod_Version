@@ -1,4 +1,4 @@
-package com.agropredict.presentation.user_interface.holder;
+package com.agropredict.presentation.user_interface.component;
 
 import android.app.Activity;
 import android.view.View;
@@ -10,14 +10,14 @@ import com.agropredict.domain.entity.Crop;
 import com.agropredict.presentation.viewmodel.report.ReportViewModel;
 import java.util.List;
 
-public final class ReportViewHolder {
+public final class ReportForm {
 
     private final CropSelection cropSelection;
     private final RadioGroup formatRadioGroup;
     private final Button shareButton;
     private final ProgressBar progressIndicator;
 
-    public ReportViewHolder(Activity activity) {
+    public ReportForm(Activity activity) {
         this.cropSelection = new CropSelection(activity.findViewById(R.id.spnCropSelection));
         this.formatRadioGroup = activity.findViewById(R.id.radioGroupFormat);
         this.shareButton = activity.findViewById(R.id.btnShare);

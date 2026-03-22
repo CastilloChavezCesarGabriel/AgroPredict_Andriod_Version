@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.widget.EditText;
 import com.agropredict.AgroPredictApplication;
 import com.agropredict.R;
+import com.agropredict.application.usecase.authentication.CheckSessionUseCase;
 import com.agropredict.application.usecase.authentication.LoginUseCase;
 import com.agropredict.presentation.viewmodel.authentication.ILoginView;
 import com.agropredict.presentation.viewmodel.authentication.LoginViewModel;
@@ -23,6 +24,10 @@ public final class LoginActivity extends BaseActivity implements ILoginView {
             LoginUseCase useCase = new LoginUseCase(
                     factory.createUserRepository(), factory.createSessionRepository());
             viewModel = new LoginViewModel(useCase, this);
+            CheckSessionUseCase session = new CheckSessionUseCase(factory.createSessionRepository());
+            session.check((hasSession, identifier) -> {
+                if (hasSession) redirect(HomeActivity.class);
+            });
         });
         findViewById(R.id.btnLogin).setOnClickListener(view -> authenticate());
         findViewById(R.id.tvGoToRegister).setOnClickListener(view -> navigate(RegisterActivity.class));

@@ -3,7 +3,6 @@ package com.agropredict.presentation.viewmodel.authentication;
 import com.agropredict.application.visitor.IRegistrationResultVisitor;
 
 public final class RegistrationResultStrategy implements IRegistrationResultVisitor {
-
     private final IRegisterView view;
 
     public RegistrationResultStrategy(IRegisterView view) {

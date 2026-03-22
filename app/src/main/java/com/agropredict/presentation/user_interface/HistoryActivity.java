@@ -12,20 +12,20 @@ import com.agropredict.application.usecase.diagnostic.ListDiagnosticsUseCase;
 import com.agropredict.presentation.viewmodel.history.HistoryViewModel;
 import com.agropredict.domain.entity.Diagnostic;
 import com.agropredict.presentation.viewmodel.history.IHistoryView;
-import com.agropredict.presentation.user_interface.holder.HistoryViewHolder;
+import com.agropredict.presentation.user_interface.component.DiagnosticHistory;
 import java.util.List;
 
 public final class HistoryActivity extends BaseActivity implements IHistoryView {
     private HistoryViewModel viewModel;
-    private HistoryViewHolder holder;
+    private DiagnosticHistory diagnosticHistory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
-        holder = new HistoryViewHolder(this);
-        holder.listen(this::inspect);
-        holder.observe(this::confirm);
+        diagnosticHistory = new DiagnosticHistory(this);
+        diagnosticHistory.listen(this::inspect);
+        diagnosticHistory.observe(this::confirm);
         ((AgroPredictApplication) getApplication()).provide(factory -> {
             ListDiagnosticsUseCase listUseCase = new ListDiagnosticsUseCase(factory.createDiagnosticRepository());
             DeleteDiagnosticUseCase deleteUseCase = new DeleteDiagnosticUseCase(factory.createDiagnosticRepository());
@@ -52,7 +52,7 @@ public final class HistoryActivity extends BaseActivity implements IHistoryView 
 
     @Override
     public void display(List<Diagnostic> diagnostics) {
-        holder.display(diagnostics);
+        diagnosticHistory.display(diagnostics);
     }
 
     @Override
@@ -64,6 +64,6 @@ public final class HistoryActivity extends BaseActivity implements IHistoryView 
 
     @Override
     public void empty() {
-        holder.empty();
+        diagnosticHistory.empty();
     }
 }

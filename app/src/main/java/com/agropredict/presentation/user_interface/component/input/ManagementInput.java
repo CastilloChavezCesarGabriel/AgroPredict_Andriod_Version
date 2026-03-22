@@ -1,4 +1,4 @@
-package com.agropredict.presentation.user_interface.input;
+package com.agropredict.presentation.user_interface.component.input;
 
 import android.app.Activity;
 import android.widget.Spinner;
@@ -6,9 +6,8 @@ import com.agropredict.R;
 import com.agropredict.application.request.data.Irrigation;
 import com.agropredict.application.request.data.FarmManagement;
 import com.agropredict.application.request.data.PestControl;
-import java.util.Arrays;
 
-public final class ManagementInput {
+public final class ManagementInput extends SpinnerInput {
     private final Spinner irrigationSpinner;
     private final Spinner fertilizationSpinner;
     private final Spinner sprayingSpinner;
@@ -23,8 +22,8 @@ public final class ManagementInput {
     }
 
     public FarmManagement collect() {
-        Irrigation irrigation = new Irrigation(selected(irrigationSpinner), selected(fertilizationSpinner));
-        PestControl pestControl = new PestControl(selected(sprayingSpinner), selected(weedsSpinner));
+        Irrigation irrigation = new Irrigation(extract(irrigationSpinner), extract(fertilizationSpinner));
+        PestControl pestControl = new PestControl(extract(sprayingSpinner), extract(weedsSpinner));
         return new FarmManagement(irrigation, pestControl);
     }
 
@@ -35,11 +34,4 @@ public final class ManagementInput {
         fill(weedsSpinner, "Mucha", "Regular", "Poca", "Ninguna");
     }
 
-    private String selected(Spinner spinner) {
-        return spinner.getSelectedItem().toString();
-    }
-
-    private void fill(Spinner spinner, String... options) {
-        SpinnerPopulator.populate(spinner, Arrays.asList(options));
-    }
 }

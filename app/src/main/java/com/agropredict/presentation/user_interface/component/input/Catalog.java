@@ -1,6 +1,7 @@
-package com.agropredict.presentation.user_interface.input;
+package com.agropredict.presentation.user_interface.component.input;
 
 import android.widget.Spinner;
+import com.agropredict.presentation.utilities.SpinnerPopulator;
 import java.util.List;
 
 public abstract class Catalog {

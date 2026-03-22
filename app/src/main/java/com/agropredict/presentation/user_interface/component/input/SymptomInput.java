@@ -1,4 +1,4 @@
-package com.agropredict.presentation.user_interface.input;
+package com.agropredict.presentation.user_interface.component.input;
 
 import android.app.Activity;
 import android.widget.Spinner;
@@ -6,9 +6,9 @@ import com.agropredict.R;
 import com.agropredict.application.request.data.Observation;
 import com.agropredict.application.request.data.Pest;
 import com.agropredict.application.request.data.Symptom;
-import java.util.Arrays;
 
-public final class SymptomInput {
+
+public final class SymptomInput extends SpinnerInput {
     private final Spinner symptomTypeSpinner;
     private final Spinner severitySpinner;
     private final Spinner insectsSpinner;
@@ -23,8 +23,8 @@ public final class SymptomInput {
     }
 
     public Observation collect() {
-        Symptom symptom = new Symptom(selected(symptomTypeSpinner), selected(severitySpinner));
-        Pest pest = new Pest(selected(insectsSpinner), selected(animalsSpinner));
+        Symptom symptom = new Symptom(extract(symptomTypeSpinner), extract(severitySpinner));
+        Pest pest = new Pest(extract(insectsSpinner), extract(animalsSpinner));
         return new Observation(symptom, pest);
     }
 
@@ -41,11 +41,4 @@ public final class SymptomInput {
         fill(animalsSpinner, "Roedores", "Aves", "Animales grandes", "Ninguno", "No sé");
     }
 
-    private String selected(Spinner spinner) {
-        return spinner.getSelectedItem().toString();
-    }
-
-    private void fill(Spinner spinner, String... options) {
-        SpinnerPopulator.populate(spinner, Arrays.asList(options));
-    }
 }

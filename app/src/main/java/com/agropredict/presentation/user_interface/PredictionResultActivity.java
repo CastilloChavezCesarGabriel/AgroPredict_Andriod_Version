@@ -5,13 +5,13 @@ import com.agropredict.AgroPredictApplication;
 import com.agropredict.R;
 import com.agropredict.application.usecase.diagnostic.FindDiagnosticUseCase;
 import com.agropredict.domain.entity.Diagnostic;
-import com.agropredict.presentation.user_interface.holder.PredictionResultViewHolder;
+import com.agropredict.presentation.user_interface.component.PredictionResult;
 import com.agropredict.presentation.viewmodel.prediction.IPredictionResultView;
 import com.agropredict.presentation.viewmodel.prediction.PredictionResultViewModel;
 
 public final class PredictionResultActivity extends BaseActivity implements IPredictionResultView {
     private PredictionResultViewModel viewModel;
-    private PredictionResultViewHolder holder;
+    private PredictionResult predictionResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,7 +19,7 @@ public final class PredictionResultActivity extends BaseActivity implements IPre
         setContentView(R.layout.activity_prediction_result);
         findViewById(R.id.btnBackToHome).setOnClickListener(view -> redirect(HomeActivity.class));
         ((AgroPredictApplication) getApplication()).provide(factory -> {
-            holder = new PredictionResultViewHolder(this, factory.createCropImageRepository());
+            predictionResult = new PredictionResult(this, factory.createCropImageRepository());
             FindDiagnosticUseCase useCase = new FindDiagnosticUseCase(factory.createDiagnosticRepository());
             viewModel = new PredictionResultViewModel(useCase, this);
         });
@@ -29,7 +29,7 @@ public final class PredictionResultActivity extends BaseActivity implements IPre
 
     @Override
     public void display(Diagnostic diagnostic) {
-        holder.display(diagnostic);
+        predictionResult.display(diagnostic);
     }
 
     @Override

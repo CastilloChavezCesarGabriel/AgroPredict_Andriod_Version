@@ -1,12 +1,12 @@
-package com.agropredict.presentation.user_interface.input;
+package com.agropredict.presentation.user_interface.component.input;
 
 import android.app.Activity;
 import android.widget.Spinner;
 import com.agropredict.R;
 import com.agropredict.application.request.data.Weather;
-import java.util.Arrays;
 
-public final class EnvironmentInput {
+
+public final class EnvironmentInput extends SpinnerInput {
     private final Spinner temperatureSpinner;
     private final Spinner humiditySpinner;
     private final Spinner rainSpinner;
@@ -19,9 +19,9 @@ public final class EnvironmentInput {
     }
 
     public Weather collect() {
-        String temperature = selected(temperatureSpinner);
-        String humidity = selected(humiditySpinner);
-        String rain = selected(rainSpinner);
+        String temperature = extract(temperatureSpinner);
+        String humidity = extract(humiditySpinner);
+        String rain = extract(rainSpinner);
         return new Weather(temperature, humidity, rain);
     }
 
@@ -31,11 +31,4 @@ public final class EnvironmentInput {
         fill(rainSpinner, "Hoy", "Esta semana", "Hace 1 semana", "Hace >2 semanas", "No ha llovido");
     }
 
-    private String selected(Spinner spinner) {
-        return spinner.getSelectedItem().toString();
-    }
-
-    private void fill(Spinner spinner, String... options) {
-        SpinnerPopulator.populate(spinner, Arrays.asList(options));
-    }
 }

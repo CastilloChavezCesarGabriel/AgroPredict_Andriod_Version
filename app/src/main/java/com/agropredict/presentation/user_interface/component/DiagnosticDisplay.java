@@ -1,9 +1,5 @@
-package com.agropredict.presentation.user_interface.holder;
+package com.agropredict.presentation.user_interface.component;
 
-import android.app.Activity;
-import android.widget.TextView;
-import com.agropredict.R;
-import com.agropredict.application.repository.ICropImageRepository;
 import com.agropredict.domain.component.diagnostic.DiagnosticAssessment;
 import com.agropredict.domain.component.diagnostic.DiagnosticConditions;
 import com.agropredict.domain.component.diagnostic.DiagnosticContent;
@@ -24,24 +20,17 @@ import com.agropredict.domain.visitor.diagnostic.IDiagnosticSummaryVisitor;
 import com.agropredict.domain.visitor.diagnostic.IDiagnosticVisitor;
 import com.agropredict.domain.visitor.diagnostic.IPredictionVisitor;
 
-public final class PredictionResultViewHolder implements IDiagnosticVisitor,
+public abstract class DiagnosticDisplay implements IDiagnosticVisitor,
         IDiagnosticDataVisitor, IDiagnosticContentVisitor,
         IDiagnosticConditionsVisitor, IDiagnosticContextVisitor,
         IDiagnosticAssessmentVisitor, IPredictionVisitor,
         IDiagnosticSummaryVisitor, IDiagnosticOwnershipVisitor {
-    private final PredictionDisplay predictionDisplay;
-    private final TextView severityLabel;
-    private final TextView summaryLabel;
-    private final TextView recommendationsLabel;
-    private final PhotoDisplay photoDisplay;
+    protected final PredictionDisplay predictionDisplay;
+    protected final PhotoDisplay photoDisplay;
 
-    public PredictionResultViewHolder(Activity activity, ICropImageRepository imageRepository) {
-        predictionDisplay = new PredictionDisplay(activity.findViewById(R.id.tvCropName),
-                activity.findViewById(R.id.tvConfidence));
-        severityLabel = activity.findViewById(R.id.tvSeverity);
-        summaryLabel = activity.findViewById(R.id.tvSummary);
-        recommendationsLabel = activity.findViewById(R.id.tvRecommendations);
-        photoDisplay = new PhotoDisplay(activity.findViewById(R.id.ivCropPhoto), imageRepository);
+    protected DiagnosticDisplay(PredictionDisplay predictionDisplay, PhotoDisplay photoDisplay) {
+        this.predictionDisplay = predictionDisplay;
+        this.photoDisplay = photoDisplay;
     }
 
     public void display(Diagnostic diagnostic) {
@@ -67,9 +56,7 @@ public final class PredictionResultViewHolder implements IDiagnosticVisitor,
 
     @Override
     public void visit(DiagnosticContext context, DiagnosticEnvironment environment) {
-        if (context != null) {
-            context.accept(this);
-        }
+        if (context != null) context.accept(this);
     }
 
     @Override
@@ -86,16 +73,5 @@ public final class PredictionResultViewHolder implements IDiagnosticVisitor,
     @Override
     public void visitPrediction(String predictedCrop, double confidence) {
         predictionDisplay.classify(predictedCrop, confidence);
-    }
-
-    @Override
-    public void visitSummary(String severity, String shortSummary) {
-        severityLabel.setText(severity);
-        summaryLabel.setText(shortSummary);
-    }
-
-    @Override
-    public void visitOwnership(String userIdentifier, String recommendationText) {
-        recommendationsLabel.setText(recommendationText);
     }
 }

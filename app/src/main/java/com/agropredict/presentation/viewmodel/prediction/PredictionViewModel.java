@@ -4,13 +4,12 @@ import com.agropredict.application.PredictionFacade;
 import com.agropredict.application.request.SubmissionRequest;
 import com.agropredict.application.result.OperationResult;
 import com.agropredict.application.usecase.catalog.ListCatalogUseCase;
-import com.agropredict.presentation.user_interface.input.SoilTypeCatalog;
-import com.agropredict.presentation.user_interface.input.StageCatalog;
+import com.agropredict.presentation.user_interface.component.input.SoilTypeCatalog;
+import com.agropredict.presentation.user_interface.component.input.StageCatalog;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public final class PredictionViewModel {
-
     private final PredictionFacade facade;
     private final IPredictionView view;
     private final ExecutorService executor;
@@ -33,10 +32,12 @@ public final class PredictionViewModel {
 
     public void submit(SubmissionRequest request) {
         view.load();
-        executor.execute(() -> {
-            OperationResult result = facade.submit(request);
-            result.accept(new DiagnosticResultStrategy(view));
-        });
+        executor.execute(() -> diagnose(request));
+    }
+
+    private void diagnose(SubmissionRequest request) {
+        OperationResult result = facade.submit(request);
+        result.accept(new DiagnosticResultStrategy(view));
     }
 
     public void release() {

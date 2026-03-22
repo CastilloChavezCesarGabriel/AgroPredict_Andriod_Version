@@ -1,5 +1,5 @@
 package com.agropredict.presentation.user_interface;
-import com.agropredict.presentation.user_interface.holder.PredictionViewHolder;
+import com.agropredict.presentation.user_interface.component.PredictionForm;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -14,8 +14,8 @@ import com.agropredict.application.service.IImageService;
 import com.agropredict.application.usecase.catalog.ListCatalogUseCase;
 import com.agropredict.application.usecase.diagnostic.ClassifyImageUseCase;
 import com.agropredict.application.usecase.diagnostic.SubmitDiagnosticUseCase;
-import com.agropredict.presentation.user_interface.input.SoilTypeCatalog;
-import com.agropredict.presentation.user_interface.input.StageCatalog;
+import com.agropredict.presentation.user_interface.component.input.SoilTypeCatalog;
+import com.agropredict.presentation.user_interface.component.input.StageCatalog;
 import com.agropredict.presentation.viewmodel.prediction.IPredictionView;
 import com.agropredict.presentation.viewmodel.prediction.PredictionViewModel;
 
@@ -23,17 +23,16 @@ public final class PredictionActivity extends BaseActivity implements IPredictio
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_IMAGE_GALLERY = 2;
     private PredictionViewModel viewModel;
-    private PredictionViewHolder holder;
+    private PredictionForm predictionForm;
     private IImageService imageService;
     private String selectedImagePath;
-    private String predictedCrop;
-    private double confidence;
+    private Classification classification;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_prediction);
-        holder = new PredictionViewHolder(this);
+        predictionForm = new PredictionForm(this);
         ((AgroPredictApplication) getApplication()).provide(factory -> {
             imageService = factory.createImageService();
             ClassifyImageUseCase classifyUseCase = new ClassifyImageUseCase(imageService);
@@ -62,7 +61,7 @@ public final class PredictionActivity extends BaseActivity implements IPredictio
     }
 
     private void schedule() {
-        new DateSelection(date -> holder.stamp(date)).show(this);
+        new DateSelection(date -> predictionForm.stamp(date)).show(this);
     }
 
     private void diagnose() {
@@ -70,9 +69,22 @@ public final class PredictionActivity extends BaseActivity implements IPredictio
             notify(getString(R.string.image_invalid));
             return;
         }
-        Classification classification = new Classification(predictedCrop, confidence);
         Photograph photograph = new Photograph(selectedImagePath);
-        viewModel.submit(holder.collect(classification, photograph));
+        viewModel.submit(predictionForm.collect(classification, photograph));
+    }
+
+    private void present(Uri imageUri) {
+        if (imageUri == null) return;
+        selectedImagePath = imageService.compress(imageUri.toString());
+        predictionForm.preview(imageUri);
+        viewModel.classify(selectedImagePath);
+    }
+
+    private void inspect(String diagnosticIdentifier) {
+        Intent intent = new Intent(this, PredictionResultActivity.class);
+        intent.putExtra("diagnostic_identifier", diagnosticIdentifier);
+        startActivity(intent);
+        finish();
     }
 
     @Override
@@ -82,48 +94,36 @@ public final class PredictionActivity extends BaseActivity implements IPredictio
         present(data.getData());
     }
 
-    private void present(Uri imageUri) {
-        if (imageUri == null) return;
-        selectedImagePath = imageService.compress(imageUri.toString());
-        holder.preview(imageUri);
-        viewModel.classify(selectedImagePath);
-    }
-
     @Override
     public void load() {
-        runOnUiThread(() -> holder.load());
+        runOnUiThread(() -> predictionForm.load());
     }
 
     @Override
     public void idle() {
-        runOnUiThread(() -> holder.idle());
+        runOnUiThread(() -> predictionForm.idle());
     }
 
     @Override
     public void classify(String cropName, String classificationConfidence) {
-        this.predictedCrop = cropName;
-        this.confidence = Double.parseDouble(classificationConfidence.replace("%", "")) / 100;
-        runOnUiThread(() -> holder.classify(cropName, classificationConfidence));
+        double parsed = Double.parseDouble(classificationConfidence.replace("%", "")) / 100;
+        this.classification = new Classification(cropName, parsed);
+        runOnUiThread(() -> predictionForm.classify(cropName, classificationConfidence));
     }
 
     @Override
     public void reveal(String diagnosticIdentifier) {
-        runOnUiThread(() -> {
-            Intent intent = new Intent(this, PredictionResultActivity.class);
-            intent.putExtra("diagnostic_identifier", diagnosticIdentifier);
-            startActivity(intent);
-            finish();
-        });
+        runOnUiThread(() -> inspect(diagnosticIdentifier));
     }
 
     @Override
     public void populate(SoilTypeCatalog soilTypeOption) {
-        holder.populate(soilTypeOption);
+        predictionForm.populate(soilTypeOption);
     }
 
     @Override
     public void populate(StageCatalog stageOption) {
-        holder.populate(stageOption);
+        predictionForm.populate(stageOption);
     }
 
     @Override

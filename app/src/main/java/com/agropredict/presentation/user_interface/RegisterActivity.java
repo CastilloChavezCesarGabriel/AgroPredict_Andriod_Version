@@ -1,5 +1,4 @@
 package com.agropredict.presentation.user_interface;
-import com.agropredict.presentation.user_interface.holder.RegisterViewHolder;
 
 import android.os.Bundle;
 import com.agropredict.AgroPredictApplication;
@@ -8,17 +7,18 @@ import com.agropredict.application.usecase.authentication.RegisterUseCase;
 import com.agropredict.application.usecase.catalog.ListCatalogUseCase;
 import com.agropredict.presentation.viewmodel.authentication.IRegisterView;
 import com.agropredict.presentation.viewmodel.authentication.RegisterViewModel;
+import com.agropredict.presentation.user_interface.component.RegistrationForm;
 import java.util.List;
 
 public final class RegisterActivity extends BaseActivity implements IRegisterView {
     private RegisterViewModel viewModel;
-    private RegisterViewHolder holder;
+    private RegistrationForm registrationForm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        holder = new RegisterViewHolder(this);
+        registrationForm = new RegistrationForm(this);
         ((AgroPredictApplication) getApplication()).provide(factory -> {
             RegisterUseCase useCase = new RegisterUseCase(
                     factory.createUserRepository(), factory.createOccupationCatalog());
@@ -31,11 +31,11 @@ public final class RegisterActivity extends BaseActivity implements IRegisterVie
     }
 
     private void register() {
-        if (!holder.match()) {
+        if (!registrationForm.match()) {
             notify(getString(R.string.passwords_mismatch));
             return;
         }
-        viewModel.register(holder.collect());
+        viewModel.register(registrationForm.collect());
     }
 
     @Override
@@ -46,6 +46,6 @@ public final class RegisterActivity extends BaseActivity implements IRegisterVie
 
     @Override
     public void populate(List<String> occupations) {
-        holder.populate(occupations);
+        registrationForm.populate(occupations);
     }
 }

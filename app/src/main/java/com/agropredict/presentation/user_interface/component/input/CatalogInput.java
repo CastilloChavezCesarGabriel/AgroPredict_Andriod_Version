@@ -1,4 +1,4 @@
-package com.agropredict.presentation.user_interface.input;
+package com.agropredict.presentation.user_interface.component.input;
 
 import android.app.Activity;
 import android.widget.Spinner;
@@ -21,7 +21,7 @@ public final class CatalogInput {
         stageCatalog.populate(stageSpinner);
     }
 
-    public String stage() {
+    public String extract() {
         return stageSpinner.getSelectedItem().toString();
     }
 }

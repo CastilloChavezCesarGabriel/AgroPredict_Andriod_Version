@@ -1,12 +1,12 @@
-package com.agropredict.presentation.user_interface.input;
+package com.agropredict.presentation.user_interface.component.input;
 
 import android.app.Activity;
 import android.widget.Spinner;
 import com.agropredict.R;
 import com.agropredict.application.request.data.Soil;
-import java.util.Arrays;
 
-public final class SoilInput {
+
+public final class SoilInput extends SpinnerInput {
     private final Spinner soilMoistureSpinner;
     private final Spinner soilPhSpinner;
 
@@ -17,8 +17,8 @@ public final class SoilInput {
     }
 
     public Soil collect() {
-        String moisture = selected(soilMoistureSpinner);
-        String acidity = selected(soilPhSpinner);
+        String moisture = extract(soilMoistureSpinner);
+        String acidity = extract(soilPhSpinner);
         return new Soil(moisture, acidity);
     }
 
@@ -27,11 +27,4 @@ public final class SoilInput {
         fill(soilPhSpinner, "<5.5", "5.5–7", "7–8", ">8", "No sé");
     }
 
-    private String selected(Spinner spinner) {
-        return spinner.getSelectedItem().toString();
-    }
-
-    private void fill(Spinner spinner, String... options) {
-        SpinnerPopulator.populate(spinner, Arrays.asList(options));
-    }
 }

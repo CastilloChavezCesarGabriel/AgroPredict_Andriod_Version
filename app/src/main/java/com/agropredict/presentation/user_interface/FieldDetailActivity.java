@@ -6,13 +6,13 @@ import com.agropredict.AgroPredictApplication;
 import com.agropredict.R;
 import com.agropredict.application.usecase.diagnostic.FindDiagnosticUseCase;
 import com.agropredict.domain.entity.Diagnostic;
-import com.agropredict.presentation.user_interface.holder.FieldDetailViewHolder;
+import com.agropredict.presentation.user_interface.component.FieldDetail;
 import com.agropredict.presentation.viewmodel.field.FieldDetailViewModel;
 import com.agropredict.presentation.viewmodel.field.IFieldDetailView;
 
 public final class FieldDetailActivity extends BaseActivity implements IFieldDetailView {
     private FieldDetailViewModel viewModel;
-    private FieldDetailViewHolder holder;
+    private FieldDetail fieldDetail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +23,7 @@ public final class FieldDetailActivity extends BaseActivity implements IFieldDet
             if (cropIdentifier != null) navigate(cropIdentifier);
         });
         ((AgroPredictApplication) getApplication()).provide(factory -> {
-            holder = new FieldDetailViewHolder(this, factory.createCropImageRepository());
+            fieldDetail = new FieldDetail(this, factory.createCropImageRepository());
             FindDiagnosticUseCase useCase = new FindDiagnosticUseCase(factory.createDiagnosticRepository());
             viewModel = new FieldDetailViewModel(useCase, this);
         });
@@ -33,7 +33,7 @@ public final class FieldDetailActivity extends BaseActivity implements IFieldDet
 
     @Override
     public void display(Diagnostic diagnostic) {
-        holder.display(diagnostic);
+        fieldDetail.display(diagnostic);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.agropredict.presentation.user_interface.holder;
+package com.agropredict.presentation.user_interface.component;
 
 import android.widget.TextView;
 import java.util.Locale;

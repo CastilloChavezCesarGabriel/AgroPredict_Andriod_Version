@@ -12,8 +12,8 @@
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />
 
-    <!-- Storage: Android 13+ -->
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <!-- Storage: Android 14+ (Selected Photos Access) -->
+    <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED" />
 
     <uses-feature android:name="android.hardware.camera" android:required="false" />
 
@@ -26,15 +26,13 @@
         android:theme="@style/Theme.AgroPredict">
 
         <activity
-            android:name=".presentation.user_interface.SplashActivity"
+            android:name=".presentation.user_interface.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".presentation.user_interface.LoginActivity" />
         <activity android:name=".presentation.user_interface.RegisterActivity" />
         <activity android:name=".presentation.user_interface.HomeActivity" />
         <activity android:name=".presentation.user_interface.PredictionActivity" />

@@ -1,4 +1,4 @@
-package com.agropredict.presentation.user_interface.holder;
+package com.agropredict.presentation.user_interface.component;
 
 import android.widget.Spinner;
 import com.agropredict.domain.component.crop.CropContent;
@@ -8,7 +8,7 @@ import com.agropredict.domain.entity.Crop;
 import com.agropredict.domain.visitor.crop.ICropDataVisitor;
 import com.agropredict.domain.visitor.crop.ICropDetailVisitor;
 import com.agropredict.domain.visitor.crop.ICropVisitor;
-import com.agropredict.presentation.user_interface.input.SpinnerPopulator;
+import com.agropredict.presentation.utilities.SpinnerPopulator;
 import java.util.ArrayList;
 import java.util.List;
 

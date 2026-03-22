@@ -1,10 +1,10 @@
-package com.agropredict.presentation.user_interface.holder;
+package com.agropredict.presentation.user_interface.component;
 
-import com.agropredict.presentation.user_interface.input.CatalogInput;
-import com.agropredict.presentation.user_interface.input.EnvironmentInput;
-import com.agropredict.presentation.user_interface.input.ManagementInput;
-import com.agropredict.presentation.user_interface.input.SoilInput;
-import com.agropredict.presentation.user_interface.input.SymptomInput;
+import com.agropredict.presentation.user_interface.component.input.CatalogInput;
+import com.agropredict.presentation.user_interface.component.input.EnvironmentInput;
+import com.agropredict.presentation.user_interface.component.input.ManagementInput;
+import com.agropredict.presentation.user_interface.component.input.SoilInput;
+import com.agropredict.presentation.user_interface.component.input.SymptomInput;
 import android.app.Activity;
 import com.agropredict.application.request.SubmissionRequest;
 import com.agropredict.application.request.data.Condition;
@@ -15,17 +15,17 @@ import com.agropredict.application.request.data.Questionnaire;
 import com.agropredict.application.request.input.Cultivation;
 import com.agropredict.application.request.input.Submission;
 import com.agropredict.application.request.input.Photograph;
-import com.agropredict.presentation.user_interface.input.SoilTypeCatalog;
-import com.agropredict.presentation.user_interface.input.StageCatalog;
+import com.agropredict.presentation.user_interface.component.input.SoilTypeCatalog;
+import com.agropredict.presentation.user_interface.component.input.StageCatalog;
 
-public final class QuestionnaireHolder {
+public final class QuestionnaireForm {
     private final CatalogInput catalogGroup;
     private final EnvironmentInput environmentGroup;
     private final SoilInput soilGroup;
     private final ManagementInput managementGroup;
     private final SymptomInput symptomGroup;
 
-    public QuestionnaireHolder(Activity activity) {
+    public QuestionnaireForm(Activity activity) {
         this.catalogGroup = new CatalogInput(activity);
         this.environmentGroup = new EnvironmentInput(activity);
         this.soilGroup = new SoilInput(activity);
@@ -42,7 +42,7 @@ public final class QuestionnaireHolder {
     }
 
     public SubmissionRequest assemble(Classification prediction, Photograph image) {
-        Cultivation crop = prediction.cultivate(catalogGroup.stage());
+        Cultivation crop = prediction.cultivate(catalogGroup.extract());
         Field field = new Field(crop, image);
         Submission diagnostic = new Submission(prediction, field);
         return new SubmissionRequest(diagnostic, collect());

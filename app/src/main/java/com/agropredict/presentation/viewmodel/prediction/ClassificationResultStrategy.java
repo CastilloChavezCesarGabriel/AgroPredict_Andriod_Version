@@ -1,6 +1,7 @@
 package com.agropredict.presentation.viewmodel.prediction;
 
 import com.agropredict.application.visitor.IClassificationResultVisitor;
+import java.util.Locale;
 
 public final class ClassificationResultStrategy implements IClassificationResultVisitor {
     private static final double MINIMUM_CONFIDENCE_THRESHOLD = 0.6;
@@ -15,7 +16,8 @@ public final class ClassificationResultStrategy implements IClassificationResult
     public void visit(String predictedCrop, double confidence) {
         view.idle();
         if (confidence >= MINIMUM_CONFIDENCE_THRESHOLD) {
-            String confidenceText = String.format("%.0f%%", confidence * PERCENTAGE_MULTIPLIER);
+            String confidenceText = String.format(Locale.getDefault(),
+                    "%.0f%%", confidence * PERCENTAGE_MULTIPLIER);
             view.classify(predictedCrop, confidenceText);
         } else {
             view.notify("No se pudo identificar el cultivo con certeza");

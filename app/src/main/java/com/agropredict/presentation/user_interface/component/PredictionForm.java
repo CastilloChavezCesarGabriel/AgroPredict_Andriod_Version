@@ -1,4 +1,4 @@
-package com.agropredict.presentation.user_interface.holder;
+package com.agropredict.presentation.user_interface.component;
 
 import android.app.Activity;
 import android.view.View;
@@ -10,22 +10,22 @@ import com.agropredict.R;
 import com.agropredict.application.request.SubmissionRequest;
 import com.agropredict.application.request.data.Classification;
 import com.agropredict.application.request.input.Photograph;
-import com.agropredict.presentation.user_interface.input.SoilTypeCatalog;
-import com.agropredict.presentation.user_interface.input.StageCatalog;
+import com.agropredict.presentation.user_interface.component.input.SoilTypeCatalog;
+import com.agropredict.presentation.user_interface.component.input.StageCatalog;
 
-public final class PredictionViewHolder {
+public final class PredictionForm {
     private final ImageView cropImagePreview;
     private final TextView plantingDateLabel;
     private final TextView classificationLabel;
     private final ProgressBar progressIndicator;
-    private final QuestionnaireHolder questionnaire;
+    private final QuestionnaireForm questionnaire;
 
-    public PredictionViewHolder(Activity activity) {
+    public PredictionForm(Activity activity) {
         this.cropImagePreview = activity.findViewById(R.id.ivCropPhoto);
         this.plantingDateLabel = activity.findViewById(R.id.etPlantingDate);
         this.classificationLabel = activity.findViewById(R.id.etCropType);
         this.progressIndicator = activity.findViewById(R.id.progressLoading);
-        this.questionnaire = new QuestionnaireHolder(activity);
+        this.questionnaire = new QuestionnaireForm(activity);
     }
 
     public void load() {

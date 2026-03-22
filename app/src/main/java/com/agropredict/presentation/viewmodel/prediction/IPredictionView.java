@@ -1,7 +1,7 @@
 package com.agropredict.presentation.viewmodel.prediction;
 
-import com.agropredict.presentation.user_interface.input.SoilTypeCatalog;
-import com.agropredict.presentation.user_interface.input.StageCatalog;
+import com.agropredict.presentation.user_interface.component.input.SoilTypeCatalog;
+import com.agropredict.presentation.user_interface.component.input.StageCatalog;
 
 public interface IPredictionView {
     void notify(String message);

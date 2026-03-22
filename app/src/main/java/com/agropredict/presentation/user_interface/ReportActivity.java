@@ -1,5 +1,4 @@
 package com.agropredict.presentation.user_interface;
-import com.agropredict.presentation.user_interface.holder.ReportViewHolder;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -12,12 +11,13 @@ import com.agropredict.application.usecase.crop.ListCropUseCase;
 import com.agropredict.domain.entity.Crop;
 import com.agropredict.presentation.viewmodel.report.IReportView;
 import com.agropredict.presentation.viewmodel.report.ReportViewModel;
+import com.agropredict.presentation.user_interface.component.ReportForm;
 import java.io.File;
 import java.util.List;
 
 public final class ReportActivity extends BaseActivity implements IReportView {
     private ReportViewModel viewModel;
-    private ReportViewHolder holder;
+    private ReportForm reportForm;
     private ListCropUseCase listCrops;
     private String generatedFilePath;
 
@@ -25,8 +25,8 @@ public final class ReportActivity extends BaseActivity implements IReportView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report);
-        holder = new ReportViewHolder(this);
-        holder.listen(view -> share());
+        reportForm = new ReportForm(this);
+        reportForm.listen(view -> share());
         ((AgroPredictApplication) getApplication()).provide(factory -> {
             listCrops = new ListCropUseCase(factory.createCropRepository());
             CheckSessionUseCase sessionUseCase = new CheckSessionUseCase(factory.createSessionRepository());
@@ -41,7 +41,7 @@ public final class ReportActivity extends BaseActivity implements IReportView {
     }
 
     private void generate() {
-        holder.generate(viewModel);
+        reportForm.generate(viewModel);
     }
 
     private void share() {
@@ -57,26 +57,28 @@ public final class ReportActivity extends BaseActivity implements IReportView {
 
     @Override
     public void load() {
-        runOnUiThread(() -> holder.load());
+        runOnUiThread(() -> reportForm.load());
     }
 
     @Override
     public void idle() {
-        runOnUiThread(() -> holder.idle());
+        runOnUiThread(() -> reportForm.idle());
     }
 
     @Override
     public void populate(List<Crop> crops) {
-        holder.populate(crops);
+        reportForm.populate(crops);
     }
 
     @Override
     public void offer(String filePath) {
         generatedFilePath = filePath;
-        runOnUiThread(() -> {
-            holder.offer();
-            if (filePath.endsWith(".pdf")) PdfLauncher.open(this, filePath);
-        });
+        runOnUiThread(() -> present(filePath));
+    }
+
+    private void present(String filePath) {
+        reportForm.offer();
+        if (filePath.endsWith(".pdf")) PdfLauncher.open(this, filePath);
     }
 
     @Override

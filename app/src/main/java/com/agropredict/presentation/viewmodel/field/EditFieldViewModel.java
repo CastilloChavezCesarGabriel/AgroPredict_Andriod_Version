@@ -5,11 +5,10 @@ import com.agropredict.application.usecase.catalog.ListCatalogUseCase;
 import com.agropredict.application.usecase.crop.FindCropUseCase;
 import com.agropredict.application.usecase.crop.UpdateCropUseCase;
 import com.agropredict.domain.entity.Crop;
-import com.agropredict.presentation.user_interface.input.SoilTypeCatalog;
-import com.agropredict.presentation.user_interface.input.StageCatalog;
+import com.agropredict.presentation.user_interface.component.input.SoilTypeCatalog;
+import com.agropredict.presentation.user_interface.component.input.StageCatalog;
 
 public final class EditFieldViewModel {
-
     private final UpdateCropUseCase updateCropUseCase;
     private final IEditFieldView view;
 
@@ -18,9 +17,9 @@ public final class EditFieldViewModel {
         this.view = view;
     }
 
-    public void populate(ListCatalogUseCase soilTypesUseCase, ListCatalogUseCase stagesUseCase) {
-        view.populate(new SoilTypeCatalog(soilTypesUseCase.list()));
-        view.populate(new StageCatalog(stagesUseCase.list()));
+    public void populate(ListCatalogUseCase soilTypes, ListCatalogUseCase stages) {
+        view.populate(new SoilTypeCatalog(soilTypes.list()));
+        view.populate(new StageCatalog(stages.list()));
     }
 
     public void load(FindCropUseCase loadUseCase, String cropIdentifier) {
