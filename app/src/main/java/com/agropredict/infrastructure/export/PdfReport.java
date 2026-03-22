@@ -23,7 +23,7 @@ public final class PdfReport implements IReportWriter {
         PdfWriter writer = new PdfWriter(new FileOutputStream(file));
         PdfDocument pdfDocument = new PdfDocument(writer);
         document = new Document(pdfDocument);
-        document.add(new Paragraph(TITLE).setBold().setFontSize(18));
+        document.add(new Paragraph(TITLE).simulateBold().setFontSize(18));
         document.add(new Paragraph(" "));
     }
 
