@@ -1,17 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <color name="green_primary">#2E7D32</color>
     <color name="green_primary_dark">#1B5E20</color>
     <color name="green_accent">#66BB6A</color>
-    <color name="soil_brown">#8D6E63</color>
-    <color name="accent_orange">#FFB74D</color>
+    <color name="green_surface">#E8F5E9</color>
+
+    <color name="soil_brown">#6D4C41</color>
+    <color name="soil_brown_light">#EFEBE9</color>
+
+    <color name="accent_orange">#F57C00</color>
+    <color name="accent_orange_light">#FFF3E0</color>
+
     <color name="white">#FFFFFF</color>
-    <color name="light_gray">#F5F5F5</color>
-    <color name="medium_gray">#9E9E9E</color>
-    <color name="dark_gray">#424242</color>
-    <color name="black">#212121</color>
-    <color name="error_red">#D32F2F</color>
-    <color name="severity_low">#4CAF50</color>
-    <color name="severity_moderate">#FF9800</color>
-    <color name="severity_high">#F44336</color>
+    <color name="surface">#FAFAFA</color>
+    <color name="surface_elevated">#FFFFFF</color>
+
+    <color name="text_primary">#1B1B1F</color>
+    <color name="text_secondary">#49454F</color>
+    <color name="text_tertiary">#79747E</color>
+
+    <color name="outline">#CAC4D0</color>
+    <color name="outline_variant">#E0E0E0</color>
+    <color name="divider">#E7E0EC</color>
+
+    <color name="error_red">#B3261E</color>
+    <color name="error_surface">#FDECEA</color>
+
+    <color name="severity_low">#2E7D32</color>
+    <color name="severity_low_surface">#E8F5E9</color>
+    <color name="severity_moderate">#E65100</color>
+    <color name="severity_moderate_surface">#FFF3E0</color>
+    <color name="severity_high">#C62828</color>
+    <color name="severity_high_surface">#FDECEA</color>
+
 </resources>

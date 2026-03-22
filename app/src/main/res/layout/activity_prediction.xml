@@ -1,29 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/surface">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="@dimen/spacing_16">
 
         <ImageView
             android:id="@+id/ivCropPhoto"
             android:layout_width="match_parent"
-            android:layout_height="250dp"
-            android:background="@color/light_gray"
-            android:contentDescription="Foto del cultivo"
+            android:layout_height="@dimen/photo_height"
+            android:background="@drawable/photo_placeholder"
+            android:contentDescription="@string/crop_photo"
             android:scaleType="centerCrop" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginTop="@dimen/spacing_12"
+            android:layout_marginBottom="@dimen/spacing_20"
             android:orientation="horizontal">
 
             <com.google.android.material.button.MaterialButton
@@ -31,39 +30,34 @@
                 style="@style/AgroPredict.Button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
+                android:layout_marginEnd="@dimen/spacing_8"
                 android:layout_weight="1"
                 android:text="@string/capture_image" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnGallery"
-                style="@style/AgroPredict.Button"
+                style="@style/AgroPredict.Button.Tonal"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="@dimen/spacing_8"
                 android:layout_weight="1"
-                android:backgroundTint="@color/soil_brown"
                 android:text="@string/select_gallery" />
 
         </LinearLayout>
 
-        <!-- Información del Cultivo -->
-
         <TextView
+            style="@style/AgroPredict.Text.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:text="@string/crop_info"
-            android:textColor="@color/green_primary"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:layout_marginBottom="@dimen/spacing_12"
+            android:text="@string/crop_info" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilCropType"
             style="@style/AgroPredict.TextInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="@dimen/spacing_12"
             android:hint="@string/crop_type_hint">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -79,7 +73,7 @@
             style="@style/AgroPredict.TextInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="@dimen/spacing_12"
             android:hint="@string/location_hint">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -92,24 +86,24 @@
 
         <Spinner
             android:id="@+id/spnSoilType"
+            style="@style/AgroPredict.Spinner"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginBottom="12dp"
-            android:background="@android:drawable/btn_dropdown" />
+            android:layout_height="@dimen/spinner_height"
+            android:layout_marginBottom="@dimen/spacing_12" />
 
         <Spinner
             android:id="@+id/spnStage"
+            style="@style/AgroPredict.Spinner"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginBottom="12dp"
-            android:background="@android:drawable/btn_dropdown" />
+            android:layout_height="@dimen/spinner_height"
+            android:layout_marginBottom="@dimen/spacing_12" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilPlantingDate"
             style="@style/AgroPredict.TextInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="@dimen/spacing_24"
             android:hint="@string/planting_date_hint">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -117,152 +111,159 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clickable="true"
-                android:focusable="false"
+                android:focusable="true"
                 android:inputType="none" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Condiciones Ambientales -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="@dimen/spacing_20"
+            android:background="@color/divider" />
 
         <TextView
+            style="@style/AgroPredict.Text.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:text="@string/environmental_conditions"
-            android:textColor="@color/green_primary"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:layout_marginBottom="@dimen/spacing_12"
+            android:text="@string/environmental_conditions" />
 
         <Spinner
             android:id="@+id/spnTemperature"
+            style="@style/AgroPredict.Spinner"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginBottom="12dp"
-            android:background="@android:drawable/btn_dropdown" />
+            android:layout_height="@dimen/spinner_height"
+            android:layout_marginBottom="@dimen/spacing_12" />
 
         <Spinner
             android:id="@+id/spnHumidity"
+            style="@style/AgroPredict.Spinner"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginBottom="12dp"
-            android:background="@android:drawable/btn_dropdown" />
+            android:layout_height="@dimen/spinner_height"
+            android:layout_marginBottom="@dimen/spacing_12" />
 
         <Spinner
             android:id="@+id/spnRain"
+            style="@style/AgroPredict.Spinner"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginBottom="16dp"
-            android:background="@android:drawable/btn_dropdown" />
+            android:layout_height="@dimen/spinner_height"
+            android:layout_marginBottom="@dimen/spacing_24" />
 
-        <!-- Condiciones del Suelo -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="@dimen/spacing_20"
+            android:background="@color/divider" />
 
         <TextView
+            style="@style/AgroPredict.Text.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:text="@string/soil_conditions"
-            android:textColor="@color/green_primary"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:layout_marginBottom="@dimen/spacing_12"
+            android:text="@string/soil_conditions" />
 
         <Spinner
             android:id="@+id/spnSoilMoisture"
+            style="@style/AgroPredict.Spinner"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginBottom="12dp"
-            android:background="@android:drawable/btn_dropdown" />
+            android:layout_height="@dimen/spinner_height"
+            android:layout_marginBottom="@dimen/spacing_12" />
 
         <Spinner
             android:id="@+id/spnSoilPH"
+            style="@style/AgroPredict.Spinner"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginBottom="16dp"
-            android:background="@android:drawable/btn_dropdown" />
+            android:layout_height="@dimen/spinner_height"
+            android:layout_marginBottom="@dimen/spacing_24" />
 
-        <!-- Manejo del Cultivo -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="@dimen/spacing_20"
+            android:background="@color/divider" />
 
         <TextView
+            style="@style/AgroPredict.Text.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:text="@string/crop_management"
-            android:textColor="@color/green_primary"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:layout_marginBottom="@dimen/spacing_12"
+            android:text="@string/crop_management" />
 
         <Spinner
             android:id="@+id/spnIrrigation"
+            style="@style/AgroPredict.Spinner"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginBottom="12dp"
-            android:background="@android:drawable/btn_dropdown" />
+            android:layout_height="@dimen/spinner_height"
+            android:layout_marginBottom="@dimen/spacing_12" />
 
         <Spinner
             android:id="@+id/spnFertilization"
+            style="@style/AgroPredict.Spinner"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginBottom="12dp"
-            android:background="@android:drawable/btn_dropdown" />
+            android:layout_height="@dimen/spinner_height"
+            android:layout_marginBottom="@dimen/spacing_12" />
 
         <Spinner
             android:id="@+id/spnSpraying"
+            style="@style/AgroPredict.Spinner"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginBottom="12dp"
-            android:background="@android:drawable/btn_dropdown" />
+            android:layout_height="@dimen/spinner_height"
+            android:layout_marginBottom="@dimen/spacing_12" />
 
         <Spinner
             android:id="@+id/spnWeeds"
+            style="@style/AgroPredict.Spinner"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginBottom="16dp"
-            android:background="@android:drawable/btn_dropdown" />
+            android:layout_height="@dimen/spinner_height"
+            android:layout_marginBottom="@dimen/spacing_24" />
 
-        <!-- Síntomas -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="@dimen/spacing_20"
+            android:background="@color/divider" />
 
         <TextView
+            style="@style/AgroPredict.Text.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:text="@string/symptoms"
-            android:textColor="@color/green_primary"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:layout_marginBottom="@dimen/spacing_12"
+            android:text="@string/symptoms" />
 
         <Spinner
             android:id="@+id/spnSymptomType"
+            style="@style/AgroPredict.Spinner"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginBottom="12dp"
-            android:background="@android:drawable/btn_dropdown" />
+            android:layout_height="@dimen/spinner_height"
+            android:layout_marginBottom="@dimen/spacing_12" />
 
         <Spinner
             android:id="@+id/spnSeverity"
+            style="@style/AgroPredict.Spinner"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginBottom="12dp"
-            android:background="@android:drawable/btn_dropdown" />
+            android:layout_height="@dimen/spinner_height"
+            android:layout_marginBottom="@dimen/spacing_12" />
 
         <Spinner
             android:id="@+id/spnInsects"
+            style="@style/AgroPredict.Spinner"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginBottom="12dp"
-            android:background="@android:drawable/btn_dropdown" />
+            android:layout_height="@dimen/spinner_height"
+            android:layout_marginBottom="@dimen/spacing_12" />
 
         <Spinner
             android:id="@+id/spnAnimals"
+            style="@style/AgroPredict.Spinner"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginBottom="24dp"
-            android:background="@android:drawable/btn_dropdown" />
+            android:layout_height="@dimen/spinner_height"
+            android:layout_marginBottom="@dimen/spacing_32" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSubmitDiagnosis"
             style="@style/AgroPredict.Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="12dp"
             android:text="@string/submit_diagnosis" />
 
         <ProgressBar
@@ -270,7 +271,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/spacing_16"
             android:indeterminateTint="@color/green_primary"
             android:visibility="invisible" />
 

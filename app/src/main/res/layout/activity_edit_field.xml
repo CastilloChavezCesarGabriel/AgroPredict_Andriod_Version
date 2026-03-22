@@ -2,33 +2,32 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/surface"
     android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="@dimen/spacing_16">
 
         <TextView
             android:id="@+id/tvTitle"
+            style="@style/AgroPredict.Text.Display"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="24dp"
+            android:layout_marginTop="@dimen/spacing_16"
+            android:layout_marginBottom="@dimen/spacing_24"
             android:text="@string/edit_field"
-            android:textColor="@color/green_primary"
-            android:textSize="24sp"
-            android:textStyle="bold" />
+            android:textSize="@dimen/text_headline" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilFieldName"
             style="@style/AgroPredict.TextInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="@dimen/spacing_12"
             android:hint="@string/field_name_label">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -44,7 +43,7 @@
             style="@style/AgroPredict.TextInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="@dimen/spacing_12"
             android:hint="@string/crop_type_label">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -60,7 +59,7 @@
             style="@style/AgroPredict.TextInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="@dimen/spacing_12"
             android:hint="@string/location_label">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -76,7 +75,7 @@
             style="@style/AgroPredict.TextInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="@dimen/spacing_12"
             android:hint="@string/planting_date_label">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -84,7 +83,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clickable="true"
-                android:focusable="false"
+                android:focusable="true"
                 android:inputType="none" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -94,7 +93,7 @@
             style="@style/AgroPredict.TextInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="@dimen/spacing_16"
             android:hint="@string/area_label">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -107,24 +106,23 @@
 
         <Spinner
             android:id="@+id/spnSoilType"
+            style="@style/AgroPredict.Spinner"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginBottom="12dp"
-            android:background="@android:drawable/btn_dropdown" />
+            android:layout_height="@dimen/spinner_height"
+            android:layout_marginBottom="@dimen/spacing_12" />
 
         <Spinner
             android:id="@+id/spnStage"
+            style="@style/AgroPredict.Spinner"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginBottom="24dp"
-            android:background="@android:drawable/btn_dropdown" />
+            android:layout_height="@dimen/spinner_height"
+            android:layout_marginBottom="@dimen/spacing_32" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSaveChanges"
             style="@style/AgroPredict.Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="12dp"
             android:text="@string/save_changes" />
 
     </LinearLayout>

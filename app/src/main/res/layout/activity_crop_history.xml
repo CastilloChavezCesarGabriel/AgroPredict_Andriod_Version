@@ -3,33 +3,34 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/light_gray"
+    android:background="@color/surface"
     android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
+        style="@style/AgroPredict.Toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/green_primary"
-        app:title="Historial de Cambios"
+        app:title="@string/view_change_history"
         app:titleTextColor="@color/white" />
 
     <TextView
         android:id="@+id/tvEmpty"
+        style="@style/AgroPredict.Text.Body"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
         android:text="@string/no_modifications"
-        android:textColor="@color/dark_gray"
-        android:textSize="16sp"
+        android:textColor="@color/text_tertiary"
         android:visibility="gone" />
 
     <ListView
         android:id="@+id/lvHistory"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:divider="@color/light_gray"
+        android:clipToPadding="false"
+        android:divider="@color/divider"
         android:dividerHeight="1dp"
-        android:padding="16dp" />
+        android:padding="@dimen/spacing_16" />
 
 </LinearLayout>

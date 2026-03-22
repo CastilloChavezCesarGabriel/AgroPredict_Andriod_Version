@@ -3,35 +3,43 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/surface"
     android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
+        style="@style/AgroPredict.Toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/green_primary"
-        app:title="Generar Reporte"
+        app:title="@string/report_title"
         app:titleTextColor="@color/white" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="@dimen/spacing_16">
+
+        <TextView
+            style="@style/AgroPredict.Text.Label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_8"
+            android:text="@string/select_crop"
+            android:textColor="@color/text_secondary" />
 
         <Spinner
             android:id="@+id/spnCropSelection"
+            style="@style/AgroPredict.Spinner"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginBottom="24dp"
-            android:background="@android:drawable/btn_dropdown" />
+            android:layout_height="@dimen/spinner_height"
+            android:layout_marginBottom="@dimen/spacing_24" />
 
         <RadioGroup
             android:id="@+id/radioGroupFormat"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="@dimen/spacing_32"
             android:orientation="horizontal">
 
             <com.google.android.material.radiobutton.MaterialRadioButton
@@ -41,8 +49,8 @@
                 android:layout_weight="1"
                 android:checked="true"
                 android:text="@string/format_pdf"
-                android:textColor="@color/dark_gray"
-                android:textSize="16sp" />
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/text_body" />
 
             <com.google.android.material.radiobutton.MaterialRadioButton
                 android:id="@+id/radioCsv"
@@ -50,8 +58,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/format_csv"
-                android:textColor="@color/dark_gray"
-                android:textSize="16sp" />
+                android:textColor="@color/text_primary"
+                android:textSize="@dimen/text_body" />
 
         </RadioGroup>
 
@@ -60,8 +68,7 @@
             style="@style/AgroPredict.Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:padding="12dp"
+            android:layout_marginBottom="@dimen/spacing_16"
             android:text="@string/generate_button" />
 
         <ProgressBar
@@ -69,17 +76,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="@dimen/spacing_16"
             android:indeterminateTint="@color/green_primary"
             android:visibility="invisible" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnShare"
-            style="@style/AgroPredict.Button"
+            style="@style/AgroPredict.Button.Secondary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/soil_brown"
-            android:padding="12dp"
             android:text="@string/share_report"
             android:visibility="invisible" />
 

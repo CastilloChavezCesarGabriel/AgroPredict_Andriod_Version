@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/surface"
     android:fillViewport="true">
 
     <LinearLayout
@@ -11,31 +11,31 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:padding="24dp">
+        android:paddingStart="@dimen/spacing_24"
+        android:paddingTop="@dimen/spacing_64"
+        android:paddingEnd="@dimen/spacing_24"
+        android:paddingBottom="@dimen/spacing_32">
 
         <TextView
+            style="@style/AgroPredict.Text.Display"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="64dp"
-            android:layout_marginBottom="16dp"
-            android:text="@string/recovery_title"
-            android:textColor="@color/green_primary"
-            android:textSize="28sp"
-            android:textStyle="bold" />
+            android:layout_marginBottom="@dimen/spacing_12"
+            android:text="@string/recovery_title" />
 
         <TextView
+            style="@style/AgroPredict.Text.Label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp"
+            android:layout_marginBottom="@dimen/spacing_40"
             android:text="@string/recovery_instruction"
-            android:textColor="@color/medium_gray"
-            android:textSize="14sp" />
+            android:textColor="@color/text_secondary" />
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/AgroPredict.TextInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="@dimen/spacing_16"
             android:hint="@string/email_hint">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -50,7 +50,7 @@
             style="@style/AgroPredict.TextInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="@dimen/spacing_16"
             android:hint="@string/new_password_hint"
             app:endIconMode="password_toggle">
 
@@ -66,7 +66,7 @@
             style="@style/AgroPredict.TextInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="@dimen/spacing_32"
             android:hint="@string/confirm_password_hint"
             app:endIconMode="password_toggle">
 
@@ -83,20 +83,19 @@
             style="@style/AgroPredict.Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:padding="12dp"
             android:text="@string/reset_password" />
 
         <TextView
             android:id="@+id/tvBackToLogin"
+            style="@style/AgroPredict.Text.Link"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/spacing_20"
+            android:background="?attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
-            android:text="@string/back_to_login"
-            android:textColor="@color/green_primary"
-            android:textSize="14sp" />
+            android:padding="@dimen/spacing_8"
+            android:text="@string/back_to_login" />
 
     </LinearLayout>
 

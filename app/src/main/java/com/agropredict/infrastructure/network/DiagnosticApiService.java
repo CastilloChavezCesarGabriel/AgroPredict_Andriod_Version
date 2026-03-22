@@ -101,10 +101,11 @@ public final class DiagnosticApiService implements IDiagnosticApiService, ISubmi
     private Diagnostic parse(String identifier, JSONObject response) {
         String crop = response.optString("cultivo_detectado");
         double confidence = response.optDouble("confianza");
+        String severity = response.optString("severidad", "moderate");
         String summary = response.optString("reporte_resumido");
         String recommendation = response.optString("texto_largo");
         Prediction prediction = new Prediction(crop, confidence);
-        DiagnosticSummary diagnosticSummary = new DiagnosticSummary("moderate", summary);
+        DiagnosticSummary diagnosticSummary = new DiagnosticSummary(severity, summary);
         DiagnosticOwnership ownership = new DiagnosticOwnership(null, recommendation);
         DiagnosticAssessment assessment = new DiagnosticAssessment(diagnosticSummary, ownership);
         DiagnosticContent content = new DiagnosticContent(null, assessment);

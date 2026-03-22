@@ -1,173 +1,152 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/light_gray">
+    android:background="@color/surface">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="@dimen/spacing_16">
 
         <ImageView
             android:id="@+id/ivCropPhoto"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:scaleType="centerCrop"
-            android:visibility="gone"
+            android:layout_height="@dimen/photo_height"
+            android:layout_marginBottom="@dimen/spacing_16"
+            android:background="@drawable/photo_placeholder"
             android:contentDescription="@string/crop_photo"
-            android:layout_marginBottom="16dp" />
-
-        <!-- Cultivo Detectado -->
+            android:scaleType="centerCrop"
+            android:visibility="gone" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardCropDetection"
-            style="@style/AgroPredict.Card"
+            style="@style/AgroPredict.Card.Hero"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp">
+            android:layout_marginBottom="@dimen/spacing_12">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="@dimen/spacing_16">
 
                 <TextView
+                    style="@style/AgroPredict.Text.Label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/detected_crop"
-                    android:textColor="@color/medium_gray"
-                    android:textSize="14sp" />
+                    android:text="@string/detected_crop" />
 
                 <TextView
                     android:id="@+id/tvCropName"
+                    style="@style/AgroPredict.Text.Headline"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:textColor="@color/dark_gray"
-                    android:textSize="22sp"
-                    android:textStyle="bold" />
+                    android:layout_marginTop="@dimen/spacing_4"
+                    android:textColor="@color/green_primary_dark" />
 
                 <TextView
                     android:id="@+id/tvConfidence"
+                    style="@style/AgroPredict.Text.Body"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:textColor="@color/green_primary"
-                    android:textSize="16sp" />
+                    android:layout_marginTop="@dimen/spacing_4"
+                    android:textColor="@color/green_primary" />
 
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
-
-        <!-- Severidad -->
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardSeverity"
             style="@style/AgroPredict.Card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp">
+            android:layout_marginBottom="@dimen/spacing_12">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="@dimen/spacing_16">
 
                 <TextView
+                    style="@style/AgroPredict.Text.Label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/severity_label"
-                    android:textColor="@color/medium_gray"
-                    android:textSize="14sp" />
+                    android:text="@string/severity_label" />
 
                 <TextView
                     android:id="@+id/tvSeverity"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:background="@android:drawable/editbox_background"
-                    android:paddingStart="16dp"
-                    android:paddingTop="6dp"
-                    android:paddingEnd="16dp"
-                    android:paddingBottom="6dp"
-                    android:textColor="@color/white"
-                    android:textSize="16sp"
+                    android:layout_marginTop="@dimen/spacing_8"
+                    android:background="@drawable/severity_badge_background"
+                    android:textColor="@color/severity_low"
+                    android:textSize="@dimen/text_body"
                     android:textStyle="bold" />
 
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Resumen -->
-
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardSummary"
             style="@style/AgroPredict.Card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp">
+            android:layout_marginBottom="@dimen/spacing_12">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="@dimen/spacing_16">
 
                 <TextView
+                    style="@style/AgroPredict.Text.Label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/summary_label"
-                    android:textColor="@color/medium_gray"
-                    android:textSize="14sp" />
+                    android:text="@string/summary_label" />
 
                 <TextView
                     android:id="@+id/tvSummary"
+                    style="@style/AgroPredict.Text.Body"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:lineSpacingExtra="4dp"
-                    android:textColor="@color/dark_gray"
-                    android:textSize="15sp" />
+                    android:layout_marginTop="@dimen/spacing_8" />
 
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
-
-        <!-- Recomendaciones -->
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardRecommendations"
             style="@style/AgroPredict.Card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp">
+            android:layout_marginBottom="@dimen/spacing_32">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="@dimen/spacing_16">
 
                 <TextView
+                    style="@style/AgroPredict.Text.Label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/recommendations_label"
-                    android:textColor="@color/medium_gray"
-                    android:textSize="14sp" />
+                    android:text="@string/recommendations_label" />
 
                 <TextView
                     android:id="@+id/tvRecommendations"
+                    style="@style/AgroPredict.Text.Body"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:lineSpacingExtra="4dp"
-                    android:textColor="@color/dark_gray"
-                    android:textSize="15sp" />
+                    android:layout_marginTop="@dimen/spacing_8" />
 
             </LinearLayout>
 
@@ -178,7 +157,6 @@
             style="@style/AgroPredict.Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="12dp"
             android:text="@string/back_to_home" />
 
     </LinearLayout>

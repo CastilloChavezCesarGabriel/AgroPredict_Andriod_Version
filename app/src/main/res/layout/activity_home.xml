@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/light_gray">
+    android:background="@color/surface">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -12,261 +12,215 @@
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
+            style="@style/AgroPredict.Toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/green_primary"
-            app:title="AgroPredict"
+            app:title="@string/home_title"
             app:titleTextColor="@color/white">
 
             <ImageButton
                 android:id="@+id/btnLogout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/icon_medium"
+                android:layout_height="@dimen/icon_medium"
                 android:layout_gravity="end"
-                android:layout_marginEnd="8dp"
+                android:layout_marginEnd="@dimen/spacing_8"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Cerrar sesión"
-                android:padding="8dp"
+                android:contentDescription="@string/logout"
+                android:padding="@dimen/spacing_8"
                 android:src="@android:drawable/ic_menu_close_clear_cancel"
-                android:tint="@color/white" />
+                app:tint="@color/white" />
 
         </androidx.appcompat.widget.Toolbar>
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:clipToPadding="false">
 
-            <GridLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:alignmentMode="alignBounds"
-                android:columnCount="2"
-                android:padding="16dp"
-                android:useDefaultMargins="true">
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_16">
 
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardNewPrediction"
-                    style="@style/AgroPredict.Card"
-                    android:layout_width="0dp"
+                    style="@style/AgroPredict.Card.Hero"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
+                    android:layout_marginBottom="@dimen/spacing_16"
                     android:clickable="true"
-                    android:focusable="true">
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:padding="24dp">
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/spacing_20">
 
                         <ImageView
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:contentDescription="Nueva Predicción"
+                            android:layout_width="@dimen/icon_large"
+                            android:layout_height="@dimen/icon_large"
+                            android:contentDescription="@string/new_prediction"
                             android:src="@android:drawable/ic_menu_camera"
-                            android:tint="@color/green_primary" />
+                            app:tint="@color/green_primary" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="12dp"
-                            android:gravity="center"
-                            android:text="@string/new_prediction"
-                            android:textColor="@color/dark_gray"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
+                            android:layout_marginStart="@dimen/spacing_16"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                style="@style/AgroPredict.Text.Headline"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/new_prediction"
+                                android:textColor="@color/green_primary_dark" />
+
+                            <TextView
+                                style="@style/AgroPredict.Text.Label"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="@dimen/spacing_4"
+                                android:text="@string/new_prediction_description"
+                                android:textColor="@color/text_secondary" />
+
+                        </LinearLayout>
 
                     </LinearLayout>
 
                 </com.google.android.material.card.MaterialCardView>
 
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/cardHistory"
-                    style="@style/AgroPredict.Card"
-                    android:layout_width="0dp"
+                <GridLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    android:clickable="true"
-                    android:focusable="true">
+                    android:alignmentMode="alignBounds"
+                    android:columnCount="2"
+                    android:useDefaultMargins="true">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardHistory"
+                        style="@style/AgroPredict.Card"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:padding="24dp">
-
-                        <ImageView
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:contentDescription="Consultar Historial"
-                            android:src="@android:drawable/ic_menu_recent_history"
-                            android:tint="@color/soil_brown" />
+                        android:layout_columnWeight="1"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground">
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            style="@style/AgroPredict.Text.CardTitle"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="12dp"
+                            app:drawableTopCompat="@android:drawable/ic_menu_recent_history"
+                            android:drawablePadding="@dimen/spacing_12"
+                            app:drawableTint="@color/soil_brown"
                             android:gravity="center"
-                            android:text="@string/view_history"
-                            android:textColor="@color/dark_gray"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
+                            android:padding="@dimen/spacing_24"
+                            android:text="@string/view_history" />
 
-                    </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
 
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/cardReport"
-                    style="@style/AgroPredict.Card"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    android:clickable="true"
-                    android:focusable="true">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardReport"
+                        style="@style/AgroPredict.Card"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:padding="24dp">
-
-                        <ImageView
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:contentDescription="Generar Reporte"
-                            android:src="@android:drawable/ic_menu_edit"
-                            android:tint="@color/green_primary" />
+                        android:layout_columnWeight="1"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground">
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            style="@style/AgroPredict.Text.CardTitle"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="12dp"
+                            app:drawableTopCompat="@android:drawable/ic_menu_edit"
+                            android:drawablePadding="@dimen/spacing_12"
+                            app:drawableTint="@color/green_primary"
                             android:gravity="center"
-                            android:text="@string/generate_report"
-                            android:textColor="@color/dark_gray"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
+                            android:padding="@dimen/spacing_24"
+                            android:text="@string/generate_report" />
 
-                    </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
 
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/cardPestGuide"
-                    style="@style/AgroPredict.Card"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    android:clickable="true"
-                    android:focusable="true">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardPestGuide"
+                        style="@style/AgroPredict.Card"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:padding="24dp">
-
-                        <ImageView
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:contentDescription="Guía de Plagas"
-                            android:src="@android:drawable/ic_menu_info_details"
-                            android:tint="@color/soil_brown" />
+                        android:layout_columnWeight="1"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground">
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            style="@style/AgroPredict.Text.CardTitle"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="12dp"
+                            app:drawableTopCompat="@android:drawable/ic_menu_info_details"
+                            android:drawablePadding="@dimen/spacing_12"
+                            app:drawableTint="@color/soil_brown"
                             android:gravity="center"
-                            android:text="@string/pest_guide"
-                            android:textColor="@color/dark_gray"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
+                            android:padding="@dimen/spacing_24"
+                            android:text="@string/pest_guide" />
 
-                    </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
 
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/cardResources"
-                    style="@style/AgroPredict.Card"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    android:clickable="true"
-                    android:focusable="true">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardResources"
+                        style="@style/AgroPredict.Card"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:padding="24dp">
-
-                        <ImageView
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:contentDescription="Recursos"
-                            android:src="@android:drawable/ic_menu_mapmode"
-                            android:tint="@color/green_primary" />
+                        android:layout_columnWeight="1"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground">
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            style="@style/AgroPredict.Text.CardTitle"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="12dp"
+                            app:drawableTopCompat="@android:drawable/ic_menu_mapmode"
+                            android:drawablePadding="@dimen/spacing_12"
+                            app:drawableTint="@color/green_primary"
                             android:gravity="center"
-                            android:text="@string/agronomy_resources"
-                            android:textColor="@color/dark_gray"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
+                            android:padding="@dimen/spacing_24"
+                            android:text="@string/resources" />
 
-                    </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
 
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/cardManual"
-                    style="@style/AgroPredict.Card"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    android:clickable="true"
-                    android:focusable="true">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardManual"
+                        style="@style/AgroPredict.Card"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:padding="24dp">
-
-                        <ImageView
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:contentDescription="Manual"
-                            android:src="@android:drawable/ic_menu_agenda"
-                            android:tint="@color/soil_brown" />
+                        android:layout_columnWeight="1"
+                        android:layout_columnSpan="2"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground">
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            style="@style/AgroPredict.Text.CardTitle"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="12dp"
+                            app:drawableTopCompat="@android:drawable/ic_menu_agenda"
+                            android:drawablePadding="@dimen/spacing_12"
+                            app:drawableTint="@color/soil_brown"
                             android:gravity="center"
-                            android:text="@string/sustainable_manual"
-                            android:textColor="@color/dark_gray"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
+                            android:padding="@dimen/spacing_24"
+                            android:text="@string/sustainable_manual" />
 
-                    </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
 
-                </com.google.android.material.card.MaterialCardView>
+                </GridLayout>
 
-            </GridLayout>
+            </LinearLayout>
 
         </ScrollView>
 
@@ -277,10 +231,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_margin="24dp"
-        android:contentDescription="Agregar Nuevo Campo"
+        android:layout_margin="@dimen/spacing_24"
+        android:contentDescription="@string/add_field"
         android:src="@android:drawable/ic_input_add"
-        app:backgroundTint="@color/green_primary"
-        android:tint="@color/white" />
+        app:tint="@color/white"
+        app:backgroundTint="@color/green_primary" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
