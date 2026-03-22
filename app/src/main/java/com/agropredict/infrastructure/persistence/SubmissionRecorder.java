@@ -5,11 +5,11 @@ import com.agropredict.application.repository.IQuestionnaireRepository;
 import com.agropredict.application.request.SubmissionRequest;
 import com.agropredict.domain.entity.Diagnostic;
 
-public final class ResultRecorder {
+public final class SubmissionRecorder {
     private final IDiagnosticRepository diagnosticRepository;
     private final IQuestionnaireRepository questionnaireRepository;
 
-    public ResultRecorder(IDiagnosticRepository diagnosticRepository, IQuestionnaireRepository questionnaireRepository) {
+    public SubmissionRecorder(IDiagnosticRepository diagnosticRepository, IQuestionnaireRepository questionnaireRepository) {
         this.diagnosticRepository = diagnosticRepository;
         this.questionnaireRepository = questionnaireRepository;
     }

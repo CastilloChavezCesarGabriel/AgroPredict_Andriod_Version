@@ -10,7 +10,7 @@ import com.agropredict.application.repository.IReportRepository;
 import com.agropredict.application.repository.IUserRepository;
 import com.agropredict.infrastructure.persistence.Database;
 import com.agropredict.infrastructure.persistence.DiagnosticWorkflow;
-import com.agropredict.infrastructure.persistence.ResultRecorder;
+import com.agropredict.infrastructure.persistence.SubmissionRecorder;
 import com.agropredict.infrastructure.persistence.SqliteCatalog;
 import com.agropredict.infrastructure.persistence.repository.SqliteCropImageRepository;
 import com.agropredict.infrastructure.persistence.repository.SqliteCropRepository;
@@ -57,7 +57,7 @@ public final class PersistenceFactory {
 
     public IDiagnosticWorkflow createDiagnosticWorkflow() {
         Submission submission = new Submission(createCropRepository(), createCropImageRepository());
-        ResultRecorder result = new ResultRecorder(createDiagnosticRepository(), createQuestionnaireRepository());
+        SubmissionRecorder result = new SubmissionRecorder(createDiagnosticRepository(), createQuestionnaireRepository());
         return new DiagnosticWorkflow(submission, result);
     }
 }
