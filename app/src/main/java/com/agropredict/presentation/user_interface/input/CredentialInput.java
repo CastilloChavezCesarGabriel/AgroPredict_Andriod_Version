@@ -1,16 +1,16 @@
-package com.agropredict.presentation.user_interface.spinner;
+package com.agropredict.presentation.user_interface.input;
 
 import android.app.Activity;
 import android.widget.EditText;
 import com.agropredict.R;
 import com.agropredict.application.request.data.Authentication;
 
-public final class CredentialInputGroup {
+public final class CredentialInput {
     private final EditText emailInput;
     private final EditText passwordInput;
     private final EditText confirmPasswordInput;
 
-    public CredentialInputGroup(Activity activity) {
+    public CredentialInput(Activity activity) {
         this.emailInput = activity.findViewById(R.id.etEmail);
         this.passwordInput = activity.findViewById(R.id.etPassword);
         this.confirmPasswordInput = activity.findViewById(R.id.etConfirmPassword);

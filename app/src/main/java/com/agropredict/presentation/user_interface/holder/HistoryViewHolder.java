@@ -28,7 +28,6 @@ public final class HistoryViewHolder implements IDiagnosticVisitor,
         IDiagnosticDataVisitor, IPredictionVisitor,
         IDiagnosticContentVisitor, IDiagnosticAssessmentVisitor,
         IDiagnosticSummaryVisitor {
-
     private final ListView diagnosticListView;
     private final TextView emptyLabel;
     private final ArrayAdapter<String> listAdapter;
@@ -44,12 +43,20 @@ public final class HistoryViewHolder implements IDiagnosticVisitor,
         diagnosticListView.setAdapter(listAdapter);
     }
 
-    public void listen(ListView.OnItemClickListener listener) {
-        diagnosticListView.setOnItemClickListener(listener);
+    public void listen(ISelectionAction action) {
+        diagnosticListView.setOnItemClickListener(
+                (parent, view, position, id) -> resolve(position, action));
     }
 
-    public void observe(ListView.OnItemLongClickListener listener) {
-        diagnosticListView.setOnItemLongClickListener(listener);
+    public void observe(ISelectionAction action) {
+        diagnosticListView.setOnItemLongClickListener(
+                (parent, view, position, id) -> resolve(position, action));
+    }
+
+    private boolean resolve(int position, ISelectionAction action) {
+        if (position >= identifiers.size()) return false;
+        action.select(identifiers.get(position));
+        return true;
     }
 
     public void display(List<Diagnostic> diagnostics) {
@@ -68,15 +75,6 @@ public final class HistoryViewHolder implements IDiagnosticVisitor,
     public void empty() {
         diagnosticListView.setVisibility(View.GONE);
         emptyLabel.setVisibility(View.VISIBLE);
-    }
-
-    public String identifierAt(int position) {
-        if (position >= identifiers.size()) return null;
-        return identifiers.get(position);
-    }
-
-    public boolean isValidPosition(int position) {
-        return position < identifiers.size();
     }
 
     @Override

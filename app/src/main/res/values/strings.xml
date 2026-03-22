@@ -68,6 +68,7 @@
     <string name="submit_diagnosis">Enviar Diagnóstico</string>
     <string name="analyzing">Analizando imagen…</string>
     <string name="classification_success">Cultivo detectado: %1$s (%.0f%%)</string>
+    <string name="classification_result">%1$s (%2$s)</string>
     <string name="classification_low_confidence">No se pudo identificar el cultivo con certeza</string>
     <string name="image_invalid">La imagen no es válida para diagnóstico</string>
     <string name="diagnosis_success">Diagnóstico generado exitosamente</string>

@@ -1,4 +1,4 @@
-package com.agropredict.presentation.user_interface.spinner;
+package com.agropredict.presentation.user_interface.input;
 
 import android.app.Activity;
 import android.widget.Spinner;
@@ -8,13 +8,13 @@ import com.agropredict.application.request.data.Pest;
 import com.agropredict.application.request.data.Symptom;
 import java.util.Arrays;
 
-public final class SymptomSpinnerGroup {
+public final class SymptomInput {
     private final Spinner symptomTypeSpinner;
     private final Spinner severitySpinner;
     private final Spinner insectsSpinner;
     private final Spinner animalsSpinner;
 
-    public SymptomSpinnerGroup(Activity activity) {
+    public SymptomInput(Activity activity) {
         this.symptomTypeSpinner = activity.findViewById(R.id.spnSymptomType);
         this.severitySpinner = activity.findViewById(R.id.spnSeverity);
         this.insectsSpinner = activity.findViewById(R.id.spnInsects);

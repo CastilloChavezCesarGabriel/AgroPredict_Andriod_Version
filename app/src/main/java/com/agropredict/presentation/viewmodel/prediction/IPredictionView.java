@@ -1,6 +1,7 @@
 package com.agropredict.presentation.viewmodel.prediction;
 
-import java.util.List;
+import com.agropredict.presentation.user_interface.input.SoilTypeCatalog;
+import com.agropredict.presentation.user_interface.input.StageCatalog;
 
 public interface IPredictionView {
     void notify(String message);
@@ -8,6 +9,6 @@ public interface IPredictionView {
     void idle();
     void classify(String cropName, String confidence);
     void reveal(String diagnosticIdentifier);
-    void populateSoilTypes(List<String> soilTypes);
-    void populateStages(List<String> stages);
+    void populate(SoilTypeCatalog soilTypeOption);
+    void populate(StageCatalog stageOption);
 }

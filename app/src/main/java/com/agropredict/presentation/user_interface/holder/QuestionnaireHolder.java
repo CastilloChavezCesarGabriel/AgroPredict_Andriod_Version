@@ -1,10 +1,10 @@
 package com.agropredict.presentation.user_interface.holder;
-import com.agropredict.presentation.user_interface.spinner.CatalogSpinnerGroup;
-import com.agropredict.presentation.user_interface.spinner.EnvironmentSpinnerGroup;
-import com.agropredict.presentation.user_interface.spinner.ManagementSpinnerGroup;
-import com.agropredict.presentation.user_interface.spinner.SoilSpinnerGroup;
-import com.agropredict.presentation.user_interface.spinner.SymptomSpinnerGroup;
 
+import com.agropredict.presentation.user_interface.input.CatalogInput;
+import com.agropredict.presentation.user_interface.input.EnvironmentInput;
+import com.agropredict.presentation.user_interface.input.ManagementInput;
+import com.agropredict.presentation.user_interface.input.SoilInput;
+import com.agropredict.presentation.user_interface.input.SymptomInput;
 import android.app.Activity;
 import com.agropredict.application.request.SubmissionRequest;
 import com.agropredict.application.request.data.Condition;
@@ -15,29 +15,30 @@ import com.agropredict.application.request.data.Questionnaire;
 import com.agropredict.application.request.input.Cultivation;
 import com.agropredict.application.request.input.Submission;
 import com.agropredict.application.request.input.Photograph;
-import java.util.List;
+import com.agropredict.presentation.user_interface.input.SoilTypeCatalog;
+import com.agropredict.presentation.user_interface.input.StageCatalog;
 
 public final class QuestionnaireHolder {
-    private final CatalogSpinnerGroup catalogGroup;
-    private final EnvironmentSpinnerGroup environmentGroup;
-    private final SoilSpinnerGroup soilGroup;
-    private final ManagementSpinnerGroup managementGroup;
-    private final SymptomSpinnerGroup symptomGroup;
+    private final CatalogInput catalogGroup;
+    private final EnvironmentInput environmentGroup;
+    private final SoilInput soilGroup;
+    private final ManagementInput managementGroup;
+    private final SymptomInput symptomGroup;
 
     public QuestionnaireHolder(Activity activity) {
-        this.catalogGroup = new CatalogSpinnerGroup(activity);
-        this.environmentGroup = new EnvironmentSpinnerGroup(activity);
-        this.soilGroup = new SoilSpinnerGroup(activity);
-        this.managementGroup = new ManagementSpinnerGroup(activity);
-        this.symptomGroup = new SymptomSpinnerGroup(activity);
+        this.catalogGroup = new CatalogInput(activity);
+        this.environmentGroup = new EnvironmentInput(activity);
+        this.soilGroup = new SoilInput(activity);
+        this.managementGroup = new ManagementInput(activity);
+        this.symptomGroup = new SymptomInput(activity);
     }
 
-    public void populateSoilTypes(List<String> soilTypes) {
-        catalogGroup.populateSoilTypes(soilTypes);
+    public void populate(SoilTypeCatalog soilTypeOption) {
+        catalogGroup.populate(soilTypeOption);
     }
 
-    public void populateStages(List<String> stages) {
-        catalogGroup.populateStages(stages);
+    public void populate(StageCatalog stageOption) {
+        catalogGroup.populate(stageOption);
     }
 
     public SubmissionRequest assemble(Classification prediction, Photograph image) {

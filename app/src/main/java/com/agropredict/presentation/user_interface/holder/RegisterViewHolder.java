@@ -1,6 +1,6 @@
 package com.agropredict.presentation.user_interface.holder;
-import com.agropredict.presentation.user_interface.spinner.CredentialInputGroup;
-import com.agropredict.presentation.user_interface.spinner.SpinnerPopulator;
+import com.agropredict.presentation.user_interface.input.CredentialInput;
+import com.agropredict.presentation.user_interface.input.SpinnerPopulator;
 
 import android.app.Activity;
 import android.widget.EditText;
@@ -16,14 +16,14 @@ public final class RegisterViewHolder {
     private final EditText phoneInput;
     private final EditText usernameInput;
     private final Spinner occupationSpinner;
-    private final CredentialInputGroup credentialGroup;
+    private final CredentialInput credentialGroup;
 
     public RegisterViewHolder(Activity activity) {
         this.fullNameInput = activity.findViewById(R.id.etFullName);
         this.phoneInput = activity.findViewById(R.id.etPhone);
         this.usernameInput = activity.findViewById(R.id.etUsername);
         this.occupationSpinner = activity.findViewById(R.id.spnOccupation);
-        this.credentialGroup = new CredentialInputGroup(activity);
+        this.credentialGroup = new CredentialInput(activity);
     }
 
     public boolean match() {

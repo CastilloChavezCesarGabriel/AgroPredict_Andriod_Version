@@ -1,4 +1,4 @@
-package com.agropredict.presentation.user_interface.spinner;
+package com.agropredict.presentation.user_interface.input;
 
 import android.app.Activity;
 import android.widget.Spinner;
@@ -6,11 +6,11 @@ import com.agropredict.R;
 import com.agropredict.application.request.data.Soil;
 import java.util.Arrays;
 
-public final class SoilSpinnerGroup {
+public final class SoilInput {
     private final Spinner soilMoistureSpinner;
     private final Spinner soilPhSpinner;
 
-    public SoilSpinnerGroup(Activity activity) {
+    public SoilInput(Activity activity) {
         this.soilMoistureSpinner = activity.findViewById(R.id.spnSoilMoisture);
         this.soilPhSpinner = activity.findViewById(R.id.spnSoilPH);
         populate();

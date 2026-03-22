@@ -1,4 +1,4 @@
-package com.agropredict.presentation.user_interface.spinner;
+package com.agropredict.presentation.user_interface.input;
 
 import android.content.Context;
 import android.widget.ArrayAdapter;

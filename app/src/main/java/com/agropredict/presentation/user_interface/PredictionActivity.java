@@ -10,14 +10,14 @@ import com.agropredict.R;
 import com.agropredict.application.PredictionFacade;
 import com.agropredict.application.request.input.Photograph;
 import com.agropredict.application.request.data.Classification;
-import com.agropredict.application.request.SubmissionRequest;
 import com.agropredict.application.service.IImageService;
 import com.agropredict.application.usecase.catalog.ListCatalogUseCase;
 import com.agropredict.application.usecase.diagnostic.ClassifyImageUseCase;
 import com.agropredict.application.usecase.diagnostic.SubmitDiagnosticUseCase;
+import com.agropredict.presentation.user_interface.input.SoilTypeCatalog;
+import com.agropredict.presentation.user_interface.input.StageCatalog;
 import com.agropredict.presentation.viewmodel.prediction.IPredictionView;
 import com.agropredict.presentation.viewmodel.prediction.PredictionViewModel;
-import java.util.List;
 
 public final class PredictionActivity extends BaseActivity implements IPredictionView {
     private static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -62,7 +62,7 @@ public final class PredictionActivity extends BaseActivity implements IPredictio
     }
 
     private void schedule() {
-        new DateSelection(date -> holder.date(date)).show(this);
+        new DateSelection(date -> holder.stamp(date)).show(this);
     }
 
     private void diagnose() {
@@ -117,13 +117,13 @@ public final class PredictionActivity extends BaseActivity implements IPredictio
     }
 
     @Override
-    public void populateSoilTypes(List<String> soilTypes) {
-        holder.populateSoilTypes(soilTypes);
+    public void populate(SoilTypeCatalog soilTypeOption) {
+        holder.populate(soilTypeOption);
     }
 
     @Override
-    public void populateStages(List<String> stages) {
-        holder.populateStages(stages);
+    public void populate(StageCatalog stageOption) {
+        holder.populate(stageOption);
     }
 
     @Override

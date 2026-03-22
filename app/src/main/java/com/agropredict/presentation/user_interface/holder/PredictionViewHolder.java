@@ -5,11 +5,13 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.net.Uri;
 import com.agropredict.R;
 import com.agropredict.application.request.SubmissionRequest;
 import com.agropredict.application.request.data.Classification;
 import com.agropredict.application.request.input.Photograph;
-import java.util.List;
+import com.agropredict.presentation.user_interface.input.SoilTypeCatalog;
+import com.agropredict.presentation.user_interface.input.StageCatalog;
 
 public final class PredictionViewHolder {
     private final ImageView cropImagePreview;
@@ -35,24 +37,26 @@ public final class PredictionViewHolder {
     }
 
     public void classify(String cropName, String confidence) {
-        classificationLabel.setText(cropName + " (" + confidence + ")");
+        String text = classificationLabel.getContext().getString(
+                R.string.classification_result, cropName, confidence);
+        classificationLabel.setText(text);
         classificationLabel.setVisibility(View.VISIBLE);
     }
 
-    public void date(String date) {
+    public void stamp(String date) {
         plantingDateLabel.setText(date);
     }
 
-    public void preview(android.net.Uri imageUri) {
+    public void preview(Uri imageUri) {
         cropImagePreview.setImageURI(imageUri);
     }
 
-    public void populateSoilTypes(List<String> soilTypes) {
-        questionnaire.populateSoilTypes(soilTypes);
+    public void populate(SoilTypeCatalog soilTypeOption) {
+        questionnaire.populate(soilTypeOption);
     }
 
-    public void populateStages(List<String> stages) {
-        questionnaire.populateStages(stages);
+    public void populate(StageCatalog stageOption) {
+        questionnaire.populate(stageOption);
     }
 
     public SubmissionRequest collect(Classification prediction, Photograph image) {

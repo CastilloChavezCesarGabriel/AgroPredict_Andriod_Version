@@ -74,7 +74,7 @@ public final class ReportActivity extends BaseActivity implements IReportView {
     public void offer(String filePath) {
         generatedFilePath = filePath;
         runOnUiThread(() -> {
-            holder.offer(filePath);
+            holder.offer();
             if (filePath.endsWith(".pdf")) PdfLauncher.open(this, filePath);
         });
     }

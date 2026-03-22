@@ -1,10 +1,11 @@
 package com.agropredict.presentation.viewmodel.prediction;
 
 import com.agropredict.application.PredictionFacade;
-import com.agropredict.application.visitor.IClassificationResultVisitor;
 import com.agropredict.application.request.SubmissionRequest;
 import com.agropredict.application.result.OperationResult;
 import com.agropredict.application.usecase.catalog.ListCatalogUseCase;
+import com.agropredict.presentation.user_interface.input.SoilTypeCatalog;
+import com.agropredict.presentation.user_interface.input.StageCatalog;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -21,8 +22,8 @@ public final class PredictionViewModel {
     }
 
     public void populate(ListCatalogUseCase soilTypesUseCase, ListCatalogUseCase stagesUseCase) {
-        view.populateSoilTypes(soilTypesUseCase.list());
-        view.populateStages(stagesUseCase.list());
+        view.populate(new SoilTypeCatalog(soilTypesUseCase.list()));
+        view.populate(new StageCatalog(stagesUseCase.list()));
     }
 
     public void classify(String imagePath) {

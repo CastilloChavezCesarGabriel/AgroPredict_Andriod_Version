@@ -1,13 +1,9 @@
 package com.agropredict.presentation.user_interface.holder;
 
 import android.app.Activity;
-import android.graphics.BitmapFactory;
-import android.widget.ImageView;
 import android.widget.TextView;
 import com.agropredict.R;
-import java.io.File;
-import java.util.Locale;
-import android.view.View;
+import com.agropredict.application.repository.ICropImageRepository;
 import com.agropredict.domain.component.diagnostic.DiagnosticAssessment;
 import com.agropredict.domain.component.diagnostic.DiagnosticConditions;
 import com.agropredict.domain.component.diagnostic.DiagnosticContent;
@@ -17,9 +13,7 @@ import com.agropredict.domain.component.diagnostic.DiagnosticEnvironment;
 import com.agropredict.domain.component.diagnostic.DiagnosticOwnership;
 import com.agropredict.domain.component.diagnostic.DiagnosticSummary;
 import com.agropredict.domain.component.diagnostic.Prediction;
-import com.agropredict.domain.entity.CropImage;
 import com.agropredict.domain.entity.Diagnostic;
-import com.agropredict.domain.visitor.crop.ICropImageVisitor;
 import com.agropredict.domain.visitor.diagnostic.IDiagnosticAssessmentVisitor;
 import com.agropredict.domain.visitor.diagnostic.IDiagnosticConditionsVisitor;
 import com.agropredict.domain.visitor.diagnostic.IDiagnosticContentVisitor;
@@ -29,31 +23,25 @@ import com.agropredict.domain.visitor.diagnostic.IDiagnosticOwnershipVisitor;
 import com.agropredict.domain.visitor.diagnostic.IDiagnosticSummaryVisitor;
 import com.agropredict.domain.visitor.diagnostic.IDiagnosticVisitor;
 import com.agropredict.domain.visitor.diagnostic.IPredictionVisitor;
-import com.agropredict.application.repository.ICropImageRepository;
 
 public final class PredictionResultViewHolder implements IDiagnosticVisitor,
         IDiagnosticDataVisitor, IDiagnosticContentVisitor,
         IDiagnosticConditionsVisitor, IDiagnosticContextVisitor,
         IDiagnosticAssessmentVisitor, IPredictionVisitor,
-        IDiagnosticSummaryVisitor, IDiagnosticOwnershipVisitor,
-        ICropImageVisitor {
-
-    private final TextView cropNameLabel;
-    private final TextView confidenceLabel;
+        IDiagnosticSummaryVisitor, IDiagnosticOwnershipVisitor {
+    private final PredictionDisplay predictionDisplay;
     private final TextView severityLabel;
     private final TextView summaryLabel;
     private final TextView recommendationsLabel;
-    private final ImageView cropPhotoView;
-    private final ICropImageRepository imageRepository;
+    private final PhotoDisplay photoDisplay;
 
     public PredictionResultViewHolder(Activity activity, ICropImageRepository imageRepository) {
-        this.imageRepository = imageRepository;
-        cropNameLabel = activity.findViewById(R.id.tvCropName);
-        confidenceLabel = activity.findViewById(R.id.tvConfidence);
+        predictionDisplay = new PredictionDisplay(activity.findViewById(R.id.tvCropName),
+                activity.findViewById(R.id.tvConfidence));
         severityLabel = activity.findViewById(R.id.tvSeverity);
         summaryLabel = activity.findViewById(R.id.tvSummary);
         recommendationsLabel = activity.findViewById(R.id.tvRecommendations);
-        cropPhotoView = activity.findViewById(R.id.ivCropPhoto);
+        photoDisplay = new PhotoDisplay(activity.findViewById(R.id.ivCropPhoto), imageRepository);
     }
 
     public void display(Diagnostic diagnostic) {
@@ -79,24 +67,14 @@ public final class PredictionResultViewHolder implements IDiagnosticVisitor,
 
     @Override
     public void visit(DiagnosticContext context, DiagnosticEnvironment environment) {
-        if (context != null) context.accept(this);
+        if (context != null) {
+            context.accept(this);
+        }
     }
 
     @Override
     public void visitContext(String cropIdentifier, String imageIdentifier) {
-        if (imageIdentifier == null) return;
-        CropImage image = imageRepository.find(imageIdentifier);
-        if (image != null) image.accept(this);
-    }
-
-    @Override
-    public void visit(String identifier, String filePath) {
-        if (filePath == null) return;
-        File file = new File(filePath);
-        if (file.exists()) {
-            cropPhotoView.setImageBitmap(BitmapFactory.decodeFile(filePath));
-            cropPhotoView.setVisibility(View.VISIBLE);
-        }
+        photoDisplay.load(imageIdentifier);
     }
 
     @Override
@@ -107,8 +85,7 @@ public final class PredictionResultViewHolder implements IDiagnosticVisitor,
 
     @Override
     public void visitPrediction(String predictedCrop, double confidence) {
-        cropNameLabel.setText(predictedCrop);
-        confidenceLabel.setText(String.format(Locale.getDefault(), "%.0f%%", confidence * 100));
+        predictionDisplay.classify(predictedCrop, confidence);
     }
 
     @Override

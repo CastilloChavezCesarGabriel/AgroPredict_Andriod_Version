@@ -1,4 +1,4 @@
-package com.agropredict.presentation.user_interface.spinner;
+package com.agropredict.presentation.user_interface.input;
 
 import android.app.Activity;
 import android.widget.Spinner;
@@ -8,13 +8,13 @@ import com.agropredict.application.request.data.FarmManagement;
 import com.agropredict.application.request.data.PestControl;
 import java.util.Arrays;
 
-public final class ManagementSpinnerGroup {
+public final class ManagementInput {
     private final Spinner irrigationSpinner;
     private final Spinner fertilizationSpinner;
     private final Spinner sprayingSpinner;
     private final Spinner weedsSpinner;
 
-    public ManagementSpinnerGroup(Activity activity) {
+    public ManagementInput(Activity activity) {
         this.irrigationSpinner = activity.findViewById(R.id.spnIrrigation);
         this.fertilizationSpinner = activity.findViewById(R.id.spnFertilization);
         this.sprayingSpinner = activity.findViewById(R.id.spnSpraying);

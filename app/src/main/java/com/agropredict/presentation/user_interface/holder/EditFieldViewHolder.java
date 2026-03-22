@@ -1,5 +1,4 @@
 package com.agropredict.presentation.user_interface.holder;
-import com.agropredict.presentation.user_interface.spinner.SpinnerPopulator;
 
 import android.app.Activity;
 import android.widget.EditText;
@@ -24,21 +23,19 @@ import com.agropredict.domain.visitor.crop.ICropLocationVisitor;
 import com.agropredict.domain.visitor.crop.ICropOwnershipVisitor;
 import com.agropredict.domain.visitor.crop.ICropSoilVisitor;
 import com.agropredict.domain.visitor.crop.ICropVisitor;
-import java.util.List;
+import com.agropredict.presentation.user_interface.input.SoilTypeCatalog;
+import com.agropredict.presentation.user_interface.input.StageCatalog;
 
 public final class EditFieldViewHolder implements ICropVisitor, ICropDataVisitor,
         ICropDetailVisitor, ICropContentVisitor, ICropEnvironmentVisitor,
         ICropSoilVisitor, ICropOwnershipVisitor, ICropLocationVisitor {
-
     private final EditText cropNameInput;
-    private final EditText notesInput;
     private final EditText areaInput;
     private final Spinner soilTypeSpinner;
     private final Spinner stageSpinner;
 
     public EditFieldViewHolder(Activity activity) {
         cropNameInput = activity.findViewById(R.id.etFieldName);
-        notesInput = activity.findViewById(R.id.etCropType);
         areaInput = activity.findViewById(R.id.etArea);
         soilTypeSpinner = activity.findViewById(R.id.spnSoilType);
         stageSpinner = activity.findViewById(R.id.spnStage);
@@ -57,12 +54,12 @@ public final class EditFieldViewHolder implements ICropVisitor, ICropDataVisitor
         crop.accept(this);
     }
 
-    public void populateSoilTypes(List<String> soilTypes) {
-        SpinnerPopulator.populate(soilTypeSpinner, soilTypes);
+    public void populate(SoilTypeCatalog soilTypeOption) {
+        soilTypeOption.populate(soilTypeSpinner);
     }
 
-    public void populateStages(List<String> stages) {
-        SpinnerPopulator.populate(stageSpinner, stages);
+    public void populate(StageCatalog stageOption) {
+        stageOption.populate(stageSpinner);
     }
 
     @Override
@@ -104,8 +101,7 @@ public final class EditFieldViewHolder implements ICropVisitor, ICropDataVisitor
     }
 
     @Override
-    public void visitLocation(String location, String plantingDate) {
-    }
+    public void visitLocation(String location, String plantingDate) {}
 
     private void select(Spinner spinner, String value) {
         if (value == null || spinner.getAdapter() == null) return;
