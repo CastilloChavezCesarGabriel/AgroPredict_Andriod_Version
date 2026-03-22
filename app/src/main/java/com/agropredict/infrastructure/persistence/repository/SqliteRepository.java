@@ -1,6 +1,7 @@
 package com.agropredict.infrastructure.persistence.repository;
 
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import com.agropredict.infrastructure.persistence.Database;
 import com.agropredict.infrastructure.persistence.SqliteRow;
 import java.util.ArrayList;
@@ -31,7 +32,23 @@ public abstract class SqliteRepository<T> {
         throw new UnsupportedOperationException();
     }
 
-    protected List<T> read(Cursor cursor) {
+    protected T locate(String query, String parameter) {
+        SQLiteDatabase readable = this.database.getReadableDatabase();
+        Cursor cursor = readable.rawQuery(query, new String[]{parameter});
+        T entity = cursor.moveToFirst() ? restore(cursor) : null;
+        cursor.close();
+        return entity;
+    }
+
+    protected List<T> fetch(String query, String parameter) {
+        SQLiteDatabase readable = this.database.getReadableDatabase();
+        Cursor cursor = readable.rawQuery(query, new String[]{parameter});
+        List<T> entities = read(cursor);
+        cursor.close();
+        return entities;
+    }
+
+    private List<T> read(Cursor cursor) {
         List<T> entities = new ArrayList<>();
         while (cursor.moveToNext()) {
             entities.add(restore(cursor));

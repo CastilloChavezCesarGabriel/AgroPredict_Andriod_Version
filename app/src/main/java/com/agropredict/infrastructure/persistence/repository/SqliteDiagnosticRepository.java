@@ -80,22 +80,12 @@ public final class SqliteDiagnosticRepository extends SqliteRepository<Diagnosti
 
     @Override
     public List<Diagnostic> list(String userIdentifier) {
-        SQLiteDatabase database = this.database.getReadableDatabase();
-        String query = SELECT_DIAGNOSTIC
-                + "WHERE d.user_id = ? ORDER BY d.created_at DESC";
-        Cursor cursor = database.rawQuery(query, new String[]{userIdentifier});
-        List<Diagnostic> diagnostics = read(cursor);
-        cursor.close();
-        return diagnostics;
+        return fetch(SELECT_DIAGNOSTIC
+                + "WHERE d.user_id = ? ORDER BY d.created_at DESC", userIdentifier);
     }
 
     @Override
     public Diagnostic find(String diagnosticIdentifier) {
-        SQLiteDatabase database = this.database.getReadableDatabase();
-        String query = SELECT_DIAGNOSTIC + "WHERE d.id = ?";
-        Cursor cursor = database.rawQuery(query, new String[]{diagnosticIdentifier});
-        Diagnostic diagnostic = cursor.moveToFirst() ? restore(cursor) : null;
-        cursor.close();
-        return diagnostic;
+        return locate(SELECT_DIAGNOSTIC + "WHERE d.id = ?", diagnosticIdentifier);
     }
 }

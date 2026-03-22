@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.agropredict.infrastructure.persistence.schema.Schema;
+import com.agropredict.infrastructure.persistence.schema.SeedData;
 
 public final class Database extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "agro_diagnostic.db";

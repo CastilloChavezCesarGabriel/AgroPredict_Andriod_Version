@@ -18,7 +18,7 @@ import com.agropredict.infrastructure.persistence.repository.SqliteDiagnosticRep
 import com.agropredict.infrastructure.persistence.repository.SqliteQuestionnaireRepository;
 import com.agropredict.infrastructure.persistence.repository.SqliteReportRepository;
 import com.agropredict.infrastructure.persistence.repository.SqliteUserRepository;
-import com.agropredict.infrastructure.persistence.SubmissionRecorder;
+import com.agropredict.infrastructure.persistence.Submission;
 
 public final class PersistenceFactory {
     private final Database database;
@@ -56,7 +56,7 @@ public final class PersistenceFactory {
     }
 
     public IDiagnosticWorkflow createDiagnosticWorkflow() {
-        SubmissionRecorder submission = new SubmissionRecorder(createCropRepository(), createCropImageRepository());
+        Submission submission = new Submission(createCropRepository(), createCropImageRepository());
         ResultRecorder result = new ResultRecorder(createDiagnosticRepository(), createQuestionnaireRepository());
         return new DiagnosticWorkflow(submission, result);
     }

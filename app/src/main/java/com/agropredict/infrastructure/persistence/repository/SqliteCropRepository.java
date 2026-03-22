@@ -72,13 +72,8 @@ public final class SqliteCropRepository extends SqliteRepository<Crop> implement
 
     @Override
     public List<Crop> list(String userIdentifier) {
-        SQLiteDatabase database = this.database.getReadableDatabase();
-        String query = SELECT_CROP
-                + "WHERE c.user_id = ? AND c.is_active = 1 ORDER BY c.created_at DESC";
-        Cursor cursor = database.rawQuery(query, new String[]{userIdentifier});
-        List<Crop> crops = read(cursor);
-        cursor.close();
-        return crops;
+        return fetch(SELECT_CROP
+                + "WHERE c.user_id = ? AND c.is_active = 1 ORDER BY c.created_at DESC", userIdentifier);
     }
 
     @Override
@@ -103,11 +98,6 @@ public final class SqliteCropRepository extends SqliteRepository<Crop> implement
 
     @Override
     public Crop find(String cropIdentifier) {
-        SQLiteDatabase database = this.database.getReadableDatabase();
-        String query = SELECT_CROP + "WHERE c.id = ?";
-        Cursor cursor = database.rawQuery(query, new String[]{cropIdentifier});
-        Crop crop = cursor.moveToFirst() ? restore(cursor) : null;
-        cursor.close();
-        return crop;
+        return locate(SELECT_CROP + "WHERE c.id = ?", cropIdentifier);
     }
 }

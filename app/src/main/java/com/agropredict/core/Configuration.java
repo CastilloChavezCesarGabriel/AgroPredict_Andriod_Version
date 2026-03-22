@@ -3,7 +3,7 @@ package com.agropredict.core;
 import android.content.Context;
 import com.agropredict.application.IRepositoryFactory;
 import com.agropredict.application.IFactoryConsumer;
-import com.agropredict.infrastructure.RepositoryFactory;
+import com.agropredict.infrastructure.factory.RepositoryFactory;
 import com.agropredict.infrastructure.persistence.Database;
 
 public final class Configuration {

@@ -1,4 +1,4 @@
-package com.agropredict.infrastructure;
+package com.agropredict.infrastructure.factory;
 
 import android.content.Context;
 import com.agropredict.application.IRepositoryFactory;
@@ -13,8 +13,6 @@ import com.agropredict.application.repository.IUserRepository;
 import com.agropredict.application.service.IDiagnosticApiService;
 import com.agropredict.application.service.IImageService;
 import com.agropredict.application.service.IReportService;
-import com.agropredict.infrastructure.factory.PersistenceFactory;
-import com.agropredict.infrastructure.factory.ServiceFactory;
 import com.agropredict.infrastructure.persistence.Database;
 
 public final class RepositoryFactory implements IRepositoryFactory {
