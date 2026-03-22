@@ -1,0 +1,41 @@
+package com.agropredict.infrastructure.persistence.repository;
+
+import android.database.Cursor;
+import com.agropredict.infrastructure.persistence.Database;
+import com.agropredict.infrastructure.persistence.SqliteRow;
+import java.util.ArrayList;
+import java.util.List;
+
+public abstract class SqliteRepository<T> {
+    protected final Database database;
+    private final String tableName;
+
+    protected SqliteRepository(Database database, String tableName) {
+        this.database = database;
+        this.tableName = tableName;
+    }
+
+    protected abstract void persist(T entity, SqliteRow row);
+
+    protected SqliteRow write(T entity) {
+        SqliteRow row = new SqliteRow(database.getWritableDatabase());
+        persist(entity, row);
+        return row;
+    }
+
+    public void store(T entity) {
+        write(entity).flush(tableName);
+    }
+
+    protected T restore(Cursor cursor) {
+        throw new UnsupportedOperationException();
+    }
+
+    protected List<T> read(Cursor cursor) {
+        List<T> entities = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            entities.add(restore(cursor));
+        }
+        return entities;
+    }
+}

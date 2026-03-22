@@ -1,14 +1,14 @@
-package com.agropredict.infrastructure.persistence;
+package com.agropredict.infrastructure.persistence.visitor;
 
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import com.agropredict.application.visitor.IQuestionnaireVisitor;
 
-public final class QuestionnaireRecorder implements IQuestionnaireVisitor {
+public final class QuestionnairePersistenceVisitor implements IQuestionnaireVisitor {
     private final SQLiteDatabase database;
     private final String diagnosticIdentifier;
 
-    public QuestionnaireRecorder(SQLiteDatabase database, String diagnosticIdentifier) {
+    public QuestionnairePersistenceVisitor(SQLiteDatabase database, String diagnosticIdentifier) {
         this.database = database;
         this.diagnosticIdentifier = diagnosticIdentifier;
     }

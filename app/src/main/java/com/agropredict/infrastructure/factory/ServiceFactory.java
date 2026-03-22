@@ -9,7 +9,7 @@ import com.agropredict.infrastructure.export.CsvReportService;
 import com.agropredict.infrastructure.export.PdfReportService;
 import com.agropredict.infrastructure.image.ImageService;
 import com.agropredict.infrastructure.network.DiagnosticApiService;
-import com.agropredict.infrastructure.persistence.SharedPreferencesSessionRepository;
+import com.agropredict.infrastructure.persistence.repository.SessionRepository;
 import java.io.File;
 
 public final class ServiceFactory {
@@ -20,7 +20,7 @@ public final class ServiceFactory {
     }
 
     public ISessionRepository createSessionRepository() {
-        return new SharedPreferencesSessionRepository(applicationContext);
+        return new SessionRepository(applicationContext);
     }
 
     public IImageService createImageService() {

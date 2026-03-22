@@ -15,14 +15,14 @@ import com.agropredict.application.service.IImageService;
 import com.agropredict.application.service.IReportService;
 import com.agropredict.infrastructure.factory.PersistenceFactory;
 import com.agropredict.infrastructure.factory.ServiceFactory;
-import com.agropredict.infrastructure.persistence.DatabaseHelper;
+import com.agropredict.infrastructure.persistence.Database;
 
 public final class RepositoryFactory implements IRepositoryFactory {
     private final PersistenceFactory persistence;
     private final ServiceFactory services;
 
-    public RepositoryFactory(DatabaseHelper databaseHelper, Context applicationContext) {
-        this.persistence = new PersistenceFactory(databaseHelper);
+    public RepositoryFactory(Database database, Context applicationContext) {
+        this.persistence = new PersistenceFactory(database);
         this.services = new ServiceFactory(applicationContext);
     }
 

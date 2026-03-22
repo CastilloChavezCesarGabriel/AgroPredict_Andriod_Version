@@ -1,4 +1,4 @@
-package com.agropredict.infrastructure.persistence;
+package com.agropredict.infrastructure.persistence.visitor;
 
 import com.agropredict.domain.component.user.Credential;
 import com.agropredict.domain.component.user.UserContact;
@@ -11,15 +11,16 @@ import com.agropredict.domain.visitor.user.IUserDataVisitor;
 import com.agropredict.domain.visitor.user.IUserIdentityVisitor;
 import com.agropredict.domain.visitor.user.IUserProfileVisitor;
 import com.agropredict.domain.visitor.user.IUserVisitor;
+import com.agropredict.infrastructure.persistence.IRow;
 
-public final class UserRecorder implements IUserVisitor, IUserDataVisitor,
+public final class UserPersistenceVisitor implements IUserVisitor, IUserDataVisitor,
         IUserProfileVisitor, IUserIdentityVisitor, ICredentialsVisitor,
         IUserContactVisitor {
 
-    private final IRecord record;
+    private final IRow row;
 
-    public UserRecorder(IRecord record) {
-        this.record = record;
+    public UserPersistenceVisitor(IRow row) {
+        this.row = row;
     }
 
     @Override
@@ -37,24 +38,24 @@ public final class UserRecorder implements IUserVisitor, IUserDataVisitor,
     @Override
     public void visit(UserContact contact, String occupationIdentifier) {
         if (contact != null) contact.accept(this);
-        record.record("occupation_id", occupationIdentifier);
+        row.record("occupation_id", occupationIdentifier);
     }
 
     @Override
     public void visitIdentity(String identifier, String fullName) {
-        record.record("id", identifier);
-        record.record("full_name", fullName);
+        row.record("id", identifier);
+        row.record("full_name", fullName);
     }
 
     @Override
     public void visit(String email, String passwordHash) {
-        record.record("email", email);
-        record.record("password_hash", passwordHash);
+        row.record("email", email);
+        row.record("password_hash", passwordHash);
     }
 
     @Override
     public void visitContact(String username, String phoneNumber) {
-        record.record("username", username);
-        record.record("phone_number", phoneNumber);
+        row.record("username", username);
+        row.record("phone_number", phoneNumber);
     }
 }

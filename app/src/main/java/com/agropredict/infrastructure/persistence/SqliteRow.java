@@ -3,11 +3,11 @@ package com.agropredict.infrastructure.persistence;
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 
-public final class Recorder implements IRecord {
+public final class SqliteRow implements IRow {
     private final ContentValues values;
     private final SQLiteDatabase database;
 
-    public Recorder(SQLiteDatabase database) {
+    public SqliteRow(SQLiteDatabase database) {
         this.values = new ContentValues();
         this.database = database;
     }

@@ -10,19 +10,19 @@ import java.util.List;
 public final class SqliteCatalog implements ICatalogRepository {
     private static final List<String> ALLOWED_TABLES = Arrays.asList(
             "soil_type", "phenological_stage", "occupation");
-    private final DatabaseHelper databaseHelper;
+    private final Database database;
     private final String tableName;
 
-    public SqliteCatalog(DatabaseHelper databaseHelper, String tableName) {
+    public SqliteCatalog(Database database, String tableName) {
         if (!ALLOWED_TABLES.contains(tableName))
             throw new IllegalArgumentException("Invalid catalog table: " + tableName);
-        this.databaseHelper = databaseHelper;
+        this.database = database;
         this.tableName = tableName;
     }
 
     @Override
     public List<String> list() {
-        SQLiteDatabase database = databaseHelper.getReadableDatabase();
+        SQLiteDatabase database = this.database.getReadableDatabase();
         Cursor cursor = database.rawQuery("SELECT name FROM " + tableName + " ORDER BY name", null);
         List<String> names = new ArrayList<>();
         while (cursor.moveToNext()) names.add(cursor.getString(0));
@@ -32,7 +32,7 @@ public final class SqliteCatalog implements ICatalogRepository {
 
     @Override
     public String resolve(String name) {
-        SQLiteDatabase database = databaseHelper.getReadableDatabase();
+        SQLiteDatabase database = this.database.getReadableDatabase();
         Cursor cursor = database.rawQuery(
                 "SELECT id FROM " + tableName + " WHERE name = ? LIMIT 1",
                 new String[]{name});

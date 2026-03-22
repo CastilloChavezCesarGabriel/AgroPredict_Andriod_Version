@@ -1,4 +1,4 @@
-package com.agropredict.infrastructure.persistence;
+package com.agropredict.infrastructure.persistence.visitor;
 
 import com.agropredict.domain.component.report.ReportContext;
 import com.agropredict.domain.component.report.ReportDetail;
@@ -9,14 +9,15 @@ import com.agropredict.domain.visitor.report.IReportDetailVisitor;
 import com.agropredict.domain.visitor.report.IReportIdentityVisitor;
 import com.agropredict.domain.visitor.report.IReportStorageVisitor;
 import com.agropredict.domain.visitor.report.IReportVisitor;
+import com.agropredict.infrastructure.persistence.IRow;
 
-public final class ReportRecorder implements IReportVisitor, IReportDetailVisitor,
+public final class ReportPersistenceVisitor implements IReportVisitor, IReportDetailVisitor,
         IReportIdentityVisitor, IReportContextVisitor, IReportStorageVisitor {
 
-    private final IRecord record;
+    private final IRow row;
 
-    public ReportRecorder(IRecord record) {
-        this.record = record;
+    public ReportPersistenceVisitor(IRow row) {
+        this.row = row;
     }
 
     @Override
@@ -33,19 +34,19 @@ public final class ReportRecorder implements IReportVisitor, IReportDetailVisito
 
     @Override
     public void visitIdentity(String identifier, String format) {
-        record.record("id", identifier);
-        record.record("format", format);
+        row.record("id", identifier);
+        row.record("format", format);
     }
 
     @Override
     public void visitContext(String diagnosticIdentifier, String cropIdentifier) {
-        record.record("diagnostic_id", diagnosticIdentifier);
-        record.record("crop_id", cropIdentifier);
+        row.record("diagnostic_id", diagnosticIdentifier);
+        row.record("crop_id", cropIdentifier);
     }
 
     @Override
     public void visitStorage(String userIdentifier, String filePath) {
-        record.record("user_id", userIdentifier);
-        record.record("file_path", filePath);
+        row.record("user_id", userIdentifier);
+        row.record("file_path", filePath);
     }
 }

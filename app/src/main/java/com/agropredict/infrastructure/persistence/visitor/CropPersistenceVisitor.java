@@ -1,4 +1,4 @@
-package com.agropredict.infrastructure.persistence;
+package com.agropredict.infrastructure.persistence.visitor;
 
 import com.agropredict.domain.component.crop.CropContent;
 import com.agropredict.domain.component.crop.CropData;
@@ -15,20 +15,21 @@ import com.agropredict.domain.visitor.crop.ICropLocationVisitor;
 import com.agropredict.domain.visitor.crop.ICropOwnershipVisitor;
 import com.agropredict.domain.visitor.crop.ICropSoilVisitor;
 import com.agropredict.domain.visitor.crop.ICropVisitor;
+import com.agropredict.infrastructure.persistence.IRow;
 
-public final class CropRecorder implements ICropVisitor, ICropDataVisitor,
+public final class CropPersistenceVisitor implements ICropVisitor, ICropDataVisitor,
         ICropContentVisitor, ICropEnvironmentVisitor, ICropDetailVisitor,
         ICropLocationVisitor, ICropSoilVisitor, ICropOwnershipVisitor {
 
-    private final IRecord record;
+    private final IRow row;
 
-    public CropRecorder(IRecord record) {
-        this.record = record;
+    public CropPersistenceVisitor(IRow row) {
+        this.row = row;
     }
 
     @Override
     public void visit(String identifier, CropData data) {
-        record.record("id", identifier);
+        row.record("id", identifier);
         data.accept(this);
     }
 
@@ -52,25 +53,25 @@ public final class CropRecorder implements ICropVisitor, ICropDataVisitor,
 
     @Override
     public void visit(String cropType, String fieldName) {
-        record.record("crop_type", cropType);
-        record.record("field_name", fieldName);
+        row.record("crop_type", cropType);
+        row.record("field_name", fieldName);
     }
 
     @Override
     public void visitLocation(String location, String plantingDate) {
-        record.record("location", location);
-        record.record("planting_date", plantingDate);
+        row.record("location", location);
+        row.record("planting_date", plantingDate);
     }
 
     @Override
     public void visitSoil(String soilTypeIdentifier, String area) {
-        record.record("soil_type_id", soilTypeIdentifier);
-        record.record("area", area);
+        row.record("soil_type_id", soilTypeIdentifier);
+        row.record("area", area);
     }
 
     @Override
     public void visitOwnership(String userIdentifier, String stageIdentifier) {
-        record.record("user_id", userIdentifier);
-        record.record("phenological_stage_id", stageIdentifier);
+        row.record("user_id", userIdentifier);
+        row.record("phenological_stage_id", stageIdentifier);
     }
 }

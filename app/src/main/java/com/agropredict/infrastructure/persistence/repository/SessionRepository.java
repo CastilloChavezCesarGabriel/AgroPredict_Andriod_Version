@@ -1,16 +1,16 @@
-package com.agropredict.infrastructure.persistence;
+package com.agropredict.infrastructure.persistence.repository;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.agropredict.application.repository.ISessionRepository;
 
-public final class SharedPreferencesSessionRepository implements ISessionRepository {
+public final class SessionRepository implements ISessionRepository {
     private static final String PREFERENCES_NAME = "agropredict_session";
     private static final String USER_IDENTIFIER_KEY = "logged_user_id";
     private final SharedPreferences preferences;
 
-    public SharedPreferencesSessionRepository(Context context) {
+    public SessionRepository(Context context) {
         this.preferences = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
     }
 

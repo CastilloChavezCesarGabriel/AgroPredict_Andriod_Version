@@ -1,4 +1,4 @@
-package com.agropredict.infrastructure.persistence;
+package com.agropredict.infrastructure.persistence.visitor;
 
 import com.agropredict.domain.component.diagnostic.DiagnosticAssessment;
 import com.agropredict.domain.component.diagnostic.DiagnosticConditions;
@@ -19,22 +19,23 @@ import com.agropredict.domain.visitor.diagnostic.IDiagnosticOwnershipVisitor;
 import com.agropredict.domain.visitor.diagnostic.IDiagnosticSummaryVisitor;
 import com.agropredict.domain.visitor.diagnostic.IDiagnosticVisitor;
 import com.agropredict.domain.visitor.diagnostic.IPredictionVisitor;
+import com.agropredict.infrastructure.persistence.IRow;
 
-public final class DiagnosticRecorder implements IDiagnosticVisitor,
+public final class DiagnosticPersistenceVisitor implements IDiagnosticVisitor,
         IDiagnosticDataVisitor, IDiagnosticContentVisitor,
         IDiagnosticConditionsVisitor, IDiagnosticAssessmentVisitor,
         IPredictionVisitor, IDiagnosticContextVisitor, IDiagnosticEnvironmentVisitor,
         IDiagnosticSummaryVisitor, IDiagnosticOwnershipVisitor {
 
-    private final IRecord record;
+    private final IRow row;
 
-    public DiagnosticRecorder(IRecord record) {
-        this.record = record;
+    public DiagnosticPersistenceVisitor(IRow row) {
+        this.row = row;
     }
 
     @Override
     public void visit(String identifier, DiagnosticData data) {
-        record.record("id", identifier);
+        row.record("id", identifier);
         data.accept(this);
     }
 
@@ -64,31 +65,31 @@ public final class DiagnosticRecorder implements IDiagnosticVisitor,
 
     @Override
     public void visitPrediction(String predictedCrop, double confidence) {
-        record.record("predicted_crop", predictedCrop);
-        record.record("confidence", String.valueOf(confidence));
+        row.record("predicted_crop", predictedCrop);
+        row.record("confidence", String.valueOf(confidence));
     }
 
     @Override
     public void visitContext(String cropIdentifier, String imageIdentifier) {
-        record.record("crop_id", cropIdentifier);
-        record.record("image_id", imageIdentifier);
+        row.record("crop_id", cropIdentifier);
+        row.record("image_id", imageIdentifier);
     }
 
     @Override
     public void visitEnvironment(double temperature, double humidity) {
-        record.record("temperature", String.valueOf(temperature));
-        record.record("humidity", String.valueOf(humidity));
+        row.record("temperature", String.valueOf(temperature));
+        row.record("humidity", String.valueOf(humidity));
     }
 
     @Override
     public void visitSummary(String severity, String shortSummary) {
-        record.record("severity", severity);
-        record.record("short_summary", shortSummary);
+        row.record("severity", severity);
+        row.record("short_summary", shortSummary);
     }
 
     @Override
     public void visitOwnership(String userIdentifier, String recommendationText) {
-        record.record("user_id", userIdentifier);
-        record.record("recommendation_text", recommendationText);
+        row.record("user_id", userIdentifier);
+        row.record("recommendation_text", recommendationText);
     }
 }
