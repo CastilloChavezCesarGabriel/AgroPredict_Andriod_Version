@@ -17,12 +17,13 @@
 
         <TextView
             android:id="@+id/tvTitle"
-            style="@style/AgroPredict.Text.Display"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="@dimen/spacing_32"
-            android:text="@string/register_title" />
+            android:text="@string/register_title"
+            android:textAppearance="?attr/textAppearanceHeadlineMedium"
+            android:textColor="@color/green_primary" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilFullName"
@@ -136,18 +137,13 @@
             android:layout_height="wrap_content"
             android:text="@string/register_button" />
 
-        <TextView
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/tvGoToLogin"
-            style="@style/AgroPredict.Text.Link"
+            style="@style/AgroPredict.Button.Text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/spacing_20"
-            android:layout_marginBottom="@dimen/spacing_24"
-            android:background="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"
-            android:padding="@dimen/spacing_8"
+            android:layout_marginTop="@dimen/spacing_12"
             android:text="@string/has_account" />
 
     </LinearLayout>

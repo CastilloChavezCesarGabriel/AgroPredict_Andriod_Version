@@ -23,8 +23,8 @@ public final class SoilInput extends SpinnerInput {
     }
 
     private void populate() {
-        fill(soilMoistureSpinner, "Muy seco", "Seco", "Moderado", "Húmedo", "Encharcado");
-        fill(soilPhSpinner, "<5.5", "5.5–7", "7–8", ">8", "No sé");
+        fill(soilMoistureSpinner, "Very dry", "Dry", "Moderate", "Moist", "Waterlogged");
+        fill(soilPhSpinner, "<5.5", "5.5–7", "7–8", ">8", "Don't know");
     }
 
 }

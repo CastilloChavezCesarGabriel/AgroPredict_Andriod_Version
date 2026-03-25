@@ -30,15 +30,15 @@ public final class SymptomInput extends SpinnerInput {
 
     private void populate() {
         fill(symptomTypeSpinner,
-                "Hojas amarillas", "Mancha marrón",
-                "Puntas secas", "Tallos débiles",
-                "Hongos visibles", "Presencia de insectos",
-                "Se ve normal");
-        fill(severitySpinner, "Leve", "Moderada", "Fuerte", "Muy fuerte");
+                "Yellow leaves", "Brown spots",
+                "Dry tips", "Weak stems",
+                "Visible fungi", "Insect presence",
+                "Looks normal");
+        fill(severitySpinner, "Mild", "Moderate", "Severe", "Very severe");
         fill(insectsSpinner,
-                "Mosquita blanca", "Pulgón", "Minador",
-                "Trips", "Oruga", "Ninguno", "No sé");
-        fill(animalsSpinner, "Roedores", "Aves", "Animales grandes", "Ninguno", "No sé");
+                "Whitefly", "Aphid", "Leafminer",
+                "Thrips", "Caterpillar", "None", "Don't know");
+        fill(animalsSpinner, "Rodents", "Birds", "Large animals", "None", "Don't know");
     }
 
 }

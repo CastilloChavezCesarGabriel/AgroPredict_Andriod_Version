@@ -21,12 +21,12 @@
         android:padding="@dimen/spacing_16">
 
         <TextView
-            style="@style/AgroPredict.Text.Label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_8"
             android:text="@string/select_crop"
-            android:textColor="@color/text_secondary" />
+            android:textAppearance="?attr/textAppearanceLabelLarge"
+            android:textColor="?attr/colorOnSurfaceVariant" />
 
         <Spinner
             android:id="@+id/spnCropSelection"
@@ -35,33 +35,31 @@
             android:layout_height="@dimen/spinner_height"
             android:layout_marginBottom="@dimen/spacing_24" />
 
-        <RadioGroup
+        <com.google.android.material.button.MaterialButtonToggleGroup
             android:id="@+id/radioGroupFormat"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_32"
-            android:orientation="horizontal">
+            app:singleSelection="true"
+            app:selectionRequired="true">
 
-            <com.google.android.material.radiobutton.MaterialRadioButton
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/radioPdf"
+                style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:checked="true"
-                android:text="@string/format_pdf"
-                android:textColor="@color/text_primary"
-                android:textSize="@dimen/text_body" />
+                android:text="@string/format_pdf" />
 
-            <com.google.android.material.radiobutton.MaterialRadioButton
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/radioCsv"
+                style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/format_csv"
-                android:textColor="@color/text_primary"
-                android:textSize="@dimen/text_body" />
+                android:text="@string/format_csv" />
 
-        </RadioGroup>
+        </com.google.android.material.button.MaterialButtonToggleGroup>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnGenerate"
@@ -71,13 +69,13 @@
             android:layout_marginBottom="@dimen/spacing_16"
             android:text="@string/generate_button" />
 
-        <ProgressBar
+        <com.google.android.material.progressindicator.LinearProgressIndicator
             android:id="@+id/progressGeneration"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:layout_marginBottom="@dimen/spacing_16"
-            android:indeterminateTint="@color/green_primary"
+            android:indeterminate="true"
+            app:trackCornerRadius="@dimen/spacing_4"
             android:visibility="invisible" />
 
         <com.google.android.material.button.MaterialButton

@@ -20,7 +20,7 @@ public final class ClassificationResultStrategy implements IClassificationResult
                     "%.0f%%", confidence * PERCENTAGE_MULTIPLIER);
             view.classify(predictedCrop, confidenceText);
         } else {
-            view.notify("No se pudo identificar el cultivo con certeza");
+            view.notify("Could not identify the crop with certainty");
         }
     }
 

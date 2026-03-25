@@ -34,10 +34,10 @@ public final class HistoryViewModel implements IOperationResultVisitor {
     @Override
     public void visit(boolean completed, String resultIdentifier) {
         if (completed) {
-            view.notify("Diagnostico eliminado exitosamente");
+            view.notify("Diagnostic deleted successfully");
             load(pendingUserIdentifier);
         } else {
-            view.notify("Error al eliminar el diagnostico");
+            view.notify("Error deleting the diagnostic");
         }
     }
 }

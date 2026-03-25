@@ -18,8 +18,8 @@ public final class CsvReportService extends ReportService {
             CsvReport report = new CsvReport();
             new DiagnosticTraversal(report).traverse(diagnostic);
             String timestamp = stamp();
-            report.write("fecha", timestamp);
-            File file = new File(outputDirectory, "reporte_" + timestamp + ".csv");
+            report.write("date", timestamp);
+            File file = new File(outputDirectory, "report_" + timestamp + ".csv");
             report.export(file);
             return OperationResult.succeed(file.getAbsolutePath());
         } catch (IOException exception) {

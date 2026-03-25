@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="80dp"
+    android:height="80dp"
+    android:viewportWidth="80"
+    android:viewportHeight="80">
+
+    <!-- Background circle -->
+    <path
+        android:pathData="M40,12 C22,12 14,28 14,40 C14,56 26,68 40,68 C54,68 66,56 66,40 C66,28 58,12 40,12Z"
+        android:fillColor="#F0E6DD" />
+
+    <!-- Soil mound -->
+    <path
+        android:pathData="M16,56 Q28,36 40,42 Q52,48 64,56Z"
+        android:fillColor="#8B6E5A" />
+
+    <!-- Plant stem -->
+    <path
+        android:pathData="M40,42 L40,18"
+        android:strokeColor="#4A7C59"
+        android:strokeWidth="2.5"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000" />
+
+    <!-- Left leaf -->
+    <path
+        android:pathData="M40,32 Q30,26 28,22 Q32,24 40,32Z"
+        android:fillColor="#7BAF7E" />
+
+    <!-- Right leaf -->
+    <path
+        android:pathData="M40,28 Q50,22 52,18 Q48,20 40,28Z"
+        android:fillColor="#4A7C59" />
+
+    <!-- Top leaf -->
+    <path
+        android:pathData="M40,20 Q36,14 38,10 Q40,12 42,10 Q44,14 40,20Z"
+        android:fillColor="#7BAF7E" />
+
+    <!-- Water drops -->
+    <path
+        android:pathData="M24,34 Q25,30 26,34 Q25,36 24,34Z"
+        android:fillColor="#7BBCD4" />
+    <path
+        android:pathData="M54,30 Q55,26 56,30 Q55,32 54,30Z"
+        android:fillColor="#7BBCD4" />
+
+    <!-- Sun rays -->
+    <path
+        android:pathData="M58,16 m-6,0 a6,6 0,1 1,12 0 a6,6 0,1 1,-12 0"
+        android:fillColor="#D4874D" />
+    <path
+        android:pathData="M58,8 L58,10"
+        android:strokeColor="#D4874D"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000" />
+    <path
+        android:pathData="M66,16 L64,16"
+        android:strokeColor="#D4874D"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000" />
+    <path
+        android:pathData="M64,10 L62,12"
+        android:strokeColor="#D4874D"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000" />
+
+    <!-- Recycle/sustainable arrows -->
+    <path
+        android:pathData="M20,50 Q16,46 20,42"
+        android:strokeColor="#4A7C59"
+        android:strokeWidth="1.5"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000" />
+    <path
+        android:pathData="M20,42 L22,44 L18,44Z"
+        android:fillColor="#4A7C59" />
+
+</vector>

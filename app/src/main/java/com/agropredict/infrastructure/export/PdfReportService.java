@@ -20,7 +20,7 @@ public final class PdfReportService extends ReportService {
     public OperationResult generate(Crop crop, Diagnostic diagnostic) {
         try {
             String timestamp = stamp();
-            File file = new File(outputDirectory, "reporte_" + timestamp + ".pdf");
+            File file = new File(outputDirectory, "report_" + timestamp + ".pdf");
             PdfReport report = new PdfReport();
             report.export(file);
             new DiagnosticTraversal(report).traverse(diagnostic);

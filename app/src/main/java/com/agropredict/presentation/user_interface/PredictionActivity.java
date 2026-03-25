@@ -1,10 +1,13 @@
 package com.agropredict.presentation.user_interface;
 import com.agropredict.presentation.user_interface.component.PredictionForm;
 
+import android.Manifest;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import com.agropredict.AgroPredictApplication;
 import com.agropredict.R;
 import com.agropredict.application.PredictionFacade;
@@ -20,13 +23,28 @@ import com.agropredict.presentation.viewmodel.prediction.IPredictionView;
 import com.agropredict.presentation.viewmodel.prediction.PredictionViewModel;
 
 public final class PredictionActivity extends BaseActivity implements IPredictionView {
-    private static final int REQUEST_IMAGE_CAPTURE = 1;
-    private static final int REQUEST_IMAGE_GALLERY = 2;
     private PredictionViewModel viewModel;
     private PredictionForm predictionForm;
     private IImageService imageService;
     private String selectedImagePath;
     private Classification classification;
+
+    private final ActivityResultLauncher<Intent> cameraLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null)
+                    present(result.getData().getData());
+            });
+
+    private final ActivityResultLauncher<Intent> galleryLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null)
+                    present(result.getData().getData());
+            });
+
+    private final ActivityResultLauncher<String> cameraPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), granted -> {
+                if (granted) capture();
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,13 +69,15 @@ public final class PredictionActivity extends BaseActivity implements IPredictio
     }
 
     private void capture() {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
+        if (checkSelfPermission(Manifest.permission.CAMERA) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+            cameraPermissionLauncher.launch(Manifest.permission.CAMERA);
+            return;
+        }
+        cameraLauncher.launch(new Intent(MediaStore.ACTION_IMAGE_CAPTURE));
     }
 
     private void browse() {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(intent, REQUEST_IMAGE_GALLERY);
+        galleryLauncher.launch(new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI));
     }
 
     private void schedule() {
@@ -85,13 +105,6 @@ public final class PredictionActivity extends BaseActivity implements IPredictio
         intent.putExtra("diagnostic_identifier", diagnosticIdentifier);
         startActivity(intent);
         finish();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode != RESULT_OK || data == null) return;
-        present(data.getData());
     }
 
     @Override

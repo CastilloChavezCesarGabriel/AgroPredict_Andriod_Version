@@ -18,11 +18,11 @@ public final class Authentication {
 
     public void validate(IUserRepository repository) {
         if (!new EmailValidator().validate(email))
-            throw new RegistrationException("Correo electronico invalido");
+            throw new RegistrationException("Invalid email address");
         if (!new PasswordValidator().validate(password))
-            throw new RegistrationException("Contrasena invalida");
+            throw new RegistrationException("Invalid password");
         if (repository.isRegistered(email))
-            throw new RegistrationException("El correo ya esta registrado");
+            throw new RegistrationException("This email is already registered");
     }
 
     public Credential hash() {

@@ -116,11 +116,11 @@ public final class DiagnosticHistory implements IDiagnosticVisitor,
     }
 
     private String classify(String severity) {
-        if (severity == null) return "Análisis completado";
+        if (severity == null) return "Analysis complete";
         String normalized = severity.toLowerCase();
-        if (normalized.contains("low") || normalized.contains("baja")) return "Saludable";
-        if (normalized.contains("moderate") || normalized.contains("moderada")) return "Problema moderado";
-        if (normalized.contains("high") || normalized.contains("alta")) return "Problema grave";
-        return "Análisis completado";
+        if (normalized.contains("low")) return "Healthy";
+        if (normalized.contains("moderate")) return "Moderate issue";
+        if (normalized.contains("high")) return "Severe issue";
+        return "Analysis complete";
     }
 }

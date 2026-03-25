@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="80dp"
+    android:height="80dp"
+    android:viewportWidth="80"
+    android:viewportHeight="80">
+
+    <!-- Leaf base -->
+    <path
+        android:pathData="M40,12 C22,12 14,28 14,40 C14,56 26,68 40,68 C54,68 66,56 66,40 C66,28 58,12 40,12Z"
+        android:fillColor="#D4E8D1" />
+
+    <!-- Leaf shape -->
+    <path
+        android:pathData="M40,18 C30,22 24,32 24,42 C24,42 30,38 36,36 C36,36 32,46 34,54 C34,54 40,44 46,42 C46,42 44,52 46,56 C46,56 54,46 54,38 C54,30 48,20 40,18Z"
+        android:fillColor="#4A7C59" />
+
+    <!-- Leaf vein -->
+    <path
+        android:pathData="M40,20 L40,54"
+        android:strokeColor="#3A6348"
+        android:strokeWidth="1.5"
+        android:fillColor="#00000000" />
+
+    <!-- Magnifying glass circle -->
+    <path
+        android:pathData="M50,44 m-10,0 a10,10 0,1 1,20 0 a10,10 0,1 1,-20 0"
+        android:strokeColor="#8B6E5A"
+        android:strokeWidth="2.5"
+        android:fillColor="#FAF5EB"
+        android:fillAlpha="0.7" />
+
+    <!-- Magnifying glass handle -->
+    <path
+        android:pathData="M57,51 L64,58"
+        android:strokeColor="#8B6E5A"
+        android:strokeWidth="3"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000" />
+
+</vector>

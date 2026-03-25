@@ -20,6 +20,6 @@ public final class ResetPasswordUseCase {
         String newHash = new PasswordHasher().hash(newPassword);
         boolean updated = userRepository.reset(email, newHash);
         if (!updated) return OperationResult.fail();
-        return OperationResult.succeed("Contraseña actualizada");
+        return OperationResult.succeed("Password updated");
     }
 }

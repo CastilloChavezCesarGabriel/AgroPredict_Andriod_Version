@@ -49,215 +49,266 @@
             style="@style/AgroPredict.Text.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_12"
+            android:layout_marginBottom="@dimen/spacing_8"
             android:text="@string/crop_info" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tilCropType"
-            style="@style/AgroPredict.TextInput"
+        <com.google.android.material.card.MaterialCardView
+            style="@style/AgroPredict.Card.Filled"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_12"
-            android:hint="@string/crop_type_hint">
+            android:layout_marginBottom="@dimen/spacing_20">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etCropType"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text" />
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_16">
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilCropType"
+                    style="@style/AgroPredict.TextInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_12"
+                    android:hint="@string/crop_type_hint">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tilLocation"
-            style="@style/AgroPredict.TextInput"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_12"
-            android:hint="@string/location_hint">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etCropType"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etLocation"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="text" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilLocation"
+                    style="@style/AgroPredict.TextInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_12"
+                    android:hint="@string/location_hint">
 
-        <Spinner
-            android:id="@+id/spnSoilType"
-            style="@style/AgroPredict.Spinner"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/spinner_height"
-            android:layout_marginBottom="@dimen/spacing_12" />
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etLocation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text" />
 
-        <Spinner
-            android:id="@+id/spnStage"
-            style="@style/AgroPredict.Spinner"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/spinner_height"
-            android:layout_marginBottom="@dimen/spacing_12" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tilPlantingDate"
-            style="@style/AgroPredict.TextInput"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_24"
-            android:hint="@string/planting_date_hint">
+                <Spinner
+                    android:id="@+id/spnSoilType"
+                    style="@style/AgroPredict.Spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/spinner_height"
+                    android:layout_marginBottom="@dimen/spacing_12" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etPlantingDate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:focusable="true"
-                android:inputType="none" />
+                <Spinner
+                    android:id="@+id/spnStage"
+                    style="@style/AgroPredict.Spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/spinner_height"
+                    android:layout_marginBottom="@dimen/spacing_12" />
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilPlantingDate"
+                    style="@style/AgroPredict.TextInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/planting_date_hint">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginBottom="@dimen/spacing_20"
-            android:background="@color/divider" />
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etPlantingDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:inputType="none" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
 
         <TextView
             style="@style/AgroPredict.Text.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_12"
+            android:layout_marginBottom="@dimen/spacing_8"
             android:text="@string/environmental_conditions" />
 
-        <Spinner
-            android:id="@+id/spnTemperature"
-            style="@style/AgroPredict.Spinner"
+        <com.google.android.material.card.MaterialCardView
+            style="@style/AgroPredict.Card.Filled"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/spinner_height"
-            android:layout_marginBottom="@dimen/spacing_12" />
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_20">
 
-        <Spinner
-            android:id="@+id/spnHumidity"
-            style="@style/AgroPredict.Spinner"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/spinner_height"
-            android:layout_marginBottom="@dimen/spacing_12" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_16">
 
-        <Spinner
-            android:id="@+id/spnRain"
-            style="@style/AgroPredict.Spinner"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/spinner_height"
-            android:layout_marginBottom="@dimen/spacing_24" />
+                <Spinner
+                    android:id="@+id/spnTemperature"
+                    style="@style/AgroPredict.Spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/spinner_height"
+                    android:layout_marginBottom="@dimen/spacing_12" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginBottom="@dimen/spacing_20"
-            android:background="@color/divider" />
+                <Spinner
+                    android:id="@+id/spnHumidity"
+                    style="@style/AgroPredict.Spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/spinner_height"
+                    android:layout_marginBottom="@dimen/spacing_12" />
+
+                <Spinner
+                    android:id="@+id/spnRain"
+                    style="@style/AgroPredict.Spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/spinner_height" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
 
         <TextView
             style="@style/AgroPredict.Text.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_12"
+            android:layout_marginBottom="@dimen/spacing_8"
             android:text="@string/soil_conditions" />
 
-        <Spinner
-            android:id="@+id/spnSoilMoisture"
-            style="@style/AgroPredict.Spinner"
+        <com.google.android.material.card.MaterialCardView
+            style="@style/AgroPredict.Card.Filled"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/spinner_height"
-            android:layout_marginBottom="@dimen/spacing_12" />
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_20">
 
-        <Spinner
-            android:id="@+id/spnSoilPH"
-            style="@style/AgroPredict.Spinner"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/spinner_height"
-            android:layout_marginBottom="@dimen/spacing_24" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_16">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginBottom="@dimen/spacing_20"
-            android:background="@color/divider" />
+                <Spinner
+                    android:id="@+id/spnSoilMoisture"
+                    style="@style/AgroPredict.Spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/spinner_height"
+                    android:layout_marginBottom="@dimen/spacing_12" />
+
+                <Spinner
+                    android:id="@+id/spnSoilPH"
+                    style="@style/AgroPredict.Spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/spinner_height" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
 
         <TextView
             style="@style/AgroPredict.Text.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_12"
+            android:layout_marginBottom="@dimen/spacing_8"
             android:text="@string/crop_management" />
 
-        <Spinner
-            android:id="@+id/spnIrrigation"
-            style="@style/AgroPredict.Spinner"
+        <com.google.android.material.card.MaterialCardView
+            style="@style/AgroPredict.Card.Filled"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/spinner_height"
-            android:layout_marginBottom="@dimen/spacing_12" />
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_20">
 
-        <Spinner
-            android:id="@+id/spnFertilization"
-            style="@style/AgroPredict.Spinner"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/spinner_height"
-            android:layout_marginBottom="@dimen/spacing_12" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_16">
 
-        <Spinner
-            android:id="@+id/spnSpraying"
-            style="@style/AgroPredict.Spinner"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/spinner_height"
-            android:layout_marginBottom="@dimen/spacing_12" />
+                <Spinner
+                    android:id="@+id/spnIrrigation"
+                    style="@style/AgroPredict.Spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/spinner_height"
+                    android:layout_marginBottom="@dimen/spacing_12" />
 
-        <Spinner
-            android:id="@+id/spnWeeds"
-            style="@style/AgroPredict.Spinner"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/spinner_height"
-            android:layout_marginBottom="@dimen/spacing_24" />
+                <Spinner
+                    android:id="@+id/spnFertilization"
+                    style="@style/AgroPredict.Spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/spinner_height"
+                    android:layout_marginBottom="@dimen/spacing_12" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginBottom="@dimen/spacing_20"
-            android:background="@color/divider" />
+                <Spinner
+                    android:id="@+id/spnSpraying"
+                    style="@style/AgroPredict.Spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/spinner_height"
+                    android:layout_marginBottom="@dimen/spacing_12" />
+
+                <Spinner
+                    android:id="@+id/spnWeeds"
+                    style="@style/AgroPredict.Spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/spinner_height" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
 
         <TextView
             style="@style/AgroPredict.Text.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/spacing_12"
+            android:layout_marginBottom="@dimen/spacing_8"
             android:text="@string/symptoms" />
 
-        <Spinner
-            android:id="@+id/spnSymptomType"
-            style="@style/AgroPredict.Spinner"
+        <com.google.android.material.card.MaterialCardView
+            style="@style/AgroPredict.Card.Filled"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/spinner_height"
-            android:layout_marginBottom="@dimen/spacing_12" />
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_32">
 
-        <Spinner
-            android:id="@+id/spnSeverity"
-            style="@style/AgroPredict.Spinner"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/spinner_height"
-            android:layout_marginBottom="@dimen/spacing_12" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_16">
 
-        <Spinner
-            android:id="@+id/spnInsects"
-            style="@style/AgroPredict.Spinner"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/spinner_height"
-            android:layout_marginBottom="@dimen/spacing_12" />
+                <Spinner
+                    android:id="@+id/spnSymptomType"
+                    style="@style/AgroPredict.Spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/spinner_height"
+                    android:layout_marginBottom="@dimen/spacing_12" />
 
-        <Spinner
-            android:id="@+id/spnAnimals"
-            style="@style/AgroPredict.Spinner"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/spinner_height"
-            android:layout_marginBottom="@dimen/spacing_32" />
+                <Spinner
+                    android:id="@+id/spnSeverity"
+                    style="@style/AgroPredict.Spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/spinner_height"
+                    android:layout_marginBottom="@dimen/spacing_12" />
+
+                <Spinner
+                    android:id="@+id/spnInsects"
+                    style="@style/AgroPredict.Spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/spinner_height"
+                    android:layout_marginBottom="@dimen/spacing_12" />
+
+                <Spinner
+                    android:id="@+id/spnAnimals"
+                    style="@style/AgroPredict.Spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/spinner_height" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSubmitDiagnosis"

@@ -18,13 +18,13 @@ public final class LoginUseCase {
     public OperationResult authenticate(String email, String password) {
         long currentTime = System.currentTimeMillis();
         if (tracker.isBlocked(currentTime))
-            return OperationResult.reject("Cuenta bloqueada. Intenta en unos minutos.");
+            return OperationResult.reject("Account locked. Try again in a few minutes.");
         String identifier = userRepository.authenticate(email, password);
         if (identifier == null) {
             tracker = tracker.fail(currentTime);
             if (tracker.isExhausted())
-                return OperationResult.reject("Has agotado tus intentos. Cuenta bloqueada por 5 minutos.");
-            return OperationResult.reject("Credenciales incorrectas");
+                return OperationResult.reject("Too many attempts. Account locked for 5 minutes.");
+            return OperationResult.reject("Incorrect credentials");
         }
         tracker = tracker.succeed();
         sessionRepository.save(identifier);

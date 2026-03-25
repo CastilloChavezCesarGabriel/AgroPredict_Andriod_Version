@@ -9,7 +9,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 public final class PdfReport implements IReportWriter {
-    private static final String TITLE = "AgroPredict - Reporte de Campo";
+    private static final String TITLE = "AgroPredict - Field Report";
     private Document document;
 
     @Override

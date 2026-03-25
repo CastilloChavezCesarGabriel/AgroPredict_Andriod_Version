@@ -1,76 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <style name="Theme.AgroPredict" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="Theme.AgroPredict" parent="Theme.Material3.Light.NoActionBar">
         <item name="colorPrimary">@color/green_primary</item>
-        <item name="colorPrimaryDark">@color/green_primary_dark</item>
-        <item name="colorAccent">@color/green_accent</item>
+        <item name="colorOnPrimary">@color/green_on_primary</item>
+        <item name="colorPrimaryContainer">@color/green_primary_container</item>
+        <item name="colorOnPrimaryContainer">@color/green_on_primary_container</item>
+
+        <item name="colorSecondary">@color/soil_brown</item>
+        <item name="colorSecondaryContainer">@color/soil_brown_container</item>
+
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorSurfaceVariant">@color/green_surface_variant</item>
+        <item name="colorOnSurface">@color/green_on_surface</item>
+        <item name="colorOnSurfaceVariant">@color/green_on_surface_variant</item>
+
+        <item name="colorError">@color/error_red</item>
+        <item name="colorErrorContainer">@color/error_container</item>
+
+        <item name="colorOutline">@color/outline</item>
+        <item name="colorOutlineVariant">@color/outline_variant</item>
+
         <item name="android:statusBarColor">@color/green_primary_dark</item>
         <item name="android:windowBackground">@color/surface</item>
-        <item name="android:colorBackground">@color/surface</item>
+
+        <item name="shapeAppearanceSmallComponent">@style/AgroPredict.Shape.Small</item>
+        <item name="shapeAppearanceMediumComponent">@style/AgroPredict.Shape.Medium</item>
+        <item name="shapeAppearanceLargeComponent">@style/AgroPredict.Shape.Large</item>
     </style>
 
-    <!-- Buttons -->
+    <!-- Shapes -->
 
-    <style name="AgroPredict.Button" parent="Widget.MaterialComponents.Button">
-        <item name="android:backgroundTint">@color/green_primary</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="cornerRadius">@dimen/radius_medium</item>
+    <style name="AgroPredict.Shape.Small" parent="ShapeAppearance.Material3.SmallComponent">
+        <item name="cornerSize">@dimen/radius_small</item>
+    </style>
+
+    <style name="AgroPredict.Shape.Medium" parent="ShapeAppearance.Material3.MediumComponent">
+        <item name="cornerSize">@dimen/radius_medium</item>
+    </style>
+
+    <style name="AgroPredict.Shape.Large" parent="ShapeAppearance.Material3.LargeComponent">
+        <item name="cornerSize">@dimen/radius_large</item>
+    </style>
+
+    <style name="AgroPredict.Shape.Pill" parent="">
+        <item name="cornerSize">@dimen/radius_pill</item>
+    </style>
+
+    <style name="AgroPredict.Shape.TopRounded" parent="">
+        <item name="cornerSizeTopLeft">@dimen/radius_extra_large</item>
+        <item name="cornerSizeTopRight">@dimen/radius_extra_large</item>
+        <item name="cornerSizeBottomLeft">0dp</item>
+        <item name="cornerSizeBottomRight">0dp</item>
+    </style>
+
+    <!-- Buttons (pill-shaped) -->
+
+    <style name="AgroPredict.Button" parent="Widget.Material3.Button">
         <item name="android:textAllCaps">false</item>
         <item name="android:minHeight">@dimen/button_min_height</item>
-        <item name="android:textSize">@dimen/text_body</item>
-        <item name="android:letterSpacing">0.01</item>
+        <item name="shapeAppearance">@style/AgroPredict.Shape.Pill</item>
     </style>
 
-    <style name="AgroPredict.Button.Secondary" parent="Widget.MaterialComponents.Button.OutlinedButton">
-        <item name="strokeColor">@color/green_primary</item>
-        <item name="strokeWidth">@dimen/card_stroke_width</item>
-        <item name="android:textColor">@color/green_primary</item>
-        <item name="cornerRadius">@dimen/radius_medium</item>
+    <style name="AgroPredict.Button.Secondary" parent="Widget.Material3.Button.OutlinedButton">
         <item name="android:textAllCaps">false</item>
         <item name="android:minHeight">@dimen/button_min_height</item>
-        <item name="android:textSize">@dimen/text_body</item>
-        <item name="android:letterSpacing">0.01</item>
+        <item name="shapeAppearance">@style/AgroPredict.Shape.Pill</item>
     </style>
 
-    <style name="AgroPredict.Button.Tonal" parent="Widget.MaterialComponents.Button">
-        <item name="android:backgroundTint">@color/soil_brown</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="cornerRadius">@dimen/radius_medium</item>
+    <style name="AgroPredict.Button.Tonal" parent="Widget.Material3.Button.TonalButton">
         <item name="android:textAllCaps">false</item>
         <item name="android:minHeight">@dimen/button_min_height</item>
-        <item name="android:textSize">@dimen/text_body</item>
-        <item name="android:letterSpacing">0.01</item>
+        <item name="shapeAppearance">@style/AgroPredict.Shape.Pill</item>
     </style>
 
-    <!-- Text Inputs -->
-
-    <style name="AgroPredict.TextInput" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-        <item name="boxCornerRadiusTopStart">@dimen/radius_medium</item>
-        <item name="boxCornerRadiusTopEnd">@dimen/radius_medium</item>
-        <item name="boxCornerRadiusBottomStart">@dimen/radius_medium</item>
-        <item name="boxCornerRadiusBottomEnd">@dimen/radius_medium</item>
-        <item name="boxStrokeColor">@color/outline</item>
+    <style name="AgroPredict.Button.Text" parent="Widget.Material3.Button.TextButton">
+        <item name="android:textAllCaps">false</item>
     </style>
 
-    <!-- Cards -->
+    <!-- Text Inputs (rounded) -->
 
-    <style name="AgroPredict.Card" parent="Widget.MaterialComponents.CardView">
-        <item name="cardCornerRadius">@dimen/radius_large</item>
+    <style name="AgroPredict.TextInput" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="shapeAppearance">@style/AgroPredict.Shape.Small</item>
+    </style>
+
+    <!-- Cards (warm, rounded, soft) -->
+
+    <style name="AgroPredict.Card" parent="Widget.Material3.CardView.Elevated">
+        <item name="shapeAppearance">@style/AgroPredict.Shape.Large</item>
         <item name="cardElevation">@dimen/elevation_low</item>
+        <item name="strokeWidth">0dp</item>
         <item name="contentPadding">@dimen/spacing_16</item>
-        <item name="strokeColor">@color/outline_variant</item>
-        <item name="strokeWidth">@dimen/card_stroke_width</item>
-        <item name="cardBackgroundColor">@color/surface_elevated</item>
+        <item name="cardBackgroundColor">@color/card_warm</item>
     </style>
 
-    <style name="AgroPredict.Card.Hero" parent="AgroPredict.Card">
-        <item name="cardBackgroundColor">@color/green_surface</item>
-        <item name="strokeColor">@color/green_accent</item>
+    <style name="AgroPredict.Card.Filled" parent="Widget.Material3.CardView.Filled">
+        <item name="shapeAppearance">@style/AgroPredict.Shape.Large</item>
+        <item name="cardElevation">0dp</item>
+        <item name="contentPadding">@dimen/spacing_16</item>
+        <item name="cardBackgroundColor">@color/green_surface_container_low</item>
+    </style>
+
+    <style name="AgroPredict.Card.Hero" parent="Widget.Material3.CardView.Elevated">
+        <item name="shapeAppearance">@style/AgroPredict.Shape.Large</item>
         <item name="cardElevation">@dimen/elevation_medium</item>
+        <item name="contentPadding">0dp</item>
+        <item name="cardBackgroundColor">@color/card_hero</item>
     </style>
 
-    <!-- Spinner -->
+    <style name="AgroPredict.Card.Elevated" parent="Widget.Material3.CardView.Elevated">
+        <item name="shapeAppearance">@style/AgroPredict.Shape.Large</item>
+        <item name="cardElevation">@dimen/elevation_medium</item>
+        <item name="contentPadding">0dp</item>
+        <item name="cardBackgroundColor">@color/card_warm</item>
+    </style>
+
+    <!-- Spinner (rounded) -->
 
     <style name="AgroPredict.Spinner" parent="android:Widget.Material.Spinner">
         <item name="android:background">@drawable/spinner_background</item>
@@ -81,7 +125,7 @@
 
     <!-- Toolbar -->
 
-    <style name="AgroPredict.Toolbar" parent="Widget.MaterialComponents.Toolbar">
+    <style name="AgroPredict.Toolbar" parent="Widget.Material3.Toolbar">
         <item name="android:background">@color/green_primary</item>
         <item name="titleTextColor">@color/white</item>
         <item name="android:elevation">0dp</item>
@@ -91,55 +135,48 @@
 
     <style name="AgroPredict.Text" parent="">
         <item name="android:textSize">@dimen/text_body</item>
-        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
     </style>
 
     <style name="AgroPredict.Text.Display">
-        <item name="android:textSize">@dimen/text_display</item>
+        <item name="android:textAppearance">?attr/textAppearanceHeadlineMedium</item>
         <item name="android:textColor">@color/green_primary</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
     <style name="AgroPredict.Text.Headline">
-        <item name="android:textSize">@dimen/text_headline</item>
-        <item name="android:textColor">@color/text_primary</item>
-        <item name="android:textStyle">bold</item>
+        <item name="android:textAppearance">?attr/textAppearanceTitleLarge</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
     </style>
 
     <style name="AgroPredict.Text.Title">
-        <item name="android:textSize">@dimen/text_title</item>
+        <item name="android:textAppearance">?attr/textAppearanceTitleMedium</item>
         <item name="android:textColor">@color/green_primary</item>
-        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="AgroPredict.Text.Body">
-        <item name="android:textSize">@dimen/text_body</item>
-        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textAppearance">?attr/textAppearanceBodyLarge</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
         <item name="android:lineSpacingExtra">@dimen/line_spacing_body</item>
     </style>
 
     <style name="AgroPredict.Text.Label">
-        <item name="android:textSize">@dimen/text_label</item>
-        <item name="android:textColor">@color/text_tertiary</item>
-        <item name="android:letterSpacing">0.02</item>
+        <item name="android:textAppearance">?attr/textAppearanceLabelLarge</item>
+        <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
     </style>
 
     <style name="AgroPredict.Text.CardTitle">
-        <item name="android:textSize">@dimen/text_body</item>
-        <item name="android:textColor">@color/text_primary</item>
-        <item name="android:textStyle">bold</item>
+        <item name="android:textAppearance">?attr/textAppearanceTitleSmall</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
     </style>
 
     <style name="AgroPredict.Text.Link">
-        <item name="android:textSize">@dimen/text_body</item>
+        <item name="android:textAppearance">?attr/textAppearanceLabelLarge</item>
         <item name="android:textColor">@color/green_primary</item>
-        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="AgroPredict.Text.LinkSubtle">
-        <item name="android:textSize">@dimen/text_label</item>
-        <item name="android:textColor">@color/text_tertiary</item>
+        <item name="android:textAppearance">?attr/textAppearanceLabelMedium</item>
+        <item name="android:textColor">?attr/colorOnSurfaceVariant</item>
     </style>
-
 </resources>

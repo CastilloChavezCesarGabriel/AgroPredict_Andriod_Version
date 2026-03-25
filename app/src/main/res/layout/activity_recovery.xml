@@ -17,19 +17,20 @@
         android:paddingBottom="@dimen/spacing_32">
 
         <TextView
-            style="@style/AgroPredict.Text.Display"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_12"
-            android:text="@string/recovery_title" />
+            android:text="@string/recovery_title"
+            android:textAppearance="?attr/textAppearanceHeadlineMedium"
+            android:textColor="@color/green_primary" />
 
         <TextView
-            style="@style/AgroPredict.Text.Label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_40"
             android:text="@string/recovery_instruction"
-            android:textColor="@color/text_secondary" />
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="?attr/colorOnSurfaceVariant" />
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/AgroPredict.TextInput"
@@ -85,16 +86,12 @@
             android:layout_height="wrap_content"
             android:text="@string/reset_password" />
 
-        <TextView
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/tvBackToLogin"
-            style="@style/AgroPredict.Text.Link"
+            style="@style/AgroPredict.Button.Text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_20"
-            android:background="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"
-            android:padding="@dimen/spacing_8"
+            android:layout_marginTop="@dimen/spacing_12"
             android:text="@string/back_to_login" />
 
     </LinearLayout>

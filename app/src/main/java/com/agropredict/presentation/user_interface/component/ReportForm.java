@@ -4,22 +4,23 @@ import android.app.Activity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.RadioGroup;
 import com.agropredict.R;
 import com.agropredict.domain.entity.Crop;
 import com.agropredict.presentation.viewmodel.report.ReportViewModel;
+import com.google.android.material.button.MaterialButtonToggleGroup;
 import java.util.List;
 
 public final class ReportForm {
 
     private final CropSelection cropSelection;
-    private final RadioGroup formatRadioGroup;
+    private final MaterialButtonToggleGroup formatToggleGroup;
     private final Button shareButton;
     private final ProgressBar progressIndicator;
 
     public ReportForm(Activity activity) {
         this.cropSelection = new CropSelection(activity.findViewById(R.id.spnCropSelection));
-        this.formatRadioGroup = activity.findViewById(R.id.radioGroupFormat);
+        this.formatToggleGroup = activity.findViewById(R.id.radioGroupFormat);
+        this.formatToggleGroup.check(R.id.radioPdf);
         this.shareButton = activity.findViewById(R.id.btnShare);
         this.progressIndicator = activity.findViewById(R.id.progressGeneration);
         shareButton.setVisibility(View.GONE);
@@ -53,7 +54,7 @@ public final class ReportForm {
     }
 
     private String format() {
-        int checkedId = formatRadioGroup.getCheckedRadioButtonId();
+        int checkedId = formatToggleGroup.getCheckedButtonId();
         return checkedId == R.id.radioCsv ? "csv" : "pdf";
     }
 }

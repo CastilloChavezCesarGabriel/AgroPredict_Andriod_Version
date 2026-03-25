@@ -28,10 +28,10 @@ public final class ManagementInput extends SpinnerInput {
     }
 
     private void populate() {
-        fill(irrigationSpinner, "Diario", "Cada 2–3 días", "Semanal", "Muy poco", "Sin riego reciente");
-        fill(fertilizationSpinner, "<1 semana", "1–2 semanas", "3 semanas", "No fertilizado", "No sé");
-        fill(sprayingSpinner, "Sí (últimos 7 días)", "Sí (últimos 14 días)", "No", "No sé");
-        fill(weedsSpinner, "Mucha", "Regular", "Poca", "Ninguna");
+        fill(irrigationSpinner, "Daily", "Every 2–3 days", "Weekly", "Very little", "No recent irrigation");
+        fill(fertilizationSpinner, "<1 week", "1–2 weeks", "3 weeks", "Not fertilized", "Don't know");
+        fill(sprayingSpinner, "Yes (last 7 days)", "Yes (last 14 days)", "No", "Don't know");
+        fill(weedsSpinner, "Heavy", "Moderate", "Light", "None");
     }
 
 }

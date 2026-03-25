@@ -50,10 +50,10 @@ public final class ReportExporter implements IOperationResultVisitor {
         view.idle();
         if (completed) {
             persist(filePath);
-            view.notify("Reporte generado exitosamente");
+            view.notify("Report generated successfully");
             view.offer(filePath);
         } else {
-            view.notify("Error al generar el reporte");
+            view.notify("Error generating the report");
         }
     }
 

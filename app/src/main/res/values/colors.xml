@@ -1,37 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <color name="green_primary">#2E7D32</color>
-    <color name="green_primary_dark">#1B5E20</color>
-    <color name="green_accent">#66BB6A</color>
-    <color name="green_surface">#E8F5E9</color>
-
-    <color name="soil_brown">#6D4C41</color>
-    <color name="soil_brown_light">#EFEBE9</color>
-
-    <color name="accent_orange">#F57C00</color>
-    <color name="accent_orange_light">#FFF3E0</color>
-
+    <color name="green_primary">#4A7C59</color>
+    <color name="green_primary_dark">#3A6348</color>
+    <color name="green_accent">#7BAF7E</color>
+    <color name="green_on_primary">#FFFFFF</color>
+    <color name="green_primary_container">#D4E8D1</color>
+    <color name="green_on_primary_container">#1A3A1E</color>
+    <color name="green_surface">#F5F0E6</color>
+    <color name="green_surface_variant">#E3DCCF</color>
+    <color name="green_on_surface">#2C2B28</color>
+    <color name="green_on_surface_variant">#5A5750</color>
+    <color name="green_surface_container">#EDE8DC</color>
+    <color name="green_surface_container_low">#F2EDDF</color>
+    <color name="soil_brown">#8B6E5A</color>
+    <color name="soil_brown_container">#F0E6DD</color>
+    <color name="accent_orange">#D4874D</color>
     <color name="white">#FFFFFF</color>
-    <color name="surface">#FAFAFA</color>
-    <color name="surface_elevated">#FFFFFF</color>
-
-    <color name="text_primary">#1B1B1F</color>
-    <color name="text_secondary">#49454F</color>
-    <color name="text_tertiary">#79747E</color>
-
-    <color name="outline">#CAC4D0</color>
-    <color name="outline_variant">#E0E0E0</color>
-    <color name="divider">#E7E0EC</color>
-
-    <color name="error_red">#B3261E</color>
-    <color name="error_surface">#FDECEA</color>
-
-    <color name="severity_low">#2E7D32</color>
-    <color name="severity_low_surface">#E8F5E9</color>
-    <color name="severity_moderate">#E65100</color>
-    <color name="severity_moderate_surface">#FFF3E0</color>
-    <color name="severity_high">#C62828</color>
-    <color name="severity_high_surface">#FDECEA</color>
-
+    <color name="white_alpha_80">#CCFFFFFF</color>
+    <color name="surface">#F5F0E6</color>
+    <color name="surface_elevated">#FAF7F0</color>
+    <color name="text_primary">#2C2B28</color>
+    <color name="text_secondary">#5A5750</color>
+    <color name="text_tertiary">#8A857B</color>
+    <color name="outline">#B5AFA4</color>
+    <color name="outline_variant">#D6D0C5</color>
+    <color name="divider">#D6D0C5</color>
+    <color name="error_red">#C45B4A</color>
+    <color name="error_container">#FCE4DE</color>
+    <color name="severity_low">#4A7C59</color>
+    <color name="severity_low_surface">#E5F0E6</color>
+    <color name="severity_moderate">#C87B3A</color>
+    <color name="severity_moderate_surface">#FBF0E2</color>
+    <color name="severity_high">#B85545</color>
+    <color name="severity_high_surface">#FAEAE6</color>
+    <color name="gradient_login_start">#3A6348</color>
+    <color name="gradient_login_center">#4A7C59</color>
+    <color name="gradient_login_end">#6B9E6E</color>
+    <color name="card_warm">#FAF5EB</color>
+    <color name="card_hero">#E5EDDF</color>
+    <color name="card_icon_green">#E5EDDF</color>
+    <color name="card_icon_brown">#F0E6DD</color>
 </resources>

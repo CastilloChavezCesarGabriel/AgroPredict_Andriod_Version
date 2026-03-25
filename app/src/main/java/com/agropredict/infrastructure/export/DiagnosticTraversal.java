@@ -43,8 +43,8 @@ public final class DiagnosticTraversal implements IDiagnosticVisitor, IDiagnosti
 
     @Override
     public void visitPrediction(String predictedCrop, double confidence) {
-        writer.write("cultivo_detectado", predictedCrop);
-        writer.write("confianza", String.format(Locale.getDefault(), "%.1f%%", confidence * 100));
+        writer.write("detected_crop", predictedCrop);
+        writer.write("confidence", String.format(Locale.getDefault(), "%.1f%%", confidence * 100));
     }
 
     @Override
@@ -60,11 +60,11 @@ public final class DiagnosticTraversal implements IDiagnosticVisitor, IDiagnosti
 
     @Override
     public void visitSummary(String severity, String shortSummary) {
-        writer.write("resumen", shortSummary);
+        writer.write("summary", shortSummary);
     }
 
     @Override
     public void visitOwnership(String userIdentifier, String recommendation) {
-        writer.write("recomendacion", recommendation);
+        writer.write("recommendation", recommendation);
     }
 }

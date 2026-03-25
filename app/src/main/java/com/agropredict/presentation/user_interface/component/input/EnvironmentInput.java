@@ -27,8 +27,8 @@ public final class EnvironmentInput extends SpinnerInput {
 
     private void populate() {
         fill(temperatureSpinner, "<15°C", "15–25°C", "26–32°C", ">32°C");
-        fill(humiditySpinner, "20–40%", "40–60%", "60–80%", ">80%", "No sé");
-        fill(rainSpinner, "Hoy", "Esta semana", "Hace 1 semana", "Hace >2 semanas", "No ha llovido");
+        fill(humiditySpinner, "20–40%", "40–60%", "60–80%", ">80%", "Don't know");
+        fill(rainSpinner, "Today", "This week", "1 week ago", ">2 weeks ago", "No rain");
     }
 
 }

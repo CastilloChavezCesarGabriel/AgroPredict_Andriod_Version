@@ -14,7 +14,7 @@ public final class LoginResultStrategy implements IOperationResultVisitor {
         if (completed) {
             view.proceed();
         } else {
-            view.notify(resultIdentifier != null ? resultIdentifier : "Credenciales incorrectas");
+            view.notify(resultIdentifier != null ? resultIdentifier : "Incorrect credentials");
         }
     }
 }

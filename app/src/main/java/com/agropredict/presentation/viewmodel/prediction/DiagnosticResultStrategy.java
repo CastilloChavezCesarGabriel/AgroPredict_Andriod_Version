@@ -14,7 +14,7 @@ public final class DiagnosticResultStrategy implements IOperationResultVisitor {
         if (completed) {
             view.reveal(resultIdentifier);
         } else {
-            view.notify("Error al generar el diagnostico");
+            view.notify("Error generating the diagnosis");
         }
     }
 }
