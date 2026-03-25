@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.activity.OnBackPressedCallback;
 import com.agropredict.AgroPredictApplication;
 import com.agropredict.R;
 import com.agropredict.application.usecase.authentication.LogoutUseCase;
@@ -29,11 +28,7 @@ public final class HomeActivity extends BaseActivity implements IHomeView {
         findViewById(R.id.fabAddField).setOnClickListener(view -> predict());
         findViewById(R.id.cardResources).setOnClickListener(view -> browse("https://www.fao.org/agriculture/es"));
         findViewById(R.id.cardManual).setOnClickListener(view -> browse("https://www.inia.gob.pe"));
-        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-            }
-        });
+        getOnBackPressedDispatcher().addCallback(this, new BackNavigationGuard());
     }
 
     private void confirm() {
