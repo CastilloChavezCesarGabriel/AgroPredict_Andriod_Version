@@ -7,7 +7,6 @@ import java.io.File;
 import java.io.IOException;
 
 public final class CsvReportService extends ReportService {
-
     public CsvReportService(File outputDirectory) {
         super(outputDirectory);
     }

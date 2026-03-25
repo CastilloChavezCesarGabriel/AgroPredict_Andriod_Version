@@ -38,7 +38,9 @@ public final class DiagnosticTraversal implements IDiagnosticVisitor, IDiagnosti
     @Override
     public void visit(Prediction prediction, DiagnosticContent content) {
         prediction.accept(this);
-        if (content != null) content.accept(this);
+        if (content != null) {
+            content.accept(this);
+        }
     }
 
     @Override
@@ -49,7 +51,9 @@ public final class DiagnosticTraversal implements IDiagnosticVisitor, IDiagnosti
 
     @Override
     public void visit(DiagnosticConditions conditions, DiagnosticAssessment assessment) {
-        if (assessment != null) assessment.accept(this);
+        if (assessment != null) {
+            assessment.accept(this);
+        }
     }
 
     @Override

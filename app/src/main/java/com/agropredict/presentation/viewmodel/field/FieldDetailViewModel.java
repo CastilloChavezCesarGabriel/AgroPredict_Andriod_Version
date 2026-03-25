@@ -17,7 +17,9 @@ public final class FieldDetailViewModel {
         Diagnostic diagnostic = loadDetailUseCase.find(diagnosticIdentifier);
         if (diagnostic != null) {
             view.display(diagnostic);
-            if (diagnostic.isSevere()) view.warn();
+            if (diagnostic.isSevere()) {
+                view.warn();
+            }
         }
     }
 }

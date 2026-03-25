@@ -11,14 +11,6 @@ public final class DiagnosticOwnership {
         this.recommendationText = recommendationText;
     }
 
-    public boolean hasRecommendation() {
-        return recommendationText != null && !recommendationText.isEmpty();
-    }
-
-    public boolean isOwned() {
-        return userIdentifier != null && !userIdentifier.isEmpty();
-    }
-
     public void accept(IDiagnosticOwnershipVisitor visitor) {
         visitor.visitOwnership(userIdentifier, recommendationText);
     }
