@@ -1,5 +1,4 @@
 package com.agropredict.presentation.user_interface;
-import com.agropredict.presentation.user_interface.component.PredictionForm;
 
 import android.Manifest;
 import android.content.Intent;
@@ -21,6 +20,7 @@ import com.agropredict.presentation.user_interface.component.input.SoilTypeCatal
 import com.agropredict.presentation.user_interface.component.input.StageCatalog;
 import com.agropredict.presentation.viewmodel.prediction.IPredictionView;
 import com.agropredict.presentation.viewmodel.prediction.PredictionViewModel;
+import com.agropredict.presentation.user_interface.component.PredictionForm;
 
 public final class PredictionActivity extends BaseActivity implements IPredictionView {
     private PredictionViewModel viewModel;
