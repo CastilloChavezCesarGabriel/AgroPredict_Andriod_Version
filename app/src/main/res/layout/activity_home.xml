@@ -102,67 +102,109 @@
 
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/cardHistory"
-                        style="@style/AgroPredict.Card"
+                        style="@style/AgroPredict.Card.Hero"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_columnWeight="1"
+                        android:layout_columnSpan="2"
+                        android:layout_marginBottom="@dimen/spacing_8"
                         android:clickable="true"
                         android:focusable="true"
-                        android:foreground="?attr/selectableItemBackground">
+                        android:foreground="?attr/selectableItemBackground"
+                        app:cardBackgroundColor="@color/soil_brown_container">
 
-                        <TextView
-                            style="@style/AgroPredict.Text.CardTitle"
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:drawablePadding="@dimen/spacing_12"
-                            android:gravity="center"
-                            android:padding="@dimen/spacing_16"
-                            android:text="@string/view_history"
-                            app:drawableTopCompat="@drawable/illustration_history" />
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:padding="@dimen/spacing_20">
+
+                            <ImageView
+                                android:layout_width="@dimen/icon_large"
+                                android:layout_height="@dimen/icon_large"
+                                android:contentDescription="@string/view_history"
+                                android:src="@drawable/illustration_history" />
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/spacing_16"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    style="@style/AgroPredict.Text.Headline"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/view_history"
+                                    android:textColor="@color/soil_brown" />
+
+                                <TextView
+                                    style="@style/AgroPredict.Text.Label"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="@dimen/spacing_4"
+                                    android:text="@string/view_history_description"
+                                    android:textColor="@color/text_secondary" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
 
                     </com.google.android.material.card.MaterialCardView>
 
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/cardReport"
-                        style="@style/AgroPredict.Card"
+                        style="@style/AgroPredict.Card.Hero"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_columnWeight="1"
+                        android:layout_columnSpan="2"
+                        android:layout_marginBottom="@dimen/spacing_8"
                         android:clickable="true"
                         android:focusable="true"
-                        android:foreground="?attr/selectableItemBackground">
+                        android:foreground="?attr/selectableItemBackground"
+                        app:cardBackgroundColor="@color/card_report">
 
-                        <TextView
-                            style="@style/AgroPredict.Text.CardTitle"
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:drawablePadding="@dimen/spacing_12"
-                            android:gravity="center"
-                            android:padding="@dimen/spacing_16"
-                            android:text="@string/generate_report"
-                            app:drawableTopCompat="@drawable/illustration_report" />
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:padding="@dimen/spacing_20">
 
-                    </com.google.android.material.card.MaterialCardView>
+                            <ImageView
+                                android:layout_width="@dimen/icon_large"
+                                android:layout_height="@dimen/icon_large"
+                                android:contentDescription="@string/generate_report"
+                                android:src="@drawable/illustration_report" />
 
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/cardPestGuide"
-                        style="@style/AgroPredict.Card"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_columnWeight="1"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:foreground="?attr/selectableItemBackground">
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/spacing_16"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
 
-                        <TextView
-                            style="@style/AgroPredict.Text.CardTitle"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:drawablePadding="@dimen/spacing_12"
-                            android:gravity="center"
-                            android:padding="@dimen/spacing_16"
-                            android:text="@string/pest_guide"
-                            app:drawableTopCompat="@drawable/illustration_pest_guide" />
+                                <TextView
+                                    style="@style/AgroPredict.Text.Headline"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/generate_report"
+                                    android:textColor="@color/report_teal" />
+
+                                <TextView
+                                    style="@style/AgroPredict.Text.Label"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="@dimen/spacing_4"
+                                    android:text="@string/generate_report_description"
+                                    android:textColor="@color/text_secondary" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
 
                     </com.google.android.material.card.MaterialCardView>
 
@@ -185,6 +227,28 @@
                             android:padding="@dimen/spacing_16"
                             android:text="@string/resources"
                             app:drawableTopCompat="@drawable/illustration_resources" />
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardPestGuide"
+                        style="@style/AgroPredict.Card"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?attr/selectableItemBackground">
+
+                        <TextView
+                            style="@style/AgroPredict.Text.CardTitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:drawablePadding="@dimen/spacing_12"
+                            android:gravity="center"
+                            android:padding="@dimen/spacing_16"
+                            android:text="@string/pest_guide"
+                            app:drawableTopCompat="@drawable/illustration_pest_guide" />
 
                     </com.google.android.material.card.MaterialCardView>
 

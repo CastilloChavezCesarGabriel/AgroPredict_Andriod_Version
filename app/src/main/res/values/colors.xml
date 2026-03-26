@@ -40,4 +40,6 @@
     <color name="card_hero">#E5EDDF</color>
     <color name="card_icon_green">#E5EDDF</color>
     <color name="card_icon_brown">#F0E6DD</color>
+    <color name="card_report">#DDEAE4</color>
+    <color name="report_teal">#4A7C6E</color>
 </resources>
