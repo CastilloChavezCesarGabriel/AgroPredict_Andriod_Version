@@ -18,7 +18,7 @@ public final class ReportForm {
     private final ProgressBar progressIndicator;
 
     public ReportForm(Activity activity) {
-        this.cropSelection = new CropSelection(activity.findViewById(R.id.spnCropSelection));
+        this.cropSelection = new CropSelection(activity.findViewById(R.id.spnCropSelection), identifier -> {});
         this.formatToggleGroup = activity.findViewById(R.id.radioGroupFormat);
         this.formatToggleGroup.check(R.id.radioPdf);
         this.shareButton = activity.findViewById(R.id.btnShare);

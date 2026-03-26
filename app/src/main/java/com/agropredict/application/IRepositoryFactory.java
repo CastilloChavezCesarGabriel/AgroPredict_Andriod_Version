@@ -8,6 +8,9 @@ import com.agropredict.application.repository.IReportRepository;
 import com.agropredict.application.repository.ISessionRepository;
 import com.agropredict.application.repository.IUserRepository;
 import com.agropredict.application.repository.IDiagnosticWorkflow;
+import com.agropredict.application.service.IAssetService;
+import com.agropredict.application.service.IAuditLogger;
+import com.agropredict.application.service.IPasswordHasher;
 import com.agropredict.application.service.IDiagnosticApiService;
 import com.agropredict.application.service.IImageService;
 import com.agropredict.application.service.IReportService;
@@ -24,7 +27,9 @@ public interface IRepositoryFactory {
     ISessionRepository createSessionRepository();
     IImageService createImageService();
     IDiagnosticApiService createApiService();
-    IReportService createPdfReportGenerator();
-    IReportService createCsvReportGenerator();
+    IReportService createReportService(String format);
     IDiagnosticWorkflow createDiagnosticWorkflow();
+    IAssetService createAssetService();
+    IAuditLogger createAuditLogger();
+    IPasswordHasher createPasswordHasher();
 }

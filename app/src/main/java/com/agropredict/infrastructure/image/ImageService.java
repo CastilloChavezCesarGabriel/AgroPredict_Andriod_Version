@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import com.agropredict.application.result.ClassificationResult;
 import com.agropredict.application.service.IImageService;
+import com.agropredict.domain.Identifier;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.tensorflow.lite.Interpreter;
@@ -27,7 +28,6 @@ public final class ImageService implements IImageService {
     private static final int IMAGE_SIZE = 224;
     private static final int PIXEL_CHANNELS = 3;
     private static final int BYTES_PER_FLOAT = 4;
-    private static final float CONFIDENCE_THRESHOLD = 0.6f;
     private static final String MODEL_PATH = "models/cultivo_model.tflite";
     private static final String CLASSES_PATH = "models/classes.json";
     private static final String NO_CROP_LABEL = "no_cultivo";
@@ -62,7 +62,7 @@ public final class ImageService implements IImageService {
     @Override
     public String validate(String imagePath) {
         File imageFile = new File(imagePath);
-        if (!imageFile.exists()) return "El archivo no existe";
+        if (!imageFile.exists()) return "File does not exist";
         String formatError = checkFormat(imagePath);
         if (formatError != null) return formatError;
         String sizeError = checkSize(imageFile);
@@ -157,9 +157,6 @@ public final class ImageService implements IImageService {
                 bestIndex = index;
             }
         }
-        if (bestConfidence < CONFIDENCE_THRESHOLD) {
-            return new ClassificationResult(NO_CROP_LABEL, 0.0);
-        }
         return new ClassificationResult(classLabels[bestIndex], bestConfidence);
     }
 
@@ -168,14 +165,14 @@ public final class ImageService implements IImageService {
         boolean isJpg = lowercasePath.endsWith(".jpg");
         boolean isJpeg = lowercasePath.endsWith(".jpeg");
         boolean isPng = lowercasePath.endsWith(".png");
-        if (!isJpg && !isJpeg && !isPng) return "Formato no soportado. Use JPG o PNG";
+        if (!isJpg && !isJpeg && !isPng) return "Unsupported format. Use JPG or PNG";
         return null;
     }
 
     private String checkSize(File imageFile) {
         long fileSize = imageFile.length();
-        if (fileSize < MINIMUM_FILE_SIZE) return "La imagen es demasiado pequena (minimo 10KB)";
-        if (fileSize > MAXIMUM_FILE_SIZE) return "La imagen es demasiado grande (maximo 10MB)";
+        if (fileSize < MINIMUM_FILE_SIZE) return "Image is too small (minimum 10KB)";
+        if (fileSize > MAXIMUM_FILE_SIZE) return "Image is too large (maximum 10MB)";
         return null;
     }
 
@@ -184,9 +181,9 @@ public final class ImageService implements IImageService {
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(path, options);
         if (options.outWidth < MINIMUM_DIMENSION || options.outHeight < MINIMUM_DIMENSION)
-            return "La imagen es demasiado pequena (minimo 100x100)";
+            return "Image is too small (minimum 100x100)";
         if (options.outWidth > MAXIMUM_DIMENSION || options.outHeight > MAXIMUM_DIMENSION)
-            return "La imagen es demasiado grande (maximo 8000x8000)";
+            return "Image is too large (maximum 8000x8000)";
         return null;
     }
 
@@ -197,7 +194,7 @@ public final class ImageService implements IImageService {
     }
 
     private File save(Bitmap bitmap) throws IOException {
-        File outputFile = new File(context.getCacheDir(), "compressed_" + System.currentTimeMillis() + ".jpg");
+        File outputFile = new File(context.getCacheDir(), Identifier.generate("compressed") + ".jpg");
         try (FileOutputStream outputStream = new FileOutputStream(outputFile)) {
             bitmap.compress(Bitmap.CompressFormat.JPEG, COMPRESSION_QUALITY, outputStream);
             outputStream.flush();

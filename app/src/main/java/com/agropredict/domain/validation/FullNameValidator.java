@@ -9,7 +9,7 @@ public final class FullNameValidator implements ITextValidator {
     private static final Pattern NAME_PATTERN = Pattern.compile("^(?=.*\\p{L})[\\p{L}\\s]+$");
 
     @Override
-    public boolean validate(String text) {
+    public boolean isValid(String text) {
         if (text == null) return false;
 
         String trimmed = text.trim();

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingHorizontal="@dimen/spacing_16"
+    android:paddingVertical="@dimen/spacing_12">
+
+    <View
+        android:id="@+id/severityIndicator"
+        android:layout_width="@dimen/spacing_12"
+        android:layout_height="@dimen/spacing_12"
+        android:layout_marginEnd="@dimen/spacing_12"
+        android:background="@drawable/severity_indicator" />
+
+    <TextView
+        android:id="@+id/tvDiagnosticLabel"
+        style="@style/AgroPredict.Text.Body"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:maxLines="2" />
+
+</LinearLayout>

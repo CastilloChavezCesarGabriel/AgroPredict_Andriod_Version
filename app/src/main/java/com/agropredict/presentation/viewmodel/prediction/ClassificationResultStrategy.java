@@ -4,7 +4,6 @@ import com.agropredict.application.visitor.IClassificationResultVisitor;
 import java.util.Locale;
 
 public final class ClassificationResultStrategy implements IClassificationResultVisitor {
-    private static final double MINIMUM_CONFIDENCE_THRESHOLD = 0.6;
     private static final double PERCENTAGE_MULTIPLIER = 100;
     private final IPredictionView view;
 
@@ -13,15 +12,11 @@ public final class ClassificationResultStrategy implements IClassificationResult
     }
 
     @Override
-    public void visit(String predictedCrop, double confidence) {
+    public void visitPrediction(String predictedCrop, double confidence) {
         view.idle();
-        if (confidence >= MINIMUM_CONFIDENCE_THRESHOLD) {
-            String confidenceText = String.format(Locale.getDefault(),
-                    "%.0f%%", confidence * PERCENTAGE_MULTIPLIER);
-            view.classify(predictedCrop, confidenceText);
-        } else {
-            view.notify("Could not identify the crop with certainty");
-        }
+        String confidenceText = String.format(Locale.getDefault(),
+                "%.0f%%", confidence * PERCENTAGE_MULTIPLIER);
+        view.classify(predictedCrop, confidenceText);
     }
 
     @Override

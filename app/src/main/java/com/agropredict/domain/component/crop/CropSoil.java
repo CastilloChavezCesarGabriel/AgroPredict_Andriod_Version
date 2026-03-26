@@ -11,14 +11,6 @@ public final class CropSoil {
         this.area = area;
     }
 
-    public boolean isSurveyed() {
-        return soilTypeIdentifier != null && !soilTypeIdentifier.isEmpty();
-    }
-
-    public boolean isMeasured() {
-        return area != null && !area.isEmpty();
-    }
-
     public void accept(ICropSoilVisitor visitor) {
         visitor.visitSoil(soilTypeIdentifier, area);
     }

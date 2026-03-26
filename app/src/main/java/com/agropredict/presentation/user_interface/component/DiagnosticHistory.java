@@ -2,9 +2,9 @@ package com.agropredict.presentation.user_interface.component;
 
 import android.app.Activity;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import androidx.core.content.ContextCompat;
 import com.agropredict.R;
 import com.agropredict.domain.component.diagnostic.DiagnosticAssessment;
 import com.agropredict.domain.component.diagnostic.DiagnosticConditions;
@@ -24,23 +24,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public final class DiagnosticHistory implements IDiagnosticVisitor,
-        IDiagnosticDataVisitor, IPredictionVisitor,
-        IDiagnosticContentVisitor, IDiagnosticAssessmentVisitor,
+public final class DiagnosticHistory implements IDiagnosticVisitor, IDiagnosticDataVisitor,
+        IPredictionVisitor, IDiagnosticContentVisitor, IDiagnosticAssessmentVisitor,
         IDiagnosticSummaryVisitor {
+    private final Activity activity;
     private final ListView diagnosticListView;
     private final TextView emptyLabel;
-    private final ArrayAdapter<String> listAdapter;
+    private final EntryAdapter entryAdapter;
     private final List<String> identifiers;
-    private final StringBuilder builder;
+    private StringBuilder builder;
+    private int severityColor;
 
     public DiagnosticHistory(Activity activity) {
+        this.activity = activity;
         this.diagnosticListView = activity.findViewById(R.id.recyclerHistory);
         this.emptyLabel = activity.findViewById(R.id.tvEmptyState);
         this.identifiers = new ArrayList<>();
-        this.builder = new StringBuilder();
-        this.listAdapter = new ArrayAdapter<>(activity, android.R.layout.simple_list_item_1, new ArrayList<>());
-        diagnosticListView.setAdapter(listAdapter);
+        this.entryAdapter = new EntryAdapter(activity);
+        diagnosticListView.setAdapter(entryAdapter);
     }
 
     public void listen(ISelectionListener action) {
@@ -61,13 +62,14 @@ public final class DiagnosticHistory implements IDiagnosticVisitor,
 
     public void display(List<Diagnostic> diagnostics) {
         identifiers.clear();
-        listAdapter.clear();
+        List<ListEntry> entries = new ArrayList<>();
         for (Diagnostic diagnostic : diagnostics) {
-            builder.setLength(0);
+            builder = new StringBuilder();
+            severityColor = ContextCompat.getColor(activity, R.color.severity_low);
             diagnostic.accept(this);
-            listAdapter.add(builder.toString());
+            entries.add(new ListEntry(builder.toString(), severityColor));
         }
-        listAdapter.notifyDataSetChanged();
+        entryAdapter.populate(entries);
         diagnosticListView.setVisibility(View.VISIBLE);
         emptyLabel.setVisibility(View.GONE);
     }
@@ -112,15 +114,15 @@ public final class DiagnosticHistory implements IDiagnosticVisitor,
 
     @Override
     public void visitSummary(String severity, String shortSummary) {
-        builder.append(classify(severity));
+        String classification = DiagnosticSummary.classify(severity);
+        builder.append(classification);
+        colorize(classification);
     }
 
-    private String classify(String severity) {
-        if (severity == null) return "Analysis complete";
-        String normalized = severity.toLowerCase();
-        if (normalized.contains("low")) return "Healthy";
-        if (normalized.contains("moderate")) return "Moderate issue";
-        if (normalized.contains("high")) return "Severe issue";
-        return "Analysis complete";
+    private void colorize(String classification) {
+        if (classification.contains("Moderate"))
+            severityColor = ContextCompat.getColor(activity, R.color.severity_moderate);
+        else if (classification.contains("Severe"))
+            severityColor = ContextCompat.getColor(activity, R.color.severity_high);
     }
 }

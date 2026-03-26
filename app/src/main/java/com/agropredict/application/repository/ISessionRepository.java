@@ -1,7 +1,9 @@
 package com.agropredict.application.repository;
 
-public interface ISessionRepository {
-    void save(String userIdentifier);
-    String recall();
+import com.agropredict.domain.ISessionVisitor;
+import com.agropredict.domain.Session;
+
+public interface ISessionRepository extends ISessionVisitor {
+    Session recall();
     void clear();
 }

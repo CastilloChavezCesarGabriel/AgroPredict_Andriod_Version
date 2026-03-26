@@ -63,6 +63,12 @@
     <style name="AgroPredict.Button.Text" parent="Widget.Material3.Button.TextButton">
         <item name="android:textAllCaps">false</item>
     </style>
+    <style name="AgroPredict.Button.Danger" parent="Widget.Material3.Button">
+        <item name="android:textAllCaps">false</item>
+        <item name="android:minHeight">@dimen/button_min_height</item>
+        <item name="shapeAppearance">@style/AgroPredict.Shape.Pill</item>
+        <item name="backgroundTint">@color/error_red</item>
+    </style>
 
     <!-- Text Inputs (rounded) -->
 

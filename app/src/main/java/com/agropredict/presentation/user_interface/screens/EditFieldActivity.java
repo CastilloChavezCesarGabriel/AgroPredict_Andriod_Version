@@ -1,4 +1,4 @@
-package com.agropredict.presentation.user_interface;
+package com.agropredict.presentation.user_interface.screens;
 
 import android.os.Bundle;
 import com.agropredict.AgroPredictApplication;

@@ -1,10 +1,11 @@
-package com.agropredict.presentation.user_interface;
+package com.agropredict.presentation.user_interface.screens;
 
 import android.os.Bundle;
 import android.widget.EditText;
 import com.agropredict.AgroPredictApplication;
 import com.agropredict.R;
 import com.agropredict.application.usecase.authentication.ResetPasswordUseCase;
+import com.agropredict.domain.validation.PasswordValidator;
 import com.agropredict.presentation.viewmodel.authentication.IRecoveryView;
 import com.agropredict.presentation.viewmodel.authentication.RecoveryViewModel;
 
@@ -22,7 +23,7 @@ public final class RecoveryActivity extends BaseActivity implements IRecoveryVie
         passwordField = findViewById(R.id.etNewPassword);
         confirmationField = findViewById(R.id.etConfirmPassword);
         ((AgroPredictApplication) getApplication()).provide(factory -> {
-            ResetPasswordUseCase useCase = new ResetPasswordUseCase(factory.createUserRepository());
+            ResetPasswordUseCase useCase = new ResetPasswordUseCase(factory.createUserRepository(), factory.createPasswordHasher());
             viewModel = new RecoveryViewModel(useCase, this);
         });
         findViewById(R.id.btnReset).setOnClickListener(view -> reset());
@@ -33,7 +34,7 @@ public final class RecoveryActivity extends BaseActivity implements IRecoveryVie
         String email = emailField.getText().toString().trim();
         String password = passwordField.getText().toString();
         String confirmation = confirmationField.getText().toString();
-        if (!password.equals(confirmation)) {
+        if (!new PasswordValidator().isConfirmed(password, confirmation)) {
             notify(getString(R.string.passwords_mismatch));
             return;
         }

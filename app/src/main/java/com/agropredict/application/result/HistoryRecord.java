@@ -14,4 +14,13 @@ public final class HistoryRecord {
     public void accept(IHistoryVisitor visitor) {
         visitor.visit(modification, transition);
     }
+
+    public void summarize(StringBuilder builder) {
+        modification.describe(builder);
+        builder.append(": ");
+        transition.format(builder);
+        builder.append("\n");
+        modification.date(builder);
+        builder.append("\n\n");
+    }
 }

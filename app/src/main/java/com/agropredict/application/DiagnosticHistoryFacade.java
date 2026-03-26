@@ -19,6 +19,10 @@ public final class DiagnosticHistoryFacade {
         return listUseCase.list(userIdentifier);
     }
 
+    public List<Diagnostic> filter(String userIdentifier, String cropIdentifier) {
+        return listUseCase.filter(userIdentifier, cropIdentifier);
+    }
+
     public OperationResult delete(String diagnosticIdentifier) {
         return deleteUseCase.delete(diagnosticIdentifier);
     }

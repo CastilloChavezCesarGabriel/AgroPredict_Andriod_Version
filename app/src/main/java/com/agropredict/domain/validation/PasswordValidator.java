@@ -3,8 +3,12 @@ package com.agropredict.domain.validation;
 public final class PasswordValidator implements ITextValidator {
     private static final int MINIMUM_LENGTH = 8;
 
+    public boolean isConfirmed(String password, String confirmation) {
+        return password != null && password.equals(confirmation);
+    }
+
     @Override
-    public boolean validate(String text) {
+    public boolean isValid(String text) {
         if (isNullOrTooShort(text)) return false;
 
         PasswordCriteria passwordCriteria = new PasswordCriteria();

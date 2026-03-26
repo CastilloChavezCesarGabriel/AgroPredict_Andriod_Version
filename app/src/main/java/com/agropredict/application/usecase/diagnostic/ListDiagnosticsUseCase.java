@@ -14,4 +14,8 @@ public final class ListDiagnosticsUseCase {
     public List<Diagnostic> list(String userIdentifier) {
         return diagnosticRepository.list(userIdentifier);
     }
+
+    public List<Diagnostic> filter(String userIdentifier, String cropIdentifier) {
+        return diagnosticRepository.filter(userIdentifier, cropIdentifier);
+    }
 }

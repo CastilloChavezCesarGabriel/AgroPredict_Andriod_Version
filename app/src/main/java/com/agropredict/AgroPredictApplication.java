@@ -13,6 +13,7 @@ public final class AgroPredictApplication extends Application {
         super.onCreate();
         DynamicColors.applyToActivitiesIfAvailable(this);
         configuration = new Configuration(this);
+        configuration.backup(this);
     }
 
     public void provide(IFactoryConsumer consumer) {

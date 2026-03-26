@@ -10,4 +10,5 @@ public interface ICropRepository {
     List<Crop> list(String userIdentifier);
     Crop find(String cropIdentifier);
     List<HistoryRecord> trace(String cropIdentifier);
+    void delete(String cropIdentifier);
 }

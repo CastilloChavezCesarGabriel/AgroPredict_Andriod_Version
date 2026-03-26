@@ -3,6 +3,7 @@ package com.agropredict.infrastructure.persistence.visitor;
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import com.agropredict.application.visitor.IQuestionnaireVisitor;
+import com.agropredict.domain.Identifier;
 
 public final class QuestionnairePersistenceVisitor implements IQuestionnaireVisitor {
     private final SQLiteDatabase database;
@@ -56,7 +57,7 @@ public final class QuestionnairePersistenceVisitor implements IQuestionnaireVisi
 
     private void record(String key, String value) {
         ContentValues values = new ContentValues();
-        values.put("id", key + "_" + System.currentTimeMillis());
+        values.put("id", Identifier.generate(key));
         values.put("diagnostic_id", diagnosticIdentifier);
         values.put("question_id", key);
         values.put("text_value", value);

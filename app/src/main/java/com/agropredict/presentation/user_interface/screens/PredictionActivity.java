@@ -1,4 +1,4 @@
-package com.agropredict.presentation.user_interface;
+package com.agropredict.presentation.user_interface.screens;
 
 import android.Manifest;
 import android.content.Intent;
@@ -16,6 +16,7 @@ import com.agropredict.application.service.IImageService;
 import com.agropredict.application.usecase.catalog.ListCatalogUseCase;
 import com.agropredict.application.usecase.diagnostic.ClassifyImageUseCase;
 import com.agropredict.application.usecase.diagnostic.SubmitDiagnosticUseCase;
+import com.agropredict.presentation.user_interface.DateSelection;
 import com.agropredict.presentation.user_interface.component.input.SoilTypeCatalog;
 import com.agropredict.presentation.user_interface.component.input.StageCatalog;
 import com.agropredict.presentation.viewmodel.prediction.IPredictionView;

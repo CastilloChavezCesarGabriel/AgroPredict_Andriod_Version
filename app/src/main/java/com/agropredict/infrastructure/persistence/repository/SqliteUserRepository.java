@@ -2,8 +2,9 @@ package com.agropredict.infrastructure.persistence.repository;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import com.agropredict.application.PasswordHasher;
+import com.agropredict.infrastructure.security.PasswordHasher;
 import com.agropredict.application.repository.IUserRepository;
+import com.agropredict.domain.Session;
 import com.agropredict.domain.entity.User;
 import com.agropredict.infrastructure.persistence.Database;
 import com.agropredict.infrastructure.persistence.SqliteRow;
@@ -12,6 +13,7 @@ import com.agropredict.infrastructure.persistence.visitor.UserPersistenceVisitor
 public final class SqliteUserRepository extends SqliteRepository<User> implements IUserRepository {
     private static final int COLUMN_IDENTIFIER = 0;
     private static final int COLUMN_PASSWORD_HASH = 1;
+    private static final int COLUMN_OCCUPATION = 2;
 
     public SqliteUserRepository(Database database) {
         super(database, "user");
@@ -23,19 +25,19 @@ public final class SqliteUserRepository extends SqliteRepository<User> implement
     }
 
     @Override
-    public String authenticate(String email, String password) {
+    public Session authenticate(String email, String password) {
         SQLiteDatabase database = this.database.getReadableDatabase();
-        String query = "SELECT id, password_hash FROM user WHERE email = ? AND is_active = 1";
+        String query = "SELECT id, password_hash, occupation_id FROM user WHERE email = ? AND is_active = 1";
         Cursor cursor = database.rawQuery(query, new String[]{email});
-        String identifier = cursor.moveToFirst() ? confirm(cursor, password) : null;
+        Session session = cursor.moveToFirst() ? confirm(cursor, password) : null;
         cursor.close();
-        return identifier;
+        return session;
     }
 
-    private String confirm(Cursor cursor, String password) {
+    private Session confirm(Cursor cursor, String password) {
         String storedHash = cursor.getString(COLUMN_PASSWORD_HASH);
-        if (!new PasswordHasher().verify(password, storedHash)) return null;
-        return cursor.getString(COLUMN_IDENTIFIER);
+        if (!new PasswordHasher().isVerified(password, storedHash)) return null;
+        return new Session(cursor.getString(COLUMN_IDENTIFIER), cursor.getString(COLUMN_OCCUPATION));
     }
 
     @Override

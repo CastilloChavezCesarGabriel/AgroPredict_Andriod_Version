@@ -2,8 +2,8 @@ package com.agropredict.application.request.data;
 
 import com.agropredict.application.repository.ICatalogRepository;
 import com.agropredict.application.repository.IUserRepository;
+import com.agropredict.application.service.IPasswordHasher;
 import com.agropredict.domain.component.user.Credential;
-import com.agropredict.domain.component.user.UserData;
 import com.agropredict.domain.component.user.UserProfile;
 
 public final class Account {
@@ -20,9 +20,11 @@ public final class Account {
         profile.validate(repository);
     }
 
-    public UserData compile(Registrant personal, ICatalogRepository catalog) {
-        Credential hashed = credential.hash();
-        UserProfile userProfile = profile.establish(personal, catalog);
-        return new UserData(hashed, userProfile);
+    public Credential hash(IPasswordHasher hasher) {
+        return credential.hash(hasher);
+    }
+
+    public UserProfile establish(Registrant personal, ICatalogRepository catalog) {
+        return profile.establish(personal, catalog);
     }
 }

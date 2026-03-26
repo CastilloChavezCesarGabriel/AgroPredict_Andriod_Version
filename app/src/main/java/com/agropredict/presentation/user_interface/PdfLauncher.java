@@ -13,7 +13,7 @@ public final class PdfLauncher {
     public static void open(Context context, String filePath) {
         File file = new File(filePath);
         if (!file.exists()) {
-            Toast.makeText(context, "Archivo no encontrado", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "File not found", Toast.LENGTH_SHORT).show();
             return;
         }
         Uri uri = FileProvider.getUriForFile(context,

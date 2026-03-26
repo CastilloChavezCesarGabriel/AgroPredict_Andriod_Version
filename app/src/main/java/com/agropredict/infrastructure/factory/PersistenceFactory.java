@@ -8,6 +8,8 @@ import com.agropredict.application.repository.IDiagnosticWorkflow;
 import com.agropredict.application.repository.IQuestionnaireRepository;
 import com.agropredict.application.repository.IReportRepository;
 import com.agropredict.application.repository.IUserRepository;
+import com.agropredict.application.service.IAuditLogger;
+import com.agropredict.infrastructure.persistence.AuditLogger;
 import com.agropredict.infrastructure.persistence.Database;
 import com.agropredict.infrastructure.persistence.DiagnosticWorkflow;
 import com.agropredict.infrastructure.persistence.SubmissionRecorder;
@@ -53,6 +55,10 @@ public final class PersistenceFactory {
 
     public ICatalogRepository createCatalog(String tableName) {
         return new SqliteCatalog(database, tableName);
+    }
+
+    public IAuditLogger createAuditLogger() {
+        return new AuditLogger(database);
     }
 
     public IDiagnosticWorkflow createDiagnosticWorkflow() {

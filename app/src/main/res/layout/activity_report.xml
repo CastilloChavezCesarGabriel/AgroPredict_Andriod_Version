@@ -33,7 +33,41 @@
             style="@style/AgroPredict.Spinner"
             android:layout_width="match_parent"
             android:layout_height="@dimen/spinner_height"
-            android:layout_marginBottom="@dimen/spacing_24" />
+            android:layout_marginBottom="@dimen/spacing_16" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_8"
+            android:text="@string/date_range"
+            android:textAppearance="?attr/textAppearanceLabelLarge"
+            android:textColor="?attr/colorOnSurfaceVariant" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_24"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnStartDate"
+                style="@style/AgroPredict.Button.Secondary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/spacing_8"
+                android:layout_weight="1"
+                android:text="@string/start_date" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnEndDate"
+                style="@style/AgroPredict.Button.Secondary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_8"
+                android:layout_weight="1"
+                android:text="@string/end_date" />
+
+        </LinearLayout>
 
         <com.google.android.material.button.MaterialButtonToggleGroup
             android:id="@+id/radioGroupFormat"

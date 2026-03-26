@@ -6,7 +6,7 @@ public final class UsernameValidator implements ITextValidator {
     private static final String USERNAME_PATTERN = "^[a-zA-Z0-9_]+$";
 
     @Override
-    public boolean validate(String text) {
+    public boolean isValid(String text) {
         if (text == null) return false;
         if (text.length() < MINIMUM_LENGTH || text.length() > MAXIMUM_LENGTH) return false;
         if (!text.matches(USERNAME_PATTERN)) return false;

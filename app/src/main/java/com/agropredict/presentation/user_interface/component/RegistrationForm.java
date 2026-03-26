@@ -26,8 +26,8 @@ public final class RegistrationForm {
         this.credentialGroup = new CredentialInput(activity);
     }
 
-    public boolean match() {
-        return credentialGroup.matches();
+    public boolean isMatching() {
+        return credentialGroup.isMatching();
     }
 
     public RegistrationRequest collect() {

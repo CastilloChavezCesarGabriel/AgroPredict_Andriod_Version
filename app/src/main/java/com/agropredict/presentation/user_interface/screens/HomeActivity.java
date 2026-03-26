@@ -1,17 +1,27 @@
-package com.agropredict.presentation.user_interface;
+package com.agropredict.presentation.user_interface.screens;
 
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Toast;
 import com.agropredict.AgroPredictApplication;
 import com.agropredict.R;
+import com.agropredict.application.service.IAssetService;
+import com.agropredict.application.usecase.authentication.CheckSessionUseCase;
 import com.agropredict.application.usecase.authentication.LogoutUseCase;
+import com.agropredict.domain.Session;
+import com.agropredict.presentation.user_interface.BackNavigationGuard;
+import com.agropredict.presentation.user_interface.PdfLauncher;
 import com.agropredict.presentation.viewmodel.home.HomeViewModel;
 import com.agropredict.presentation.viewmodel.home.IHomeView;
+import java.io.IOException;
 
 public final class HomeActivity extends BaseActivity implements IHomeView {
+    private static final String PEST_GUIDE_PATH = "pdf/manual_sostenible.pdf";
     private HomeViewModel viewModel;
+    private IAssetService assetService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,15 +30,35 @@ public final class HomeActivity extends BaseActivity implements IHomeView {
         ((AgroPredictApplication) getApplication()).provide(factory -> {
             LogoutUseCase useCase = new LogoutUseCase(factory.createSessionRepository());
             viewModel = new HomeViewModel(useCase, this);
+            assetService = factory.createAssetService();
+            new CheckSessionUseCase(factory.createSessionRepository()).check(this::restrict);
         });
         findViewById(R.id.cardNewPrediction).setOnClickListener(view -> predict());
         findViewById(R.id.cardHistory).setOnClickListener(view -> review());
         findViewById(R.id.cardReport).setOnClickListener(view -> report());
+        findViewById(R.id.cardPestGuide).setOnClickListener(view -> guide());
         findViewById(R.id.btnLogout).setOnClickListener(view -> confirm());
         findViewById(R.id.fabAddField).setOnClickListener(view -> predict());
         findViewById(R.id.cardResources).setOnClickListener(view -> browse("https://www.fao.org/agriculture/es"));
         findViewById(R.id.cardManual).setOnClickListener(view -> browse("https://www.inia.gob.pe"));
         getOnBackPressedDispatcher().addCallback(this, new BackNavigationGuard());
+    }
+
+    private void restrict(String identifier, String occupation) {
+        Session session = new Session(identifier, occupation);
+        if (!session.isActive()) { 
+            redirect(LoginActivity.class); return; 
+        }
+        findViewById(R.id.cardReport).setVisibility(session.isAdvanced() ? View.VISIBLE : View.GONE);
+    }
+
+    private void guide() {
+        try {
+            String filePath = assetService.extract(PEST_GUIDE_PATH);
+            PdfLauncher.open(this, filePath);
+        } catch (IOException exception) {
+            Toast.makeText(this, R.string.error_general, Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void confirm() {

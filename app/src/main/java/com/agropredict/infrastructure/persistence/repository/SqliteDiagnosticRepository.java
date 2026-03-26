@@ -81,11 +81,26 @@ public final class SqliteDiagnosticRepository extends SqliteRepository<Diagnosti
     @Override
     public List<Diagnostic> list(String userIdentifier) {
         return fetch(SELECT_DIAGNOSTIC
-                + "WHERE d.user_id = ? ORDER BY d.created_at DESC", userIdentifier);
+                + "WHERE d.user_id = ? ORDER BY d.created_at DESC", new String[]{userIdentifier});
+    }
+
+    @Override
+    public List<Diagnostic> filter(String userIdentifier, String cropIdentifier) {
+        return fetch(SELECT_DIAGNOSTIC
+                + "WHERE d.user_id = ? AND d.crop_id = ? ORDER BY d.created_at DESC",
+                new String[]{userIdentifier, cropIdentifier});
     }
 
     @Override
     public Diagnostic find(String diagnosticIdentifier) {
         return locate(SELECT_DIAGNOSTIC + "WHERE d.id = ?", diagnosticIdentifier);
+    }
+
+    @Override
+    public Diagnostic resolve(String userIdentifier, String cropIdentifier) {
+        List<Diagnostic> results = fetch(SELECT_DIAGNOSTIC
+                + "WHERE d.user_id = ? AND d.crop_id = ? ORDER BY d.created_at DESC",
+                new String[]{userIdentifier, cropIdentifier});
+        return results.isEmpty() ? null : results.get(0);
     }
 }

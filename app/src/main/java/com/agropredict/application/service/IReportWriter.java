@@ -1,4 +1,4 @@
-package com.agropredict.infrastructure.export;
+package com.agropredict.application.service;
 
 public interface IReportWriter {
     void write(String label, String value);

@@ -128,6 +128,9 @@
     <string name="area_label">Area (hectares)</string>
     <string name="save_changes">Save Changes</string>
     <string name="changes_saved">Changes saved successfully</string>
+    <string name="delete_field">Delete Field</string>
+    <string name="delete_field_confirmation">Are you sure you want to delete this field? This action cannot be undone.</string>
+    <string name="field_deleted">Field deleted successfully</string>
 
     <!-- Reports -->
     <string name="report_title">Generate Report</string>
@@ -139,6 +142,9 @@
     <string name="report_error">Error generating the report</string>
     <string name="share_report">Share Report</string>
     <string name="no_crops">No crops registered</string>
+    <string name="date_range">Date Range</string>
+    <string name="start_date">Start Date</string>
+    <string name="end_date">End Date</string>
 
     <!-- Severity values -->
     <string name="severity_low">Low</string>

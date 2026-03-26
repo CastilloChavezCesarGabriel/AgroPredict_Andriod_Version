@@ -1,9 +1,10 @@
-package com.agropredict.presentation.user_interface;
+package com.agropredict.presentation.user_interface.screens;
 
 import android.os.Bundle;
 import android.widget.EditText;
 import com.agropredict.AgroPredictApplication;
 import com.agropredict.R;
+import com.agropredict.application.service.IAuditLogger;
 import com.agropredict.application.usecase.authentication.CheckSessionUseCase;
 import com.agropredict.application.usecase.authentication.LoginUseCase;
 import com.agropredict.presentation.viewmodel.authentication.ILoginView;
@@ -13,6 +14,7 @@ public final class LoginActivity extends BaseActivity implements ILoginView {
     private LoginViewModel viewModel;
     private EditText emailInput;
     private EditText passwordInput;
+    private IAuditLogger auditLogger;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,9 +26,10 @@ public final class LoginActivity extends BaseActivity implements ILoginView {
             LoginUseCase useCase = new LoginUseCase(
                     factory.createUserRepository(), factory.createSessionRepository());
             viewModel = new LoginViewModel(useCase, this);
+            auditLogger = factory.createAuditLogger();
             CheckSessionUseCase session = new CheckSessionUseCase(factory.createSessionRepository());
-            session.check((hasSession, identifier) -> {
-                if (hasSession) redirect(HomeActivity.class);
+            session.check((identifier, occupation) -> {
+                if (identifier != null) redirect(HomeActivity.class);
             });
         });
         findViewById(R.id.btnLogin).setOnClickListener(view -> authenticate());
@@ -46,6 +49,7 @@ public final class LoginActivity extends BaseActivity implements ILoginView {
 
     @Override
     public void proceed() {
+        auditLogger.log(null, "LOGIN");
         redirect(HomeActivity.class);
     }
 }

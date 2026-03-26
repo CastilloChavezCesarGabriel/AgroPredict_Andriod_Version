@@ -4,8 +4,11 @@ import com.agropredict.application.repository.ICatalogRepository;
 import com.agropredict.application.repository.IUserRepository;
 import com.agropredict.application.request.data.Account;
 import com.agropredict.application.request.data.Registrant;
+import com.agropredict.application.service.IPasswordHasher;
+import com.agropredict.domain.component.user.Credential;
 import com.agropredict.domain.component.user.UserData;
 import com.agropredict.domain.component.user.UserIdentity;
+import com.agropredict.domain.component.user.UserProfile;
 import com.agropredict.domain.entity.User;
 
 public final class RegistrationRequest {
@@ -17,11 +20,15 @@ public final class RegistrationRequest {
         this.account = account;
     }
 
-    public void register(IUserRepository repository, ICatalogRepository catalog) {
+    public void validate(IUserRepository repository) {
         personal.validate();
         account.validate(repository);
+    }
+
+    public User compile(IPasswordHasher hasher, ICatalogRepository catalog) {
         UserIdentity identity = personal.identify();
-        UserData data = account.compile(personal, catalog);
-        repository.store(User.create(identity, data));
+        Credential credential = account.hash(hasher);
+        UserProfile profile = account.establish(personal, catalog);
+        return User.create(identity, new UserData(credential, profile));
     }
 }

@@ -1,6 +1,7 @@
 package com.agropredict.infrastructure.export;
 
 import com.agropredict.application.result.OperationResult;
+import com.agropredict.application.visitor.DiagnosticTraversal;
 import com.agropredict.domain.entity.Crop;
 import com.agropredict.domain.entity.Diagnostic;
 import java.io.File;

@@ -11,14 +11,6 @@ public final class CropLocation {
         this.plantingDate = plantingDate;
     }
 
-    public boolean isLocated() {
-        return location != null && !location.isEmpty();
-    }
-
-    public boolean isPlanted() {
-        return plantingDate != null && !plantingDate.isEmpty();
-    }
-
     public void accept(ICropLocationVisitor visitor) {
         visitor.visitLocation(location, plantingDate);
     }

@@ -10,7 +10,10 @@ import com.agropredict.application.repository.IDiagnosticWorkflow;
 import com.agropredict.application.repository.IReportRepository;
 import com.agropredict.application.repository.ISessionRepository;
 import com.agropredict.application.repository.IUserRepository;
+import com.agropredict.application.service.IAssetService;
+import com.agropredict.application.service.IAuditLogger;
 import com.agropredict.application.service.IDiagnosticApiService;
+import com.agropredict.application.service.IPasswordHasher;
 import com.agropredict.application.service.IImageService;
 import com.agropredict.application.service.IReportService;
 import com.agropredict.infrastructure.persistence.Database;
@@ -80,17 +83,29 @@ public final class RepositoryFactory implements IRepositoryFactory {
     }
 
     @Override
-    public IReportService createPdfReportGenerator() {
-        return services.createPdfReportGenerator();
-    }
-
-    @Override
-    public IReportService createCsvReportGenerator() {
-        return services.createCsvReportGenerator();
+    public IReportService createReportService(String format) {
+        return "csv".equals(format)
+                ? services.createCsvReportGenerator()
+                : services.createPdfReportGenerator();
     }
 
     @Override
     public IDiagnosticWorkflow createDiagnosticWorkflow() {
         return persistence.createDiagnosticWorkflow();
+    }
+
+    @Override
+    public IAssetService createAssetService() {
+        return services.createAssetService();
+    }
+
+    @Override
+    public IAuditLogger createAuditLogger() {
+        return persistence.createAuditLogger();
+    }
+
+    @Override
+    public IPasswordHasher createPasswordHasher() {
+        return services.createPasswordHasher();
     }
 }

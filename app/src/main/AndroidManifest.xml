@@ -26,23 +26,22 @@
         android:theme="@style/Theme.AgroPredict">
 
         <activity
-            android:name=".presentation.user_interface.LoginActivity"
+            android:name=".presentation.user_interface.screens.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".presentation.user_interface.RegisterActivity" />
-        <activity android:name=".presentation.user_interface.HomeActivity" />
-        <activity android:name=".presentation.user_interface.PredictionActivity" />
-        <activity android:name=".presentation.user_interface.PredictionResultActivity" />
-        <activity android:name=".presentation.user_interface.HistoryActivity" />
-        <activity android:name=".presentation.user_interface.FieldDetailActivity" />
-        <activity android:name=".presentation.user_interface.EditFieldActivity" />
-        <activity android:name=".presentation.user_interface.CropHistoryActivity" />
-        <activity android:name=".presentation.user_interface.ReportActivity" />
-        <activity android:name=".presentation.user_interface.RecoveryActivity" />
+        <activity android:name=".presentation.user_interface.screens.RegisterActivity" />
+        <activity android:name=".presentation.user_interface.screens.HomeActivity" />
+        <activity android:name=".presentation.user_interface.screens.PredictionActivity" />
+        <activity android:name=".presentation.user_interface.screens.PredictionResultActivity" />
+        <activity android:name=".presentation.user_interface.screens.HistoryActivity" />
+        <activity android:name=".presentation.user_interface.screens.FieldDetailActivity" />
+        <activity android:name=".presentation.user_interface.screens.EditFieldActivity" />
+        <activity android:name=".presentation.user_interface.screens.ReportActivity" />
+        <activity android:name=".presentation.user_interface.screens.RecoveryActivity" />
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"

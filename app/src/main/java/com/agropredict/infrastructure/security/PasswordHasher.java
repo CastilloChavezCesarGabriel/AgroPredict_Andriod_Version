@@ -1,30 +1,33 @@
-package com.agropredict.application;
+package com.agropredict.infrastructure.security;
 
+import com.agropredict.application.service.IPasswordHasher;
 import java.security.SecureRandom;
 import java.security.spec.KeySpec;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 
-public final class PasswordHasher {
+public final class PasswordHasher implements IPasswordHasher {
     private static final int ITERATIONS = 65536;
     private static final int KEY_LENGTH = 256;
     private static final int SALT_LENGTH = 16;
     private static final String ALGORITHM = "PBKDF2WithHmacSHA256";
     private static final String DELIMITER = ":";
 
+    @Override
     public String hash(String password) {
         byte[] salt = salt();
         byte[] derived = derive(password, salt);
         return encode(salt) + DELIMITER + encode(derived);
     }
 
-    public boolean verify(String password, String stored) {
+    @Override
+    public boolean isVerified(String password, String stored) {
         String[] parts = stored.split(DELIMITER);
         if (parts.length != 2) return false;
         byte[] salt = decode(parts[0]);
         byte[] expected = decode(parts[1]);
         byte[] actual = derive(password, salt);
-        return compare(expected, actual);
+        return isEqual(expected, actual);
     }
 
     private byte[] salt() {
@@ -62,7 +65,7 @@ public final class PasswordHasher {
         return bytes;
     }
 
-    private boolean compare(byte[] expected, byte[] actual) {
+    private boolean isEqual(byte[] expected, byte[] actual) {
         if (expected.length != actual.length) return false;
         int result = 0;
         for (int index = 0; index < expected.length; index++) {

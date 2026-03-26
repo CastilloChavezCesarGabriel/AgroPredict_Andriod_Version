@@ -15,7 +15,7 @@ public final class Credential {
         visitor.visit(email, passwordHash);
     }
 
-    public boolean matches(String candidateHash) {
+    public boolean isMatching(String candidateHash) {
         return passwordHash.equals(candidateHash);
     }
 }

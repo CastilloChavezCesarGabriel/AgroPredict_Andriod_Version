@@ -73,7 +73,7 @@ public final class SqliteCropRepository extends SqliteRepository<Crop> implement
     @Override
     public List<Crop> list(String userIdentifier) {
         return fetch(SELECT_CROP
-                + "WHERE c.user_id = ? AND c.is_active = 1 ORDER BY c.created_at DESC", userIdentifier);
+                + "WHERE c.user_id = ? AND c.is_active = 1 ORDER BY c.created_at DESC", new String[]{userIdentifier});
     }
 
     @Override
@@ -99,5 +99,10 @@ public final class SqliteCropRepository extends SqliteRepository<Crop> implement
     @Override
     public Crop find(String cropIdentifier) {
         return locate(SELECT_CROP + "WHERE c.id = ?", cropIdentifier);
+    }
+
+    @Override
+    public void delete(String cropIdentifier) {
+        deactivate(cropIdentifier);
     }
 }

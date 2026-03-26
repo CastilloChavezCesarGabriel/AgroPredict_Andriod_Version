@@ -1,8 +1,8 @@
 package com.agropredict.application.request.data;
 
-import com.agropredict.application.PasswordHasher;
 import com.agropredict.application.repository.IUserRepository;
 import com.agropredict.application.request.RegistrationException;
+import com.agropredict.application.service.IPasswordHasher;
 import com.agropredict.domain.component.user.Credential;
 import com.agropredict.domain.validation.EmailValidator;
 import com.agropredict.domain.validation.PasswordValidator;
@@ -17,16 +17,16 @@ public final class Authentication {
     }
 
     public void validate(IUserRepository repository) {
-        if (!new EmailValidator().validate(email))
+        if (!new EmailValidator().isValid(email))
             throw new RegistrationException("Invalid email address");
-        if (!new PasswordValidator().validate(password))
+        if (!new PasswordValidator().isValid(password))
             throw new RegistrationException("Invalid password");
         if (repository.isRegistered(email))
             throw new RegistrationException("This email is already registered");
     }
 
-    public Credential hash() {
-        String passwordHash = new PasswordHasher().hash(password);
+    public Credential hash(IPasswordHasher hasher) {
+        String passwordHash = hasher.hash(password);
         return new Credential(email, passwordHash);
     }
 }

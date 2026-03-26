@@ -1,5 +1,6 @@
 package com.agropredict.infrastructure.export;
 
+import com.agropredict.application.service.IReportWriter;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
@@ -29,7 +30,7 @@ public final class PdfReport implements IReportWriter {
 
     public void close(String date) {
         if (document != null) {
-            document.add(new Paragraph("Generado: " + date).setFontSize(10));
+            document.add(new Paragraph("Generated: " + date).setFontSize(10));
             document.close();
         }
     }

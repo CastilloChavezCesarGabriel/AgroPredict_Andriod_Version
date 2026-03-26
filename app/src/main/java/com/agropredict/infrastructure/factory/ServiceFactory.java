@@ -2,9 +2,12 @@ package com.agropredict.infrastructure.factory;
 
 import android.content.Context;
 import com.agropredict.application.repository.ISessionRepository;
+import com.agropredict.application.service.IAssetService;
 import com.agropredict.application.service.IDiagnosticApiService;
 import com.agropredict.application.service.IImageService;
+import com.agropredict.application.service.IPasswordHasher;
 import com.agropredict.application.service.IReportService;
+import com.agropredict.infrastructure.asset.AssetExtractor;
 import com.agropredict.infrastructure.export.CsvReportService;
 import com.agropredict.infrastructure.export.PdfReportService;
 import com.agropredict.infrastructure.image.ImageService;
@@ -37,6 +40,14 @@ public final class ServiceFactory {
 
     public IReportService createCsvReportGenerator() {
         return new CsvReportService(resolve());
+    }
+
+    public IAssetService createAssetService() {
+        return new AssetExtractor(applicationContext);
+    }
+
+    public IPasswordHasher createPasswordHasher() {
+        return new com.agropredict.infrastructure.security.PasswordHasher();
     }
 
     private File resolve() {

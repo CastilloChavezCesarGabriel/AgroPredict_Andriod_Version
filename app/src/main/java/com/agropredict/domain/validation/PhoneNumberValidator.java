@@ -6,7 +6,7 @@ public final class PhoneNumberValidator implements ITextValidator {
     private static final String PHONE_PATTERN = "^[0-9]+$";
 
     @Override
-    public boolean validate(String text) {
+    public boolean isValid(String text) {
         if (text == null || text.isEmpty()) return true;
         if (text.length() < MINIMUM_LENGTH || text.length() > MAXIMUM_LENGTH) return false;
         return text.matches(PHONE_PATTERN);

@@ -11,10 +11,6 @@ public final class UserContact {
         this.phoneNumber = phoneNumber;
     }
 
-    public boolean isReachable() {
-        return phoneNumber != null && !phoneNumber.isEmpty();
-    }
-
     public void accept(IUserContactVisitor visitor) {
         visitor.visitContact(username, phoneNumber);
     }

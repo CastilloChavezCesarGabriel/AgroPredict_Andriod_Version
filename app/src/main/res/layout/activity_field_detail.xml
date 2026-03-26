@@ -203,7 +203,15 @@
                 style="@style/AgroPredict.Button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_8"
                 android:text="@string/edit_field" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnDeleteField"
+                style="@style/AgroPredict.Button.Danger"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/delete_field" />
 
         </LinearLayout>
 

@@ -1,5 +1,6 @@
 package com.agropredict.application.request.input;
 
+import com.agropredict.domain.Identifier;
 import com.agropredict.domain.entity.Crop;
 import com.agropredict.domain.component.crop.CropData;
 import com.agropredict.domain.component.crop.CropDetail;
@@ -14,7 +15,7 @@ public final class Cultivation {
     }
 
     public Crop cultivate() {
-        String identifier = "crop_" + System.currentTimeMillis();
+        String identifier = Identifier.generate("crop");
         CropDetail detail = new CropDetail(predictedCrop, stage);
         return Crop.create(identifier, new CropData(detail, null));
     }

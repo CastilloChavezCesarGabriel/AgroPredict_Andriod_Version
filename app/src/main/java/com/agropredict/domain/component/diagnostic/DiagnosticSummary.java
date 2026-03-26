@@ -15,8 +15,13 @@ public final class DiagnosticSummary {
         return "high".equalsIgnoreCase(severity) || "critical".equalsIgnoreCase(severity);
     }
 
-    public boolean isActionable() {
-        return shortSummary != null && !shortSummary.isEmpty();
+    public static String classify(String severity) {
+        if (severity == null) return "Analysis complete";
+        String normalized = severity.toLowerCase();
+        if (normalized.contains("low")) return "Healthy";
+        if (normalized.contains("moderate")) return "Moderate issue";
+        if (normalized.contains("high")) return "Severe issue";
+        return "Analysis complete";
     }
 
     public void accept(IDiagnosticSummaryVisitor visitor) {

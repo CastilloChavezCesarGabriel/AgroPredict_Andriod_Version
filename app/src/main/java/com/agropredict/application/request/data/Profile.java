@@ -17,10 +17,10 @@ public final class Profile {
     }
 
     public void validate(IUserRepository repository) {
-        if (!new UsernameValidator().validate(username))
-            throw new RegistrationException("Nombre de usuario invalido");
+        if (!new UsernameValidator().isValid(username))
+            throw new RegistrationException("Invalid username");
         if (repository.isTaken(username))
-            throw new RegistrationException("El nombre de usuario ya existe");
+            throw new RegistrationException("This username already exists");
     }
 
     public UserProfile establish(Registrant personal, ICatalogRepository catalog) {

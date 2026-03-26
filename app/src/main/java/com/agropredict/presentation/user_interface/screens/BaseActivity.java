@@ -1,4 +1,4 @@
-package com.agropredict.presentation.user_interface;
+package com.agropredict.presentation.user_interface.screens;
 
 import android.content.Intent;
 import android.widget.Toast;

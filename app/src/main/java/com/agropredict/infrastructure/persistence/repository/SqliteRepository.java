@@ -32,6 +32,12 @@ public abstract class SqliteRepository<T> {
         throw new UnsupportedOperationException();
     }
 
+    protected void deactivate(String identifier) {
+        SQLiteDatabase writable = this.database.getWritableDatabase();
+        writable.execSQL("UPDATE " + tableName + " SET is_active = 0 WHERE id = ?",
+                new Object[]{identifier});
+    }
+
     protected T locate(String query, String parameter) {
         SQLiteDatabase readable = this.database.getReadableDatabase();
         Cursor cursor = readable.rawQuery(query, new String[]{parameter});
@@ -40,9 +46,9 @@ public abstract class SqliteRepository<T> {
         return entity;
     }
 
-    protected List<T> fetch(String query, String parameter) {
+    protected List<T> fetch(String query, String[] parameters) {
         SQLiteDatabase readable = this.database.getReadableDatabase();
-        Cursor cursor = readable.rawQuery(query, new String[]{parameter});
+        Cursor cursor = readable.rawQuery(query, parameters);
         List<T> entities = read(cursor);
         cursor.close();
         return entities;

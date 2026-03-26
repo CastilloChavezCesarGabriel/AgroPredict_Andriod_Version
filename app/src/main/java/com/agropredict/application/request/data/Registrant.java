@@ -1,6 +1,7 @@
 package com.agropredict.application.request.data;
 
 import com.agropredict.application.request.RegistrationException;
+import com.agropredict.domain.Identifier;
 import com.agropredict.domain.component.user.UserContact;
 import com.agropredict.domain.component.user.UserIdentity;
 import com.agropredict.domain.validation.FullNameValidator;
@@ -16,14 +17,14 @@ public final class Registrant {
     }
 
     public void validate() {
-        if (!new FullNameValidator().validate(fullName))
-            throw new RegistrationException("Nombre completo invalido");
-        if (!new PhoneNumberValidator().validate(phone))
-            throw new RegistrationException("Numero de telefono invalido");
+        if (!new FullNameValidator().isValid(fullName))
+            throw new RegistrationException("Invalid full name");
+        if (!new PhoneNumberValidator().isValid(phone))
+            throw new RegistrationException("Invalid phone number");
     }
 
     public UserIdentity identify() {
-        String identifier = "user_" + System.currentTimeMillis();
+        String identifier = Identifier.generate("user");
         return new UserIdentity(identifier, fullName);
     }
 

@@ -26,6 +26,15 @@ public final class HistoryViewModel implements IOperationResultVisitor {
         }
     }
 
+    public void filter(String cropIdentifier) {
+        List<Diagnostic> diagnostics = facade.filter(pendingUserIdentifier, cropIdentifier);
+        if (diagnostics.isEmpty()) {
+            view.empty();
+        } else {
+            view.display(diagnostics);
+        }
+    }
+
     public void delete(String diagnosticIdentifier) {
         OperationResult result = facade.delete(diagnosticIdentifier);
         result.accept(this);

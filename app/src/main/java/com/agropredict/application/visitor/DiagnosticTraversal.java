@@ -1,5 +1,6 @@
-package com.agropredict.infrastructure.export;
+package com.agropredict.application.visitor;
 
+import com.agropredict.application.service.IReportWriter;
 import com.agropredict.domain.component.diagnostic.DiagnosticAssessment;
 import com.agropredict.domain.component.diagnostic.DiagnosticConditions;
 import com.agropredict.domain.component.diagnostic.DiagnosticContent;
@@ -38,9 +39,7 @@ public final class DiagnosticTraversal implements IDiagnosticVisitor, IDiagnosti
     @Override
     public void visit(Prediction prediction, DiagnosticContent content) {
         prediction.accept(this);
-        if (content != null) {
-            content.accept(this);
-        }
+        if (content != null) content.accept(this);
     }
 
     @Override
@@ -51,9 +50,7 @@ public final class DiagnosticTraversal implements IDiagnosticVisitor, IDiagnosti
 
     @Override
     public void visit(DiagnosticConditions conditions, DiagnosticAssessment assessment) {
-        if (assessment != null) {
-            assessment.accept(this);
-        }
+        if (assessment != null) assessment.accept(this);
     }
 
     @Override
