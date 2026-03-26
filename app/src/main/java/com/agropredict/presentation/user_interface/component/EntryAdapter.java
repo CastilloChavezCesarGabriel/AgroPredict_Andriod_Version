@@ -41,7 +41,8 @@ public final class EntryAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View row = convertView != null ? convertView : inflater.inflate(R.layout.item_diagnostic, parent, false);
+        View row = convertView != null ? convertView : inflater.inflate(R.layout.item_diagnostic,
+                parent, false);
         getItem(position).present(row);
         return row;
     }
