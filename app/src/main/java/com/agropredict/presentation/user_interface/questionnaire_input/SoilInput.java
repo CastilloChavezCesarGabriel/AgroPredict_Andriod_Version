@@ -6,7 +6,6 @@ import com.agropredict.R;
 import com.agropredict.application.request.ai_questionnaire.Soil;
 import com.agropredict.presentation.user_interface.catalog_input.SpinnerInput;
 
-
 public final class SoilInput extends SpinnerInput {
     private final Spinner soilMoistureSpinner;
     private final Spinner soilPhSpinner;

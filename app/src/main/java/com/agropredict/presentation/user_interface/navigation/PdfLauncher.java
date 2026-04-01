@@ -8,8 +8,6 @@ import androidx.core.content.FileProvider;
 import java.io.File;
 
 public final class PdfLauncher {
-    private PdfLauncher() {}
-
     public static void open(Context context, String filePath) {
         File file = new File(filePath);
         if (!file.exists()) {

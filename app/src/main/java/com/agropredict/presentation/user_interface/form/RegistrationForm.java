@@ -1,7 +1,7 @@
 package com.agropredict.presentation.user_interface.form;
+
 import com.agropredict.presentation.user_interface.questionnaire_input.CredentialInput;
 import com.agropredict.presentation.user_interface.catalog_input.SpinnerPopulator;
-
 import android.app.Activity;
 import android.widget.EditText;
 import android.widget.Spinner;

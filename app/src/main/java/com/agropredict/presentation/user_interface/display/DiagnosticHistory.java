@@ -7,7 +7,6 @@ import com.agropredict.R;
 import com.agropredict.domain.entity.Diagnostic;
 import com.agropredict.domain.visitor.diagnostic.IDiagnosticVisitor;
 import com.agropredict.presentation.user_interface.selector.ISelectionListener;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
