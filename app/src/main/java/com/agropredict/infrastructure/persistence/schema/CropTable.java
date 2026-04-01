@@ -5,6 +5,13 @@ import android.database.sqlite.SQLiteDatabase;
 public final class CropTable implements ITable {
     @Override
     public void create(SQLiteDatabase database) {
+        define(database);
+        index(database);
+        automate(database);
+        track(database);
+    }
+
+    private void define(SQLiteDatabase database) {
         database.execSQL(
             "CREATE TABLE IF NOT EXISTS crop ("
             + "id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))), "
@@ -20,12 +27,6 @@ public final class CropTable implements ITable {
             + "created_at TEXT DEFAULT CURRENT_TIMESTAMP, "
             + "updated_at TEXT DEFAULT CURRENT_TIMESTAMP)");
         database.execSQL(
-            "CREATE TRIGGER IF NOT EXISTS crop_updated "
-            + "AFTER UPDATE ON crop FOR EACH ROW BEGIN "
-            + "UPDATE crop SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.id; END");
-        database.execSQL("CREATE INDEX IF NOT EXISTS index_crop_user ON crop(user_id)");
-        database.execSQL("CREATE INDEX IF NOT EXISTS index_crop_type ON crop(crop_type)");
-        database.execSQL(
             "CREATE TABLE IF NOT EXISTS crop_history ("
             + "id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))), "
             + "crop_id TEXT NOT NULL REFERENCES crop(id) ON DELETE CASCADE, "
@@ -33,6 +34,21 @@ public final class CropTable implements ITable {
             + "old_value TEXT, "
             + "new_value TEXT, "
             + "modified_at TEXT DEFAULT CURRENT_TIMESTAMP)");
+    }
+
+    private void index(SQLiteDatabase database) {
+        database.execSQL("CREATE INDEX IF NOT EXISTS index_crop_user ON crop(user_id)");
+        database.execSQL("CREATE INDEX IF NOT EXISTS index_crop_type ON crop(crop_type)");
+    }
+
+    private void automate(SQLiteDatabase database) {
+        database.execSQL(
+            "CREATE TRIGGER IF NOT EXISTS crop_updated "
+            + "AFTER UPDATE ON crop FOR EACH ROW BEGIN "
+            + "UPDATE crop SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.id; END");
+    }
+
+    private void track(SQLiteDatabase database) {
         database.execSQL(
             "CREATE TRIGGER IF NOT EXISTS crop_history_field_name "
             + "AFTER UPDATE OF field_name ON crop FOR EACH ROW "

@@ -1,16 +1,16 @@
 package com.agropredict.application.facade;
 
 import com.agropredict.application.operation_result.OperationResult;
-import com.agropredict.application.usecase.diagnostic.DeleteDiagnosticUseCase;
+import com.agropredict.application.usecase.DeleteUseCase;
 import com.agropredict.application.usecase.diagnostic.ListDiagnosticUseCase;
 import com.agropredict.domain.entity.Diagnostic;
 import java.util.List;
 
 public final class DiagnosticHistoryFacade {
     private final ListDiagnosticUseCase listUseCase;
-    private final DeleteDiagnosticUseCase deleteUseCase;
+    private final DeleteUseCase deleteUseCase;
 
-    public DiagnosticHistoryFacade(ListDiagnosticUseCase listUseCase, DeleteDiagnosticUseCase deleteUseCase) {
+    public DiagnosticHistoryFacade(ListDiagnosticUseCase listUseCase, DeleteUseCase deleteUseCase) {
         this.listUseCase = listUseCase;
         this.deleteUseCase = deleteUseCase;
     }

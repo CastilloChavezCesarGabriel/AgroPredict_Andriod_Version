@@ -30,6 +30,10 @@ public final class Diagnostic {
         return assessment != null && assessment.isSevere();
     }
 
+    public String classify() {
+        return assessment != null ? assessment.classify() : "Pending";
+    }
+
     public void accept(IDiagnosticVisitor visitor) {
         visitor.visitIdentity(identifier);
         prediction.accept(visitor);

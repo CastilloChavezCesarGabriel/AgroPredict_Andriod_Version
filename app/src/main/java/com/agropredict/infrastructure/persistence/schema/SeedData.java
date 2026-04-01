@@ -4,6 +4,12 @@ import android.database.sqlite.SQLiteDatabase;
 
 public final class SeedData {
     public void load(SQLiteDatabase database) {
+        populate(database);
+        register(database);
+        fill(database);
+    }
+
+    private void populate(SQLiteDatabase database) {
         new Seed("soil_type",
                 new String[]{"Clay", "Sandy", "Loam", "Silt", "Rocky"}).load(database);
         new Seed("phenological_stage",
@@ -12,6 +18,9 @@ public final class SeedData {
                 new String[]{"Farmer", "Agronomist", "Technician", "Engineer", "Specialist", "Researcher", "Other"}).load(database);
         new Seed("catalog_problem_type",
                 new String[]{"Disease", "Pest", "Nutrient deficiency", "Water stress", "Environmental damage", "Unknown"}).load(database);
+    }
+
+    private void register(SQLiteDatabase database) {
         new QuestionSeed("temperature", "What is the temperature?").load(database);
         new QuestionSeed("humidity", "What is the humidity?").load(database);
         new QuestionSeed("rain", "When did it last rain?").load(database);
@@ -25,6 +34,9 @@ public final class SeedData {
         new QuestionSeed("severity", "How severe are the symptoms?").load(database);
         new QuestionSeed("insects", "What insects are present?").load(database);
         new QuestionSeed("animals", "What animals cause damage?").load(database);
+    }
+
+    private void fill(SQLiteDatabase database) {
         new OptionSeed("temperature",
                 new String[]{"<15°C", "15–25°C", "26–32°C", ">32°C"}).load(database);
         new OptionSeed("humidity",

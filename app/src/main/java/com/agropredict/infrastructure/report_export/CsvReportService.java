@@ -1,9 +1,6 @@
 package com.agropredict.infrastructure.report_export;
 
-import com.agropredict.application.operation_result.OperationResult;
-import com.agropredict.application.usecase.report.DiagnosticTraversal;
-import com.agropredict.domain.entity.Crop;
-import com.agropredict.domain.entity.Diagnostic;
+import com.agropredict.application.service.IReportWriter;
 import java.io.File;
 import java.io.IOException;
 
@@ -13,17 +10,16 @@ public final class CsvReportService extends ReportService {
     }
 
     @Override
-    public OperationResult generate(Crop crop, Diagnostic diagnostic) {
-        try {
-            CsvReport report = new CsvReport();
-            new DiagnosticTraversal(report).traverse(diagnostic);
-            String timestamp = stamp();
-            report.write("date", timestamp);
-            File file = new File(outputDirectory, "report_" + timestamp + ".csv");
-            report.export(file);
-            return OperationResult.succeed(file.getAbsolutePath());
-        } catch (IOException exception) {
-            return OperationResult.fail();
-        }
+    protected IReportWriter prepare(String timestamp) {
+        return new CsvReport();
+    }
+
+    @Override
+    protected File finalize(IReportWriter writer, String timestamp) throws IOException {
+        CsvReport report = (CsvReport) writer;
+        report.write("date", timestamp);
+        File file = new File(outputDirectory, "report_" + timestamp + ".csv");
+        report.export(file);
+        return file;
     }
 }

@@ -52,6 +52,8 @@ public final class DiagnosticHistory implements IDiagnosticVisitor {
         for (Diagnostic diagnostic : diagnostics) {
             builder = new StringBuilder();
             diagnostic.accept(this);
+            builder.append(" — ");
+            builder.append(diagnostic.classify());
             entries.add(new ListEntry(builder.toString(), severityColors[0]));
         }
         entryAdapter.populate(entries);
@@ -76,20 +78,8 @@ public final class DiagnosticHistory implements IDiagnosticVisitor {
     }
 
     @Override
-    public void visitAssessment(String severity, String shortSummary) {
-        builder.append(" — ");
-        builder.append(classify(severity));
-    }
+    public void visitAssessment(String severity, String shortSummary) {}
 
     @Override
     public void visitRecommendation(String recommendationText) {}
-
-    private String classify(String severity) {
-        if (severity == null) return "Analysis complete";
-        String normalized = severity.toLowerCase();
-        if (normalized.contains("low")) return "Healthy";
-        if (normalized.contains("moderate")) return "Moderate issue";
-        if (normalized.contains("high")) return "Severe issue";
-        return "Analysis complete";
-    }
 }

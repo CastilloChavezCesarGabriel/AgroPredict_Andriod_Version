@@ -1,9 +1,6 @@
 package com.agropredict.infrastructure.report_export;
 
-import com.agropredict.application.operation_result.OperationResult;
-import com.agropredict.application.usecase.report.DiagnosticTraversal;
-import com.agropredict.domain.entity.Crop;
-import com.agropredict.domain.entity.Diagnostic;
+import com.agropredict.application.service.IReportWriter;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -18,18 +15,18 @@ public final class PdfReportService extends ReportService {
     }
 
     @Override
-    public OperationResult generate(Crop crop, Diagnostic diagnostic) {
-        try {
-            String timestamp = stamp();
-            File file = new File(outputDirectory, "report_" + timestamp + ".pdf");
-            PdfReport report = new PdfReport();
-            report.open(file);
-            new DiagnosticTraversal(report).traverse(diagnostic);
-            String displayDate = new SimpleDateFormat(DISPLAY_FORMAT, Locale.getDefault()).format(new Date());
-            report.close(displayDate);
-            return OperationResult.succeed(file.getAbsolutePath());
-        } catch (IOException exception) {
-            return OperationResult.fail();
-        }
+    protected IReportWriter prepare(String timestamp) throws IOException {
+        File file = new File(outputDirectory, "report_" + timestamp + ".pdf");
+        PdfReport report = new PdfReport();
+        report.open(file);
+        return report;
+    }
+
+    @Override
+    protected File finalize(IReportWriter writer, String timestamp) {
+        PdfReport report = (PdfReport) writer;
+        String displayDate = new SimpleDateFormat(DISPLAY_FORMAT, Locale.getDefault()).format(new Date());
+        report.close(displayDate);
+        return new File(outputDirectory, "report_" + timestamp + ".pdf");
     }
 }

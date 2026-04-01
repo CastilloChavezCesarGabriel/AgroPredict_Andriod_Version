@@ -7,7 +7,7 @@ import android.widget.Toast;
 import com.agropredict.AgroPredictApplication;
 import com.agropredict.R;
 import com.agropredict.application.operation_result.HistoryRecord;
-import com.agropredict.application.usecase.crop.DeleteCropUseCase;
+import com.agropredict.application.usecase.DeleteUseCase;
 import com.agropredict.application.usecase.crop.TraceCropHistoryUseCase;
 import com.agropredict.application.usecase.diagnostic.FindDiagnosticUseCase;
 import com.agropredict.application.visitor.IOperationResultVisitor;
@@ -20,7 +20,7 @@ import java.util.List;
 public final class FieldDetailActivity extends BaseActivity implements IFieldDetailView, IOperationResultVisitor {
     private FieldDetailViewModel viewModel;
     private FieldDetail fieldDetail;
-    private DeleteCropUseCase deleteUseCase;
+    private DeleteUseCase deleteUseCase;
     private TraceCropHistoryUseCase traceUseCase;
     private String cropIdentifier;
 
@@ -32,7 +32,7 @@ public final class FieldDetailActivity extends BaseActivity implements IFieldDet
         ((AgroPredictApplication) getApplication()).provide(factory -> {
             fieldDetail = new FieldDetail(this);
             FindDiagnosticUseCase findUseCase = new FindDiagnosticUseCase(factory.createDiagnosticRepository());
-            deleteUseCase = new DeleteCropUseCase(factory.createCropRepository());
+            deleteUseCase = new DeleteUseCase(factory.createCropRepository());
             traceUseCase = new TraceCropHistoryUseCase(factory.createCropRepository());
             viewModel = new FieldDetailViewModel(findUseCase, this);
         });

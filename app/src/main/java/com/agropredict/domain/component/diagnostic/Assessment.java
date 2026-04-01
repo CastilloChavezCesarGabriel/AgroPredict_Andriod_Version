@@ -20,6 +20,15 @@ public final class Assessment {
         return "high".equalsIgnoreCase(severity) || "critical".equalsIgnoreCase(severity);
     }
 
+    public String classify() {
+        if (severity == null) return "Analysis complete";
+        String normalized = severity.toLowerCase();
+        if (normalized.contains("low")) return "Healthy";
+        if (normalized.contains("moderate")) return "Moderate issue";
+        if (normalized.contains("high")) return "Severe issue";
+        return "Analysis complete";
+    }
+
     public void accept(IDiagnosticVisitor visitor) {
         visitor.visitAssessment(severity, shortSummary);
         if (recommendationText != null) visitor.visitRecommendation(recommendationText);

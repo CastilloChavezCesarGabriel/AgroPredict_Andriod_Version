@@ -8,7 +8,7 @@ import com.agropredict.application.facade.DiagnosticHistoryFacade;
 import com.agropredict.R;
 import com.agropredict.application.usecase.authentication.CheckSessionUseCase;
 import com.agropredict.application.usecase.crop.ListCropUseCase;
-import com.agropredict.application.usecase.diagnostic.DeleteDiagnosticUseCase;
+import com.agropredict.application.usecase.DeleteUseCase;
 import com.agropredict.application.usecase.diagnostic.ListDiagnosticUseCase;
 import com.agropredict.domain.entity.Diagnostic;
 import com.agropredict.presentation.viewmodel.history.HistoryViewModel;
@@ -32,7 +32,7 @@ public final class HistoryActivity extends BaseActivity implements IHistoryView 
         diagnosticHistory.observe(this::confirm);
         ((AgroPredictApplication) getApplication()).provide(factory -> {
             ListDiagnosticUseCase listUseCase = new ListDiagnosticUseCase(factory.createDiagnosticRepository());
-            DeleteDiagnosticUseCase deleteUseCase = new DeleteDiagnosticUseCase(factory.createDiagnosticRepository());
+            DeleteUseCase deleteUseCase = new DeleteUseCase(factory.createDiagnosticRepository());
             CheckSessionUseCase sessionUseCase = new CheckSessionUseCase(factory.createSessionRepository());
             cropUseCase = new ListCropUseCase(factory.createCropRepository());
             DiagnosticHistoryFacade facade = new DiagnosticHistoryFacade(listUseCase, deleteUseCase);
