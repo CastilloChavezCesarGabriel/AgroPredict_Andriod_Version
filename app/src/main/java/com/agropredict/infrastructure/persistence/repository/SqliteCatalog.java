@@ -4,7 +4,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import com.agropredict.application.repository.ICatalogRepository;
 import com.agropredict.infrastructure.persistence.database.Database;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

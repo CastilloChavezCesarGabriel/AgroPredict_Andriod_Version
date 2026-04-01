@@ -5,7 +5,6 @@ import com.agropredict.domain.visitor.session.ISessionVisitor;
 import com.agropredict.domain.visitor.crop.ICropVisitor;
 import com.agropredict.domain.visitor.crop.IPhotographVisitor;
 import com.agropredict.infrastructure.persistence.database.IRow;
-
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;

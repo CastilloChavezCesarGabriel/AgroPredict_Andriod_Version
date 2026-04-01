@@ -12,7 +12,6 @@ import com.agropredict.domain.entity.Crop;
 import com.agropredict.infrastructure.persistence.database.Database;
 import com.agropredict.infrastructure.persistence.database.SqliteRow;
 import com.agropredict.infrastructure.persistence.visitor.CropPersistenceVisitor;
-
 import java.util.ArrayList;
 import java.util.List;
 
