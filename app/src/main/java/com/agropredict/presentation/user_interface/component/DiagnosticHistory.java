@@ -1,56 +1,42 @@
 package com.agropredict.presentation.user_interface.component;
 
 import android.app.Activity;
-import android.view.View;
 import android.widget.ListView;
-import android.widget.TextView;
 import androidx.core.content.ContextCompat;
 import com.agropredict.R;
-import com.agropredict.domain.component.diagnostic.DiagnosticAssessment;
-import com.agropredict.domain.component.diagnostic.DiagnosticConditions;
-import com.agropredict.domain.component.diagnostic.DiagnosticContent;
-import com.agropredict.domain.component.diagnostic.DiagnosticData;
-import com.agropredict.domain.component.diagnostic.DiagnosticOwnership;
-import com.agropredict.domain.component.diagnostic.DiagnosticSummary;
-import com.agropredict.domain.component.diagnostic.Prediction;
 import com.agropredict.domain.entity.Diagnostic;
-import com.agropredict.domain.visitor.diagnostic.IDiagnosticAssessmentVisitor;
-import com.agropredict.domain.visitor.diagnostic.IDiagnosticContentVisitor;
-import com.agropredict.domain.visitor.diagnostic.IDiagnosticDataVisitor;
-import com.agropredict.domain.visitor.diagnostic.IDiagnosticSummaryVisitor;
 import com.agropredict.domain.visitor.diagnostic.IDiagnosticVisitor;
-import com.agropredict.domain.visitor.diagnostic.IPredictionVisitor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public final class DiagnosticHistory implements IDiagnosticVisitor, IDiagnosticDataVisitor,
-        IPredictionVisitor, IDiagnosticContentVisitor, IDiagnosticAssessmentVisitor,
-        IDiagnosticSummaryVisitor {
-    private final Activity activity;
-    private final ListView diagnosticListView;
-    private final TextView emptyLabel;
+public final class DiagnosticHistory implements IDiagnosticVisitor {
+    private final ListView listView;
     private final EntryAdapter entryAdapter;
     private final List<String> identifiers;
+    private final int[] severityColors;
     private StringBuilder builder;
-    private int severityColor;
 
     public DiagnosticHistory(Activity activity) {
-        this.activity = activity;
-        this.diagnosticListView = activity.findViewById(R.id.recyclerHistory);
-        this.emptyLabel = activity.findViewById(R.id.tvEmptyState);
+        this.listView = activity.findViewById(R.id.recyclerHistory);
         this.identifiers = new ArrayList<>();
         this.entryAdapter = new EntryAdapter(activity);
-        diagnosticListView.setAdapter(entryAdapter);
+        this.severityColors = new int[]{
+            ContextCompat.getColor(activity, R.color.severity_low),
+            ContextCompat.getColor(activity, R.color.severity_moderate),
+            ContextCompat.getColor(activity, R.color.severity_high)
+        };
+        listView.setAdapter(entryAdapter);
+        listView.setEmptyView(activity.findViewById(R.id.tvEmptyState));
     }
 
     public void listen(ISelectionListener action) {
-        diagnosticListView.setOnItemClickListener(
+        listView.setOnItemClickListener(
                 (parent, view, position, id) -> resolve(position, action));
     }
 
     public void observe(ISelectionListener action) {
-        diagnosticListView.setOnItemLongClickListener(
+        listView.setOnItemLongClickListener(
                 (parent, view, position, id) -> resolve(position, action));
     }
 
@@ -65,33 +51,20 @@ public final class DiagnosticHistory implements IDiagnosticVisitor, IDiagnosticD
         List<ListEntry> entries = new ArrayList<>();
         for (Diagnostic diagnostic : diagnostics) {
             builder = new StringBuilder();
-            severityColor = ContextCompat.getColor(activity, R.color.severity_low);
             diagnostic.accept(this);
-            entries.add(new ListEntry(builder.toString(), severityColor));
+            entries.add(new ListEntry(builder.toString(), severityColors[0]));
         }
         entryAdapter.populate(entries);
-        diagnosticListView.setVisibility(View.VISIBLE);
-        emptyLabel.setVisibility(View.GONE);
     }
 
     public void empty() {
-        diagnosticListView.setVisibility(View.GONE);
-        emptyLabel.setVisibility(View.VISIBLE);
+        identifiers.clear();
+        entryAdapter.populate(new ArrayList<>());
     }
 
     @Override
-    public void visit(String identifier, DiagnosticData data) {
+    public void visitIdentity(String identifier) {
         identifiers.add(identifier);
-        data.accept(this);
-    }
-
-    @Override
-    public void visit(Prediction prediction, DiagnosticContent content) {
-        if (prediction != null) prediction.accept(this);
-        if (content != null) {
-            builder.append(" — ");
-            content.accept(this);
-        }
     }
 
     @Override
@@ -103,26 +76,20 @@ public final class DiagnosticHistory implements IDiagnosticVisitor, IDiagnosticD
     }
 
     @Override
-    public void visit(DiagnosticConditions conditions, DiagnosticAssessment assessment) {
-        if (assessment != null) assessment.accept(this);
+    public void visitAssessment(String severity, String shortSummary) {
+        builder.append(" — ");
+        builder.append(classify(severity));
     }
 
     @Override
-    public void visit(DiagnosticSummary summary, DiagnosticOwnership ownership) {
-        if (summary != null) summary.accept(this);
-    }
+    public void visitRecommendation(String recommendationText) {}
 
-    @Override
-    public void visitSummary(String severity, String shortSummary) {
-        String classification = DiagnosticSummary.classify(severity);
-        builder.append(classification);
-        colorize(classification);
-    }
-
-    private void colorize(String classification) {
-        if (classification.contains("Moderate"))
-            severityColor = ContextCompat.getColor(activity, R.color.severity_moderate);
-        else if (classification.contains("Severe"))
-            severityColor = ContextCompat.getColor(activity, R.color.severity_high);
+    private String classify(String severity) {
+        if (severity == null) return "Analysis complete";
+        String normalized = severity.toLowerCase();
+        if (normalized.contains("low")) return "Healthy";
+        if (normalized.contains("moderate")) return "Moderate issue";
+        if (normalized.contains("high")) return "Severe issue";
+        return "Analysis complete";
     }
 }

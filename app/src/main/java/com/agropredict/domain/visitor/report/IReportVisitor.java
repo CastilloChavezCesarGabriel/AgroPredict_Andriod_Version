@@ -1,8 +1,7 @@
 package com.agropredict.domain.visitor.report;
 
-import com.agropredict.domain.component.report.ReportDetail;
-import com.agropredict.domain.component.report.ReportIdentity;
-
 public interface IReportVisitor {
-    void visit(ReportIdentity identity, ReportDetail detail);
+    void visitIdentity(String identifier, String format);
+    void visitContext(String diagnosticIdentifier, String cropIdentifier);
+    void visitStorage(String userIdentifier, String filePath);
 }

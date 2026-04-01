@@ -1,9 +1,9 @@
 package com.agropredict.application.usecase.authentication;
 
 import com.agropredict.application.repository.IUserRepository;
-import com.agropredict.application.result.OperationResult;
+import com.agropredict.application.operation_result.OperationResult;
 import com.agropredict.application.service.IPasswordHasher;
-import com.agropredict.domain.validation.PasswordValidator;
+import com.agropredict.domain.input_validation.PasswordValidator;
 
 public final class ResetPasswordUseCase {
     private final IUserRepository userRepository;
@@ -15,13 +15,12 @@ public final class ResetPasswordUseCase {
     }
 
     public OperationResult reset(String email, String newPassword) {
-        if (!userRepository.isRegistered(email))
-            return OperationResult.fail();
-        if (!new PasswordValidator().isValid(newPassword))
-            return OperationResult.fail();
-        String newHash = passwordHasher.hash(newPassword);
-        boolean updated = userRepository.reset(email, newHash);
-        if (!updated) return OperationResult.fail();
-        return OperationResult.succeed("Password updated");
+        if (!isEligible(email, newPassword)) return OperationResult.fail();
+        boolean updated = userRepository.reset(email, passwordHasher.hash(newPassword));
+        return updated ? OperationResult.succeed("Password updated") : OperationResult.fail();
+    }
+
+    private boolean isEligible(String email, String password) {
+        return userRepository.isRegistered(email) && new PasswordValidator().isValid(password);
     }
 }

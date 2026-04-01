@@ -1,7 +1,7 @@
 package com.agropredict.application.usecase.crop;
 
 import com.agropredict.application.repository.ICropRepository;
-import com.agropredict.application.result.HistoryRecord;
+import com.agropredict.application.operation_result.HistoryRecord;
 import java.util.List;
 
 public final class TraceCropHistoryUseCase {

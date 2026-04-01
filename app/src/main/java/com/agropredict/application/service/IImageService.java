@@ -1,9 +1,8 @@
 package com.agropredict.application.service;
 
-import com.agropredict.application.result.ClassificationResult;
+import com.agropredict.application.visitor.IClassificationResultVisitor;
 
 public interface IImageService {
-    ClassificationResult classify(String imagePath);
-    String validate(String imagePath);
+    void classify(String imagePath, IClassificationResultVisitor consumer);
     String compress(String imageUriString);
 }

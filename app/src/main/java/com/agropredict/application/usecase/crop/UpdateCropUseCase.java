@@ -11,6 +11,6 @@ public final class UpdateCropUseCase {
     }
 
     public void update(CropUpdateRequest request) {
-        cropRepository.update(request.apply());
+        cropRepository.update(request);
     }
 }

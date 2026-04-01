@@ -44,7 +44,7 @@ public final class LoginActivity extends BaseActivity implements ILoginView {
             notify(getString(R.string.field_required));
             return;
         }
-        viewModel.authenticate(email, password);
+        viewModel.login(email, password);
     }
 
     @Override

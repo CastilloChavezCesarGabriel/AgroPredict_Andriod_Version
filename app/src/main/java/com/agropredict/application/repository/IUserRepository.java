@@ -1,11 +1,12 @@
 package com.agropredict.application.repository;
 
+import com.agropredict.application.request.user_registration.RegistrationRequest;
+import com.agropredict.application.service.IPasswordHasher;
 import com.agropredict.domain.Session;
-import com.agropredict.domain.entity.User;
 
 public interface IUserRepository {
     Session authenticate(String email, String password);
-    void store(User user);
+    void register(RegistrationRequest request, IPasswordHasher hasher);
     boolean isRegistered(String email);
     boolean isTaken(String username);
     boolean reset(String email, String newPasswordHash);

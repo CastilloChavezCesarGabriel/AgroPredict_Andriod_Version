@@ -3,25 +3,31 @@ package com.agropredict.infrastructure.persistence.repository;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import com.agropredict.infrastructure.security.PasswordHasher;
+import com.agropredict.application.repository.ICatalogRepository;
 import com.agropredict.application.repository.IUserRepository;
+import com.agropredict.application.request.user_registration.RegistrationRequest;
+import com.agropredict.application.service.IPasswordHasher;
 import com.agropredict.domain.Session;
-import com.agropredict.domain.entity.User;
-import com.agropredict.infrastructure.persistence.Database;
-import com.agropredict.infrastructure.persistence.SqliteRow;
+import com.agropredict.infrastructure.persistence.database.Database;
+import com.agropredict.infrastructure.persistence.database.SqliteRow;
 import com.agropredict.infrastructure.persistence.visitor.UserPersistenceVisitor;
 
-public final class SqliteUserRepository extends SqliteRepository<User> implements IUserRepository {
-    private static final int COLUMN_IDENTIFIER = 0;
-    private static final int COLUMN_PASSWORD_HASH = 1;
-    private static final int COLUMN_OCCUPATION = 2;
+public final class SqliteUserRepository implements IUserRepository {
+    private final Database database;
+    private final ICatalogRepository catalog;
 
-    public SqliteUserRepository(Database database) {
-        super(database, "user");
+    public SqliteUserRepository(Database database, ICatalogRepository catalog) {
+        this.database = database;
+        this.catalog = catalog;
     }
 
     @Override
-    protected void persist(User user, SqliteRow row) {
-        user.accept(new UserPersistenceVisitor(row));
+    public void register(RegistrationRequest request, IPasswordHasher hasher) {
+        SqliteRow row = new SqliteRow(database.getWritableDatabase());
+        UserPersistenceVisitor visitor = new UserPersistenceVisitor(row);
+        request.authenticate(visitor, hasher);
+        request.classify(visitor, catalog);
+        row.flush("user");
     }
 
     @Override
@@ -35,9 +41,9 @@ public final class SqliteUserRepository extends SqliteRepository<User> implement
     }
 
     private Session confirm(Cursor cursor, String password) {
-        String storedHash = cursor.getString(COLUMN_PASSWORD_HASH);
-        if (!new PasswordHasher().isVerified(password, storedHash)) return null;
-        return new Session(cursor.getString(COLUMN_IDENTIFIER), cursor.getString(COLUMN_OCCUPATION));
+        String storedHash = cursor.getString(cursor.getColumnIndexOrThrow("password_hash"));
+        if (!new PasswordHasher().verify(password, storedHash)) return null;
+        return new Session(cursor.getString(cursor.getColumnIndexOrThrow("id")), cursor.getString(cursor.getColumnIndexOrThrow("occupation_id")));
     }
 
     @Override

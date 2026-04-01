@@ -3,7 +3,6 @@ package com.agropredict.infrastructure.factory;
 import android.content.Context;
 import com.agropredict.application.IRepositoryFactory;
 import com.agropredict.application.repository.ICatalogRepository;
-import com.agropredict.application.repository.ICropImageRepository;
 import com.agropredict.application.repository.ICropRepository;
 import com.agropredict.application.repository.IDiagnosticRepository;
 import com.agropredict.application.repository.IDiagnosticWorkflow;
@@ -16,15 +15,15 @@ import com.agropredict.application.service.IDiagnosticApiService;
 import com.agropredict.application.service.IPasswordHasher;
 import com.agropredict.application.service.IImageService;
 import com.agropredict.application.service.IReportService;
-import com.agropredict.infrastructure.persistence.Database;
+import com.agropredict.infrastructure.persistence.database.Database;
 
 public final class RepositoryFactory implements IRepositoryFactory {
     private final PersistenceFactory persistence;
     private final ServiceFactory services;
 
     public RepositoryFactory(Database database, Context applicationContext) {
-        this.persistence = new PersistenceFactory(database);
         this.services = new ServiceFactory(applicationContext);
+        this.persistence = new PersistenceFactory(database, services.createSessionRepository());
     }
 
     @Override
@@ -40,11 +39,6 @@ public final class RepositoryFactory implements IRepositoryFactory {
     @Override
     public IDiagnosticRepository createDiagnosticRepository() {
         return persistence.createDiagnosticRepository();
-    }
-
-    @Override
-    public ICropImageRepository createCropImageRepository() {
-        return persistence.createCropImageRepository();
     }
 
     @Override

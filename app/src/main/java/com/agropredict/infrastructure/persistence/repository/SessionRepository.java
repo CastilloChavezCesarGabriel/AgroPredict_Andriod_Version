@@ -6,7 +6,6 @@ import com.agropredict.application.repository.ISessionRepository;
 import com.agropredict.domain.Session;
 
 public final class SessionRepository implements ISessionRepository {
-    private static final String PREFERENCES_NAME = "agropredict_session";
     private static final String USER_IDENTIFIER_KEY = "logged_user_id";
     private static final String OCCUPATION_KEY = "logged_occupation";
     private static final String TIMESTAMP_KEY = "session_timestamp";
@@ -14,7 +13,7 @@ public final class SessionRepository implements ISessionRepository {
     private final SharedPreferences preferences;
 
     public SessionRepository(Context context) {
-        this.preferences = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
+        this.preferences = context.getSharedPreferences("agropredict_session", Context.MODE_PRIVATE);
     }
 
     @Override

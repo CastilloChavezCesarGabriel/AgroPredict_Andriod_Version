@@ -1,8 +1,8 @@
 package com.agropredict.presentation.viewmodel.prediction;
 
-import com.agropredict.application.PredictionFacade;
-import com.agropredict.application.request.SubmissionRequest;
-import com.agropredict.application.result.OperationResult;
+import com.agropredict.application.facade.PredictionFacade;
+import com.agropredict.application.request.diagnostic_submission.SubmissionRequest;
+import com.agropredict.application.operation_result.OperationResult;
 import com.agropredict.application.usecase.catalog.ListCatalogUseCase;
 import com.agropredict.presentation.user_interface.component.input.SoilTypeCatalog;
 import com.agropredict.presentation.user_interface.component.input.StageCatalog;

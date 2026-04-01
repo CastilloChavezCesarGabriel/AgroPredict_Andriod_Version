@@ -1,7 +1,7 @@
 package com.agropredict.presentation.viewmodel.authentication;
 
 import com.agropredict.application.usecase.authentication.LoginUseCase;
-import com.agropredict.application.result.OperationResult;
+import com.agropredict.application.operation_result.OperationResult;
 
 public final class LoginViewModel {
     private final LoginUseCase loginUseCase;
@@ -12,8 +12,8 @@ public final class LoginViewModel {
         this.view = view;
     }
 
-    public void authenticate(String email, String password) {
-        OperationResult result = loginUseCase.authenticate(email, password);
+    public void login(String email, String password) {
+        OperationResult result = loginUseCase.login(email, password);
         result.accept(new LoginResultStrategy(view));
     }
 }

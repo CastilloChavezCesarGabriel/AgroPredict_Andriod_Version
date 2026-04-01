@@ -1,0 +1,45 @@
+package com.agropredict.application.usecase.crop;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import com.agropredict.application.repository.ICropRepository;
+import com.agropredict.application.request.CropUpdateRequest;
+import com.agropredict.application.operation_result.HistoryRecord;
+import com.agropredict.domain.entity.Crop;
+
+import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public final class ListCropUseCaseTest {
+    private ICropRepository stubCrop(List<Crop> crops) {
+        return new ICropRepository() {
+            @Override public void store(Crop crop) {}
+            @Override public void update(CropUpdateRequest request) {}
+            @Override public List<Crop> list(String userId) { return crops; }
+            @Override public Crop find(String id) { return null; }
+            @Override public List<HistoryRecord> trace(String id) { return List.of(); }
+            @Override public void delete(String id) {}
+        };
+    }
+
+    @Test
+    public void testListReturnsAllCrops() {
+        List<Crop> crops = List.of(
+            new Crop("crop_1", "wheat"),
+            new Crop("crop_2", "corn")
+        );
+        List<Crop> result = new ListCropUseCase(stubCrop(crops)).list("user_1");
+        assertEquals(2, result.size());
+    }
+
+    @Test
+    public void testListEmptyResult() {
+        List<Crop> result = new ListCropUseCase(stubCrop(new ArrayList<>())).list("user_1");
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+    }
+}

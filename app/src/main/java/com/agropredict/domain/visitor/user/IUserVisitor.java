@@ -1,8 +1,9 @@
 package com.agropredict.domain.visitor.user;
 
-import com.agropredict.domain.component.user.UserData;
-import com.agropredict.domain.component.user.UserIdentity;
-
 public interface IUserVisitor {
-    void visit(UserIdentity identity, UserData data);
+    void visitIdentity(String identifier, String fullName);
+    void visitCredential(String email, String passwordHash);
+    void visitUsername(String username);
+    void visitPhone(String phoneNumber);
+    void visitOccupation(String occupationIdentifier);
 }

@@ -1,7 +1,7 @@
 package com.agropredict.application.usecase.diagnostic;
 
 import com.agropredict.application.repository.IDiagnosticRepository;
-import com.agropredict.application.result.OperationResult;
+import com.agropredict.application.operation_result.OperationResult;
 
 public final class DeleteDiagnosticUseCase {
     private final IDiagnosticRepository diagnosticRepository;

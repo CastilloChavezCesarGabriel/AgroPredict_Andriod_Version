@@ -1,7 +1,6 @@
 package com.agropredict.application.visitor;
 
-import com.agropredict.domain.visitor.diagnostic.IPredictionVisitor;
-
-public interface IClassificationResultVisitor extends IPredictionVisitor {
+public interface IClassificationResultVisitor {
+    void visitPrediction(String predictedCrop, double confidence);
     void reject(String errorMessage);
 }

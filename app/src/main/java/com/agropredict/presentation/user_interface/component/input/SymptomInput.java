@@ -3,9 +3,9 @@ package com.agropredict.presentation.user_interface.component.input;
 import android.app.Activity;
 import android.widget.Spinner;
 import com.agropredict.R;
-import com.agropredict.application.request.data.Observation;
-import com.agropredict.application.request.data.Pest;
-import com.agropredict.application.request.data.Symptom;
+import com.agropredict.application.request.ai_questionnaire.Observation;
+import com.agropredict.application.request.ai_questionnaire.Pest;
+import com.agropredict.application.request.ai_questionnaire.Symptom;
 
 
 public final class SymptomInput extends SpinnerInput {

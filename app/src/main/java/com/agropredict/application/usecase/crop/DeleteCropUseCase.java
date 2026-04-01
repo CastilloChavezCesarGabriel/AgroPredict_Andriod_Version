@@ -1,7 +1,7 @@
 package com.agropredict.application.usecase.crop;
 
 import com.agropredict.application.repository.ICropRepository;
-import com.agropredict.application.result.OperationResult;
+import com.agropredict.application.operation_result.OperationResult;
 
 public final class DeleteCropUseCase {
     private final ICropRepository cropRepository;

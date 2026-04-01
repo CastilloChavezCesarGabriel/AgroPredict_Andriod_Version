@@ -1,6 +1,6 @@
 package com.agropredict.domain.component.diagnostic;
 
-import com.agropredict.domain.visitor.diagnostic.IPredictionVisitor;
+import com.agropredict.domain.visitor.diagnostic.IDiagnosticVisitor;
 
 public final class Prediction {
     private static final double CONFIDENCE_THRESHOLD = 0.6;
@@ -13,7 +13,7 @@ public final class Prediction {
         this.confidence = confidence;
     }
 
-    public void accept(IPredictionVisitor visitor) {
+    public void accept(IDiagnosticVisitor visitor) {
         visitor.visitPrediction(predictedCrop, confidence);
     }
 

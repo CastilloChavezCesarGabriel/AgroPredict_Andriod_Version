@@ -2,8 +2,8 @@ package com.agropredict.infrastructure.persistence.repository;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import com.agropredict.infrastructure.persistence.Database;
-import com.agropredict.infrastructure.persistence.SqliteRow;
+import com.agropredict.infrastructure.persistence.database.Database;
+import com.agropredict.infrastructure.persistence.database.SqliteRow;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +38,7 @@ public abstract class SqliteRepository<T> {
                 new Object[]{identifier});
     }
 
+    @SuppressWarnings("SameParameterValue")
     protected T locate(String query, String parameter) {
         SQLiteDatabase readable = this.database.getReadableDatabase();
         Cursor cursor = readable.rawQuery(query, new String[]{parameter});
@@ -46,6 +47,7 @@ public abstract class SqliteRepository<T> {
         return entity;
     }
 
+    @SuppressWarnings("SameParameterValue")
     protected List<T> fetch(String query, String[] parameters) {
         SQLiteDatabase readable = this.database.getReadableDatabase();
         Cursor cursor = readable.rawQuery(query, parameters);

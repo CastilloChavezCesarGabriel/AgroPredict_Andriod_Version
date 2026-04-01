@@ -3,7 +3,7 @@ package com.agropredict.presentation.user_interface.component.input;
 import android.app.Activity;
 import android.widget.Spinner;
 import com.agropredict.R;
-import com.agropredict.application.request.data.Soil;
+import com.agropredict.application.request.ai_questionnaire.Soil;
 
 
 public final class SoilInput extends SpinnerInput {

@@ -1,8 +1,8 @@
 package com.agropredict.presentation.viewmodel.history;
 
-import com.agropredict.application.DiagnosticHistoryFacade;
+import com.agropredict.application.facade.DiagnosticHistoryFacade;
 import com.agropredict.application.visitor.IOperationResultVisitor;
-import com.agropredict.application.result.OperationResult;
+import com.agropredict.application.operation_result.OperationResult;
 import com.agropredict.domain.entity.Diagnostic;
 import java.util.List;
 

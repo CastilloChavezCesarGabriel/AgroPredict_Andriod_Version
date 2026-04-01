@@ -1,26 +1,38 @@
 package com.agropredict.domain.entity;
 
-import com.agropredict.domain.component.crop.CropData;
+import com.agropredict.domain.component.crop.Field;
+import com.agropredict.domain.component.crop.GrowthCycle;
+import com.agropredict.domain.component.crop.Soil;
 import com.agropredict.domain.visitor.crop.ICropVisitor;
 
 public final class Crop {
     private final String identifier;
-    private final CropData data;
+    private final String cropType;
+    private Field field;
+    private Soil soil;
+    private GrowthCycle growthCycle;
 
-    private Crop(String identifier, CropData data) {
+    public Crop(String identifier, String cropType) {
         this.identifier = identifier;
-        this.data = data;
+        this.cropType = cropType;
     }
 
-    public static Crop create(String identifier, CropData data) {
-        return new Crop(identifier, data);
+    public void locate(String fieldName, String location) {
+        this.field = new Field(fieldName, location);
     }
 
-    public boolean isComplete() {
-        return data != null && data.isComplete();
+    public void plant(String soilType, String area) {
+        this.soil = new Soil(soilType, area);
+    }
+
+    public void schedule(String plantingDate, String stageIdentifier) {
+        this.growthCycle = new GrowthCycle(plantingDate, stageIdentifier);
     }
 
     public void accept(ICropVisitor visitor) {
-        visitor.visit(identifier, data);
+        visitor.visitIdentity(identifier, cropType);
+        if (field != null) field.accept(visitor);
+        if (soil != null) soil.accept(visitor);
+        if (growthCycle != null) growthCycle.accept(visitor);
     }
 }

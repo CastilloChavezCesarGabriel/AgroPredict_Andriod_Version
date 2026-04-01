@@ -1,10 +1,9 @@
 package com.agropredict.application.usecase.diagnostic;
 
 import com.agropredict.application.repository.IDiagnosticWorkflow;
-import com.agropredict.application.request.SubmissionRequest;
-import com.agropredict.application.result.OperationResult;
+import com.agropredict.application.request.diagnostic_submission.SubmissionRequest;
+import com.agropredict.application.operation_result.OperationResult;
 import com.agropredict.application.service.IDiagnosticApiService;
-import com.agropredict.domain.entity.Diagnostic;
 
 public final class SubmitDiagnosticUseCase {
     private final IDiagnosticApiService apiService;
@@ -17,9 +16,7 @@ public final class SubmitDiagnosticUseCase {
 
     public OperationResult submit(SubmissionRequest request) {
         try {
-            Diagnostic diagnostic = request.diagnose();
-            Diagnostic enriched = apiService.submit(diagnostic, request);
-            String identifier = workflow.persist(request, enriched);
+            String identifier = request.submit(apiService, workflow);
             return OperationResult.succeed(identifier);
         } catch (RuntimeException exception) {
             return OperationResult.fail();

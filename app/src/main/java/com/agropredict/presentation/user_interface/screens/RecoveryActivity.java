@@ -5,7 +5,7 @@ import android.widget.EditText;
 import com.agropredict.AgroPredictApplication;
 import com.agropredict.R;
 import com.agropredict.application.usecase.authentication.ResetPasswordUseCase;
-import com.agropredict.domain.validation.PasswordValidator;
+import com.agropredict.domain.input_validation.PasswordValidator;
 import com.agropredict.presentation.viewmodel.authentication.IRecoveryView;
 import com.agropredict.presentation.viewmodel.authentication.RecoveryViewModel;
 

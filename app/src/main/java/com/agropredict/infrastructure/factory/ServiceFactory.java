@@ -7,11 +7,11 @@ import com.agropredict.application.service.IDiagnosticApiService;
 import com.agropredict.application.service.IImageService;
 import com.agropredict.application.service.IPasswordHasher;
 import com.agropredict.application.service.IReportService;
-import com.agropredict.infrastructure.asset.AssetExtractor;
-import com.agropredict.infrastructure.export.CsvReportService;
-import com.agropredict.infrastructure.export.PdfReportService;
-import com.agropredict.infrastructure.image.ImageService;
-import com.agropredict.infrastructure.network.DiagnosticApiService;
+import com.agropredict.infrastructure.ai_model_asset.AssetExtractor;
+import com.agropredict.infrastructure.report_export.CsvReportService;
+import com.agropredict.infrastructure.report_export.PdfReportService;
+import com.agropredict.infrastructure.image_classification.ImageService;
+import com.agropredict.infrastructure.api_integration.DiagnosticApiService;
 import com.agropredict.infrastructure.persistence.repository.SessionRepository;
 import java.io.File;
 

@@ -21,7 +21,7 @@ public final class PasswordHasher implements IPasswordHasher {
     }
 
     @Override
-    public boolean isVerified(String password, String stored) {
+    public boolean verify(String password, String stored) {
         String[] parts = stored.split(DELIMITER);
         if (parts.length != 2) return false;
         byte[] salt = decode(parts[0]);

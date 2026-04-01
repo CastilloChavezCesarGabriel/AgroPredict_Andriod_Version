@@ -1,19 +1,16 @@
 package com.agropredict.application.request;
 
-import com.agropredict.application.request.data.CropField;
-import com.agropredict.application.request.data.CropIdentity;
 import com.agropredict.domain.entity.Crop;
+import com.agropredict.domain.visitor.crop.ICropVisitor;
 
 public final class CropUpdateRequest {
-    private final CropIdentity identity;
-    private final CropField field;
+    private final Crop crop;
 
-    public CropUpdateRequest(CropIdentity identity, CropField field) {
-        this.identity = identity;
-        this.field = field;
+    public CropUpdateRequest(Crop crop) {
+        this.crop = crop;
     }
 
-    public Crop apply() {
-        return identity.form(field);
+    public void accept(ICropVisitor visitor) {
+        crop.accept(visitor);
     }
 }

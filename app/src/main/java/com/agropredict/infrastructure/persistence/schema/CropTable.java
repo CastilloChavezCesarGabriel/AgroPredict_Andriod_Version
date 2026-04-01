@@ -33,5 +33,23 @@ public final class CropTable implements ITable {
             + "old_value TEXT, "
             + "new_value TEXT, "
             + "modified_at TEXT DEFAULT CURRENT_TIMESTAMP)");
+        database.execSQL(
+            "CREATE TRIGGER IF NOT EXISTS crop_history_field_name "
+            + "AFTER UPDATE OF field_name ON crop FOR EACH ROW "
+            + "WHEN OLD.field_name IS NOT NEW.field_name BEGIN "
+            + "INSERT INTO crop_history (crop_id, field_modified, old_value, new_value) "
+            + "VALUES (NEW.id, 'field_name', OLD.field_name, NEW.field_name); END");
+        database.execSQL(
+            "CREATE TRIGGER IF NOT EXISTS crop_history_soil_type "
+            + "AFTER UPDATE OF soil_type_id ON crop FOR EACH ROW "
+            + "WHEN OLD.soil_type_id IS NOT NEW.soil_type_id BEGIN "
+            + "INSERT INTO crop_history (crop_id, field_modified, old_value, new_value) "
+            + "VALUES (NEW.id, 'soil_type_id', OLD.soil_type_id, NEW.soil_type_id); END");
+        database.execSQL(
+            "CREATE TRIGGER IF NOT EXISTS crop_history_stage "
+            + "AFTER UPDATE OF phenological_stage_id ON crop FOR EACH ROW "
+            + "WHEN OLD.phenological_stage_id IS NOT NEW.phenological_stage_id BEGIN "
+            + "INSERT INTO crop_history (crop_id, field_modified, old_value, new_value) "
+            + "VALUES (NEW.id, 'phenological_stage_id', OLD.phenological_stage_id, NEW.phenological_stage_id); END");
     }
 }

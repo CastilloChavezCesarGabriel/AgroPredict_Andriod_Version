@@ -3,9 +3,9 @@ package com.agropredict.presentation.user_interface.component.input;
 import android.app.Activity;
 import android.widget.Spinner;
 import com.agropredict.R;
-import com.agropredict.application.request.data.Irrigation;
-import com.agropredict.application.request.data.FarmManagement;
-import com.agropredict.application.request.data.PestControl;
+import com.agropredict.application.request.ai_questionnaire.Irrigation;
+import com.agropredict.application.request.ai_questionnaire.FarmManagement;
+import com.agropredict.application.request.ai_questionnaire.PestControl;
 
 public final class ManagementInput extends SpinnerInput {
     private final Spinner irrigationSpinner;

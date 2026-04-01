@@ -4,12 +4,12 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import com.agropredict.AgroPredictApplication;
-import com.agropredict.application.DiagnosticHistoryFacade;
+import com.agropredict.application.facade.DiagnosticHistoryFacade;
 import com.agropredict.R;
 import com.agropredict.application.usecase.authentication.CheckSessionUseCase;
 import com.agropredict.application.usecase.crop.ListCropUseCase;
 import com.agropredict.application.usecase.diagnostic.DeleteDiagnosticUseCase;
-import com.agropredict.application.usecase.diagnostic.ListDiagnosticsUseCase;
+import com.agropredict.application.usecase.diagnostic.ListDiagnosticUseCase;
 import com.agropredict.domain.entity.Diagnostic;
 import com.agropredict.presentation.viewmodel.history.HistoryViewModel;
 import com.agropredict.presentation.viewmodel.history.IHistoryView;
@@ -31,7 +31,7 @@ public final class HistoryActivity extends BaseActivity implements IHistoryView 
         diagnosticHistory.listen(this::inspect);
         diagnosticHistory.observe(this::confirm);
         ((AgroPredictApplication) getApplication()).provide(factory -> {
-            ListDiagnosticsUseCase listUseCase = new ListDiagnosticsUseCase(factory.createDiagnosticRepository());
+            ListDiagnosticUseCase listUseCase = new ListDiagnosticUseCase(factory.createDiagnosticRepository());
             DeleteDiagnosticUseCase deleteUseCase = new DeleteDiagnosticUseCase(factory.createDiagnosticRepository());
             CheckSessionUseCase sessionUseCase = new CheckSessionUseCase(factory.createSessionRepository());
             cropUseCase = new ListCropUseCase(factory.createCropRepository());

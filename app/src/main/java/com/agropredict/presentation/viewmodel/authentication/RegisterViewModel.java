@@ -1,8 +1,7 @@
 package com.agropredict.presentation.viewmodel.authentication;
 
-import com.agropredict.application.request.RegistrationRequest;
-import com.agropredict.application.result.RegistrationResult;
-import com.agropredict.application.service.IPasswordHasher;
+import com.agropredict.application.request.user_registration.RegistrationRequest;
+import com.agropredict.application.operation_result.RegistrationResult;
 import com.agropredict.application.usecase.authentication.RegisterUseCase;
 import com.agropredict.application.usecase.catalog.ListCatalogUseCase;
 
@@ -19,8 +18,8 @@ public final class RegisterViewModel {
         view.populate(listOccupationsUseCase.list());
     }
 
-    public void register(RegistrationRequest request, IPasswordHasher hasher) {
-        RegistrationResult result = registerUseCase.register(request, hasher);
+    public void register(RegistrationRequest request) {
+        RegistrationResult result = registerUseCase.register(request);
         result.accept(new RegistrationResultStrategy(view));
     }
 }

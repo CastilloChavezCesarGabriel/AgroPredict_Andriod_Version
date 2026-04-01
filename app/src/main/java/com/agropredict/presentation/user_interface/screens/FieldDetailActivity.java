@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.widget.Toast;
 import com.agropredict.AgroPredictApplication;
 import com.agropredict.R;
-import com.agropredict.application.result.HistoryRecord;
+import com.agropredict.application.operation_result.HistoryRecord;
 import com.agropredict.application.usecase.crop.DeleteCropUseCase;
 import com.agropredict.application.usecase.crop.TraceCropHistoryUseCase;
 import com.agropredict.application.usecase.diagnostic.FindDiagnosticUseCase;
@@ -30,7 +30,7 @@ public final class FieldDetailActivity extends BaseActivity implements IFieldDet
         setContentView(R.layout.activity_field_detail);
         cropIdentifier = getIntent().getStringExtra("diagnostic_identifier");
         ((AgroPredictApplication) getApplication()).provide(factory -> {
-            fieldDetail = new FieldDetail(this, factory.createCropImageRepository());
+            fieldDetail = new FieldDetail(this);
             FindDiagnosticUseCase findUseCase = new FindDiagnosticUseCase(factory.createDiagnosticRepository());
             deleteUseCase = new DeleteCropUseCase(factory.createCropRepository());
             traceUseCase = new TraceCropHistoryUseCase(factory.createCropRepository());

@@ -6,10 +6,10 @@ import android.app.Activity;
 import android.widget.EditText;
 import android.widget.Spinner;
 import com.agropredict.R;
-import com.agropredict.application.request.data.Account;
-import com.agropredict.application.request.data.Registrant;
-import com.agropredict.application.request.data.Profile;
-import com.agropredict.application.request.RegistrationRequest;
+import com.agropredict.application.request.user_registration.Account;
+import com.agropredict.application.request.user_registration.Registrant;
+import com.agropredict.application.request.user_registration.Profile;
+import com.agropredict.application.request.user_registration.RegistrationRequest;
 
 public final class RegistrationForm {
     private final EditText fullNameInput;

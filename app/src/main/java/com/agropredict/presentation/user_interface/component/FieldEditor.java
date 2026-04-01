@@ -4,31 +4,13 @@ import android.app.Activity;
 import android.widget.EditText;
 import android.widget.Spinner;
 import com.agropredict.R;
-import com.agropredict.application.request.data.CropField;
-import com.agropredict.application.request.data.CropIdentity;
 import com.agropredict.application.request.CropUpdateRequest;
-import com.agropredict.domain.component.crop.CropContent;
-import com.agropredict.domain.component.crop.CropData;
-import com.agropredict.domain.component.crop.CropDetail;
-import com.agropredict.domain.component.crop.CropEnvironment;
-import com.agropredict.domain.component.crop.CropLocation;
-import com.agropredict.domain.component.crop.CropOwnership;
-import com.agropredict.domain.component.crop.CropSoil;
 import com.agropredict.domain.entity.Crop;
-import com.agropredict.domain.visitor.crop.ICropContentVisitor;
-import com.agropredict.domain.visitor.crop.ICropDataVisitor;
-import com.agropredict.domain.visitor.crop.ICropDetailVisitor;
-import com.agropredict.domain.visitor.crop.ICropEnvironmentVisitor;
-import com.agropredict.domain.visitor.crop.ICropLocationVisitor;
-import com.agropredict.domain.visitor.crop.ICropOwnershipVisitor;
-import com.agropredict.domain.visitor.crop.ICropSoilVisitor;
 import com.agropredict.domain.visitor.crop.ICropVisitor;
 import com.agropredict.presentation.user_interface.component.input.SoilTypeCatalog;
 import com.agropredict.presentation.user_interface.component.input.StageCatalog;
 
-public final class FieldEditor implements ICropVisitor, ICropDataVisitor,
-        ICropDetailVisitor, ICropContentVisitor, ICropEnvironmentVisitor,
-        ICropSoilVisitor, ICropOwnershipVisitor, ICropLocationVisitor {
+public final class FieldEditor implements ICropVisitor {
     private final EditText cropNameInput;
     private final EditText areaInput;
     private final Spinner soilTypeSpinner;
@@ -42,12 +24,14 @@ public final class FieldEditor implements ICropVisitor, ICropDataVisitor,
     }
 
     public CropUpdateRequest collect(String identifier) {
-        String cropName = cropNameInput.getText().toString().trim();
-        CropIdentity identity = new CropIdentity(identifier, cropName);
+        String fieldName = cropNameInput.getText().toString().trim();
+        Crop crop = new Crop(identifier, null);
+        crop.locate(fieldName, null);
         String soilType = soilTypeSpinner.getSelectedItem().toString();
+        crop.plant(soilType, areaInput.getText().toString().trim());
         String stage = stageSpinner.getSelectedItem().toString();
-        CropField field = new CropField(soilType, stage);
-        return new CropUpdateRequest(identity, field);
+        crop.schedule(null, stage);
+        return new CropUpdateRequest(crop);
     }
 
     public void populate(Crop crop) {
@@ -63,45 +47,23 @@ public final class FieldEditor implements ICropVisitor, ICropDataVisitor,
     }
 
     @Override
-    public void visit(String identifier, CropData data) {
-        data.accept(this);
+    public void visitIdentity(String identifier, String cropType) {}
+
+    @Override
+    public void visitField(String name, String location) {
+        cropNameInput.setText(name);
     }
 
     @Override
-    public void visit(CropDetail detail, CropContent content) {
-        if (detail != null) detail.accept(this);
-        if (content != null) content.accept(this);
-    }
-
-    @Override
-    public void visit(String cropType, String fieldName) {
-        cropNameInput.setText(fieldName);
-    }
-
-    @Override
-    public void visit(CropEnvironment environment, CropOwnership ownership) {
-        if (environment != null) environment.accept(this);
-        if (ownership != null) ownership.accept(this);
-    }
-
-    @Override
-    public void visit(CropLocation location, CropSoil soil) {
-        if (soil != null) soil.accept(this);
-    }
-
-    @Override
-    public void visitSoil(String soilTypeIdentifier, String area) {
-        select(soilTypeSpinner, soilTypeIdentifier);
+    public void visitSoil(String typeIdentifier, String area) {
+        select(soilTypeSpinner, typeIdentifier);
         areaInput.setText(area != null ? area : "");
     }
 
     @Override
-    public void visitOwnership(String userIdentifier, String stageIdentifier) {
+    public void visitPlanting(String date, String stageIdentifier) {
         select(stageSpinner, stageIdentifier);
     }
-
-    @Override
-    public void visitLocation(String location, String plantingDate) {}
 
     private void select(Spinner spinner, String value) {
         if (value == null || spinner.getAdapter() == null) return;

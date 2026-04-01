@@ -1,5 +1,7 @@
 package com.agropredict.domain;
 
+import com.agropredict.domain.visitor.session.ISessionVisitor;
+
 public final class Session {
     private final String userIdentifier;
     private final String occupation;

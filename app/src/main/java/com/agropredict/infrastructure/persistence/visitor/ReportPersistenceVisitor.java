@@ -1,35 +1,13 @@
 package com.agropredict.infrastructure.persistence.visitor;
 
-import com.agropredict.domain.component.report.ReportContext;
-import com.agropredict.domain.component.report.ReportDetail;
-import com.agropredict.domain.component.report.ReportIdentity;
-import com.agropredict.domain.component.report.ReportStorage;
-import com.agropredict.domain.visitor.report.IReportContextVisitor;
-import com.agropredict.domain.visitor.report.IReportDetailVisitor;
-import com.agropredict.domain.visitor.report.IReportIdentityVisitor;
-import com.agropredict.domain.visitor.report.IReportStorageVisitor;
 import com.agropredict.domain.visitor.report.IReportVisitor;
-import com.agropredict.infrastructure.persistence.IRow;
+import com.agropredict.infrastructure.persistence.database.IRow;
 
-public final class ReportPersistenceVisitor implements IReportVisitor, IReportDetailVisitor,
-        IReportIdentityVisitor, IReportContextVisitor, IReportStorageVisitor {
-
+public final class ReportPersistenceVisitor implements IReportVisitor {
     private final IRow row;
 
     public ReportPersistenceVisitor(IRow row) {
         this.row = row;
-    }
-
-    @Override
-    public void visit(ReportIdentity identity, ReportDetail detail) {
-        identity.accept(this);
-        if (detail != null) detail.accept(this);
-    }
-
-    @Override
-    public void visit(ReportContext context, ReportStorage storage) {
-        if (context != null) context.accept(this);
-        if (storage != null) storage.accept(this);
     }
 
     @Override

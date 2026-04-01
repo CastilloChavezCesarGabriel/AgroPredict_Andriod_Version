@@ -6,15 +6,15 @@ import com.agropredict.presentation.user_interface.component.input.ManagementInp
 import com.agropredict.presentation.user_interface.component.input.SoilInput;
 import com.agropredict.presentation.user_interface.component.input.SymptomInput;
 import android.app.Activity;
-import com.agropredict.application.request.SubmissionRequest;
-import com.agropredict.application.request.data.Condition;
-import com.agropredict.application.request.data.CropCare;
-import com.agropredict.application.request.data.Field;
-import com.agropredict.application.request.data.Classification;
-import com.agropredict.application.request.data.Questionnaire;
-import com.agropredict.application.request.input.Cultivation;
-import com.agropredict.application.request.input.Submission;
-import com.agropredict.application.request.input.Photograph;
+import com.agropredict.application.request.diagnostic_submission.SubmissionRequest;
+import com.agropredict.application.request.ai_questionnaire.Condition;
+import com.agropredict.application.request.ai_questionnaire.CropCare;
+import com.agropredict.application.request.diagnostic_submission.Field;
+import com.agropredict.application.request.diagnostic_submission.Classification;
+import com.agropredict.application.request.ai_questionnaire.Questionnaire;
+import com.agropredict.application.request.diagnostic_submission.Cultivation;
+import com.agropredict.application.request.diagnostic_submission.Submission;
+import com.agropredict.application.request.diagnostic_submission.PhotographInput;
 import com.agropredict.presentation.user_interface.component.input.SoilTypeCatalog;
 import com.agropredict.presentation.user_interface.component.input.StageCatalog;
 
@@ -41,7 +41,7 @@ public final class QuestionnaireForm {
         catalogGroup.populate(stageOption);
     }
 
-    public SubmissionRequest assemble(Classification prediction, Photograph image) {
+    public SubmissionRequest assemble(Classification prediction, PhotographInput image) {
         Cultivation crop = prediction.cultivate(catalogGroup.extract());
         Field field = new Field(crop, image);
         Submission diagnostic = new Submission(prediction, field);

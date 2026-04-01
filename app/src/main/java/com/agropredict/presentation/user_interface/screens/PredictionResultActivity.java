@@ -19,7 +19,7 @@ public final class PredictionResultActivity extends BaseActivity implements IPre
         setContentView(R.layout.activity_prediction_result);
         findViewById(R.id.btnBackToHome).setOnClickListener(view -> redirect(HomeActivity.class));
         ((AgroPredictApplication) getApplication()).provide(factory -> {
-            predictionResult = new PredictionResult(this, factory.createCropImageRepository());
+            predictionResult = new PredictionResult(this);
             FindDiagnosticUseCase useCase = new FindDiagnosticUseCase(factory.createDiagnosticRepository());
             viewModel = new PredictionResultViewModel(useCase, this);
         });

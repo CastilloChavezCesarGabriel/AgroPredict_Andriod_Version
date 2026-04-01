@@ -9,9 +9,9 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import com.agropredict.AgroPredictApplication;
 import com.agropredict.R;
-import com.agropredict.application.PredictionFacade;
-import com.agropredict.application.request.input.Photograph;
-import com.agropredict.application.request.data.Classification;
+import com.agropredict.application.facade.PredictionFacade;
+import com.agropredict.application.request.diagnostic_submission.PhotographInput;
+import com.agropredict.application.request.diagnostic_submission.Classification;
 import com.agropredict.application.service.IImageService;
 import com.agropredict.application.usecase.catalog.ListCatalogUseCase;
 import com.agropredict.application.usecase.diagnostic.ClassifyImageUseCase;
@@ -90,7 +90,7 @@ public final class PredictionActivity extends BaseActivity implements IPredictio
             notify(getString(R.string.image_invalid));
             return;
         }
-        Photograph photograph = new Photograph(selectedImagePath);
+        PhotographInput photograph = new PhotographInput(selectedImagePath);
         viewModel.submit(predictionForm.collect(classification, photograph));
     }
 

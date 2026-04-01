@@ -1,7 +1,6 @@
 package com.agropredict.application.usecase.diagnostic;
 
 import com.agropredict.application.visitor.IClassificationResultVisitor;
-import com.agropredict.application.result.ClassificationResult;
 import com.agropredict.application.service.IImageService;
 
 public final class ClassifyImageUseCase {
@@ -12,12 +11,6 @@ public final class ClassifyImageUseCase {
     }
 
     public void classify(String imagePath, IClassificationResultVisitor consumer) {
-        String error = imageService.validate(imagePath);
-        if (error != null) {
-            consumer.reject(error);
-            return;
-        }
-        ClassificationResult result = imageService.classify(imagePath);
-        result.accept(consumer);
+        imageService.classify(imagePath, consumer);
     }
 }

@@ -4,21 +4,14 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import com.agropredict.application.repository.IDiagnosticRepository;
 import com.agropredict.domain.entity.Diagnostic;
-import com.agropredict.domain.component.diagnostic.DiagnosticAssessment;
-import com.agropredict.domain.component.diagnostic.DiagnosticConditions;
-import com.agropredict.domain.component.diagnostic.DiagnosticContent;
-import com.agropredict.domain.component.diagnostic.DiagnosticContext;
-import com.agropredict.domain.component.diagnostic.DiagnosticData;
-import com.agropredict.domain.component.diagnostic.DiagnosticEnvironment;
-import com.agropredict.domain.component.diagnostic.DiagnosticOwnership;
-import com.agropredict.domain.component.diagnostic.DiagnosticSummary;
 import com.agropredict.domain.component.diagnostic.Prediction;
-import com.agropredict.infrastructure.persistence.Database;
-import com.agropredict.infrastructure.persistence.SqliteRow;
+import com.agropredict.infrastructure.persistence.database.Database;
+import com.agropredict.infrastructure.persistence.database.SqliteRow;
 import com.agropredict.infrastructure.persistence.visitor.DiagnosticPersistenceVisitor;
+import java.util.ArrayList;
 import java.util.List;
 
-public final class SqliteDiagnosticRepository extends SqliteRepository<Diagnostic> implements IDiagnosticRepository {
+public final class SqliteDiagnosticRepository implements IDiagnosticRepository {
     private static final String SELECT_DIAGNOSTIC = "SELECT d.id, d.predicted_crop, "
             + "d.confidence, d.severity, d.recommendation_text, d.short_summary, "
             + "d.created_at, d.crop_id, d.image_id, d.user_id, "
@@ -28,54 +21,23 @@ public final class SqliteDiagnosticRepository extends SqliteRepository<Diagnosti
             + "FROM diagnostic d "
             + "LEFT JOIN crop c ON d.crop_id = c.id "
             + "LEFT JOIN image i ON d.image_id = i.id ";
-    private static final int COLUMN_IDENTIFIER = 0;
-    private static final int COLUMN_PREDICTED_CROP = 1;
-    private static final int COLUMN_CONFIDENCE = 2;
-    private static final int COLUMN_SEVERITY = 3;
-    private static final int COLUMN_RECOMMENDATION_TEXT = 4;
-    private static final int COLUMN_SHORT_SUMMARY = 5;
-    private static final int COLUMN_CROP_ID = 7;
-    private static final int COLUMN_IMAGE_ID = 8;
-    private static final int COLUMN_USER_ID = 9;
-    private static final int COLUMN_TEMPERATURE = 10;
-    private static final int COLUMN_HUMIDITY = 11;
+    private final Database database;
 
     public SqliteDiagnosticRepository(Database database) {
-        super(database, "diagnostic");
+        this.database = database;
     }
 
     @Override
-    protected void persist(Diagnostic diagnostic, SqliteRow row) {
-        diagnostic.accept(new DiagnosticPersistenceVisitor(row));
-    }
-
-    @Override
-    protected Diagnostic restore(Cursor cursor) {
-        Prediction prediction = new Prediction(
-                cursor.getString(COLUMN_PREDICTED_CROP), cursor.getDouble(COLUMN_CONFIDENCE));
-        DiagnosticContext context = new DiagnosticContext(
-                cursor.getString(COLUMN_CROP_ID), cursor.getString(COLUMN_IMAGE_ID));
-        DiagnosticEnvironment environment = new DiagnosticEnvironment(
-                cursor.getDouble(COLUMN_TEMPERATURE), cursor.getDouble(COLUMN_HUMIDITY));
-        DiagnosticConditions conditions = new DiagnosticConditions(context, environment);
-        DiagnosticSummary summary = new DiagnosticSummary(
-                cursor.getString(COLUMN_SEVERITY), cursor.getString(COLUMN_SHORT_SUMMARY));
-        DiagnosticOwnership ownership = new DiagnosticOwnership(
-                cursor.getString(COLUMN_USER_ID), cursor.getString(COLUMN_RECOMMENDATION_TEXT));
-        DiagnosticAssessment assessment = new DiagnosticAssessment(summary, ownership);
-        DiagnosticContent content = new DiagnosticContent(conditions, assessment);
-        DiagnosticData data = new DiagnosticData(prediction, content);
-        return Diagnostic.create(cursor.getString(COLUMN_IDENTIFIER), data);
+    public void store(Diagnostic diagnostic) {
+        SqliteRow row = new SqliteRow(database.getWritableDatabase());
+        DiagnosticPersistenceVisitor visitor = new DiagnosticPersistenceVisitor(row);
+        diagnostic.accept(visitor);
+        row.flush("diagnostic");
     }
 
     @Override
     public void delete(String diagnosticIdentifier) {
-        SQLiteDatabase database = this.database.getWritableDatabase();
-        database.execSQL("DELETE FROM image WHERE id IN (SELECT image_id FROM diagnostic WHERE id = ?)",
-                new Object[]{diagnosticIdentifier});
-        database.execSQL("DELETE FROM crop WHERE id IN (SELECT crop_id FROM diagnostic WHERE id = ?)",
-                new Object[]{diagnosticIdentifier});
-        database.delete("diagnostic", "id = ?", new String[]{diagnosticIdentifier});
+        database.getWritableDatabase().delete("diagnostic", "id = ?", new String[]{diagnosticIdentifier});
     }
 
     @Override
@@ -93,7 +55,11 @@ public final class SqliteDiagnosticRepository extends SqliteRepository<Diagnosti
 
     @Override
     public Diagnostic find(String diagnosticIdentifier) {
-        return locate(SELECT_DIAGNOSTIC + "WHERE d.id = ?", diagnosticIdentifier);
+        SQLiteDatabase db = database.getReadableDatabase();
+        Cursor cursor = db.rawQuery(SELECT_DIAGNOSTIC + "WHERE d.id = ?", new String[]{diagnosticIdentifier});
+        Diagnostic result = cursor.moveToFirst() ? restore(cursor) : null;
+        cursor.close();
+        return result;
     }
 
     @Override
@@ -102,5 +68,28 @@ public final class SqliteDiagnosticRepository extends SqliteRepository<Diagnosti
                 + "WHERE d.user_id = ? AND d.crop_id = ? ORDER BY d.created_at DESC",
                 new String[]{userIdentifier, cropIdentifier});
         return results.isEmpty() ? null : results.get(0);
+    }
+
+    private Diagnostic restore(Cursor cursor) {
+        Prediction prediction = new Prediction(
+                cursor.getString(cursor.getColumnIndexOrThrow("predicted_crop")), cursor.getDouble(cursor.getColumnIndexOrThrow("confidence")));
+        Diagnostic diagnostic = new Diagnostic(cursor.getString(cursor.getColumnIndexOrThrow("id")), prediction);
+        String severity = cursor.getString(cursor.getColumnIndexOrThrow("severity"));
+        if (severity != null) {
+            diagnostic.conclude(severity, cursor.getString(cursor.getColumnIndexOrThrow("short_summary")));
+            diagnostic.recommend(cursor.getString(cursor.getColumnIndexOrThrow("recommendation_text")));
+        }
+        return diagnostic;
+    }
+
+    private List<Diagnostic> fetch(String query, String[] parameters) {
+        SQLiteDatabase db = database.getReadableDatabase();
+        Cursor cursor = db.rawQuery(query, parameters);
+        List<Diagnostic> results = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            results.add(restore(cursor));
+        }
+        cursor.close();
+        return results;
     }
 }

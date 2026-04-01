@@ -1,7 +1,8 @@
 package com.agropredict.domain.visitor.crop;
 
-import com.agropredict.domain.component.crop.CropData;
-
 public interface ICropVisitor {
-    void visit(String identifier, CropData data);
+    void visitIdentity(String identifier, String cropType);
+    void visitField(String name, String location);
+    void visitSoil(String typeIdentifier, String area);
+    void visitPlanting(String date, String stageIdentifier);
 }

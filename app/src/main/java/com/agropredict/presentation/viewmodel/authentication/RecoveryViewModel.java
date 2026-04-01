@@ -1,6 +1,6 @@
 package com.agropredict.presentation.viewmodel.authentication;
 
-import com.agropredict.application.result.OperationResult;
+import com.agropredict.application.operation_result.OperationResult;
 import com.agropredict.application.usecase.authentication.ResetPasswordUseCase;
 
 public final class RecoveryViewModel {

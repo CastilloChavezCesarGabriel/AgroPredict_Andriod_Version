@@ -3,7 +3,6 @@ package com.agropredict.presentation.user_interface.screens;
 import android.os.Bundle;
 import com.agropredict.AgroPredictApplication;
 import com.agropredict.R;
-import com.agropredict.application.service.IPasswordHasher;
 import com.agropredict.application.usecase.authentication.RegisterUseCase;
 import com.agropredict.application.usecase.catalog.ListCatalogUseCase;
 import com.agropredict.presentation.viewmodel.authentication.IRegisterView;
@@ -14,7 +13,6 @@ import java.util.List;
 public final class RegisterActivity extends BaseActivity implements IRegisterView {
     private RegisterViewModel viewModel;
     private RegistrationForm registrationForm;
-    private IPasswordHasher passwordHasher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,10 +21,9 @@ public final class RegisterActivity extends BaseActivity implements IRegisterVie
         registrationForm = new RegistrationForm(this);
         ((AgroPredictApplication) getApplication()).provide(factory -> {
             RegisterUseCase useCase = new RegisterUseCase(
-                    factory.createUserRepository(), factory.createOccupationCatalog());
+                    factory.createUserRepository(), factory.createPasswordHasher());
             ListCatalogUseCase occupations = new ListCatalogUseCase(factory.createOccupationCatalog());
             viewModel = new RegisterViewModel(useCase, this);
-            passwordHasher = factory.createPasswordHasher();
             viewModel.populate(occupations);
         });
         findViewById(R.id.btnRegister).setOnClickListener(view -> register());
@@ -38,7 +35,7 @@ public final class RegisterActivity extends BaseActivity implements IRegisterVie
             notify(getString(R.string.passwords_mismatch));
             return;
         }
-        viewModel.register(registrationForm.collect(), passwordHasher);
+        viewModel.register(registrationForm.collect());
     }
 
     @Override

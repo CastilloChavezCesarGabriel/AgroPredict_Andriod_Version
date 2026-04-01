@@ -1,7 +1,6 @@
 package com.agropredict.application;
 
 import com.agropredict.application.repository.ICatalogRepository;
-import com.agropredict.application.repository.ICropImageRepository;
 import com.agropredict.application.repository.ICropRepository;
 import com.agropredict.application.repository.IDiagnosticRepository;
 import com.agropredict.application.repository.IReportRepository;
@@ -19,7 +18,6 @@ public interface IRepositoryFactory {
     IUserRepository createUserRepository();
     ICropRepository createCropRepository();
     IDiagnosticRepository createDiagnosticRepository();
-    ICropImageRepository createCropImageRepository();
     IReportRepository createReportRepository();
     ICatalogRepository createSoilTypeCatalog();
     ICatalogRepository createStageCatalog();
