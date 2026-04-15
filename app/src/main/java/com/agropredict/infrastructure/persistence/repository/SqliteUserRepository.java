@@ -1,10 +1,12 @@
 package com.agropredict.infrastructure.persistence.repository;
 
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import com.agropredict.infrastructure.security.PasswordHasher;
 import com.agropredict.application.repository.ICatalogRepository;
 import com.agropredict.application.repository.IUserRepository;
+import com.agropredict.application.request.user_registration.RegistrationException;
 import com.agropredict.application.request.user_registration.RegistrationRequest;
 import com.agropredict.application.service.IPasswordHasher;
 import com.agropredict.domain.Session;
@@ -27,7 +29,18 @@ public final class SqliteUserRepository implements IUserRepository {
         UserPersistenceVisitor visitor = new UserPersistenceVisitor(row);
         request.authenticate(visitor, hasher);
         request.classify(visitor, catalog);
-        row.flush("user");
+        try {
+            row.flush("user");
+        } catch (SQLiteConstraintException exception) {
+            throw translate(exception);
+        }
+    }
+
+    private RegistrationException translate(SQLiteConstraintException exception) {
+        String message = exception.getMessage() == null ? "" : exception.getMessage();
+        if (message.contains("user.email")) return new RegistrationException("This email is already registered");
+        if (message.contains("user.username")) return new RegistrationException("This username already exists");
+        return new RegistrationException("Account could not be created");
     }
 
     @Override
@@ -43,27 +56,9 @@ public final class SqliteUserRepository implements IUserRepository {
     private Session confirm(Cursor cursor, String password) {
         String storedHash = cursor.getString(cursor.getColumnIndexOrThrow("password_hash"));
         if (!new PasswordHasher().verify(password, storedHash)) return null;
-        return new Session(cursor.getString(cursor.getColumnIndexOrThrow("id")), cursor.getString(cursor.getColumnIndexOrThrow("occupation_id")));
-    }
-
-    @Override
-    public boolean isRegistered(String email) {
-        return contains("email", email);
-    }
-
-    @Override
-    public boolean isTaken(String username) {
-        return contains("username", username);
-    }
-
-    private boolean contains(String column, String value) {
-        SQLiteDatabase database = this.database.getReadableDatabase();
-        Cursor cursor = database.rawQuery(
-                "SELECT 1 FROM user WHERE " + column + " = ? LIMIT 1",
-                new String[]{value});
-        boolean found = cursor.moveToFirst();
-        cursor.close();
-        return found;
+        return new Session(
+                cursor.getString(cursor.getColumnIndexOrThrow("id")),
+                cursor.getString(cursor.getColumnIndexOrThrow("occupation_id")));
     }
 
     @Override

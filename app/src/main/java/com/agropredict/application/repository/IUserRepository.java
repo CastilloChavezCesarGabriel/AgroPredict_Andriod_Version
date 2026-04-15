@@ -7,7 +7,5 @@ import com.agropredict.domain.Session;
 public interface IUserRepository {
     Session authenticate(String email, String password);
     void register(RegistrationRequest request, IPasswordHasher hasher);
-    boolean isRegistered(String email);
-    boolean isTaken(String username);
     boolean reset(String email, String newPasswordHash);
 }

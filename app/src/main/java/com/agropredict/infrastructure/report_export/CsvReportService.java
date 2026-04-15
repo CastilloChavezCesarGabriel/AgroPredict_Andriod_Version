@@ -15,7 +15,7 @@ public final class CsvReportService extends ReportService {
     }
 
     @Override
-    protected File finalize(IReportWriter writer, String timestamp) throws IOException {
+    protected File complete(IReportWriter writer, String timestamp) throws IOException {
         CsvReport report = (CsvReport) writer;
         report.write("date", timestamp);
         File file = new File(outputDirectory, "report_" + timestamp + ".csv");

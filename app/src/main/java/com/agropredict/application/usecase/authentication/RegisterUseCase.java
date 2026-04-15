@@ -17,7 +17,7 @@ public final class RegisterUseCase {
 
     public RegistrationResult register(RegistrationRequest request) {
         try {
-            request.validate(userRepository);
+            request.validate();
             userRepository.register(request, passwordHasher);
             return RegistrationResult.succeed();
         } catch (RegistrationException exception) {

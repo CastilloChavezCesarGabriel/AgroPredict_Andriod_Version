@@ -15,12 +15,8 @@ public final class ResetPasswordUseCase {
     }
 
     public OperationResult reset(String email, String newPassword) {
-        if (!isEligible(email, newPassword)) return OperationResult.fail();
+        if (!new PasswordValidator().isValid(newPassword)) return OperationResult.fail();
         boolean updated = userRepository.reset(email, passwordHasher.hash(newPassword));
         return updated ? OperationResult.succeed("Password updated") : OperationResult.fail();
-    }
-
-    private boolean isEligible(String email, String password) {
-        return userRepository.isRegistered(email) && new PasswordValidator().isValid(password);
     }
 }

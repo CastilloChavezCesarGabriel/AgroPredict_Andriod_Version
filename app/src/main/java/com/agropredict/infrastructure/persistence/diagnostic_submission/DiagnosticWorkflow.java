@@ -6,17 +6,21 @@ import com.agropredict.domain.entity.Diagnostic;
 
 public final class DiagnosticWorkflow implements IDiagnosticWorkflow {
     private final Submission submission;
-    private final SubmissionRecorder submissionRecorder;
+    private final DiagnosticArchive diagnosticArchive;
+    private final AnswerArchive answerArchive;
 
-    public DiagnosticWorkflow(Submission submission, SubmissionRecorder submissionRecorder) {
+    public DiagnosticWorkflow(Submission submission,
+                              DiagnosticArchive diagnosticArchive,
+                              AnswerArchive answerArchive) {
         this.submission = submission;
-        this.submissionRecorder = submissionRecorder;
+        this.diagnosticArchive = diagnosticArchive;
+        this.answerArchive = answerArchive;
     }
 
     @Override
     public void persist(SubmissionRequest request, Diagnostic diagnostic, String identifier) {
         submission.record(request);
-        submissionRecorder.store(diagnostic);
-        submissionRecorder.record(request, identifier);
+        diagnosticArchive.archive(diagnostic);
+        answerArchive.archive(request, identifier);
     }
 }

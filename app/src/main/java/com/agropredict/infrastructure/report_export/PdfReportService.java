@@ -23,7 +23,7 @@ public final class PdfReportService extends ReportService {
     }
 
     @Override
-    protected File finalize(IReportWriter writer, String timestamp) {
+    protected File complete(IReportWriter writer, String timestamp) {
         PdfReport report = (PdfReport) writer;
         String displayDate = new SimpleDateFormat(DISPLAY_FORMAT, Locale.getDefault()).format(new Date());
         report.close(displayDate);

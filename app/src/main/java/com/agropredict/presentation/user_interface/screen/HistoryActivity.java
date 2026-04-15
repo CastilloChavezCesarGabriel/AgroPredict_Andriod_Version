@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import com.agropredict.AgroPredictApplication;
-import com.agropredict.application.facade.DiagnosticHistoryFacade;
 import com.agropredict.application.IRepositoryFactory;
 import com.agropredict.R;
 import com.agropredict.application.usecase.authentication.CheckSessionUseCase;
@@ -39,8 +38,7 @@ public final class HistoryActivity extends BaseActivity implements IHistoryView 
         DeleteUseCase deleteUseCase = new DeleteUseCase(factory.createDiagnosticRepository());
         CheckSessionUseCase sessionUseCase = new CheckSessionUseCase(factory.createSessionRepository());
         cropUseCase = new ListCropUseCase(factory.createCropRepository());
-        DiagnosticHistoryFacade facade = new DiagnosticHistoryFacade(listUseCase, deleteUseCase);
-        viewModel = new HistoryViewModel(facade, this);
+        viewModel = new HistoryViewModel(listUseCase, deleteUseCase, this);
         cropSelection = new CropSelection(findViewById(R.id.spnCropFilter), viewModel::filter);
         sessionUseCase.check((identifier, occupation) -> start(identifier));
     }

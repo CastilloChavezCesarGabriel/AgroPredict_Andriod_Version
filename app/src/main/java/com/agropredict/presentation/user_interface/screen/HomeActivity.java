@@ -53,10 +53,13 @@ public final class HomeActivity extends BaseActivity implements IHomeView {
 
     private void restrict(String identifier, String occupation) {
         Session session = new Session(identifier, occupation);
-        if (!session.isActive()) { 
-            redirect(LoginActivity.class); return; 
+        if (!session.isActive()) {
+            redirect(LoginActivity.class);
+            return;
         }
-        findViewById(R.id.cardReport).setVisibility(session.isAdvanced() ? View.VISIBLE : View.GONE);
+        View reportCard = findViewById(R.id.cardReport);
+        reportCard.setVisibility(View.GONE);
+        session.observe(new ReportCardVisibility(reportCard));
     }
 
     private void guide() {

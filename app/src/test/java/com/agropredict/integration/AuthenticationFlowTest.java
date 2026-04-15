@@ -32,8 +32,6 @@ public final class AuthenticationFlowTest {
                 return new Session("user_" + email.hashCode(), "Farmer");
             }
             @Override public void register(RegistrationRequest request, IPasswordHasher hasher) {}
-            @Override public boolean isRegistered(String email) { return userStore.containsKey(email); }
-            @Override public boolean isTaken(String username) { return false; }
             @Override public boolean reset(String email, String newHash) {
                 if (!userStore.containsKey(email)) return false;
                 userStore.put(email, newHash);

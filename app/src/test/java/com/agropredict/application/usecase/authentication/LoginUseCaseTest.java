@@ -18,8 +18,6 @@ public final class LoginUseCaseTest {
         return new IUserRepository() {
             @Override public Session authenticate(String email, String password) { return returnSession; }
             @Override public void register(RegistrationRequest request, IPasswordHasher hasher) {}
-            @Override public boolean isRegistered(String email) { return false; }
-            @Override public boolean isTaken(String username) { return false; }
             @Override public boolean reset(String email, String hash) { return false; }
         };
     }
@@ -66,8 +64,6 @@ public final class LoginUseCaseTest {
                 return ++callCount <= 3 ? null : new Session("user_1", "Farmer");
             }
             @Override public void register(RegistrationRequest request, IPasswordHasher hasher) {}
-            @Override public boolean isRegistered(String email) { return false; }
-            @Override public boolean isTaken(String username) { return false; }
             @Override public boolean reset(String email, String hash) { return false; }
         };
         LoginUseCase useCase = new LoginUseCase(conditional, fakeSessionRepo());

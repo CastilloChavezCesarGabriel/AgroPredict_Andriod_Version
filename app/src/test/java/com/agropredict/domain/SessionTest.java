@@ -2,6 +2,7 @@ package com.agropredict.domain;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import com.agropredict.visitor.TestOccupationHandler;
 import com.agropredict.visitor.TestSessionVisitor;
 import org.junit.Test;
 
@@ -23,37 +24,55 @@ public final class SessionTest {
 
     @Test
     public void testAdvancedAgronomist() {
-        assertTrue(new Session("user_123", "Agronomist").isAdvanced());
+        TestOccupationHandler handler = new TestOccupationHandler();
+        new Session("user_123", "Agronomist").observe(handler);
+        assertTrue(handler.sawAdvanced());
     }
 
     @Test
     public void testAdvancedSpecialist() {
-        assertTrue(new Session("user_123", "Specialist").isAdvanced());
+        TestOccupationHandler handler = new TestOccupationHandler();
+        new Session("user_123", "Specialist").observe(handler);
+        assertTrue(handler.sawAdvanced());
     }
 
     @Test
     public void testAdvancedResearcher() {
-        assertTrue(new Session("user_123", "Researcher").isAdvanced());
+        TestOccupationHandler handler = new TestOccupationHandler();
+        new Session("user_123", "Researcher").observe(handler);
+        assertTrue(handler.sawAdvanced());
     }
 
     @Test
     public void testNotAdvancedFarmer() {
-        assertFalse(new Session("user_123", "Farmer").isAdvanced());
+        TestOccupationHandler handler = new TestOccupationHandler();
+        new Session("user_123", "Farmer").observe(handler);
+        assertFalse(handler.sawAdvanced());
+        assertTrue(handler.sawBasic());
     }
 
     @Test
     public void testNotAdvancedNull() {
-        assertFalse(new Session("user_123", null).isAdvanced());
+        TestOccupationHandler handler = new TestOccupationHandler();
+        new Session("user_123", null).observe(handler);
+        assertFalse(handler.sawAdvanced());
+        assertTrue(handler.sawBasic());
     }
 
     @Test
     public void testNotAdvancedEmpty() {
-        assertFalse(new Session("user_123", "").isAdvanced());
+        TestOccupationHandler handler = new TestOccupationHandler();
+        new Session("user_123", "").observe(handler);
+        assertFalse(handler.sawAdvanced());
+        assertTrue(handler.sawBasic());
     }
 
     @Test
     public void testNotAdvancedUnknownRole() {
-        assertFalse(new Session("user_123", "Student").isAdvanced());
+        TestOccupationHandler handler = new TestOccupationHandler();
+        new Session("user_123", "Student").observe(handler);
+        assertFalse(handler.sawAdvanced());
+        assertTrue(handler.sawBasic());
     }
 
     @Test

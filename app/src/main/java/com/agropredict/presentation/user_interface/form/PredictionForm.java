@@ -36,9 +36,11 @@ public final class PredictionForm {
         progressIndicator.setVisibility(View.GONE);
     }
 
-    public void classify(String cropName, String confidence) {
+    public void classify(String cropName, double confidence) {
+        String formatted = String.format(java.util.Locale.getDefault(),
+                "%.0f%%", confidence * 100);
         String text = classificationLabel.getContext().getString(
-                R.string.classification_result, cropName, confidence);
+                R.string.classification_result, cropName, formatted);
         classificationLabel.setText(text);
         classificationLabel.setVisibility(View.VISIBLE);
     }

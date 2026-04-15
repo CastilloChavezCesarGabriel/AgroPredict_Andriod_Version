@@ -10,10 +10,10 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import com.agropredict.AgroPredictApplication;
 import com.agropredict.R;
 import com.agropredict.application.IRepositoryFactory;
-import com.agropredict.application.facade.PredictionFacade;
 import com.agropredict.application.request.diagnostic_submission.PhotographInput;
 import com.agropredict.application.request.diagnostic_submission.Classification;
-import com.agropredict.application.service.IImageService;
+import com.agropredict.application.service.IImageClassifier;
+import com.agropredict.application.service.IImageCompressor;
 import com.agropredict.application.usecase.catalog.ListCatalogUseCase;
 import com.agropredict.application.usecase.diagnostic.ClassifyImageUseCase;
 import com.agropredict.application.usecase.diagnostic.SubmitDiagnosticUseCase;
@@ -27,7 +27,7 @@ import com.agropredict.presentation.user_interface.form.PredictionForm;
 public final class PredictionActivity extends BaseActivity implements IPredictionView {
     private PredictionViewModel viewModel;
     private PredictionForm predictionForm;
-    private IImageService imageService;
+    private IImageCompressor imageCompressor;
     private String selectedImagePath;
     private Classification classification;
 
@@ -58,14 +58,14 @@ public final class PredictionActivity extends BaseActivity implements IPredictio
     }
 
     private void initialize(IRepositoryFactory factory) {
-        imageService = factory.createImageService();
-        ClassifyImageUseCase classifyUseCase = new ClassifyImageUseCase(imageService);
+        IImageClassifier classifier = factory.createImageClassifier();
+        imageCompressor = factory.createImageCompressor();
+        ClassifyImageUseCase classifyUseCase = new ClassifyImageUseCase(classifier);
         SubmitDiagnosticUseCase submitUseCase = new SubmitDiagnosticUseCase(
                 factory.createApiService(), factory.createDiagnosticWorkflow());
-        PredictionFacade facade = new PredictionFacade(classifyUseCase, submitUseCase);
         ListCatalogUseCase soilTypes = new ListCatalogUseCase(factory.createSoilTypeCatalog());
         ListCatalogUseCase stages = new ListCatalogUseCase(factory.createStageCatalog());
-        viewModel = new PredictionViewModel(facade, this);
+        viewModel = new PredictionViewModel(classifyUseCase, submitUseCase, this);
         viewModel.populate(soilTypes, stages);
     }
 
@@ -103,7 +103,7 @@ public final class PredictionActivity extends BaseActivity implements IPredictio
 
     private void present(Uri imageUri) {
         if (imageUri == null) return;
-        selectedImagePath = imageService.compress(imageUri.toString());
+        selectedImagePath = imageCompressor.compress(imageUri.toString());
         predictionForm.preview(imageUri);
         viewModel.classify(selectedImagePath);
     }
@@ -116,24 +116,23 @@ public final class PredictionActivity extends BaseActivity implements IPredictio
     }
 
     @Override
-    public void load() {
+    public void onLoading() {
         runOnUiThread(() -> predictionForm.load());
     }
 
     @Override
-    public void idle() {
+    public void onIdle() {
         runOnUiThread(() -> predictionForm.idle());
     }
 
     @Override
-    public void classify(String cropName, String classificationConfidence) {
-        double parsed = Double.parseDouble(classificationConfidence.replace("%", "")) / 100;
-        this.classification = new Classification(cropName, parsed);
-        runOnUiThread(() -> predictionForm.classify(cropName, classificationConfidence));
+    public void onClassified(String cropName, double confidence) {
+        this.classification = new Classification(cropName, confidence);
+        runOnUiThread(() -> predictionForm.classify(cropName, confidence));
     }
 
     @Override
-    public void reveal(String diagnosticIdentifier) {
+    public void onDiagnosed(String diagnosticIdentifier) {
         runOnUiThread(() -> inspect(diagnosticIdentifier));
     }
 

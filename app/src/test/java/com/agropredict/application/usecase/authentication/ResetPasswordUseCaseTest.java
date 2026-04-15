@@ -17,9 +17,7 @@ public final class ResetPasswordUseCaseTest {
         return new IUserRepository() {
             @Override public Session authenticate(String email, String password) { return null; }
             @Override public void register(RegistrationRequest request, IPasswordHasher hasher) {}
-            @Override public boolean isRegistered(String email) { return registered; }
-            @Override public boolean isTaken(String username) { return false; }
-            @Override public boolean reset(String email, String hash) { return resetSuccess; }
+            @Override public boolean reset(String email, String hash) { return registered && resetSuccess; }
         };
     }
 

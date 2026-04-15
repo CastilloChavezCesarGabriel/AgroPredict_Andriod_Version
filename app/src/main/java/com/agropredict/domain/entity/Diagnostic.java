@@ -1,6 +1,7 @@
 package com.agropredict.domain.entity;
 
 import com.agropredict.domain.component.diagnostic.Assessment;
+import com.agropredict.domain.component.diagnostic.ISeverityHandler;
 import com.agropredict.domain.component.diagnostic.Prediction;
 import com.agropredict.domain.visitor.diagnostic.IDiagnosticVisitor;
 
@@ -26,12 +27,9 @@ public final class Diagnostic {
         return prediction.isConfident();
     }
 
-    public boolean isSevere() {
-        return assessment != null && assessment.isSevere();
-    }
-
-    public String classify() {
-        return assessment != null ? assessment.classify() : "Pending";
+    public void inspect(ISeverityHandler handler) {
+        if (assessment == null) handler.onPending();
+        else assessment.inspect(handler);
     }
 
     public void accept(IDiagnosticVisitor visitor) {

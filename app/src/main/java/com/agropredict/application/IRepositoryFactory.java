@@ -11,7 +11,8 @@ import com.agropredict.application.service.IAssetService;
 import com.agropredict.application.service.IAuditLogger;
 import com.agropredict.application.service.IPasswordHasher;
 import com.agropredict.application.service.IDiagnosticApiService;
-import com.agropredict.application.service.IImageService;
+import com.agropredict.application.service.IImageClassifier;
+import com.agropredict.application.service.IImageCompressor;
 import com.agropredict.application.service.IReportService;
 
 public interface IRepositoryFactory {
@@ -23,7 +24,8 @@ public interface IRepositoryFactory {
     ICatalogRepository createStageCatalog();
     ICatalogRepository createOccupationCatalog();
     ISessionRepository createSessionRepository();
-    IImageService createImageService();
+    IImageClassifier createImageClassifier();
+    IImageCompressor createImageCompressor();
     IDiagnosticApiService createApiService();
     IReportService createReportService(String format);
     IDiagnosticWorkflow createDiagnosticWorkflow();

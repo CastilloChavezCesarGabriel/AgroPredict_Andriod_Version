@@ -1,16 +1,16 @@
 package com.agropredict.application.usecase.diagnostic;
 
+import com.agropredict.application.service.IImageClassifier;
 import com.agropredict.application.visitor.IClassificationResultVisitor;
-import com.agropredict.application.service.IImageService;
 
 public final class ClassifyImageUseCase {
-    private final IImageService imageService;
+    private final IImageClassifier classifier;
 
-    public ClassifyImageUseCase(IImageService imageService) {
-        this.imageService = imageService;
+    public ClassifyImageUseCase(IImageClassifier classifier) {
+        this.classifier = classifier;
     }
 
     public void classify(String imagePath, IClassificationResultVisitor consumer) {
-        imageService.classify(imagePath, consumer);
+        classifier.classify(imagePath, consumer);
     }
 }

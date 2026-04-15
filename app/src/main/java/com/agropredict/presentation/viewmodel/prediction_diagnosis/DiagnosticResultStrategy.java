@@ -12,7 +12,7 @@ public final class DiagnosticResultStrategy implements IOperationResultVisitor {
     @Override
     public void visit(boolean completed, String resultIdentifier) {
         if (completed) {
-            view.reveal(resultIdentifier);
+            view.onDiagnosed(resultIdentifier);
         } else {
             view.notify("Error generating the diagnosis");
         }

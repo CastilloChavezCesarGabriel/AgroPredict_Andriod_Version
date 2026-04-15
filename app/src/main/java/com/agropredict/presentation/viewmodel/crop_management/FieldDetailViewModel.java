@@ -1,10 +1,10 @@
 package com.agropredict.presentation.viewmodel.crop_management;
 
 import com.agropredict.application.usecase.diagnostic.FindDiagnosticUseCase;
+import com.agropredict.domain.component.diagnostic.ISeverityHandler;
 import com.agropredict.domain.entity.Diagnostic;
 
-public final class FieldDetailViewModel {
-
+public final class FieldDetailViewModel implements ISeverityHandler {
     private final FindDiagnosticUseCase loadDetailUseCase;
     private final IFieldDetailView view;
 
@@ -17,9 +17,12 @@ public final class FieldDetailViewModel {
         Diagnostic diagnostic = loadDetailUseCase.find(diagnosticIdentifier);
         if (diagnostic != null) {
             view.display(diagnostic);
-            if (diagnostic.isSevere()) {
-                view.warn();
-            }
+            diagnostic.inspect(this);
         }
+    }
+
+    @Override
+    public void onSevere() {
+        view.warn();
     }
 }

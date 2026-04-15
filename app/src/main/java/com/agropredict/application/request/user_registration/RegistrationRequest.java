@@ -1,7 +1,6 @@
 package com.agropredict.application.request.user_registration;
 
 import com.agropredict.application.repository.ICatalogRepository;
-import com.agropredict.application.repository.IUserRepository;
 import com.agropredict.application.service.IPasswordHasher;
 import com.agropredict.domain.Identifier;
 import com.agropredict.domain.visitor.user.IUserVisitor;
@@ -15,9 +14,9 @@ public final class RegistrationRequest {
         this.account = account;
     }
 
-    public void validate(IUserRepository repository) {
+    public void validate() {
         personal.validate();
-        account.validate(repository);
+        account.validate();
     }
 
     public void authenticate(IUserVisitor visitor, IPasswordHasher hasher) {

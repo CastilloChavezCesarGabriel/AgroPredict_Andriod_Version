@@ -10,6 +10,7 @@ import com.agropredict.domain.input_validation.PasswordValidator;
 import com.agropredict.domain.input_validation.PhoneNumberValidator;
 import com.agropredict.domain.input_validation.UsernameValidator;
 import com.agropredict.visitor.TestClassificationResultVisitor;
+import com.agropredict.visitor.TestOccupationHandler;
 import com.agropredict.application.operation_result.ClassificationResult;
 import com.agropredict.infrastructure.security.PasswordHasher;
 
@@ -59,7 +60,9 @@ public final class RegressionTest {
 
     @Test
     public void testBugSessionNullOccupationNotAdvanced() {
-        assertFalse(new Session("user_1", null).isAdvanced());
+        TestOccupationHandler handler = new TestOccupationHandler();
+        new Session("user_1", null).observe(handler);
+        assertFalse(handler.sawAdvanced());
     }
 
     @Test

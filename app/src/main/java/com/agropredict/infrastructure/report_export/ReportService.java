@@ -26,7 +26,7 @@ public abstract class ReportService implements IReportService {
             String timestamp = stamp();
             IReportWriter writer = prepare(timestamp);
             new DiagnosticTraversal(writer).traverse(diagnostic);
-            File file = finalize(writer, timestamp);
+            File file = complete(writer, timestamp);
             return OperationResult.succeed(file.getAbsolutePath());
         } catch (IOException exception) {
             return OperationResult.fail();
@@ -35,7 +35,7 @@ public abstract class ReportService implements IReportService {
 
     protected abstract IReportWriter prepare(String timestamp) throws IOException;
 
-    protected abstract File finalize(IReportWriter writer, String timestamp) throws IOException;
+    protected abstract File complete(IReportWriter writer, String timestamp) throws IOException;
 
     protected String stamp() {
         return new SimpleDateFormat(FILE_FORMAT, Locale.getDefault()).format(new Date());

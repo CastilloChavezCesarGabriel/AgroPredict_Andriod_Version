@@ -11,6 +11,7 @@ import com.agropredict.domain.input_validation.FullNameValidator;
 import com.agropredict.domain.input_validation.PasswordValidator;
 import com.agropredict.domain.input_validation.UsernameValidator;
 import com.agropredict.infrastructure.security.PasswordHasher;
+import com.agropredict.visitor.TestOccupationHandler;
 import org.junit.Test;
 
 public final class SecurityTest {
@@ -204,26 +205,30 @@ public final class SecurityTest {
 
     @Test
     public void testNullOccupationDoesNotGrantAdvancedAccess() {
-        Session session = new Session("user_1", null);
-        assertFalse(session.isAdvanced());
+        TestOccupationHandler handler = new TestOccupationHandler();
+        new Session("user_1", null).observe(handler);
+        assertFalse(handler.sawAdvanced());
     }
 
     @Test
     public void testEmptyOccupationDoesNotGrantAdvancedAccess() {
-        Session session = new Session("user_1", "");
-        assertFalse(session.isAdvanced());
+        TestOccupationHandler handler = new TestOccupationHandler();
+        new Session("user_1", "").observe(handler);
+        assertFalse(handler.sawAdvanced());
     }
 
     @Test
     public void testUnknownOccupationDoesNotGrantAdvancedAccess() {
-        Session session = new Session("user_1", "Hacker");
-        assertFalse(session.isAdvanced());
+        TestOccupationHandler handler = new TestOccupationHandler();
+        new Session("user_1", "Hacker").observe(handler);
+        assertFalse(handler.sawAdvanced());
     }
 
     @Test
     public void testCaseSensitiveRoleCheck() {
-        Session session = new Session("user_1", "agronomist");
-        assertFalse(session.isAdvanced());
+        TestOccupationHandler handler = new TestOccupationHandler();
+        new Session("user_1", "agronomist").observe(handler);
+        assertFalse(handler.sawAdvanced());
     }
 
     @Test
