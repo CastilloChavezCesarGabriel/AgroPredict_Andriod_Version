@@ -8,15 +8,15 @@ public final class Session {
 
     public Session(String userIdentifier, String occupation) {
         this.userIdentifier = userIdentifier;
-        this.occupation = Occupation.of(occupation);
+        this.occupation = Occupation.classify(occupation);
     }
 
     public void accept(ISessionVisitor visitor) {
         occupation.accept(visitor, userIdentifier);
     }
 
-    public void observe(IOccupationHandler handler) {
-        if (isActive()) occupation.accept(handler);
+    public void observe(IOccupationVisitor visitor) {
+        if (isActive()) occupation.accept(visitor);
     }
 
     public boolean isActive() {

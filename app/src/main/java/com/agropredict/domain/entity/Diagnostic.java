@@ -1,8 +1,9 @@
 package com.agropredict.domain.entity;
 
 import com.agropredict.domain.component.diagnostic.Assessment;
-import com.agropredict.domain.component.diagnostic.ISeverityHandler;
+import com.agropredict.domain.component.diagnostic.ISeverityVisitor;
 import com.agropredict.domain.component.diagnostic.Prediction;
+import com.agropredict.domain.visitor.diagnostic.IDiagnosticPairVisitor;
 import com.agropredict.domain.visitor.diagnostic.IDiagnosticVisitor;
 
 public final class Diagnostic {
@@ -15,26 +16,26 @@ public final class Diagnostic {
         this.prediction = prediction;
     }
 
-    public void conclude(String severity, String summary) {
-        this.assessment = new Assessment(severity, summary);
-    }
-
-    public void recommend(String recommendation) {
-        if (assessment != null) assessment.conclude(recommendation);
+    public void conclude(String severity, String summary, String recommendation) {
+        this.assessment = new Assessment(severity, summary, recommendation);
     }
 
     public boolean isConfident() {
         return prediction.isConfident();
     }
 
-    public void inspect(ISeverityHandler handler) {
-        if (assessment == null) handler.onPending();
-        else assessment.inspect(handler);
+    public void inspect(ISeverityVisitor visitor) {
+        if (assessment == null) visitor.visit("Pending", 0);
+        else assessment.inspect(visitor);
     }
 
     public void accept(IDiagnosticVisitor visitor) {
         visitor.visitIdentity(identifier);
         prediction.accept(visitor);
         if (assessment != null) assessment.accept(visitor);
+    }
+
+    public void pair(String otherIdentifier, IDiagnosticPairVisitor visitor) {
+        visitor.match(identifier, otherIdentifier);
     }
 }

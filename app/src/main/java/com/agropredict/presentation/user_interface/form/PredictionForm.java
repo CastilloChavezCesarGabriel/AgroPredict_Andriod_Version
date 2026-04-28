@@ -32,7 +32,7 @@ public final class PredictionForm {
         progressIndicator.setVisibility(View.VISIBLE);
     }
 
-    public void idle() {
+    public void rest() {
         progressIndicator.setVisibility(View.GONE);
     }
 

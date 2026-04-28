@@ -6,9 +6,9 @@ import static org.junit.Assert.assertTrue;
 
 import com.agropredict.application.repository.ICropRepository;
 import com.agropredict.application.request.CropUpdateRequest;
-import com.agropredict.application.operation_result.HistoryRecord;
-import com.agropredict.application.operation_result.HistoryTransition;
-import com.agropredict.application.operation_result.Modification;
+import com.agropredict.domain.history.HistoryRecord;
+import com.agropredict.domain.history.HistoryTransition;
+import com.agropredict.domain.history.Modification;
 import com.agropredict.domain.entity.Crop;
 
 import org.junit.Test;

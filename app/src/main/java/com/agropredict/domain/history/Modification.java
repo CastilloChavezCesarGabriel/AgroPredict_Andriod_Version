@@ -1,4 +1,4 @@
-package com.agropredict.application.operation_result;
+package com.agropredict.domain.history;
 
 public final class Modification {
     private final String field;
@@ -13,7 +13,7 @@ public final class Modification {
         builder.append(field);
     }
 
-    public void date(StringBuilder builder) {
+    public void stamp(StringBuilder builder) {
         builder.append(timestamp);
     }
 }

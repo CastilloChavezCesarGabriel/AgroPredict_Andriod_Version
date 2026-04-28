@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.widget.ListView;
 import androidx.core.content.ContextCompat;
 import com.agropredict.R;
-import com.agropredict.domain.component.diagnostic.ISeverityHandler;
+import com.agropredict.domain.component.diagnostic.ISeverityVisitor;
 import com.agropredict.domain.entity.Diagnostic;
 import com.agropredict.domain.visitor.diagnostic.IDiagnosticVisitor;
 import com.agropredict.presentation.user_interface.selector.ISelectionListener;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public final class DiagnosticHistory implements IDiagnosticVisitor, ISeverityHandler {
+public final class DiagnosticHistory implements IDiagnosticVisitor, ISeverityVisitor {
     private final ListView listView;
     private final EntryAdapter entryAdapter;
     private final List<String> identifiers;
@@ -60,11 +60,6 @@ public final class DiagnosticHistory implements IDiagnosticVisitor, ISeverityHan
         entryAdapter.populate(entries);
     }
 
-    public void empty() {
-        identifiers.clear();
-        entryAdapter.populate(new ArrayList<>());
-    }
-
     @Override
     public void visitIdentity(String identifier) {
         identifiers.add(identifier);
@@ -76,34 +71,8 @@ public final class DiagnosticHistory implements IDiagnosticVisitor, ISeverityHan
     }
 
     @Override
-    public void visitAssessment(String severity, String shortSummary) {}
-
-    @Override
-    public void visitRecommendation(String recommendationText) {}
-
-    @Override
-    public void onPending() {
-        current.tag("Pending", severityColors[0]);
-    }
-
-    @Override
-    public void onHealthy() {
-        current.tag("Healthy", severityColors[0]);
-    }
-
-    @Override
-    public void onModerate() {
-        current.tag("Moderate issue", severityColors[1]);
-    }
-
-    @Override
-    public void onSevere() {
-        current.tag("Severe issue", severityColors[2]);
-    }
-
-    @Override
-    public void onUnknown() {
-        current.tag("Analysis complete", severityColors[0]);
+    public void visit(String name, int urgency) {
+        current.tag(name, severityColors[urgency]);
     }
 
     private static final class EntryBuilder {

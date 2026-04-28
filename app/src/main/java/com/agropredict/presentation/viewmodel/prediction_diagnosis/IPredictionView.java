@@ -9,6 +9,7 @@ public interface IPredictionView {
     void onIdle();
     void onClassified(String cropName, double confidence);
     void onDiagnosed(String diagnosticIdentifier);
+    void onFailed();
     void populate(SoilTypeCatalog soilTypeOption);
     void populate(StageCatalog stageOption);
 }

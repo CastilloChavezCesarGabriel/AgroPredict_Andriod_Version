@@ -4,14 +4,14 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
-import com.agropredict.AgroPredictApplication;
 import com.agropredict.R;
-import com.agropredict.application.operation_result.HistoryRecord;
+import com.agropredict.application.factory.IReviewFactory;
 import com.agropredict.application.usecase.DeleteUseCase;
 import com.agropredict.application.usecase.crop.TraceCropHistoryUseCase;
 import com.agropredict.application.usecase.diagnostic.FindDiagnosticUseCase;
 import com.agropredict.application.visitor.IOperationResultVisitor;
 import com.agropredict.domain.entity.Diagnostic;
+import com.agropredict.domain.history.HistoryRecord;
 import com.agropredict.presentation.user_interface.display.FieldDetail;
 import com.agropredict.presentation.viewmodel.crop_management.FieldDetailViewModel;
 import com.agropredict.presentation.viewmodel.crop_management.IFieldDetailView;
@@ -28,17 +28,32 @@ public final class FieldDetailActivity extends BaseActivity implements IFieldDet
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_field_detail);
-        cropIdentifier = getIntent().getStringExtra("diagnostic_identifier");
-        ((AgroPredictApplication) getApplication()).provide(factory -> {
-            fieldDetail = new FieldDetail(this);
-            FindDiagnosticUseCase findUseCase = new FindDiagnosticUseCase(factory.createDiagnosticRepository());
-            deleteUseCase = new DeleteUseCase(factory.createCropRepository());
-            traceUseCase = new TraceCropHistoryUseCase(factory.createCropRepository());
-            viewModel = new FieldDetailViewModel(findUseCase, this);
-        });
+        bind();
+        initialize();
+        listen();
+        load();
+    }
+
+    private void bind() {
+        cropIdentifier = IntentExtra.DIAGNOSTIC_IDENTIFIER.read(getIntent());
+        fieldDetail = new FieldDetail(this);
+    }
+
+    private void initialize() {
+        IReviewFactory factory = (IReviewFactory) getApplication();
+        FindDiagnosticUseCase findUseCase = new FindDiagnosticUseCase(factory.createDiagnosticRepository());
+        deleteUseCase = new DeleteUseCase(factory.createCropRepository());
+        traceUseCase = new TraceCropHistoryUseCase(factory.createCropRepository());
+        viewModel = new FieldDetailViewModel(findUseCase, this);
+    }
+
+    private void listen() {
         findViewById(R.id.btnViewHistory).setOnClickListener(view -> trace());
         findViewById(R.id.btnEditField).setOnClickListener(view -> navigate(cropIdentifier));
         findViewById(R.id.btnDeleteField).setOnClickListener(view -> confirm());
+    }
+
+    private void load() {
         if (cropIdentifier != null) viewModel.load(cropIdentifier);
     }
 
@@ -99,7 +114,7 @@ public final class FieldDetailActivity extends BaseActivity implements IFieldDet
     @Override
     public void navigate(String cropIdentifier) {
         Intent intent = new Intent(this, EditFieldActivity.class);
-        intent.putExtra("crop_identifier", cropIdentifier);
+        IntentExtra.CROP_IDENTIFIER.attach(intent, cropIdentifier);
         startActivity(intent);
     }
 }

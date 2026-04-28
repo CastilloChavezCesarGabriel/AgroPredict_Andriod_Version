@@ -7,22 +7,21 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import com.agropredict.AgroPredictApplication;
 import com.agropredict.R;
-import com.agropredict.application.IRepositoryFactory;
-import com.agropredict.application.request.diagnostic_submission.PhotographInput;
+import com.agropredict.application.factory.IPredictionFactory;
 import com.agropredict.application.request.diagnostic_submission.Classification;
+import com.agropredict.application.request.diagnostic_submission.PhotographInput;
 import com.agropredict.application.service.IImageClassifier;
 import com.agropredict.application.service.IImageCompressor;
 import com.agropredict.application.usecase.catalog.ListCatalogUseCase;
 import com.agropredict.application.usecase.diagnostic.ClassifyImageUseCase;
 import com.agropredict.application.usecase.diagnostic.SubmitDiagnosticUseCase;
-import com.agropredict.presentation.user_interface.selector.DateSelection;
 import com.agropredict.presentation.user_interface.catalog_input.SoilTypeCatalog;
 import com.agropredict.presentation.user_interface.catalog_input.StageCatalog;
+import com.agropredict.presentation.user_interface.form.PredictionForm;
+import com.agropredict.presentation.user_interface.selector.DateSelection;
 import com.agropredict.presentation.viewmodel.prediction_diagnosis.IPredictionView;
 import com.agropredict.presentation.viewmodel.prediction_diagnosis.PredictionViewModel;
-import com.agropredict.presentation.user_interface.form.PredictionForm;
 
 public final class PredictionActivity extends BaseActivity implements IPredictionView {
     private PredictionViewModel viewModel;
@@ -52,12 +51,17 @@ public final class PredictionActivity extends BaseActivity implements IPredictio
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_prediction);
-        predictionForm = new PredictionForm(this);
-        ((AgroPredictApplication) getApplication()).provide(this::initialize);
+        bind();
+        initialize();
         listen();
     }
 
-    private void initialize(IRepositoryFactory factory) {
+    private void bind() {
+        predictionForm = new PredictionForm(this);
+    }
+
+    private void initialize() {
+        IPredictionFactory factory = (IPredictionFactory) getApplication();
         IImageClassifier classifier = factory.createImageClassifier();
         imageCompressor = factory.createImageCompressor();
         ClassifyImageUseCase classifyUseCase = new ClassifyImageUseCase(classifier);
@@ -110,7 +114,7 @@ public final class PredictionActivity extends BaseActivity implements IPredictio
 
     private void inspect(String diagnosticIdentifier) {
         Intent intent = new Intent(this, PredictionResultActivity.class);
-        intent.putExtra("diagnostic_identifier", diagnosticIdentifier);
+        IntentExtra.DIAGNOSTIC_IDENTIFIER.attach(intent, diagnosticIdentifier);
         startActivity(intent);
         finish();
     }
@@ -122,7 +126,7 @@ public final class PredictionActivity extends BaseActivity implements IPredictio
 
     @Override
     public void onIdle() {
-        runOnUiThread(() -> predictionForm.idle());
+        runOnUiThread(() -> predictionForm.rest());
     }
 
     @Override
@@ -134,6 +138,11 @@ public final class PredictionActivity extends BaseActivity implements IPredictio
     @Override
     public void onDiagnosed(String diagnosticIdentifier) {
         runOnUiThread(() -> inspect(diagnosticIdentifier));
+    }
+
+    @Override
+    public void onFailed() {
+        runOnUiThread(() -> notify(getString(R.string.diagnosis_failure)));
     }
 
     @Override

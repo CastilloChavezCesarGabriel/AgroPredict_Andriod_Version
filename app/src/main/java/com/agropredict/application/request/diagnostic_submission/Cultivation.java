@@ -1,6 +1,8 @@
 package com.agropredict.application.request.diagnostic_submission;
 
 import com.agropredict.domain.Identifier;
+import com.agropredict.domain.component.crop.CropProfile;
+import com.agropredict.domain.component.crop.GrowthCycle;
 import com.agropredict.domain.entity.Crop;
 
 public final class Cultivation {
@@ -13,8 +15,8 @@ public final class Cultivation {
     }
 
     public Crop cultivate() {
-        Crop crop = new Crop(Identifier.generate("crop"), predictedCrop);
-        if (stage != null) crop.schedule(null, stage);
-        return crop;
+        GrowthCycle growth = stage != null ? new GrowthCycle(null, stage) : null;
+        CropProfile profile = new CropProfile(null, null, growth);
+        return new Crop(Identifier.generate("crop"), predictedCrop, profile);
     }
 }

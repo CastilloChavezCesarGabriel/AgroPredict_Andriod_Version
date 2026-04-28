@@ -2,7 +2,7 @@ package com.agropredict.domain;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import com.agropredict.visitor.TestOccupationHandler;
+import com.agropredict.visitor.TestOccupationVisitor;
 import com.agropredict.visitor.TestSessionVisitor;
 import org.junit.Test;
 
@@ -24,28 +24,28 @@ public final class SessionTest {
 
     @Test
     public void testAdvancedAgronomist() {
-        TestOccupationHandler handler = new TestOccupationHandler();
+        TestOccupationVisitor handler = new TestOccupationVisitor();
         new Session("user_123", "Agronomist").observe(handler);
         assertTrue(handler.sawAdvanced());
     }
 
     @Test
     public void testAdvancedSpecialist() {
-        TestOccupationHandler handler = new TestOccupationHandler();
+        TestOccupationVisitor handler = new TestOccupationVisitor();
         new Session("user_123", "Specialist").observe(handler);
         assertTrue(handler.sawAdvanced());
     }
 
     @Test
     public void testAdvancedResearcher() {
-        TestOccupationHandler handler = new TestOccupationHandler();
+        TestOccupationVisitor handler = new TestOccupationVisitor();
         new Session("user_123", "Researcher").observe(handler);
         assertTrue(handler.sawAdvanced());
     }
 
     @Test
     public void testNotAdvancedFarmer() {
-        TestOccupationHandler handler = new TestOccupationHandler();
+        TestOccupationVisitor handler = new TestOccupationVisitor();
         new Session("user_123", "Farmer").observe(handler);
         assertFalse(handler.sawAdvanced());
         assertTrue(handler.sawBasic());
@@ -53,7 +53,7 @@ public final class SessionTest {
 
     @Test
     public void testNotAdvancedNull() {
-        TestOccupationHandler handler = new TestOccupationHandler();
+        TestOccupationVisitor handler = new TestOccupationVisitor();
         new Session("user_123", null).observe(handler);
         assertFalse(handler.sawAdvanced());
         assertTrue(handler.sawBasic());
@@ -61,7 +61,7 @@ public final class SessionTest {
 
     @Test
     public void testNotAdvancedEmpty() {
-        TestOccupationHandler handler = new TestOccupationHandler();
+        TestOccupationVisitor handler = new TestOccupationVisitor();
         new Session("user_123", "").observe(handler);
         assertFalse(handler.sawAdvanced());
         assertTrue(handler.sawBasic());
@@ -69,7 +69,7 @@ public final class SessionTest {
 
     @Test
     public void testNotAdvancedUnknownRole() {
-        TestOccupationHandler handler = new TestOccupationHandler();
+        TestOccupationVisitor handler = new TestOccupationVisitor();
         new Session("user_123", "Student").observe(handler);
         assertFalse(handler.sawAdvanced());
         assertTrue(handler.sawBasic());

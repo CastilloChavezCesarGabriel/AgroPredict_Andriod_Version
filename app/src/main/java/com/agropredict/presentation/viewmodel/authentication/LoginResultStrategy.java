@@ -13,8 +13,10 @@ public final class LoginResultStrategy implements IOperationResultVisitor {
     public void visit(boolean completed, String resultIdentifier) {
         if (completed) {
             view.proceed();
+        } else if (resultIdentifier != null) {
+            view.notify(resultIdentifier);
         } else {
-            view.notify(resultIdentifier != null ? resultIdentifier : "Incorrect credentials");
+            view.reject();
         }
     }
 }

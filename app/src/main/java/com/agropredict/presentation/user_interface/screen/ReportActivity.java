@@ -5,17 +5,16 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Button;
 import androidx.core.content.FileProvider;
-import com.agropredict.AgroPredictApplication;
 import com.agropredict.R;
-import com.agropredict.application.IRepositoryFactory;
+import com.agropredict.application.factory.IReportingFactory;
 import com.agropredict.application.usecase.authentication.CheckSessionUseCase;
 import com.agropredict.application.usecase.crop.ListCropUseCase;
 import com.agropredict.domain.entity.Crop;
-import com.agropredict.presentation.user_interface.selector.DateSelection;
+import com.agropredict.presentation.user_interface.form.ReportForm;
 import com.agropredict.presentation.user_interface.navigation.PdfLauncher;
+import com.agropredict.presentation.user_interface.selector.DateSelection;
 import com.agropredict.presentation.viewmodel.report_generation.IReportView;
 import com.agropredict.presentation.viewmodel.report_generation.ReportViewModel;
-import com.agropredict.presentation.user_interface.form.ReportForm;
 import java.io.File;
 import java.util.List;
 
@@ -29,13 +28,17 @@ public final class ReportActivity extends BaseActivity implements IReportView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report);
-        reportForm = new ReportForm(this);
-        reportForm.listen(view -> share());
-        ((AgroPredictApplication) getApplication()).provide(this::initialize);
+        bind();
+        initialize();
         listen();
     }
 
-    private void initialize(IRepositoryFactory factory) {
+    private void bind() {
+        reportForm = new ReportForm(this);
+    }
+
+    private void initialize() {
+        IReportingFactory factory = (IReportingFactory) getApplication();
         listCrops = new ListCropUseCase(factory.createCropRepository());
         CheckSessionUseCase sessionUseCase = new CheckSessionUseCase(factory.createSessionRepository());
         viewModel = new ReportViewModel(factory, this);
@@ -43,6 +46,7 @@ public final class ReportActivity extends BaseActivity implements IReportView {
     }
 
     private void listen() {
+        reportForm.listen(view -> share());
         Button startDateButton = findViewById(R.id.btnStartDate);
         Button endDateButton = findViewById(R.id.btnEndDate);
         DateSelection startPicker = new DateSelection(startDateButton::setText);
@@ -78,8 +82,8 @@ public final class ReportActivity extends BaseActivity implements IReportView {
     }
 
     @Override
-    public void idle() {
-        runOnUiThread(() -> reportForm.idle());
+    public void rest() {
+        runOnUiThread(() -> reportForm.rest());
     }
 
     @Override

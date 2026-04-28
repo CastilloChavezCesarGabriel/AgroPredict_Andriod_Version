@@ -6,7 +6,8 @@ import static org.junit.Assert.assertTrue;
 
 import com.agropredict.application.repository.ICropRepository;
 import com.agropredict.application.request.CropUpdateRequest;
-import com.agropredict.application.operation_result.HistoryRecord;
+import com.agropredict.domain.history.HistoryRecord;
+import com.agropredict.domain.component.crop.CropProfile;
 import com.agropredict.domain.entity.Crop;
 
 import org.junit.Test;
@@ -29,8 +30,8 @@ public final class ListCropUseCaseTest {
     @Test
     public void testListReturnsAllCrops() {
         List<Crop> crops = List.of(
-            new Crop("crop_1", "wheat"),
-            new Crop("crop_2", "corn")
+            new Crop("crop_1", "wheat", new CropProfile(null, null, null)),
+            new Crop("crop_2", "corn", new CropProfile(null, null, null))
         );
         List<Crop> result = new ListCropUseCase(stubCrop(crops)).list("user_1");
         assertEquals(2, result.size());

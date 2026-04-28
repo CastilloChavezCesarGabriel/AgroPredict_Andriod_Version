@@ -1,6 +1,6 @@
 package com.agropredict.domain.entity;
 
-import com.agropredict.domain.visitor.crop.IPhotographVisitor;
+import com.agropredict.domain.visitor.photograph.IPhotographVisitor;
 
 public final class Photograph {
     private final String identifier;
@@ -12,6 +12,6 @@ public final class Photograph {
     }
 
     public void accept(IPhotographVisitor visitor) {
-        visitor.visitImage(identifier, filePath);
+        visitor.visitPhotograph(identifier, filePath);
     }
 }

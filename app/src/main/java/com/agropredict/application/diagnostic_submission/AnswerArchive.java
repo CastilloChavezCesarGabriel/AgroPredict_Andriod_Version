@@ -1,4 +1,4 @@
-package com.agropredict.infrastructure.persistence.diagnostic_submission;
+package com.agropredict.application.diagnostic_submission;
 
 import com.agropredict.application.repository.IQuestionnaireRepository;
 import com.agropredict.application.request.diagnostic_submission.SubmissionRequest;

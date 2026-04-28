@@ -5,6 +5,10 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import com.agropredict.R;
 import com.agropredict.application.request.CropUpdateRequest;
+import com.agropredict.domain.component.crop.CropProfile;
+import com.agropredict.domain.component.crop.Field;
+import com.agropredict.domain.component.crop.GrowthCycle;
+import com.agropredict.domain.component.crop.Soil;
 import com.agropredict.domain.entity.Crop;
 import com.agropredict.domain.visitor.crop.ICropVisitor;
 import com.agropredict.presentation.user_interface.catalog_input.SoilTypeCatalog;
@@ -24,14 +28,13 @@ public final class FieldEditor implements ICropVisitor {
     }
 
     public CropUpdateRequest collect(String identifier) {
-        String fieldName = cropNameInput.getText().toString().trim();
-        Crop crop = new Crop(identifier, null);
-        crop.locate(fieldName, null);
-        String soilType = soilTypeSpinner.getSelectedItem().toString();
-        crop.plant(soilType, areaInput.getText().toString().trim());
-        String stage = stageSpinner.getSelectedItem().toString();
-        crop.schedule(null, stage);
-        return new CropUpdateRequest(crop);
+        Field field = new Field(cropNameInput.getText().toString().trim(), null);
+        Soil soil = new Soil(
+                soilTypeSpinner.getSelectedItem().toString(),
+                areaInput.getText().toString().trim());
+        GrowthCycle growth = new GrowthCycle(null, stageSpinner.getSelectedItem().toString());
+        CropProfile profile = new CropProfile(field, soil, growth);
+        return new CropUpdateRequest(new Crop(identifier, null, profile));
     }
 
     public void populate(Crop crop) {
@@ -45,9 +48,6 @@ public final class FieldEditor implements ICropVisitor {
     public void populate(StageCatalog stageOption) {
         stageOption.populate(stageSpinner);
     }
-
-    @Override
-    public void visitIdentity(String identifier, String cropType) {}
 
     @Override
     public void visitField(String name, String location) {

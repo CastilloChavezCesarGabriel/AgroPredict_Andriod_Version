@@ -9,55 +9,36 @@ public final class PasswordCriteriaTest {
 
     @Test
     public void testAllCriteriaMet() {
-        PasswordCriteria criteria = new PasswordCriteria();
-        for (char character : "Aa1!".toCharArray()) criteria.update(character);
-        assertTrue(criteria.isValid());
+        assertTrue(new PasswordCriteria().isValid("Aa1!"));
     }
 
     @Test
-    public void testFreshCriteriaInvalid() {
-        PasswordCriteria criteria = new PasswordCriteria();
-        assertFalse(criteria.isValid());
+    public void testEmptyInvalid() {
+        assertFalse(new PasswordCriteria().isValid(""));
     }
 
     @Test
     public void testMissingUppercase() {
-        PasswordCriteria criteria = new PasswordCriteria();
-        for (char character : "a1!".toCharArray()) criteria.update(character);
-        assertFalse(criteria.isValid());
+        assertFalse(new PasswordCriteria().isValid("a1!"));
     }
 
     @Test
     public void testMissingLowercase() {
-        PasswordCriteria criteria = new PasswordCriteria();
-        for (char character : "A1!".toCharArray()) criteria.update(character);
-        assertFalse(criteria.isValid());
+        assertFalse(new PasswordCriteria().isValid("A1!"));
     }
 
     @Test
     public void testMissingDigit() {
-        PasswordCriteria criteria = new PasswordCriteria();
-        for (char character : "Aa!".toCharArray()) criteria.update(character);
-        assertFalse(criteria.isValid());
+        assertFalse(new PasswordCriteria().isValid("Aa!"));
     }
 
     @Test
     public void testMissingSpecial() {
-        PasswordCriteria criteria = new PasswordCriteria();
-        for (char character : "Aa1".toCharArray()) criteria.update(character);
-        assertFalse(criteria.isValid());
+        assertFalse(new PasswordCriteria().isValid("Aa1"));
     }
 
     @Test
-    public void testIncrementalUpdate() {
-        PasswordCriteria criteria = new PasswordCriteria();
-        criteria.update('A');
-        assertFalse(criteria.isValid());
-        criteria.update('a');
-        assertFalse(criteria.isValid());
-        criteria.update('1');
-        assertFalse(criteria.isValid());
-        criteria.update('!');
-        assertTrue(criteria.isValid());
+    public void testOnlyLowercaseInvalid() {
+        assertFalse(new PasswordCriteria().isValid("abc"));
     }
 }

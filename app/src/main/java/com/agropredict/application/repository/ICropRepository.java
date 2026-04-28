@@ -1,7 +1,7 @@
 package com.agropredict.application.repository;
 
 import com.agropredict.application.request.CropUpdateRequest;
-import com.agropredict.application.operation_result.HistoryRecord;
+import com.agropredict.domain.history.HistoryRecord;
 import com.agropredict.domain.entity.Crop;
 import java.util.List;
 

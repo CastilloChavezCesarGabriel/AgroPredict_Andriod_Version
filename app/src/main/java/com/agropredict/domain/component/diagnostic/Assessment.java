@@ -5,23 +5,22 @@ import com.agropredict.domain.visitor.diagnostic.IDiagnosticVisitor;
 public final class Assessment {
     private final Severity severity;
     private final String shortSummary;
-    private String recommendationText;
+    private final String recommendationText;
 
-    public Assessment(String severity, String shortSummary) {
-        this.severity = Severity.of(severity);
+    public Assessment(String severity, String shortSummary, String recommendationText) {
+        this.severity = Severity.classify(severity);
         this.shortSummary = shortSummary;
+        this.recommendationText = recommendationText;
     }
 
-    public void conclude(String recommendation) {
-        this.recommendationText = recommendation;
-    }
-
-    public void inspect(ISeverityHandler handler) {
-        severity.accept(handler);
+    public void inspect(ISeverityVisitor visitor) {
+        severity.accept(visitor);
     }
 
     public void accept(IDiagnosticVisitor visitor) {
         severity.accept(visitor, shortSummary);
-        if (recommendationText != null) visitor.visitRecommendation(recommendationText);
+        if (recommendationText != null) {
+            visitor.visitRecommendation(recommendationText);
+        }
     }
 }

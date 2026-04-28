@@ -1,30 +1,17 @@
 package com.agropredict.domain.input_validation;
 
 public final class PasswordCriteria {
-    private boolean hasUppercase;
-    private boolean hasLowercase;
-    private boolean hasDigit;
-    private boolean hasSpecialCharacter;
-
-    public void update(char character) {
-        if (Character.isUpperCase(character)) {
-            hasUppercase = true;
+    public boolean isValid(String password) {
+        boolean upper = false;
+        boolean lower = false;
+        boolean digit = false;
+        boolean special = false;
+        for (char character : password.toCharArray()) {
+            if (Character.isUpperCase(character)) upper = true;
+            if (Character.isLowerCase(character)) lower = true;
+            if (Character.isDigit(character)) digit = true;
+            if (!Character.isLetterOrDigit(character)) special = true;
         }
-
-        if (Character.isLowerCase(character)) {
-            hasLowercase = true;
-        }
-
-        if (Character.isDigit(character)) {
-            hasDigit = true;
-        }
-
-        if (!Character.isLetterOrDigit(character)) {
-            hasSpecialCharacter = true;
-        }
-    }
-
-    public boolean isValid() {
-        return hasUppercase && hasLowercase && hasDigit && hasSpecialCharacter;
+        return upper && lower && digit && special;
     }
 }

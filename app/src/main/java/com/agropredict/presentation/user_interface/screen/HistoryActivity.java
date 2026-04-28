@@ -3,18 +3,17 @@ package com.agropredict.presentation.user_interface.screen;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import com.agropredict.AgroPredictApplication;
-import com.agropredict.application.IRepositoryFactory;
 import com.agropredict.R;
+import com.agropredict.application.factory.IReviewFactory;
+import com.agropredict.application.usecase.DeleteUseCase;
 import com.agropredict.application.usecase.authentication.CheckSessionUseCase;
 import com.agropredict.application.usecase.crop.ListCropUseCase;
-import com.agropredict.application.usecase.DeleteUseCase;
 import com.agropredict.application.usecase.diagnostic.ListDiagnosticUseCase;
 import com.agropredict.domain.entity.Diagnostic;
+import com.agropredict.presentation.user_interface.display.DiagnosticHistory;
+import com.agropredict.presentation.user_interface.selector.CropSelection;
 import com.agropredict.presentation.viewmodel.diagnostic_history.HistoryViewModel;
 import com.agropredict.presentation.viewmodel.diagnostic_history.IHistoryView;
-import com.agropredict.presentation.user_interface.selector.CropSelection;
-import com.agropredict.presentation.user_interface.display.DiagnosticHistory;
 import java.util.List;
 
 public final class HistoryActivity extends BaseActivity implements IHistoryView {
@@ -27,13 +26,17 @@ public final class HistoryActivity extends BaseActivity implements IHistoryView 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
-        diagnosticHistory = new DiagnosticHistory(this);
-        diagnosticHistory.listen(this::inspect);
-        diagnosticHistory.observe(this::confirm);
-        ((AgroPredictApplication) getApplication()).provide(this::initialize);
+        bind();
+        initialize();
+        listen();
     }
 
-    private void initialize(IRepositoryFactory factory) {
+    private void bind() {
+        diagnosticHistory = new DiagnosticHistory(this);
+    }
+
+    private void initialize() {
+        IReviewFactory factory = (IReviewFactory) getApplication();
         ListDiagnosticUseCase listUseCase = new ListDiagnosticUseCase(factory.createDiagnosticRepository());
         DeleteUseCase deleteUseCase = new DeleteUseCase(factory.createDiagnosticRepository());
         CheckSessionUseCase sessionUseCase = new CheckSessionUseCase(factory.createSessionRepository());
@@ -41,6 +44,11 @@ public final class HistoryActivity extends BaseActivity implements IHistoryView 
         viewModel = new HistoryViewModel(listUseCase, deleteUseCase, this);
         cropSelection = new CropSelection(findViewById(R.id.spnCropFilter), viewModel::filter);
         sessionUseCase.check((identifier, occupation) -> start(identifier));
+    }
+
+    private void listen() {
+        diagnosticHistory.listen(this::inspect);
+        diagnosticHistory.observe(this::confirm);
     }
 
     private void start(String identifier) {
@@ -67,12 +75,7 @@ public final class HistoryActivity extends BaseActivity implements IHistoryView 
     @Override
     public void inspect(String diagnosticIdentifier) {
         Intent intent = new Intent(this, FieldDetailActivity.class);
-        intent.putExtra("diagnostic_identifier", diagnosticIdentifier);
+        IntentExtra.DIAGNOSTIC_IDENTIFIER.attach(intent, diagnosticIdentifier);
         startActivity(intent);
-    }
-
-    @Override
-    public void empty() {
-        diagnosticHistory.empty();
     }
 }

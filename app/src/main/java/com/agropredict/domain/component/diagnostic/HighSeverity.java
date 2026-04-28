@@ -1,12 +1,12 @@
 package com.agropredict.domain.component.diagnostic;
 
 public final class HighSeverity extends Severity {
-    public HighSeverity(String raw) {
-        super(raw);
+    public HighSeverity(String value) {
+        super(value);
     }
 
     @Override
-    public void accept(ISeverityHandler handler) {
-        handler.onSevere();
+    public void accept(ISeverityVisitor visitor) {
+        visitor.visit("Severe issue", 2);
     }
 }

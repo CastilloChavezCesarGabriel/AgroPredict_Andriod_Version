@@ -1,6 +1,6 @@
 package com.agropredict.application.usecase.diagnostic;
 
-import com.agropredict.application.repository.IDiagnosticWorkflow;
+import com.agropredict.application.diagnostic_submission.IDiagnosticWorkflow;
 import com.agropredict.application.request.diagnostic_submission.SubmissionRequest;
 import com.agropredict.application.operation_result.OperationResult;
 import com.agropredict.application.service.IDiagnosticApiService;

@@ -7,5 +7,4 @@ public interface IHistoryView {
     void notify(String message);
     void display(List<Diagnostic> diagnostics);
     void inspect(String diagnosticIdentifier);
-    void empty();
 }

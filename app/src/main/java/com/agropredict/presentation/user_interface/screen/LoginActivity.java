@@ -2,9 +2,8 @@ package com.agropredict.presentation.user_interface.screen;
 
 import android.os.Bundle;
 import android.widget.EditText;
-import com.agropredict.AgroPredictApplication;
 import com.agropredict.R;
-import com.agropredict.application.IRepositoryFactory;
+import com.agropredict.application.factory.IAccessFactory;
 import com.agropredict.application.service.IAuditLogger;
 import com.agropredict.application.usecase.authentication.CheckSessionUseCase;
 import com.agropredict.application.usecase.authentication.LoginUseCase;
@@ -21,19 +20,23 @@ public final class LoginActivity extends BaseActivity implements ILoginView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        emailInput = findViewById(R.id.etEmail);
-        passwordInput = findViewById(R.id.etPassword);
-        ((AgroPredictApplication) getApplication()).provide(this::initialize);
+        bind();
+        initialize();
         listen();
     }
 
-    private void initialize(IRepositoryFactory factory) {
-        LoginUseCase useCase = new LoginUseCase(
+    private void bind() {
+        emailInput = findViewById(R.id.etEmail);
+        passwordInput = findViewById(R.id.etPassword);
+    }
+
+    private void initialize() {
+        IAccessFactory factory = (IAccessFactory) getApplication();
+        LoginUseCase loginUseCase = new LoginUseCase(
                 factory.createUserRepository(), factory.createSessionRepository());
-        viewModel = new LoginViewModel(useCase, this);
+        viewModel = new LoginViewModel(loginUseCase, this);
         auditLogger = factory.createAuditLogger();
-        CheckSessionUseCase session = new CheckSessionUseCase(factory.createSessionRepository());
-        session.check((identifier, occupation) -> {
+        new CheckSessionUseCase(factory.createSessionRepository()).check((identifier, occupation) -> {
             if (identifier != null) redirect(HomeActivity.class);
         });
     }
@@ -58,5 +61,10 @@ public final class LoginActivity extends BaseActivity implements ILoginView {
     public void proceed() {
         auditLogger.log(null, "LOGIN");
         redirect(HomeActivity.class);
+    }
+
+    @Override
+    public void reject() {
+        notify(getString(R.string.login_failure));
     }
 }

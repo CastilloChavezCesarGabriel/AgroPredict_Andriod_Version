@@ -38,8 +38,10 @@ public final class SqliteDiagnosticRepository extends SqliteRepository<Diagnosti
                 cursor.getString(cursor.getColumnIndexOrThrow("id")), prediction);
         String severity = cursor.getString(cursor.getColumnIndexOrThrow("severity"));
         if (severity != null) {
-            diagnostic.conclude(severity, cursor.getString(cursor.getColumnIndexOrThrow("short_summary")));
-            diagnostic.recommend(cursor.getString(cursor.getColumnIndexOrThrow("recommendation_text")));
+            diagnostic.conclude(
+                    severity,
+                    cursor.getString(cursor.getColumnIndexOrThrow("short_summary")),
+                    cursor.getString(cursor.getColumnIndexOrThrow("recommendation_text")));
         }
         return diagnostic;
     }

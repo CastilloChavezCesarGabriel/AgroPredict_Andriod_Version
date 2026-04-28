@@ -15,16 +15,7 @@ public abstract class DiagnosticDisplay implements IDiagnosticVisitor {
     }
 
     @Override
-    public void visitIdentity(String identifier) {}
-
-    @Override
     public void visitPrediction(String predictedCrop, double confidence) {
         predictionDisplay.classify(predictedCrop, confidence);
     }
-
-    @Override
-    public void visitAssessment(String severity, String shortSummary) {}
-
-    @Override
-    public void visitRecommendation(String recommendationText) {}
 }

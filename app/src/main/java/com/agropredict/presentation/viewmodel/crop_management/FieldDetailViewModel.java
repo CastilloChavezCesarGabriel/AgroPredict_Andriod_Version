@@ -1,10 +1,12 @@
 package com.agropredict.presentation.viewmodel.crop_management;
 
 import com.agropredict.application.usecase.diagnostic.FindDiagnosticUseCase;
-import com.agropredict.domain.component.diagnostic.ISeverityHandler;
+import com.agropredict.domain.component.diagnostic.ISeverityVisitor;
 import com.agropredict.domain.entity.Diagnostic;
 
-public final class FieldDetailViewModel implements ISeverityHandler {
+public final class FieldDetailViewModel implements ISeverityVisitor {
+    private static final int SEVERE_URGENCY = 2;
+
     private final FindDiagnosticUseCase loadDetailUseCase;
     private final IFieldDetailView view;
 
@@ -22,7 +24,7 @@ public final class FieldDetailViewModel implements ISeverityHandler {
     }
 
     @Override
-    public void onSevere() {
-        view.warn();
+    public void visit(String name, int urgency) {
+        if (urgency >= SEVERE_URGENCY) view.warn();
     }
 }

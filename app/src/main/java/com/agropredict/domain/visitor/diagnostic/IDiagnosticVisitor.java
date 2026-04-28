@@ -1,8 +1,8 @@
 package com.agropredict.domain.visitor.diagnostic;
 
 public interface IDiagnosticVisitor {
-    void visitIdentity(String identifier);
-    void visitPrediction(String predictedCrop, double confidence);
-    void visitAssessment(String severity, String shortSummary);
-    void visitRecommendation(String recommendationText);
+    default void visitIdentity(String identifier) {}
+    default void visitPrediction(String predictedCrop, double confidence) {}
+    default void visitAssessment(String severity, String shortSummary) {}
+    default void visitRecommendation(String recommendationText) {}
 }

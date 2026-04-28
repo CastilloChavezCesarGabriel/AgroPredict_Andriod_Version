@@ -16,9 +16,8 @@ public final class PdfReportService extends ReportService {
 
     @Override
     protected IReportWriter prepare(String timestamp) throws IOException {
-        File file = new File(outputDirectory, "report_" + timestamp + ".pdf");
         PdfReport report = new PdfReport();
-        report.open(file);
+        report.open(locate(timestamp));
         return report;
     }
 
@@ -27,6 +26,10 @@ public final class PdfReportService extends ReportService {
         PdfReport report = (PdfReport) writer;
         String displayDate = new SimpleDateFormat(DISPLAY_FORMAT, Locale.getDefault()).format(new Date());
         report.close(displayDate);
+        return locate(timestamp);
+    }
+
+    private File locate(String timestamp) {
         return new File(outputDirectory, "report_" + timestamp + ".pdf");
     }
 }

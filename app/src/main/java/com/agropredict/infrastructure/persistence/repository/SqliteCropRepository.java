@@ -4,10 +4,14 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import com.agropredict.application.repository.ICropRepository;
 import com.agropredict.application.request.CropUpdateRequest;
-import com.agropredict.application.operation_result.HistoryRecord;
-import com.agropredict.application.operation_result.HistoryTransition;
-import com.agropredict.application.operation_result.Modification;
+import com.agropredict.domain.history.HistoryRecord;
+import com.agropredict.domain.history.HistoryTransition;
+import com.agropredict.domain.history.Modification;
 import com.agropredict.application.repository.ISessionRepository;
+import com.agropredict.domain.component.crop.CropProfile;
+import com.agropredict.domain.component.crop.Field;
+import com.agropredict.domain.component.crop.GrowthCycle;
+import com.agropredict.domain.component.crop.Soil;
 import com.agropredict.domain.entity.Crop;
 import com.agropredict.infrastructure.persistence.database.Database;
 import com.agropredict.infrastructure.persistence.database.SqliteRow;
@@ -39,11 +43,20 @@ public final class SqliteCropRepository extends SqliteRepository<Crop> implement
 
     @Override
     protected Crop restore(Cursor cursor) {
-        Crop crop = new Crop(cursor.getString(cursor.getColumnIndexOrThrow("id")), cursor.getString(cursor.getColumnIndexOrThrow("crop_type")));
-        crop.locate(cursor.getString(cursor.getColumnIndexOrThrow("field_name")), cursor.getString(cursor.getColumnIndexOrThrow("location")));
-        crop.plant(cursor.getString(cursor.getColumnIndexOrThrow("soil_type_id")), cursor.getString(cursor.getColumnIndexOrThrow("area")));
-        crop.schedule(cursor.getString(cursor.getColumnIndexOrThrow("planting_date")), cursor.getString(cursor.getColumnIndexOrThrow("phenological_stage_id")));
-        return crop;
+        Field field = new Field(
+                cursor.getString(cursor.getColumnIndexOrThrow("field_name")),
+                cursor.getString(cursor.getColumnIndexOrThrow("location")));
+        Soil soil = new Soil(
+                cursor.getString(cursor.getColumnIndexOrThrow("soil_type_id")),
+                cursor.getString(cursor.getColumnIndexOrThrow("area")));
+        GrowthCycle growth = new GrowthCycle(
+                cursor.getString(cursor.getColumnIndexOrThrow("planting_date")),
+                cursor.getString(cursor.getColumnIndexOrThrow("phenological_stage_id")));
+        CropProfile profile = new CropProfile(field, soil, growth);
+        return new Crop(
+                cursor.getString(cursor.getColumnIndexOrThrow("id")),
+                cursor.getString(cursor.getColumnIndexOrThrow("crop_type")),
+                profile);
     }
 
     @Override

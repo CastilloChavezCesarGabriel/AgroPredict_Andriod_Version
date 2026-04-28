@@ -4,6 +4,8 @@ import com.agropredict.application.request.diagnostic_submission.SubmissionReque
 import com.agropredict.application.service.IDiagnosticApiService;
 import com.agropredict.application.visitor.ISubmissionVisitor;
 import com.agropredict.domain.entity.Diagnostic;
+import com.agropredict.infrastructure.persistence.schema.IKeyConsumer;
+import com.agropredict.infrastructure.persistence.schema.QuestionKey;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.io.BufferedReader;
@@ -14,7 +16,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
-public final class DiagnosticApiService implements IDiagnosticApiService, ISubmissionVisitor {
+public final class DiagnosticApiService implements IDiagnosticApiService, ISubmissionVisitor, IKeyConsumer {
     private static final String ENDPOINT = "https://proyecto-diagnostico.onrender.com/diagnostic";
     private static final int CONNECTION_TIMEOUT = 30000;
     private static final int READ_TIMEOUT = 30000;
@@ -38,52 +40,53 @@ public final class DiagnosticApiService implements IDiagnosticApiService, ISubmi
 
     @Override
     public void visitPrediction(String predictedCrop, double confidence) {
-        append("cultivo_detectado", predictedCrop);
-        append("confianza", String.valueOf(confidence));
+        accept("cultivo_detectado", predictedCrop);
+        accept("confianza", String.valueOf(confidence));
     }
 
     @Override
     public void visitEnvironment(String temperature, String humidity) {
-        append("temperature", temperature);
-        append("humidity", humidity);
+        QuestionKey.TEMPERATURE.pair(this, temperature);
+        QuestionKey.HUMIDITY.pair(this, humidity);
     }
 
     @Override
     public void visitRain(String precipitation) {
-        append("rain", precipitation);
+        QuestionKey.RAIN.pair(this, precipitation);
     }
 
     @Override
     public void visitSoil(String moisture, String acidity) {
-        append("soilMoisture", moisture);
-        append("ph", acidity);
+        QuestionKey.SOIL_MOISTURE.pair(this, moisture);
+        QuestionKey.PH.pair(this, acidity);
     }
 
     @Override
     public void visitIrrigation(String irrigation, String fertilization) {
-        append("irrigation", irrigation);
-        append("fertilization", fertilization);
+        QuestionKey.IRRIGATION.pair(this, irrigation);
+        QuestionKey.FERTILIZATION.pair(this, fertilization);
     }
 
     @Override
     public void visitPestControl(String spraying, String weeds) {
-        append("spraying", spraying);
-        append("weeds", weeds);
+        QuestionKey.SPRAYING.pair(this, spraying);
+        QuestionKey.WEEDS.pair(this, weeds);
     }
 
     @Override
     public void visitSymptom(String symptomType, String severity) {
-        append("symptom", symptomType);
-        append("severity", severity);
+        QuestionKey.SYMPTOM.pair(this, symptomType);
+        QuestionKey.SEVERITY.pair(this, severity);
     }
 
     @Override
     public void visitPest(String insects, String animals) {
-        append("insects", insects);
-        append("animals", animals);
+        QuestionKey.INSECTS.pair(this, insects);
+        QuestionKey.ANIMALS.pair(this, animals);
     }
 
-    private void append(String key, String value) {
+    @Override
+    public void accept(String key, String value) {
         try {
             payload.put(key, value);
         } catch (JSONException ignored) {
@@ -93,8 +96,8 @@ public final class DiagnosticApiService implements IDiagnosticApiService, ISubmi
     private void conclude(Diagnostic diagnostic, JSONObject response) {
         String severity = response.optString("severidad", "moderate");
         String summary = response.optString("reporte_resumido");
-        diagnostic.conclude(severity, summary);
-        diagnostic.recommend(response.optString("texto_largo"));
+        String recommendation = response.optString("texto_largo");
+        diagnostic.conclude(severity, summary, recommendation);
     }
 
     private String send(JSONObject body) throws IOException {

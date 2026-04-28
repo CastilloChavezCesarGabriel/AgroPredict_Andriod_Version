@@ -1,7 +1,7 @@
 package com.agropredict.application.request.diagnostic_submission;
 
 import com.agropredict.application.repository.ICropRepository;
-import com.agropredict.application.repository.IDiagnosticWorkflow;
+import com.agropredict.application.diagnostic_submission.IDiagnosticWorkflow;
 import com.agropredict.application.repository.IPhotographRepository;
 import com.agropredict.application.repository.IQuestionnaireRepository;
 import com.agropredict.application.request.ai_questionnaire.Questionnaire;

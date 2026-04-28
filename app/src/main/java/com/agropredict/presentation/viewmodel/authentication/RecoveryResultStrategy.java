@@ -12,10 +12,10 @@ public final class RecoveryResultStrategy implements IOperationResultVisitor {
     @Override
     public void visit(boolean success, String message) {
         if (success) {
-            view.notify("Password updated successfully");
+            view.confirm();
             view.dismiss();
         } else {
-            view.notify("Could not update. Please verify your email.");
+            view.warn();
         }
     }
 }

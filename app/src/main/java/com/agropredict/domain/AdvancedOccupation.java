@@ -1,12 +1,12 @@
 package com.agropredict.domain;
 
 public final class AdvancedOccupation extends Occupation {
-    public AdvancedOccupation(String raw) {
-        super(raw);
+    public AdvancedOccupation(String value) {
+        super(value);
     }
 
     @Override
-    public void accept(IOccupationHandler handler) {
-        handler.onAdvanced();
+    public void accept(IOccupationVisitor visitor) {
+        visitor.visit(value, true);
     }
 }

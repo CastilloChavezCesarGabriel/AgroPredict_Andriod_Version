@@ -3,7 +3,7 @@ package com.agropredict.infrastructure.persistence.visitor;
 import com.agropredict.domain.Session;
 import com.agropredict.domain.visitor.session.ISessionVisitor;
 import com.agropredict.domain.visitor.crop.ICropVisitor;
-import com.agropredict.domain.visitor.crop.IPhotographVisitor;
+import com.agropredict.domain.visitor.photograph.IPhotographVisitor;
 import com.agropredict.infrastructure.persistence.database.IRow;
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -19,7 +19,7 @@ public final class PhotographPersistenceVisitor implements IPhotographVisitor, I
     }
 
     @Override
-    public void visitImage(String identifier, String filePath) {
+    public void visitPhotograph(String identifier, String filePath) {
         row.record("id", identifier);
         row.record("file_path", filePath);
         measure(filePath);
@@ -43,15 +43,6 @@ public final class PhotographPersistenceVisitor implements IPhotographVisitor, I
     public void visitIdentity(String identifier, String cropType) {
         row.record("crop_id", identifier);
     }
-
-    @Override
-    public void visitField(String name, String location) {}
-
-    @Override
-    public void visitSoil(String typeIdentifier, String area) {}
-
-    @Override
-    public void visitPlanting(String date, String stageIdentifier) {}
 
     @Override
     public void visit(String userIdentifier, String occupation) {

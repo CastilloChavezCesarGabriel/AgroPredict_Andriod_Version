@@ -1,4 +1,4 @@
-package com.agropredict.application.operation_result;
+package com.agropredict.domain.history;
 
 public final class HistoryTransition {
     private final String previousValue;

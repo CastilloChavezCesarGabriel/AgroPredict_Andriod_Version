@@ -6,9 +6,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
-import com.agropredict.AgroPredictApplication;
 import com.agropredict.R;
-import com.agropredict.application.IRepositoryFactory;
+import com.agropredict.application.factory.IDashboardFactory;
 import com.agropredict.application.service.IAssetService;
 import com.agropredict.application.usecase.authentication.CheckSessionUseCase;
 import com.agropredict.application.usecase.authentication.LogoutUseCase;
@@ -28,14 +27,14 @@ public final class HomeActivity extends BaseActivity implements IHomeView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        ((AgroPredictApplication) getApplication()).provide(this::initialize);
+        initialize();
         listen();
-        getOnBackPressedDispatcher().addCallback(this, new BackNavigationGuard());
     }
 
-    private void initialize(IRepositoryFactory factory) {
-        LogoutUseCase useCase = new LogoutUseCase(factory.createSessionRepository());
-        viewModel = new HomeViewModel(useCase, this);
+    private void initialize() {
+        IDashboardFactory factory = (IDashboardFactory) getApplication();
+        LogoutUseCase logoutUseCase = new LogoutUseCase(factory.createSessionRepository());
+        viewModel = new HomeViewModel(logoutUseCase, this);
         assetService = factory.createAssetService();
         new CheckSessionUseCase(factory.createSessionRepository()).check(this::restrict);
     }
@@ -49,6 +48,7 @@ public final class HomeActivity extends BaseActivity implements IHomeView {
         findViewById(R.id.fabAddField).setOnClickListener(view -> predict());
         findViewById(R.id.cardResources).setOnClickListener(view -> browse("https://www.fao.org/agriculture/es"));
         findViewById(R.id.cardManual).setOnClickListener(view -> browse("https://www.inia.gob.pe"));
+        getOnBackPressedDispatcher().addCallback(this, new BackNavigationGuard());
     }
 
     private void restrict(String identifier, String occupation) {

@@ -69,27 +69,6 @@ public final class PasswordValidatorTest {
     }
 
     @Test
-    public void testConfirmationMatch() {
-        assertTrue(validator.isConfirmed("Passw0rd!", "Passw0rd!"));
-    }
-
-    @Test
-    public void testConfirmationMismatch() {
-        assertFalse(validator.isConfirmed("Passw0rd!", "Different1!"));
-    }
-
-    @Test
-    @SuppressWarnings("ConstantValue")
-    public void testConfirmationNullPassword() {
-        assertFalse(validator.isConfirmed(null, "Passw0rd!"));
-    }
-
-    @Test
-    public void testConfirmationNullConfirmation() {
-        assertFalse(validator.isConfirmed("Passw0rd!", null));
-    }
-
-    @Test
     public void testLongValidPassword() {
         assertTrue(validator.isValid("MyV3ryL0ng&SecureP@ssw0rd!"));
     }

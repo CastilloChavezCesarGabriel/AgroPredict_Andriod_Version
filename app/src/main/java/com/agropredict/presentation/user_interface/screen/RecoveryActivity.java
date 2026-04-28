@@ -2,8 +2,8 @@ package com.agropredict.presentation.user_interface.screen;
 
 import android.os.Bundle;
 import android.widget.EditText;
-import com.agropredict.AgroPredictApplication;
 import com.agropredict.R;
+import com.agropredict.application.factory.IAccessFactory;
 import com.agropredict.application.usecase.authentication.ResetPasswordUseCase;
 import com.agropredict.presentation.viewmodel.authentication.IRecoveryView;
 import com.agropredict.presentation.viewmodel.authentication.RecoveryViewModel;
@@ -18,13 +18,25 @@ public final class RecoveryActivity extends BaseActivity implements IRecoveryVie
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recovery);
+        bind();
+        initialize();
+        listen();
+    }
+
+    private void bind() {
         emailField = findViewById(R.id.etRecoveryEmail);
         passwordField = findViewById(R.id.etNewPassword);
         confirmationField = findViewById(R.id.etConfirmPassword);
-        ((AgroPredictApplication) getApplication()).provide(factory -> {
-            ResetPasswordUseCase useCase = new ResetPasswordUseCase(factory.createUserRepository(), factory.createPasswordHasher());
-            viewModel = new RecoveryViewModel(useCase, this);
-        });
+    }
+
+    private void initialize() {
+        IAccessFactory factory = (IAccessFactory) getApplication();
+        ResetPasswordUseCase useCase = new ResetPasswordUseCase(
+                factory.createUserRepository(), factory.createPasswordHasher());
+        viewModel = new RecoveryViewModel(useCase, this);
+    }
+
+    private void listen() {
         findViewById(R.id.btnReset).setOnClickListener(view -> reset());
         findViewById(R.id.tvBackToLogin).setOnClickListener(view -> dismiss());
     }
@@ -43,5 +55,15 @@ public final class RecoveryActivity extends BaseActivity implements IRecoveryVie
     @Override
     public void dismiss() {
         finish();
+    }
+
+    @Override
+    public void confirm() {
+        notify(getString(R.string.password_updated));
+    }
+
+    @Override
+    public void warn() {
+        notify(getString(R.string.recovery_failure));
     }
 }

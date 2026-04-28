@@ -12,7 +12,7 @@ public final class RegistrationResultStrategy implements IRegistrationResultVisi
     @Override
     public void visit(boolean completed, String errorMessage) {
         if (completed) {
-            view.notify("Registration successful");
+            view.confirm();
             view.dismiss();
         } else {
             view.notify(errorMessage);

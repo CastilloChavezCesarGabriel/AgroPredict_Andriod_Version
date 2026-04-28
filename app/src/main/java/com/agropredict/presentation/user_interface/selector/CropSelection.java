@@ -51,13 +51,4 @@ public final class CropSelection implements ICropVisitor, AdapterView.OnItemSele
         identifiers.add(identifier);
         labels.add(cropType != null ? cropType : "Unknown");
     }
-
-    @Override
-    public void visitField(String name, String location) {}
-
-    @Override
-    public void visitSoil(String typeIdentifier, String area) {}
-
-    @Override
-    public void visitPlanting(String date, String stageIdentifier) {}
 }

@@ -5,8 +5,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import com.agropredict.application.visitor.IQuestionnaireVisitor;
 import com.agropredict.domain.Identifier;
+import com.agropredict.infrastructure.persistence.schema.IKeyConsumer;
+import com.agropredict.infrastructure.persistence.schema.QuestionKey;
 
-public final class QuestionnairePersistenceVisitor implements IQuestionnaireVisitor {
+public final class QuestionnairePersistenceVisitor implements IQuestionnaireVisitor, IKeyConsumer {
     private final SQLiteDatabase database;
     private final String diagnosticIdentifier;
 
@@ -17,46 +19,47 @@ public final class QuestionnairePersistenceVisitor implements IQuestionnaireVisi
 
     @Override
     public void visitEnvironment(String temperature, String humidity) {
-        record("temperature", temperature);
-        record("humidity", humidity);
+        QuestionKey.TEMPERATURE.pair(this, temperature);
+        QuestionKey.HUMIDITY.pair(this, humidity);
     }
 
     @Override
     public void visitRain(String precipitation) {
-        record("rain", precipitation);
+        QuestionKey.RAIN.pair(this, precipitation);
     }
 
     @Override
     public void visitSoil(String moisture, String acidity) {
-        record("soilMoisture", moisture);
-        record("ph", acidity);
+        QuestionKey.SOIL_MOISTURE.pair(this, moisture);
+        QuestionKey.PH.pair(this, acidity);
     }
 
     @Override
     public void visitIrrigation(String irrigation, String fertilization) {
-        record("irrigation", irrigation);
-        record("fertilization", fertilization);
+        QuestionKey.IRRIGATION.pair(this, irrigation);
+        QuestionKey.FERTILIZATION.pair(this, fertilization);
     }
 
     @Override
     public void visitPestControl(String spraying, String weeds) {
-        record("spraying", spraying);
-        record("weeds", weeds);
+        QuestionKey.SPRAYING.pair(this, spraying);
+        QuestionKey.WEEDS.pair(this, weeds);
     }
 
     @Override
     public void visitSymptom(String symptomType, String severity) {
-        record("symptom", symptomType);
-        record("severity", severity);
+        QuestionKey.SYMPTOM.pair(this, symptomType);
+        QuestionKey.SEVERITY.pair(this, severity);
     }
 
     @Override
     public void visitPest(String insects, String animals) {
-        record("insects", insects);
-        record("animals", animals);
+        QuestionKey.INSECTS.pair(this, insects);
+        QuestionKey.ANIMALS.pair(this, animals);
     }
 
-    private void record(String key, String value) {
+    @Override
+    public void accept(String key, String value) {
         String questionId = resolve(key);
         insert(questionId, key, value);
     }

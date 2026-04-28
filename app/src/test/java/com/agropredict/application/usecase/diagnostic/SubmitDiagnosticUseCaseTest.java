@@ -2,7 +2,7 @@ package com.agropredict.application.usecase.diagnostic;
 
 import static org.junit.Assert.assertFalse;
 
-import com.agropredict.application.repository.IDiagnosticWorkflow;
+import com.agropredict.application.diagnostic_submission.IDiagnosticWorkflow;
 import com.agropredict.application.request.diagnostic_submission.SubmissionRequest;
 import com.agropredict.application.service.IDiagnosticApiService;
 import com.agropredict.visitor.TestOperationResultVisitor;

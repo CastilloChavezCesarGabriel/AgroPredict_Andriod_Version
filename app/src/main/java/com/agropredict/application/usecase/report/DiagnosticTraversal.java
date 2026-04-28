@@ -17,9 +17,6 @@ public final class DiagnosticTraversal implements IDiagnosticVisitor {
     }
 
     @Override
-    public void visitIdentity(String identifier) {}
-
-    @Override
     public void visitPrediction(String predictedCrop, double confidence) {
         report.write("detected_crop", predictedCrop);
         report.write("confidence", String.format(Locale.getDefault(), "%.1f%%", confidence * 100));

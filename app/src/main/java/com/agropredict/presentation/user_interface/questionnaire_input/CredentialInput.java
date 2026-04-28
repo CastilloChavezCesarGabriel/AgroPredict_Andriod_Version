@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.widget.EditText;
 import com.agropredict.R;
 import com.agropredict.application.request.user_registration.Authentication;
-import com.agropredict.domain.input_validation.PasswordValidator;
+import com.agropredict.domain.input_validation.PasswordConfirmation;
 
 public final class CredentialInput {
     private final EditText emailInput;
@@ -20,7 +20,7 @@ public final class CredentialInput {
     public boolean isMatching() {
         String password = passwordInput.getText().toString();
         String confirmation = confirmPasswordInput.getText().toString();
-        return new PasswordValidator().isConfirmed(password, confirmation);
+        return new PasswordConfirmation().confirms(password, confirmation);
     }
 
     public Authentication collect() {

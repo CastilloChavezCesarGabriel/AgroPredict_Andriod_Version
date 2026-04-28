@@ -4,7 +4,8 @@ import static org.junit.Assert.assertTrue;
 
 import com.agropredict.application.repository.ICropRepository;
 import com.agropredict.application.request.CropUpdateRequest;
-import com.agropredict.application.operation_result.HistoryRecord;
+import com.agropredict.domain.history.HistoryRecord;
+import com.agropredict.domain.component.crop.CropProfile;
 import com.agropredict.domain.entity.Crop;
 
 import org.junit.Test;
@@ -24,7 +25,7 @@ public final class UpdateCropUseCaseTest {
             @Override public List<HistoryRecord> trace(String id) { return List.of(); }
             @Override public void delete(String id) {}
         };
-        Crop crop = new Crop("crop_1", "wheat");
+        Crop crop = new Crop("crop_1", "wheat", new CropProfile(null, null, null));
         repo.update(new CropUpdateRequest(crop));
         assertTrue(updated[0]);
     }

@@ -1,6 +1,6 @@
 package com.agropredict.presentation.viewmodel.report_generation;
 
-import com.agropredict.application.IRepositoryFactory;
+import com.agropredict.application.factory.IReportingFactory;
 import com.agropredict.application.usecase.crop.ListCropUseCase;
 import com.agropredict.domain.entity.Crop;
 import java.util.List;
@@ -8,12 +8,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public final class ReportViewModel {
-    private final IRepositoryFactory factory;
+    private final IReportingFactory factory;
     private final IReportView view;
     private final ExecutorService executor;
     private ReportExporter exporter;
 
-    public ReportViewModel(IRepositoryFactory factory, IReportView view) {
+    public ReportViewModel(IReportingFactory factory, IReportView view) {
         this.factory = factory;
         this.view = view;
         this.executor = Executors.newSingleThreadExecutor();

@@ -3,8 +3,6 @@ package com.agropredict.presentation.viewmodel.diagnostic_history;
 import com.agropredict.application.usecase.DeleteUseCase;
 import com.agropredict.application.usecase.diagnostic.ListDiagnosticUseCase;
 import com.agropredict.application.visitor.IOperationResultVisitor;
-import com.agropredict.domain.entity.Diagnostic;
-import java.util.List;
 
 public final class HistoryViewModel implements IOperationResultVisitor {
     private final ListDiagnosticUseCase listUseCase;
@@ -20,20 +18,15 @@ public final class HistoryViewModel implements IOperationResultVisitor {
 
     public void load(String userIdentifier) {
         this.pendingUserIdentifier = userIdentifier;
-        render(listUseCase.list(userIdentifier));
+        view.display(listUseCase.list(userIdentifier));
     }
 
     public void filter(String cropIdentifier) {
-        render(listUseCase.filter(pendingUserIdentifier, cropIdentifier));
+        view.display(listUseCase.filter(pendingUserIdentifier, cropIdentifier));
     }
 
     public void delete(String diagnosticIdentifier) {
         deleteUseCase.delete(diagnosticIdentifier).accept(this);
-    }
-
-    private void render(List<Diagnostic> diagnostics) {
-        if (diagnostics.isEmpty()) view.empty();
-        else view.display(diagnostics);
     }
 
     @Override

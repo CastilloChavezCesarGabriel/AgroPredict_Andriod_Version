@@ -1,6 +1,7 @@
 package com.agropredict.infrastructure.image_classification;
 
 import com.agropredict.application.operation_result.ClassificationResult;
+import com.agropredict.application.visitor.IClassificationResultVisitor;
 import org.tensorflow.lite.Interpreter;
 import java.nio.ByteBuffer;
 
@@ -13,15 +14,14 @@ public final class TFLiteModel {
         this.labels = labels;
     }
 
-    public ClassificationResult infer(ByteBuffer input) {
-        if (interpreter == null) return null;
+    public void infer(ByteBuffer input, IClassificationResultVisitor consumer) {
+        if (interpreter == null) {
+            consumer.reject("Model not available");
+            return;
+        }
         float[][] output = new float[1][labels.length];
         interpreter.run(input, output);
-        return select(output[0]);
-    }
-
-    public boolean isAvailable() {
-        return interpreter != null;
+        select(output[0]).accept(consumer);
     }
 
     private ClassificationResult select(float[] probabilities) {

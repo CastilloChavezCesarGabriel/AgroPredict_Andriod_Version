@@ -1,4 +1,4 @@
-package com.agropredict.application.repository;
+package com.agropredict.application.diagnostic_submission;
 
 import com.agropredict.application.request.diagnostic_submission.SubmissionRequest;
 import com.agropredict.domain.entity.Diagnostic;

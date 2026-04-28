@@ -5,7 +5,8 @@ import static org.junit.Assert.assertNull;
 
 import com.agropredict.application.repository.ICropRepository;
 import com.agropredict.application.request.CropUpdateRequest;
-import com.agropredict.application.operation_result.HistoryRecord;
+import com.agropredict.domain.history.HistoryRecord;
+import com.agropredict.domain.component.crop.CropProfile;
 import com.agropredict.domain.entity.Crop;
 
 import org.junit.Test;
@@ -26,7 +27,7 @@ public final class FindCropUseCaseTest {
 
     @Test
     public void testFindExistingCrop() {
-        Crop crop = new Crop("crop_1", "wheat");
+        Crop crop = new Crop("crop_1", "wheat", new CropProfile(null, null, null));
         Crop result = new FindCropUseCase(stubCrop(crop)).find("crop_1");
         assertNotNull(result);
     }
