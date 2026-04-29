@@ -39,81 +39,81 @@ public final class AgroPredictApplication extends Application implements
 
     @Override
     public IUserRepository createUserRepository() {
-        return configuration.access().createUserRepository();
+        return configuration.createAccess().createUserRepository();
     }
 
     @Override
     public ISessionRepository createSessionRepository() {
-        return configuration.access().createSessionRepository();
+        return configuration.createAccess().createSessionRepository();
     }
 
     @Override
     public IPasswordHasher createPasswordHasher() {
-        return configuration.access().createPasswordHasher();
+        return configuration.createAccess().createPasswordHasher();
     }
 
     @Override
     public IAuditLogger createAuditLogger() {
-        return configuration.access().createAuditLogger();
+        return configuration.createAccess().createAuditLogger();
     }
 
     @Override
     public ICatalogRepository createOccupationCatalog() {
-        return configuration.access().createOccupationCatalog();
+        return configuration.createAccess().createOccupationCatalog();
     }
 
     @Override
     public IAssetService createAssetService() {
-        return configuration.dashboard().createAssetService();
+        return configuration.createDashboard().createAssetService();
     }
 
     @Override
     public ICropRepository createCropRepository() {
-        return configuration.catalog().createCropRepository();
+        return configuration.createCatalog().createCropRepository();
     }
 
     @Override
     public ICatalogRepository createSoilTypeCatalog() {
-        return configuration.catalog().createSoilTypeCatalog();
+        return configuration.createCatalog().createSoilTypeCatalog();
     }
 
     @Override
     public ICatalogRepository createStageCatalog() {
-        return configuration.catalog().createStageCatalog();
+        return configuration.createCatalog().createStageCatalog();
     }
 
     @Override
     public IDiagnosticRepository createDiagnosticRepository() {
-        return configuration.review().createDiagnosticRepository();
+        return configuration.createReview().createDiagnosticRepository();
     }
 
     @Override
     public IImageClassifier createImageClassifier() {
-        return configuration.prediction().createImageClassifier();
+        return configuration.createPrediction().createImageClassifier();
     }
 
     @Override
     public IImageCompressor createImageCompressor() {
-        return configuration.prediction().createImageCompressor();
+        return configuration.createPrediction().createImageCompressor();
     }
 
     @Override
     public IDiagnosticApiService createApiService() {
-        return configuration.prediction().createApiService();
+        return configuration.createPrediction().createApiService();
     }
 
     @Override
     public IDiagnosticWorkflow createDiagnosticWorkflow() {
-        return configuration.prediction().createDiagnosticWorkflow();
+        return configuration.createPrediction().createDiagnosticWorkflow();
     }
 
     @Override
     public IReportRepository createReportRepository() {
-        return configuration.reporting().createReportRepository();
+        return configuration.createReporting().createReportRepository();
     }
 
     @Override
     public IReportService createReportService(String format) {
-        return configuration.reporting().createReportService(format);
+        return configuration.createReporting().createReportService(format);
     }
 }

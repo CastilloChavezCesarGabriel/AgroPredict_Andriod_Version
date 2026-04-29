@@ -26,27 +26,27 @@ public final class Configuration {
         this.context = context;
     }
 
-    public IAccessFactory access() {
+    public IAccessFactory createAccess() {
         return new AccessComposer(database, context);
     }
 
-    public IDashboardFactory dashboard() {
+    public IDashboardFactory createDashboard() {
         return new DashboardComposer(context);
     }
 
-    public ICatalogFactory catalog() {
+    public ICatalogFactory createCatalog() {
         return new CatalogComposer(database, context);
     }
 
-    public IReviewFactory review() {
+    public IReviewFactory createReview() {
         return new ReviewComposer(database, context);
     }
 
-    public IPredictionFactory prediction() {
+    public IPredictionFactory createPrediction() {
         return new PredictionComposer(database, context);
     }
 
-    public IReportingFactory reporting() {
+    public IReportingFactory createReporting() {
         return new ReportingComposer(database, context);
     }
 
