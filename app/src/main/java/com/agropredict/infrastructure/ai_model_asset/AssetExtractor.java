@@ -16,20 +16,20 @@ public final class AssetExtractor implements IAssetService {
     }
 
     @Override
-    public String extract(String assetPath) throws IOException {
-        String fileName = resolve(assetPath);
+    public String extract(String path) throws IOException {
+        String fileName = resolve(path);
         File outputFile = new File(context.getCacheDir(), fileName);
-        if (!outputFile.exists()) copy(assetPath, outputFile);
+        if (!outputFile.exists()) copy(path, outputFile);
         return outputFile.getAbsolutePath();
     }
 
-    private String resolve(String assetPath) {
-        int separator = assetPath.lastIndexOf('/');
-        return separator >= 0 ? assetPath.substring(separator + 1) : assetPath;
+    private String resolve(String path) {
+        int separator = path.lastIndexOf('/');
+        return separator >= 0 ? path.substring(separator + 1) : path;
     }
 
-    private void copy(String assetPath, File destination) throws IOException {
-        try (InputStream input = context.getAssets().open(assetPath);
+    private void copy(String path, File destination) throws IOException {
+        try (InputStream input = context.getAssets().open(path);
              FileOutputStream output = new FileOutputStream(destination)) {
             FileCopier.copy(input, output);
         }
