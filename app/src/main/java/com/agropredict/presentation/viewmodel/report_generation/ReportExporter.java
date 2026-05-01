@@ -12,7 +12,7 @@ import com.agropredict.domain.entity.Crop;
 import com.agropredict.domain.entity.Diagnostic;
 import com.agropredict.domain.entity.Report;
 
-public final class ReportExporter implements IReportPersister {
+public final class ReportExporter {
     private final IReportingFactory factory;
     private final IReportView view;
     private final String userIdentifier;
@@ -35,7 +35,6 @@ public final class ReportExporter implements IReportPersister {
         diagnostic.pair(cropIdentifier, new ReportRequestComposer(report, result, this));
     }
 
-    @Override
     public void persist(ReportRequest request, String filePath) {
         view.rest();
         new StoreReportUseCase(factory.createReportRepository()).store(request, new Destination(userIdentifier, filePath));
@@ -43,7 +42,6 @@ public final class ReportExporter implements IReportPersister {
         view.offer(filePath);
     }
 
-    @Override
     public void reject() {
         view.rest();
         view.notify("Error generating the report");

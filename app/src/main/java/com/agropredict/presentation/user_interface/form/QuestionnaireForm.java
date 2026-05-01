@@ -9,14 +9,14 @@ import android.app.Activity;
 import com.agropredict.application.request.diagnostic_submission.SubmissionRequest;
 import com.agropredict.application.request.ai_questionnaire.Condition;
 import com.agropredict.application.request.ai_questionnaire.CropCare;
-import com.agropredict.application.request.diagnostic_submission.Field;
+import com.agropredict.application.request.diagnostic_submission.SubmissionField;
 import com.agropredict.application.request.diagnostic_submission.Classification;
 import com.agropredict.application.request.ai_questionnaire.Questionnaire;
 import com.agropredict.application.request.diagnostic_submission.Cultivation;
 import com.agropredict.application.request.diagnostic_submission.Submission;
 import com.agropredict.application.request.diagnostic_submission.PhotographInput;
-import com.agropredict.presentation.user_interface.catalog_input.SoilTypeCatalog;
-import com.agropredict.presentation.user_interface.catalog_input.StageCatalog;
+import com.agropredict.presentation.user_interface.catalog_input.SoilTypeOption;
+import com.agropredict.presentation.user_interface.catalog_input.StageOption;
 
 public final class QuestionnaireForm {
     private final CatalogInput catalogGroup;
@@ -33,17 +33,17 @@ public final class QuestionnaireForm {
         this.symptomGroup = new SymptomInput(activity);
     }
 
-    public void populate(SoilTypeCatalog soilTypeOption) {
+    public void populate(SoilTypeOption soilTypeOption) {
         catalogGroup.populate(soilTypeOption);
     }
 
-    public void populate(StageCatalog stageOption) {
+    public void populate(StageOption stageOption) {
         catalogGroup.populate(stageOption);
     }
 
     public SubmissionRequest assemble(Classification prediction, PhotographInput image) {
         Cultivation crop = prediction.cultivate(catalogGroup.extract());
-        Field field = new Field(crop, image);
+        SubmissionField field = new SubmissionField(crop, image);
         Submission diagnostic = new Submission(prediction, field);
         return new SubmissionRequest(diagnostic, collect());
     }

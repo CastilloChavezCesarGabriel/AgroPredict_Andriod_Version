@@ -5,8 +5,8 @@ import com.agropredict.application.operation_result.OperationResult;
 import com.agropredict.application.usecase.catalog.ListCatalogUseCase;
 import com.agropredict.application.usecase.diagnostic.ClassifyImageUseCase;
 import com.agropredict.application.usecase.diagnostic.SubmitDiagnosticUseCase;
-import com.agropredict.presentation.user_interface.catalog_input.SoilTypeCatalog;
-import com.agropredict.presentation.user_interface.catalog_input.StageCatalog;
+import com.agropredict.presentation.user_interface.catalog_input.SoilTypeOption;
+import com.agropredict.presentation.user_interface.catalog_input.StageOption;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -26,13 +26,13 @@ public final class PredictionViewModel {
     }
 
     public void populate(ListCatalogUseCase soilTypesUseCase, ListCatalogUseCase stagesUseCase) {
-        view.populate(new SoilTypeCatalog(soilTypesUseCase.list()));
-        view.populate(new StageCatalog(stagesUseCase.list()));
+        view.populate(new SoilTypeOption(soilTypesUseCase.list()));
+        view.populate(new StageOption(stagesUseCase.list()));
     }
 
     public void classify(String imagePath) {
         view.onLoading();
-        executor.execute(() -> classifyUseCase.classify(imagePath, new ClassificationResultStrategy(view)));
+        executor.execute(() -> classifyUseCase.classify(imagePath, new ClassificationResultPresenter(view)));
     }
 
     public void submit(SubmissionRequest request) {
@@ -42,7 +42,7 @@ public final class PredictionViewModel {
 
     private void diagnose(SubmissionRequest request) {
         OperationResult result = submitUseCase.submit(request);
-        result.accept(new DiagnosticResultStrategy(view));
+        result.accept(new DiagnosticResultPresenter(view));
     }
 
     public void release() {

@@ -18,9 +18,9 @@ public final class TFLiteClassifier implements IImageClassifier {
     @Override
     public void classify(String imagePath, IClassificationResultVisitor consumer) {
         String error = validator.validate(imagePath);
-        if (error != null) { consumer.reject(error); return; }
+        if (error != null) { consumer.onReject(error); return; }
         ByteBuffer input = preprocessor.prepare(imagePath);
-        if (input == null) { consumer.reject("Could not process image"); return; }
+        if (input == null) { consumer.onReject("Could not process image"); return; }
         model.infer(input, consumer);
     }
 }

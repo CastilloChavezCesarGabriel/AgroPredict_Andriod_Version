@@ -1,13 +1,12 @@
 package com.agropredict.presentation.user_interface.catalog_input;
 
 import android.widget.Spinner;
-
 import java.util.List;
 
-public abstract class Catalog {
+public abstract class SpinnerOption {
     private final List<String> options;
 
-    protected Catalog(List<String> options) {
+    protected SpinnerOption(List<String> options) {
         this.options = options;
     }
 

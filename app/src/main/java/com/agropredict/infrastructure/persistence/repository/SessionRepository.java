@@ -4,8 +4,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import com.agropredict.application.repository.ISessionRepository;
 import com.agropredict.domain.Session;
+import com.agropredict.domain.visitor.session.ISessionVisitor;
 
-public final class SessionRepository implements ISessionRepository {
+public final class SessionRepository implements ISessionRepository, ISessionVisitor {
     private static final String USER_IDENTIFIER_KEY = "logged_user_id";
     private static final String OCCUPATION_KEY = "logged_occupation";
     private static final String TIMESTAMP_KEY = "session_timestamp";
@@ -14,6 +15,11 @@ public final class SessionRepository implements ISessionRepository {
 
     public SessionRepository(Context context) {
         this.preferences = context.getSharedPreferences("agropredict_session", Context.MODE_PRIVATE);
+    }
+
+    @Override
+    public void save(Session session) {
+        session.accept(this);
     }
 
     @Override

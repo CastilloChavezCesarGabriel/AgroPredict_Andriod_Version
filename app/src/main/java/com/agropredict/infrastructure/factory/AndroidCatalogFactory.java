@@ -1,4 +1,4 @@
-package com.agropredict.infrastructure.composer;
+package com.agropredict.infrastructure.factory;
 
 import android.content.Context;
 import com.agropredict.application.repository.ICatalogRepository;
@@ -9,11 +9,11 @@ import com.agropredict.infrastructure.persistence.repository.SessionRepository;
 import com.agropredict.infrastructure.persistence.repository.SqliteCropRepository;
 import com.agropredict.infrastructure.persistence.schema.CatalogName;
 
-public final class CatalogComposer implements ICatalogFactory {
+public final class AndroidCatalogFactory implements ICatalogFactory {
     private final Database database;
     private final Context context;
 
-    public CatalogComposer(Database database, Context context) {
+    public AndroidCatalogFactory(Database database, Context context) {
         this.database = database;
         this.context = context;
     }

@@ -5,13 +5,13 @@ import com.agropredict.R;
 import com.agropredict.application.factory.IReviewFactory;
 import com.agropredict.application.usecase.diagnostic.FindDiagnosticUseCase;
 import com.agropredict.domain.entity.Diagnostic;
-import com.agropredict.presentation.user_interface.display.PredictionResult;
+import com.agropredict.presentation.user_interface.display.PredictionResultDisplay;
 import com.agropredict.presentation.viewmodel.prediction_diagnosis.IPredictionResultView;
 import com.agropredict.presentation.viewmodel.prediction_diagnosis.PredictionResultViewModel;
 
 public final class PredictionResultActivity extends BaseActivity implements IPredictionResultView {
     private PredictionResultViewModel viewModel;
-    private PredictionResult predictionResult;
+    private PredictionResultDisplay predictionResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +24,7 @@ public final class PredictionResultActivity extends BaseActivity implements IPre
     }
 
     private void bind() {
-        predictionResult = new PredictionResult(this);
+        predictionResult = new PredictionResultDisplay(this);
     }
 
     private void initialize() {

@@ -1,4 +1,4 @@
-package com.agropredict.infrastructure.composer;
+package com.agropredict.infrastructure.factory;
 
 import android.content.Context;
 import com.agropredict.application.repository.ISessionRepository;
@@ -7,10 +7,10 @@ import com.agropredict.application.factory.IDashboardFactory;
 import com.agropredict.infrastructure.ai_model_asset.AssetExtractor;
 import com.agropredict.infrastructure.persistence.repository.SessionRepository;
 
-public final class DashboardComposer implements IDashboardFactory {
+public final class AndroidDashboardFactory implements IDashboardFactory {
     private final Context context;
 
-    public DashboardComposer(Context context) {
+    public AndroidDashboardFactory(Context context) {
         this.context = context;
     }
 

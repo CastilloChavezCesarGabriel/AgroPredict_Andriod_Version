@@ -20,6 +20,6 @@ public final class RegisterViewModel {
 
     public void register(RegistrationRequest request) {
         RegistrationResult result = registerUseCase.register(request);
-        result.accept(new RegistrationResultStrategy(view));
+        result.accept(new RegistrationResultPresenter(view));
     }
 }

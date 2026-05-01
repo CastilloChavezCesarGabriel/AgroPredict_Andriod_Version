@@ -3,14 +3,14 @@ package com.agropredict.application.usecase;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import com.agropredict.application.repository.IDeletable;
+import com.agropredict.application.repository.IRecordEraser;
 import com.agropredict.visitor.TestOperationResultVisitor;
 
 import org.junit.Test;
 
 public final class DeleteUseCaseTest {
 
-    private IDeletable fakeRepo(boolean throwOnDelete) {
+    private IRecordEraser fakeRepo(boolean throwOnDelete) {
         return identifier -> {
             if (throwOnDelete) throw new RuntimeException("DB error");
         };

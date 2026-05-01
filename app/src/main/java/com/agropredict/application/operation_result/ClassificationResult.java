@@ -18,7 +18,7 @@ public final class ClassificationResult {
         if (prediction.isConfident()) {
             visitor.visitPrediction(predictedCrop, confidence);
         } else {
-            visitor.reject("Could not identify the crop with certainty");
+            visitor.onReject("Could not identify the crop with certainty");
         }
     }
 }

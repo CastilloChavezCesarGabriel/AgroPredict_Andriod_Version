@@ -3,11 +3,11 @@ package com.agropredict.presentation.viewmodel.report_generation;
 import com.agropredict.application.request.report_generation.ReportRequest;
 import com.agropredict.application.visitor.IOperationResultVisitor;
 
-public final class PersistenceOutcome implements IOperationResultVisitor {
+public final class ReportOutcomeRouter implements IOperationResultVisitor {
     private final ReportRequest request;
-    private final IReportPersister persister;
+    private final ReportExporter persister;
 
-    public PersistenceOutcome(ReportRequest request, IReportPersister persister) {
+    public ReportOutcomeRouter(ReportRequest request, ReportExporter persister) {
         this.request = request;
         this.persister = persister;
     }

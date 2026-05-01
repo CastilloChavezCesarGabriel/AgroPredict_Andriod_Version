@@ -25,7 +25,7 @@ public final class LoginUseCase {
         Session session = userRepository.authenticate(email, password);
         if (session == null) return reject(currentTime);
         tracker = tracker.succeed();
-        session.accept(sessionRepository);
+        sessionRepository.save(session);
         return OperationResult.succeed("User is authenticated");
     }
 

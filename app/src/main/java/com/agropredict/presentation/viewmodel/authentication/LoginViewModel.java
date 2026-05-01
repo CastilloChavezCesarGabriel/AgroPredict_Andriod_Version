@@ -14,6 +14,6 @@ public final class LoginViewModel {
 
     public void login(String email, String password) {
         OperationResult result = loginUseCase.login(email, password);
-        result.accept(new LoginResultStrategy(view));
+        result.accept(new LoginResultPresenter(view));
     }
 }

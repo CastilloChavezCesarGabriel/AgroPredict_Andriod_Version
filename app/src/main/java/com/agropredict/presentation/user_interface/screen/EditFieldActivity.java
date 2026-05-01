@@ -7,8 +7,8 @@ import com.agropredict.application.usecase.catalog.ListCatalogUseCase;
 import com.agropredict.application.usecase.crop.FindCropUseCase;
 import com.agropredict.application.usecase.crop.UpdateCropUseCase;
 import com.agropredict.domain.entity.Crop;
-import com.agropredict.presentation.user_interface.catalog_input.SoilTypeCatalog;
-import com.agropredict.presentation.user_interface.catalog_input.StageCatalog;
+import com.agropredict.presentation.user_interface.catalog_input.SoilTypeOption;
+import com.agropredict.presentation.user_interface.catalog_input.StageOption;
 import com.agropredict.presentation.user_interface.selector.FieldEditor;
 import com.agropredict.presentation.viewmodel.crop_management.EditFieldViewModel;
 import com.agropredict.presentation.viewmodel.crop_management.IEditFieldView;
@@ -62,12 +62,12 @@ public final class EditFieldActivity extends BaseActivity implements IEditFieldV
     }
 
     @Override
-    public void populate(SoilTypeCatalog soilTypeOption) {
+    public void populate(SoilTypeOption soilTypeOption) {
         fieldEditor.populate(soilTypeOption);
     }
 
     @Override
-    public void populate(StageCatalog stageOption) {
+    public void populate(StageOption stageOption) {
         fieldEditor.populate(stageOption);
     }
 

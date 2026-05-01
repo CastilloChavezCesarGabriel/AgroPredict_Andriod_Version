@@ -2,10 +2,10 @@ package com.agropredict.presentation.viewmodel.prediction_diagnosis;
 
 import com.agropredict.application.visitor.IOperationResultVisitor;
 
-public final class DiagnosticResultStrategy implements IOperationResultVisitor {
+public final class DiagnosticResultPresenter implements IOperationResultVisitor {
     private final IPredictionView view;
 
-    public DiagnosticResultStrategy(IPredictionView view) {
+    public DiagnosticResultPresenter(IPredictionView view) {
         this.view = view;
     }
 

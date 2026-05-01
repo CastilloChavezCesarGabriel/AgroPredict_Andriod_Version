@@ -3,10 +3,10 @@ package com.agropredict.presentation.user_interface.screen;
 import android.view.View;
 import com.agropredict.domain.IOccupationVisitor;
 
-public final class ReportCardVisibility implements IOccupationVisitor {
+public final class AdvancedReportCardReveal implements IOccupationVisitor {
     private final View reportCard;
 
-    public ReportCardVisibility(View reportCard) {
+    public AdvancedReportCardReveal(View reportCard) {
         this.reportCard = reportCard;
     }
 

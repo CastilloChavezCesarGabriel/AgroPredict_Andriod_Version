@@ -1,7 +1,7 @@
 package com.agropredict.presentation.viewmodel.prediction_diagnosis;
 
-import com.agropredict.presentation.user_interface.catalog_input.SoilTypeCatalog;
-import com.agropredict.presentation.user_interface.catalog_input.StageCatalog;
+import com.agropredict.presentation.user_interface.catalog_input.SoilTypeOption;
+import com.agropredict.presentation.user_interface.catalog_input.StageOption;
 
 public interface IPredictionView {
     void notify(String message);
@@ -10,6 +10,6 @@ public interface IPredictionView {
     void onClassified(String cropName, double confidence);
     void onDiagnosed(String diagnosticIdentifier);
     void onFailed();
-    void populate(SoilTypeCatalog soilTypeOption);
-    void populate(StageCatalog stageOption);
+    void populate(SoilTypeOption soilTypeOption);
+    void populate(StageOption stageOption);
 }

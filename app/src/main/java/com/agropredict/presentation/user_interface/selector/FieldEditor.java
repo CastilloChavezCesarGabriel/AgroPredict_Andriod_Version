@@ -11,8 +11,8 @@ import com.agropredict.domain.component.crop.GrowthCycle;
 import com.agropredict.domain.component.crop.Soil;
 import com.agropredict.domain.entity.Crop;
 import com.agropredict.domain.visitor.crop.ICropVisitor;
-import com.agropredict.presentation.user_interface.catalog_input.SoilTypeCatalog;
-import com.agropredict.presentation.user_interface.catalog_input.StageCatalog;
+import com.agropredict.presentation.user_interface.catalog_input.SoilTypeOption;
+import com.agropredict.presentation.user_interface.catalog_input.StageOption;
 
 public final class FieldEditor implements ICropVisitor {
     private final EditText cropNameInput;
@@ -41,11 +41,11 @@ public final class FieldEditor implements ICropVisitor {
         crop.accept(this);
     }
 
-    public void populate(SoilTypeCatalog soilTypeOption) {
+    public void populate(SoilTypeOption soilTypeOption) {
         soilTypeOption.populate(soilTypeSpinner);
     }
 
-    public void populate(StageCatalog stageOption) {
+    public void populate(StageOption stageOption) {
         stageOption.populate(stageSpinner);
     }
 

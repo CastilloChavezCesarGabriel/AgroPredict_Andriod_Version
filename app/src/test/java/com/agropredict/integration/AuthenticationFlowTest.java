@@ -42,9 +42,11 @@ public final class AuthenticationFlowTest {
 
     private ISessionRepository inMemorySessionRepo() {
         return new ISessionRepository() {
-            @Override public void visit(String identifier, String occupation) {
-                sessionStore.put("id", identifier);
-                sessionStore.put("occ", occupation);
+            @Override public void save(Session session) {
+                session.accept((identifier, occupation) -> {
+                    sessionStore.put("id", identifier);
+                    sessionStore.put("occ", occupation);
+                });
             }
             @Override public Session recall() {
                 if (!sessionStore.containsKey("id")) return null;

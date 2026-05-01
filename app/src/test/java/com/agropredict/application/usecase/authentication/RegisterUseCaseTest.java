@@ -2,7 +2,6 @@ package com.agropredict.application.usecase.authentication;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
 import com.agropredict.application.repository.IUserRepository;
 import com.agropredict.application.request.user_registration.RegistrationException;
 import com.agropredict.application.request.user_registration.RegistrationRequest;
@@ -13,11 +12,9 @@ import com.agropredict.application.request.user_registration.Registrant;
 import com.agropredict.application.service.IPasswordHasher;
 import com.agropredict.domain.Session;
 import com.agropredict.visitor.TestRegistrationResultVisitor;
-
 import org.junit.Test;
 
 public final class RegisterUseCaseTest {
-
     private IUserRepository fakeUserRepo(String rejectionMessage) {
         return new IUserRepository() {
             @Override public Session authenticate(String email, String password) { return null; }

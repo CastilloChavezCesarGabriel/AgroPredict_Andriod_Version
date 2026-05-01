@@ -5,7 +5,6 @@ import com.agropredict.visitor.TestRegistrationResultVisitor;
 import org.junit.Test;
 
 public final class RegistrationResultTest {
-
     @Test
     public void testSucceed() {
         TestRegistrationResultVisitor visitor = new TestRegistrationResultVisitor();

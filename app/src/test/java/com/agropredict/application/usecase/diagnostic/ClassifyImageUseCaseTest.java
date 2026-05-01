@@ -13,7 +13,7 @@ public final class ClassifyImageUseCaseTest {
     private IImageClassifier fakeClassifier(String validationError, String crop, double confidence) {
         return (path, consumer) -> {
             if (validationError != null) {
-                consumer.reject(validationError);
+                consumer.onReject(validationError);
                 return;
             }
             new ClassificationResult(crop, confidence).accept(consumer);

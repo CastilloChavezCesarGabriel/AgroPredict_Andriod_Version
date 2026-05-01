@@ -14,6 +14,6 @@ public final class RecoveryViewModel {
 
     public void reset(String email, String newPassword) {
         OperationResult result = resetUseCase.reset(email, newPassword);
-        result.accept(new RecoveryResultStrategy(view));
+        result.accept(new RecoveryResultPresenter(view));
     }
 }

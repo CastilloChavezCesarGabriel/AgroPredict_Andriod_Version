@@ -4,9 +4,9 @@ import com.agropredict.application.visitor.IQuestionnaireVisitor;
 
 public final class Condition {
     private final Weather environment;
-    private final Soil soil;
+    private final SoilAnswer soil;
 
-    public Condition(Weather environment, Soil soil) {
+    public Condition(Weather environment, SoilAnswer soil) {
         this.environment = environment;
         this.soil = soil;
     }

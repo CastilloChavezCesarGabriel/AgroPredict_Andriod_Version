@@ -2,13 +2,10 @@ package com.agropredict.application.operation_result;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
 import com.agropredict.visitor.TestOperationResultVisitor;
-
 import org.junit.Test;
 
 public final class OperationResultTest {
-
     @Test
     public void testSucceed() {
         TestOperationResultVisitor visitor = new TestOperationResultVisitor();

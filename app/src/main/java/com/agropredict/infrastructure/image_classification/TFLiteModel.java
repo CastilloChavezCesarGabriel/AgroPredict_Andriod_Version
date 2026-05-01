@@ -16,7 +16,7 @@ public final class TFLiteModel {
 
     public void infer(ByteBuffer input, IClassificationResultVisitor consumer) {
         if (interpreter == null) {
-            consumer.reject("Model not available");
+            consumer.onReject("Model not available");
             return;
         }
         float[][] output = new float[1][labels.length];

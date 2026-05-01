@@ -14,7 +14,7 @@ public final class TestClassificationResultVisitor implements IClassificationRes
     }
 
     @Override
-    public void reject(String errorMessage) {
+    public void onReject(String errorMessage) {
         this.errorMessage = errorMessage;
     }
 

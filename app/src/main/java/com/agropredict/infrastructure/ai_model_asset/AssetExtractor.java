@@ -19,7 +19,9 @@ public final class AssetExtractor implements IAssetService {
     public String extract(String path) throws IOException {
         String fileName = resolve(path);
         File outputFile = new File(context.getCacheDir(), fileName);
-        if (!outputFile.exists()) copy(path, outputFile);
+        if (!outputFile.exists()) {
+            copy(path, outputFile);
+        }
         return outputFile.getAbsolutePath();
     }
 

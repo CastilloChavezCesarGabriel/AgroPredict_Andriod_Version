@@ -1,4 +1,4 @@
-package com.agropredict.infrastructure.composer;
+package com.agropredict.infrastructure.factory;
 
 import android.content.Context;
 import com.agropredict.application.repository.ICatalogRepository;
@@ -14,11 +14,11 @@ import com.agropredict.infrastructure.persistence.repository.SqliteUserRepositor
 import com.agropredict.infrastructure.persistence.schema.CatalogName;
 import com.agropredict.infrastructure.security.PasswordHasher;
 
-public final class AccessComposer implements IAccessFactory {
+public final class AndroidAccessFactory implements IAccessFactory {
     private final Database database;
     private final Context context;
 
-    public AccessComposer(Database database, Context context) {
+    public AndroidAccessFactory(Database database, Context context) {
         this.database = database;
         this.context = context;
     }

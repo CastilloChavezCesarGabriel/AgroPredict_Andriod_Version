@@ -5,18 +5,18 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.agropredict.infrastructure.persistence.schema.Schema;
-import com.agropredict.infrastructure.persistence.schema.SeedData;
+import com.agropredict.infrastructure.persistence.schema.SeedLoader;
 
 public final class Database extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "agro_diagnostic.db";
     private static final int DATABASE_VERSION = 1;
     private final Schema schema;
-    private final SeedData seedData;
+    private final SeedLoader seedLoader;
 
     public Database(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.schema = new Schema();
-        this.seedData = new SeedData();
+        this.seedLoader = new SeedLoader();
     }
 
     @Override
@@ -27,7 +27,7 @@ public final class Database extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase database) {
         schema.create(database);
-        seedData.load(database);
+        seedLoader.load(database);
     }
 
     @Override

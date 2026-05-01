@@ -2,7 +2,7 @@ package com.agropredict.infrastructure.persistence.schema;
 
 import android.database.sqlite.SQLiteDatabase;
 
-public final class SeedData {
+public final class SeedLoader {
     public void load(SQLiteDatabase database) {
         populate(database);
         register(database);

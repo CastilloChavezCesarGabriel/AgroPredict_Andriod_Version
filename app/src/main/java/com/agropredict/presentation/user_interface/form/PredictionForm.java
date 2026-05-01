@@ -10,8 +10,8 @@ import com.agropredict.R;
 import com.agropredict.application.request.diagnostic_submission.SubmissionRequest;
 import com.agropredict.application.request.diagnostic_submission.Classification;
 import com.agropredict.application.request.diagnostic_submission.PhotographInput;
-import com.agropredict.presentation.user_interface.catalog_input.SoilTypeCatalog;
-import com.agropredict.presentation.user_interface.catalog_input.StageCatalog;
+import com.agropredict.presentation.user_interface.catalog_input.SoilTypeOption;
+import com.agropredict.presentation.user_interface.catalog_input.StageOption;
 
 public final class PredictionForm {
     private final ImageView cropImagePreview;
@@ -53,11 +53,11 @@ public final class PredictionForm {
         cropImagePreview.setImageURI(imageUri);
     }
 
-    public void populate(SoilTypeCatalog soilTypeOption) {
+    public void populate(SoilTypeOption soilTypeOption) {
         questionnaire.populate(soilTypeOption);
     }
 
-    public void populate(StageCatalog stageOption) {
+    public void populate(StageOption stageOption) {
         questionnaire.populate(stageOption);
     }
 

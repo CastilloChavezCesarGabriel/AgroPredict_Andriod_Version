@@ -1,4 +1,4 @@
-package com.agropredict.infrastructure.composer;
+package com.agropredict.infrastructure.factory;
 
 import android.content.Context;
 import com.agropredict.application.repository.ICropRepository;
@@ -10,11 +10,11 @@ import com.agropredict.infrastructure.persistence.repository.SessionRepository;
 import com.agropredict.infrastructure.persistence.repository.SqliteCropRepository;
 import com.agropredict.infrastructure.persistence.repository.SqliteDiagnosticRepository;
 
-public final class ReviewComposer implements IReviewFactory {
+public final class AndroidReviewFactory implements IReviewFactory {
     private final Database database;
     private final Context context;
 
-    public ReviewComposer(Database database, Context context) {
+    public AndroidReviewFactory(Database database, Context context) {
         this.database = database;
         this.context = context;
     }

@@ -1,13 +1,10 @@
 package com.agropredict.application.operation_result;
 
 import static org.junit.Assert.assertTrue;
-
 import com.agropredict.visitor.TestClassificationResultVisitor;
-
 import org.junit.Test;
 
 public final class ClassificationResultTest {
-
     @Test
     public void testConfidentPrediction() {
         TestClassificationResultVisitor visitor = new TestClassificationResultVisitor();

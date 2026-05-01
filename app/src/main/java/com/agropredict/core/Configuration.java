@@ -7,12 +7,12 @@ import com.agropredict.application.factory.IDashboardFactory;
 import com.agropredict.application.factory.IPredictionFactory;
 import com.agropredict.application.factory.IReportingFactory;
 import com.agropredict.application.factory.IReviewFactory;
-import com.agropredict.infrastructure.composer.AccessComposer;
-import com.agropredict.infrastructure.composer.CatalogComposer;
-import com.agropredict.infrastructure.composer.DashboardComposer;
-import com.agropredict.infrastructure.composer.PredictionComposer;
-import com.agropredict.infrastructure.composer.ReportingComposer;
-import com.agropredict.infrastructure.composer.ReviewComposer;
+import com.agropredict.infrastructure.factory.AndroidAccessFactory;
+import com.agropredict.infrastructure.factory.AndroidCatalogFactory;
+import com.agropredict.infrastructure.factory.AndroidDashboardFactory;
+import com.agropredict.infrastructure.factory.AndroidPredictionFactory;
+import com.agropredict.infrastructure.factory.AndroidReportingFactory;
+import com.agropredict.infrastructure.factory.AndroidReviewFactory;
 import com.agropredict.infrastructure.database_backup.DatabaseBackup;
 import com.agropredict.infrastructure.persistence.database.Database;
 import java.io.File;
@@ -27,27 +27,27 @@ public final class Configuration {
     }
 
     public IAccessFactory createAccess() {
-        return new AccessComposer(database, context);
+        return new AndroidAccessFactory(database, context);
     }
 
     public IDashboardFactory createDashboard() {
-        return new DashboardComposer(context);
+        return new AndroidDashboardFactory(context);
     }
 
     public ICatalogFactory createCatalog() {
-        return new CatalogComposer(database, context);
+        return new AndroidCatalogFactory(database, context);
     }
 
     public IReviewFactory createReview() {
-        return new ReviewComposer(database, context);
+        return new AndroidReviewFactory(database, context);
     }
 
     public IPredictionFactory createPrediction() {
-        return new PredictionComposer(database, context);
+        return new AndroidPredictionFactory(database, context);
     }
 
     public IReportingFactory createReporting() {
-        return new ReportingComposer(database, context);
+        return new AndroidReportingFactory(database, context);
     }
 
     public void backup() {

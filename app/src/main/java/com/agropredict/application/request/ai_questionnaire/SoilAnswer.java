@@ -2,11 +2,11 @@ package com.agropredict.application.request.ai_questionnaire;
 
 import com.agropredict.application.visitor.IQuestionnaireVisitor;
 
-public final class Soil {
+public final class SoilAnswer {
     private final String moisture;
     private final String acidity;
 
-    public Soil(String moisture, String acidity) {
+    public SoilAnswer(String moisture, String acidity) {
         this.moisture = moisture;
         this.acidity = acidity;
     }

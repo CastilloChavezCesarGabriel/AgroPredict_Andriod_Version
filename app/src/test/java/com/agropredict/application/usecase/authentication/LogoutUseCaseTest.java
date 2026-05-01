@@ -8,12 +8,11 @@ import com.agropredict.domain.Session;
 import org.junit.Test;
 
 public final class LogoutUseCaseTest {
-
     @Test
     public void testLogoutClearsSession() {
         boolean[] cleared = {false};
         ISessionRepository repo = new ISessionRepository() {
-            @Override public void visit(String id, String occ) {}
+            @Override public void save(Session session) {}
             @Override public Session recall() { return null; }
             @Override public void clear() { cleared[0] = true; }
         };

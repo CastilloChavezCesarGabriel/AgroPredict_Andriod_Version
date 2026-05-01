@@ -7,9 +7,9 @@ import com.agropredict.domain.entity.Diagnostic;
 
 public final class Submission {
     private final Classification prediction;
-    private final Field field;
+    private final SubmissionField field;
 
-    public Submission(Classification prediction, Field field) {
+    public Submission(Classification prediction, SubmissionField field) {
         this.prediction = prediction;
         this.field = field;
     }

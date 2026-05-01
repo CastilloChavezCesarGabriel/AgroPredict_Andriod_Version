@@ -1,12 +1,12 @@
 package com.agropredict.application.usecase;
 
-import com.agropredict.application.repository.IDeletable;
+import com.agropredict.application.repository.IRecordEraser;
 import com.agropredict.application.operation_result.OperationResult;
 
 public final class DeleteUseCase {
-    private final IDeletable repository;
+    private final IRecordEraser repository;
 
-    public DeleteUseCase(IDeletable repository) {
+    public DeleteUseCase(IRecordEraser repository) {
         this.repository = repository;
     }
 

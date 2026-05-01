@@ -9,9 +9,9 @@ import com.agropredict.domain.visitor.diagnostic.IDiagnosticPairVisitor;
 public final class ReportRequestComposer implements IDiagnosticPairVisitor {
     private final Report report;
     private final OperationResult result;
-    private final IReportPersister persister;
+    private final ReportExporter persister;
 
-    public ReportRequestComposer(Report report, OperationResult result, IReportPersister persister) {
+    public ReportRequestComposer(Report report, OperationResult result, ReportExporter persister) {
         this.report = report;
         this.result = result;
         this.persister = persister;
@@ -20,6 +20,6 @@ public final class ReportRequestComposer implements IDiagnosticPairVisitor {
     @Override
     public void match(String diagnosticIdentifier, String otherIdentifier) {
         ReportRequest request = new ReportRequest(report, new Finding(diagnosticIdentifier, otherIdentifier));
-        result.accept(new PersistenceOutcome(request, persister));
+        result.accept(new ReportOutcomeRouter(request, persister));
     }
 }

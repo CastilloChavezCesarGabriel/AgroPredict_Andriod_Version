@@ -1,5 +1,5 @@
 package com.agropredict.application.repository;
 
-public interface IDeletable {
+public interface IRecordEraser {
     void delete(String identifier);
 }

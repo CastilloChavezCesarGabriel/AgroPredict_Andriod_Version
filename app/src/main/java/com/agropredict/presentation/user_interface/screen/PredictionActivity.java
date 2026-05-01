@@ -16,8 +16,8 @@ import com.agropredict.application.service.IImageCompressor;
 import com.agropredict.application.usecase.catalog.ListCatalogUseCase;
 import com.agropredict.application.usecase.diagnostic.ClassifyImageUseCase;
 import com.agropredict.application.usecase.diagnostic.SubmitDiagnosticUseCase;
-import com.agropredict.presentation.user_interface.catalog_input.SoilTypeCatalog;
-import com.agropredict.presentation.user_interface.catalog_input.StageCatalog;
+import com.agropredict.presentation.user_interface.catalog_input.SoilTypeOption;
+import com.agropredict.presentation.user_interface.catalog_input.StageOption;
 import com.agropredict.presentation.user_interface.form.PredictionForm;
 import com.agropredict.presentation.user_interface.selector.DateSelection;
 import com.agropredict.presentation.viewmodel.prediction_diagnosis.IPredictionView;
@@ -146,12 +146,12 @@ public final class PredictionActivity extends BaseActivity implements IPredictio
     }
 
     @Override
-    public void populate(SoilTypeCatalog soilTypeOption) {
+    public void populate(SoilTypeOption soilTypeOption) {
         predictionForm.populate(soilTypeOption);
     }
 
     @Override
-    public void populate(StageCatalog stageOption) {
+    public void populate(StageOption stageOption) {
         predictionForm.populate(stageOption);
     }
 

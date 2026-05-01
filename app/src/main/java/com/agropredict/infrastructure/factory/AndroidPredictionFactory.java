@@ -1,4 +1,4 @@
-package com.agropredict.infrastructure.composer;
+package com.agropredict.infrastructure.factory;
 
 import android.content.Context;
 import com.agropredict.application.diagnostic_submission.AnswerArchive;
@@ -27,11 +27,11 @@ import com.agropredict.infrastructure.persistence.repository.SqlitePhotographRep
 import com.agropredict.infrastructure.persistence.repository.SqliteQuestionnaireRepository;
 import com.agropredict.infrastructure.persistence.schema.CatalogName;
 
-public final class PredictionComposer implements IPredictionFactory {
+public final class AndroidPredictionFactory implements IPredictionFactory {
     private final Database database;
     private final Context context;
 
-    public PredictionComposer(Database database, Context context) {
+    public AndroidPredictionFactory(Database database, Context context) {
         this.database = database;
         this.context = context;
     }

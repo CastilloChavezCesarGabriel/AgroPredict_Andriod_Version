@@ -1,4 +1,4 @@
-package com.agropredict.infrastructure.composer;
+package com.agropredict.infrastructure.factory;
 
 import android.content.Context;
 import com.agropredict.application.repository.ICropRepository;
@@ -16,11 +16,11 @@ import com.agropredict.infrastructure.report_export.CsvReportService;
 import com.agropredict.infrastructure.report_export.PdfReportService;
 import java.io.File;
 
-public final class ReportingComposer implements IReportingFactory {
+public final class AndroidReportingFactory implements IReportingFactory {
     private final Database database;
     private final Context context;
 
-    public ReportingComposer(Database database, Context context) {
+    public AndroidReportingFactory(Database database, Context context) {
         this.database = database;
         this.context = context;
     }

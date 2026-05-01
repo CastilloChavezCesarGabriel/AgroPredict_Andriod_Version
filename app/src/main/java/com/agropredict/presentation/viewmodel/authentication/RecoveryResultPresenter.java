@@ -2,10 +2,10 @@ package com.agropredict.presentation.viewmodel.authentication;
 
 import com.agropredict.application.visitor.IOperationResultVisitor;
 
-public final class RecoveryResultStrategy implements IOperationResultVisitor {
+public final class RecoveryResultPresenter implements IOperationResultVisitor {
     private final IRecoveryView view;
 
-    public RecoveryResultStrategy(IRecoveryView view) {
+    public RecoveryResultPresenter(IRecoveryView view) {
         this.view = view;
     }
 

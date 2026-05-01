@@ -10,7 +10,6 @@ import com.agropredict.domain.visitor.diagnostic.IDiagnosticVisitor;
 import com.agropredict.presentation.user_interface.selector.ISelectionListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public final class DiagnosticHistory implements IDiagnosticVisitor, ISeverityVisitor {
     private final ListView listView;
@@ -73,29 +72,5 @@ public final class DiagnosticHistory implements IDiagnosticVisitor, ISeverityVis
     @Override
     public void visit(String name, int urgency) {
         current.tag(name, severityColors[urgency]);
-    }
-
-    private static final class EntryBuilder {
-        private final StringBuilder text = new StringBuilder();
-        private int color;
-
-        EntryBuilder(int defaultColor) {
-            this.color = defaultColor;
-        }
-
-        void describe(String predictedCrop, double confidence) {
-            text.append(predictedCrop).append(" (")
-                .append(String.format(Locale.getDefault(), "%.0f%%", confidence * 100))
-                .append(")");
-        }
-
-        void tag(String label, int tagColor) {
-            text.append(" — ").append(label);
-            this.color = tagColor;
-        }
-
-        ListEntry build() {
-            return new ListEntry(text.toString(), color);
-        }
     }
 }

@@ -12,14 +12,14 @@ import com.agropredict.application.usecase.diagnostic.FindDiagnosticUseCase;
 import com.agropredict.application.visitor.IOperationResultVisitor;
 import com.agropredict.domain.entity.Diagnostic;
 import com.agropredict.domain.history.HistoryRecord;
-import com.agropredict.presentation.user_interface.display.FieldDetail;
+import com.agropredict.presentation.user_interface.display.FieldDetailDisplay;
 import com.agropredict.presentation.viewmodel.crop_management.FieldDetailViewModel;
 import com.agropredict.presentation.viewmodel.crop_management.IFieldDetailView;
 import java.util.List;
 
 public final class FieldDetailActivity extends BaseActivity implements IFieldDetailView, IOperationResultVisitor {
     private FieldDetailViewModel viewModel;
-    private FieldDetail fieldDetail;
+    private FieldDetailDisplay fieldDetail;
     private DeleteUseCase deleteUseCase;
     private TraceCropHistoryUseCase traceUseCase;
     private String cropIdentifier;
@@ -36,7 +36,7 @@ public final class FieldDetailActivity extends BaseActivity implements IFieldDet
 
     private void bind() {
         cropIdentifier = IntentExtra.DIAGNOSTIC_IDENTIFIER.read(getIntent());
-        fieldDetail = new FieldDetail(this);
+        fieldDetail = new FieldDetailDisplay(this);
     }
 
     private void initialize() {

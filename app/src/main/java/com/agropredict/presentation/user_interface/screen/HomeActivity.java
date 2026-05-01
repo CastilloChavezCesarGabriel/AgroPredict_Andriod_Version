@@ -59,7 +59,7 @@ public final class HomeActivity extends BaseActivity implements IHomeView {
         }
         View reportCard = findViewById(R.id.cardReport);
         reportCard.setVisibility(View.GONE);
-        session.observe(new ReportCardVisibility(reportCard));
+        session.observe(new AdvancedReportCardReveal(reportCard));
     }
 
     private void guide() {

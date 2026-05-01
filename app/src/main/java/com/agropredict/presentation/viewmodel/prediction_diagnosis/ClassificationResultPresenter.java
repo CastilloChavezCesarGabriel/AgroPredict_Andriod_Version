@@ -2,10 +2,10 @@ package com.agropredict.presentation.viewmodel.prediction_diagnosis;
 
 import com.agropredict.application.visitor.IClassificationResultVisitor;
 
-public final class ClassificationResultStrategy implements IClassificationResultVisitor {
+public final class ClassificationResultPresenter implements IClassificationResultVisitor {
     private final IPredictionView view;
 
-    public ClassificationResultStrategy(IPredictionView view) {
+    public ClassificationResultPresenter(IPredictionView view) {
         this.view = view;
     }
 
@@ -16,7 +16,7 @@ public final class ClassificationResultStrategy implements IClassificationResult
     }
 
     @Override
-    public void reject(String errorMessage) {
+    public void onReject(String errorMessage) {
         view.onIdle();
         view.notify(errorMessage);
     }

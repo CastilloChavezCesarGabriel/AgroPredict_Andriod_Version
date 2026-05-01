@@ -9,10 +9,9 @@ import com.agropredict.visitor.TestSessionVisitor;
 import org.junit.Test;
 
 public final class CheckSessionUseCaseTest {
-
-    private ISessionRepository fakeSessionRepo(Session session) {
+    private ISessionRepository fakeSessionRepository(Session session) {
         return new ISessionRepository() {
-            @Override public void visit(String id, String occ) {}
+            @Override public void save(Session toPersist) {}
             @Override public Session recall() { return session; }
             @Override public void clear() {}
         };
@@ -21,14 +20,14 @@ public final class CheckSessionUseCaseTest {
     @Test
     public void testCheckActiveSession() {
         TestSessionVisitor visitor = new TestSessionVisitor();
-        new CheckSessionUseCase(fakeSessionRepo(new Session("user_1", "Farmer"))).check(visitor);
+        new CheckSessionUseCase(fakeSessionRepository(new Session("user_1", "Farmer"))).check(visitor);
         assertTrue(visitor.isIdentified("user_1"));
     }
 
     @Test
     public void testCheckSessionReturnsOccupation() {
         TestSessionVisitor visitor = new TestSessionVisitor();
-        new CheckSessionUseCase(fakeSessionRepo(new Session("user_1", "Agronomist"))).check(visitor);
+        new CheckSessionUseCase(fakeSessionRepository(new Session("user_1", "Agronomist"))).check(visitor);
         assertTrue(visitor.isOccupied("Agronomist"));
     }
 }

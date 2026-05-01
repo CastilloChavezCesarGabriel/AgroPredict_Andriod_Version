@@ -13,11 +13,11 @@ public final class CatalogInput {
         this.stageSpinner = activity.findViewById(R.id.spnStage);
     }
 
-    public void populate(SoilTypeCatalog soilTypeCatalog) {
+    public void populate(SoilTypeOption soilTypeCatalog) {
         soilTypeCatalog.populate(soilTypeSpinner);
     }
 
-    public void populate(StageCatalog stageCatalog) {
+    public void populate(StageOption stageCatalog) {
         stageCatalog.populate(stageSpinner);
     }
 
