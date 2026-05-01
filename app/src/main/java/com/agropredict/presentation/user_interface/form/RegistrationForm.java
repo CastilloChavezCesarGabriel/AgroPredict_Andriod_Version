@@ -33,12 +33,12 @@ public final class RegistrationForm {
     public RegistrationRequest collect() {
         String fullName = fullNameInput.getText().toString().trim();
         String phone = phoneInput.getText().toString().trim();
-        Registrant personal = new Registrant(fullName, phone);
+        Registrant personalInformation = new Registrant(fullName, phone);
         String username = usernameInput.getText().toString().trim();
         String occupation = occupationSpinner.getSelectedItem().toString();
         Profile profile = new Profile(username, occupation);
         Account account = new Account(credentialGroup.collect(), profile);
-        return new RegistrationRequest(personal, account);
+        return new RegistrationRequest(personalInformation, account);
     }
 
     public void populate(java.util.List<String> occupations) {

@@ -12,7 +12,6 @@ import com.google.android.material.button.MaterialButtonToggleGroup;
 import java.util.List;
 
 public final class ReportForm {
-
     private final CropSelection cropSelection;
     private final MaterialButtonToggleGroup formatToggleGroup;
     private final Button shareButton;
