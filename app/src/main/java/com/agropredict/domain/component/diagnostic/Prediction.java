@@ -3,7 +3,7 @@ package com.agropredict.domain.component.diagnostic;
 import com.agropredict.domain.visitor.diagnostic.IDiagnosticVisitor;
 
 public final class Prediction {
-    private static final double CONFIDENCE_THRESHOLD = 0.6;
+    private static final double CONFIDENCE_THRESHOLD = 0.45;
 
     private final String predictedCrop;
     private final double confidence;
