@@ -1,5 +1,6 @@
 package com.agropredict.infrastructure.report_export;
 
+import android.util.Log;
 import com.agropredict.application.operation_result.OperationResult;
 import com.agropredict.application.service.IReportService;
 import com.agropredict.application.service.IReportWriter;
@@ -13,6 +14,7 @@ import java.util.Date;
 import java.util.Locale;
 
 public abstract class ReportService implements IReportService {
+    private static final String TAG = "ReportService";
     private static final String FILE_FORMAT = "yyyy-MM-dd_HH-mm-ss";
     protected final File outputDirectory;
 
@@ -29,6 +31,12 @@ public abstract class ReportService implements IReportService {
             File file = complete(writer, timestamp);
             return OperationResult.succeed(file.getAbsolutePath());
         } catch (IOException exception) {
+            Log.e(TAG, "Failed to generate report into " + outputDirectory.getAbsolutePath()
+                    + ". Check storage permission and free space.", exception);
+            return OperationResult.fail();
+        } catch (RuntimeException exception) {
+            Log.e(TAG, "Report writer threw a runtime error (often: missing diagnostic fields"
+                    + " when API submit failed earlier).", exception);
             return OperationResult.fail();
         }
     }

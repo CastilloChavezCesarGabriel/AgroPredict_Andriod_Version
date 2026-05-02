@@ -13,6 +13,7 @@ import java.io.InputStream;
 
 public final class BitmapCompressor implements IImageCompressor {
     private static final int JPEG_QUALITY = 80;
+    private static final int MAX_LONG_EDGE = 1024;
 
     private final Context context;
 
@@ -35,9 +36,31 @@ public final class BitmapCompressor implements IImageCompressor {
     }
 
     private Bitmap decode(Uri imageUri) throws IOException {
+        BitmapFactory.Options bounds = measure(imageUri);
+        if (bounds.outWidth <= 0 || bounds.outHeight <= 0) return null;
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inSampleSize = sample(bounds.outWidth, bounds.outHeight);
         try (InputStream stream = context.getContentResolver().openInputStream(imageUri)) {
-            return BitmapFactory.decodeStream(stream);
+            return BitmapFactory.decodeStream(stream, null, options);
         }
+    }
+
+    private BitmapFactory.Options measure(Uri imageUri) throws IOException {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        try (InputStream stream = context.getContentResolver().openInputStream(imageUri)) {
+            BitmapFactory.decodeStream(stream, null, options);
+        }
+        return options;
+    }
+
+    private int sample(int width, int height) {
+        int longEdge = Math.max(width, height);
+        int factor = 1;
+        while (longEdge / factor > MAX_LONG_EDGE) {
+            factor *= 2;
+        }
+        return factor;
     }
 
     private File save(Bitmap bitmap) throws IOException {

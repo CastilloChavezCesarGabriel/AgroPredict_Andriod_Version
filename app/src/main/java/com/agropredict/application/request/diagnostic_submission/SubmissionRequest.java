@@ -1,5 +1,6 @@
 package com.agropredict.application.request.diagnostic_submission;
 
+import com.agropredict.application.repository.ICatalogRepository;
 import com.agropredict.application.repository.ICropRepository;
 import com.agropredict.application.diagnostic_submission.IDiagnosticWorkflow;
 import com.agropredict.application.repository.IPhotographRepository;
@@ -27,8 +28,8 @@ public final class SubmissionRequest {
         return identifier;
     }
 
-    public void store(ICropRepository cropRepository, IPhotographRepository photoRepository) {
-        submission.store(cropRepository, photoRepository);
+    public void store(ICropRepository cropRepository, IPhotographRepository photoRepository, ICatalogRepository stageCatalog) {
+        submission.store(cropRepository, photoRepository, stageCatalog);
     }
 
     public void record(IQuestionnaireRepository repository, String identifier) {

@@ -36,12 +36,26 @@ public final class PredictionViewModel {
     }
 
     public void submit(SubmissionRequest request) {
+        android.util.Log.i("PredictionViewModel",
+                "submit() called. request=" + (request == null ? "NULL" : "set"));
         view.onLoading();
-        executor.execute(() -> diagnose(request));
+        executor.execute(() -> {
+            try {
+                diagnose(request);
+            } catch (RuntimeException exception) {
+                android.util.Log.e("PredictionViewModel",
+                        "Background diagnose() threw — UI will stay on loading.", exception);
+            }
+        });
     }
 
     private void diagnose(SubmissionRequest request) {
+        android.util.Log.i("PredictionViewModel", "diagnose() running on background thread");
         OperationResult result = submitUseCase.submit(request);
+        result.accept((completed, identifier) ->
+                android.util.Log.i("PredictionViewModel",
+                        "submit returned. completed=" + completed
+                                + " identifier=" + identifier));
         result.accept(new DiagnosticResultPresenter(view));
     }
 

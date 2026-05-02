@@ -10,8 +10,8 @@ public final class Schema {
         new UserTable().create(database);
         new CropTable().create(database);
         new ImageTable().create(database);
-        new DiagnosticTable().create(database);
         new QuestionnaireTable().create(database);
+        new DiagnosticTable().create(database);
         new ReportTable().create(database);
         new SupportTable().create(database);
         new DiagnosticSummaryView().create(database);

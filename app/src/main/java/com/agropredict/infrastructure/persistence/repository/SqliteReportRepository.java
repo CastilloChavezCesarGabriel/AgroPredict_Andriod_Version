@@ -20,4 +20,9 @@ public final class SqliteReportRepository implements IReportRepository {
         request.accept(new ReportPersistenceVisitor(row), destination);
         row.flush("report");
     }
+
+    @Override
+    public void clear(String cropIdentifier) {
+        database.getWritableDatabase().delete("report", "crop_id = ?", new String[]{cropIdentifier});
+    }
 }

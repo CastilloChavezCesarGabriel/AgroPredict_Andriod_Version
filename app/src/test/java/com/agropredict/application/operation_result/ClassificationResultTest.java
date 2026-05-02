@@ -23,14 +23,14 @@ public final class ClassificationResultTest {
     @Test
     public void testExactThreshold() {
         TestClassificationResultVisitor visitor = new TestClassificationResultVisitor();
-        new ClassificationResult("Corn", 0.6).accept(visitor);
+        new ClassificationResult("Corn", 0.45).accept(visitor);
         assertTrue(visitor.isAccepted("Corn"));
     }
 
     @Test
     public void testJustBelowThreshold() {
         TestClassificationResultVisitor visitor = new TestClassificationResultVisitor();
-        new ClassificationResult("Corn", 0.59).accept(visitor);
+        new ClassificationResult("Corn", 0.44).accept(visitor);
         assertTrue(visitor.wasRejected());
     }
 

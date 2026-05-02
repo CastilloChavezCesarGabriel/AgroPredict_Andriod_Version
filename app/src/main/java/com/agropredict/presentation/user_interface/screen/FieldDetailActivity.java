@@ -6,11 +6,13 @@ import android.os.Bundle;
 import android.widget.Toast;
 import com.agropredict.R;
 import com.agropredict.application.factory.IReviewFactory;
-import com.agropredict.application.usecase.DeleteUseCase;
+import com.agropredict.application.repository.IPhotographRepository;
+import com.agropredict.application.usecase.crop.RemoveCropUseCase;
 import com.agropredict.application.usecase.crop.TraceCropHistoryUseCase;
 import com.agropredict.application.usecase.diagnostic.FindDiagnosticUseCase;
 import com.agropredict.application.visitor.IOperationResultVisitor;
 import com.agropredict.domain.entity.Diagnostic;
+import com.agropredict.domain.entity.Photograph;
 import com.agropredict.domain.history.HistoryRecord;
 import com.agropredict.presentation.user_interface.display.FieldDetailDisplay;
 import com.agropredict.presentation.viewmodel.crop_management.FieldDetailViewModel;
@@ -20,8 +22,9 @@ import java.util.List;
 public final class FieldDetailActivity extends BaseActivity implements IFieldDetailView, IOperationResultVisitor {
     private FieldDetailViewModel viewModel;
     private FieldDetailDisplay fieldDetail;
-    private DeleteUseCase deleteUseCase;
+    private RemoveCropUseCase removeUseCase;
     private TraceCropHistoryUseCase traceUseCase;
+    private IPhotographRepository photographRepository;
     private String cropIdentifier;
 
     @Override
@@ -42,8 +45,9 @@ public final class FieldDetailActivity extends BaseActivity implements IFieldDet
     private void initialize() {
         IReviewFactory factory = (IReviewFactory) getApplication();
         FindDiagnosticUseCase findUseCase = new FindDiagnosticUseCase(factory.createDiagnosticRepository());
-        deleteUseCase = new DeleteUseCase(factory.createCropRepository());
+        removeUseCase = new RemoveCropUseCase(factory.createCropRepository(), factory.createCropCleanup());
         traceUseCase = new TraceCropHistoryUseCase(factory.createCropRepository());
+        photographRepository = factory.createPhotographRepository();
         viewModel = new FieldDetailViewModel(findUseCase, this);
     }
 
@@ -54,7 +58,10 @@ public final class FieldDetailActivity extends BaseActivity implements IFieldDet
     }
 
     private void load() {
-        if (cropIdentifier != null) viewModel.load(cropIdentifier);
+        if (cropIdentifier == null) return;
+        viewModel.load(cropIdentifier);
+        Photograph photograph = photographRepository.find(cropIdentifier);
+        if (photograph != null) display(photograph);
     }
 
     private void trace() {
@@ -88,7 +95,7 @@ public final class FieldDetailActivity extends BaseActivity implements IFieldDet
     }
 
     private void delete() {
-        deleteUseCase.delete(cropIdentifier).accept(this);
+        removeUseCase.remove(cropIdentifier).accept(this);
     }
 
     @Override
@@ -104,6 +111,11 @@ public final class FieldDetailActivity extends BaseActivity implements IFieldDet
     @Override
     public void display(Diagnostic diagnostic) {
         fieldDetail.display(diagnostic);
+    }
+
+    @Override
+    public void display(Photograph photograph) {
+        fieldDetail.display(photograph);
     }
 
     @Override

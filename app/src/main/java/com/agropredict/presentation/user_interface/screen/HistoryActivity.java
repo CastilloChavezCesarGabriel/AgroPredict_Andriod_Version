@@ -11,7 +11,7 @@ import com.agropredict.application.usecase.crop.ListCropUseCase;
 import com.agropredict.application.usecase.diagnostic.ListDiagnosticUseCase;
 import com.agropredict.domain.entity.Diagnostic;
 import com.agropredict.presentation.user_interface.display.DiagnosticHistory;
-import com.agropredict.presentation.user_interface.selector.CropSelection;
+import com.agropredict.presentation.user_interface.selector.CropTypeFilter;
 import com.agropredict.presentation.viewmodel.diagnostic_history.HistoryViewModel;
 import com.agropredict.presentation.viewmodel.diagnostic_history.IHistoryView;
 import java.util.List;
@@ -19,7 +19,7 @@ import java.util.List;
 public final class HistoryActivity extends BaseActivity implements IHistoryView {
     private HistoryViewModel viewModel;
     private DiagnosticHistory diagnosticHistory;
-    private CropSelection cropSelection;
+    private CropTypeFilter cropFilter;
     private ListCropUseCase cropUseCase;
 
     @Override
@@ -42,7 +42,7 @@ public final class HistoryActivity extends BaseActivity implements IHistoryView 
         CheckSessionUseCase sessionUseCase = new CheckSessionUseCase(factory.createSessionRepository());
         cropUseCase = new ListCropUseCase(factory.createCropRepository());
         viewModel = new HistoryViewModel(listUseCase, deleteUseCase, this);
-        cropSelection = new CropSelection(findViewById(R.id.spnCropFilter), viewModel::filter);
+        cropFilter = new CropTypeFilter(findViewById(R.id.spnCropFilter), viewModel::filter);
         sessionUseCase.check((identifier, occupation) -> start(identifier));
     }
 
@@ -54,7 +54,7 @@ public final class HistoryActivity extends BaseActivity implements IHistoryView 
     private void start(String identifier) {
         if (identifier == null) return;
         viewModel.load(identifier);
-        cropSelection.populate(cropUseCase.list(identifier));
+        cropFilter.populate(cropUseCase.list(identifier));
     }
 
     private void confirm(String diagnosticIdentifier) {

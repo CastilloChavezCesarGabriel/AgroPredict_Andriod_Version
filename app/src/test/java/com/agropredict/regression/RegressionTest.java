@@ -82,16 +82,16 @@ public final class RegressionTest {
     }
 
     @Test
-    public void testBugClassificationBoundaryAt060() {
+    public void testBugClassificationBoundaryAt045() {
         TestClassificationResultVisitor visitor = new TestClassificationResultVisitor();
-        new ClassificationResult("Corn", 0.6).accept(visitor);
+        new ClassificationResult("Corn", 0.45).accept(visitor);
         assertTrue(visitor.wasAccepted());
     }
 
     @Test
-    public void testBugClassificationBoundaryAt059() {
+    public void testBugClassificationBoundaryAt044() {
         TestClassificationResultVisitor visitor = new TestClassificationResultVisitor();
-        new ClassificationResult("Corn", 0.59).accept(visitor);
+        new ClassificationResult("Corn", 0.44).accept(visitor);
         assertTrue(visitor.wasRejected());
     }
 

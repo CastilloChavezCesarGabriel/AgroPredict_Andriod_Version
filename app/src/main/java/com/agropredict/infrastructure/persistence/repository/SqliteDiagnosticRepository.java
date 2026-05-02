@@ -52,16 +52,21 @@ public final class SqliteDiagnosticRepository extends SqliteRepository<Diagnosti
     }
 
     @Override
+    public void clear(String cropIdentifier) {
+        database.getWritableDatabase().delete("diagnostic", "crop_id = ?", new String[]{cropIdentifier});
+    }
+
+    @Override
     public List<Diagnostic> list(String userIdentifier) {
         return fetch(SELECT_DIAGNOSTIC
                 + "WHERE d.user_id = ? ORDER BY d.created_at DESC", new String[]{userIdentifier});
     }
 
     @Override
-    public List<Diagnostic> filter(String userIdentifier, String cropIdentifier) {
+    public List<Diagnostic> filter(String userIdentifier, String cropType) {
         return fetch(SELECT_DIAGNOSTIC
-                + "WHERE d.user_id = ? AND d.crop_id = ? ORDER BY d.created_at DESC",
-                new String[]{userIdentifier, cropIdentifier});
+                + "WHERE d.user_id = ? AND d.predicted_crop = ? ORDER BY d.created_at DESC",
+                new String[]{userIdentifier, cropType});
     }
 
     @Override

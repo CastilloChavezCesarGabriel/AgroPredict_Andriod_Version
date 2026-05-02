@@ -97,8 +97,14 @@ public final class PredictionActivity extends BaseActivity implements IPredictio
     }
 
     private void diagnose() {
+        android.util.Log.i("PredictionActivity", "Submit tapped. imagePath=" + selectedImagePath
+                        + " classification=" + (classification == null ? "NULL" : "set"));
         if (selectedImagePath == null || selectedImagePath.isEmpty()) {
             notify(getString(R.string.image_invalid));
+            return;
+        }
+        if (classification == null) {
+            notify(getString(R.string.classification_low_confidence));
             return;
         }
         PhotographInput photograph = new PhotographInput(selectedImagePath);

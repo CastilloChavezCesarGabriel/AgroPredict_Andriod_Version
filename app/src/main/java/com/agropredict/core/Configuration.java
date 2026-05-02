@@ -18,8 +18,10 @@ import com.agropredict.infrastructure.persistence.database.Database;
 import java.io.File;
 
 public final class Configuration {
+    private static final long BACKUP_INTERVAL_MILLIS = 24L * 60L * 60L * 1000L;
     private final Database database;
     private final Context context;
+    private IPredictionFactory predictionFactory;
 
     public Configuration(Context context) {
         this.database = new Database(context);
@@ -43,7 +45,10 @@ public final class Configuration {
     }
 
     public IPredictionFactory createPrediction() {
-        return new AndroidPredictionFactory(database, context);
+        if (predictionFactory == null) {
+            predictionFactory = new AndroidPredictionFactory(database, context);
+        }
+        return predictionFactory;
     }
 
     public IReportingFactory createReporting() {
@@ -52,8 +57,14 @@ public final class Configuration {
 
     public void backup() {
         String name = database.getDatabaseName();
-        File source = context.getDatabasePath(name);
         File destination = new File(context.getExternalFilesDir(null), "backups/" + name);
+        if (skip(destination)) return;
+        File source = context.getDatabasePath(name);
         new DatabaseBackup(source, destination).backup();
+    }
+
+    private boolean skip(File destination) {
+        return destination.exists()
+                && System.currentTimeMillis() - destination.lastModified() < BACKUP_INTERVAL_MILLIS;
     }
 }

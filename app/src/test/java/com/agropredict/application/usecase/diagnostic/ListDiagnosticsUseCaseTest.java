@@ -19,6 +19,7 @@ public final class ListDiagnosticsUseCaseTest {
         return new IDiagnosticRepository() {
             @Override public void store(Diagnostic d) {}
             @Override public void delete(String id) {}
+            @Override public void clear(String cropId) {}
             @Override public List<Diagnostic> list(String userId) { return all; }
             @Override public List<Diagnostic> filter(String userId, String cropId) { return filtered; }
             @Override public Diagnostic find(String id) { return null; }
