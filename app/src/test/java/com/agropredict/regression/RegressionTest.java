@@ -2,7 +2,7 @@ package com.agropredict.regression;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
+import com.agropredict.domain.CapturingLoginGate;
 import com.agropredict.domain.LoginAttempt;
 import com.agropredict.domain.Session;
 import com.agropredict.domain.input_validation.EmailValidator;
@@ -68,12 +68,16 @@ public final class RegressionTest {
     @Test
     public void testBugLoginAttemptBlockResetAfterExpiry() {
         long now = System.currentTimeMillis();
-        LoginAttempt attempt = new LoginAttempt();
+        LoginAttempt attempt = new LoginAttempt(0, 0);
         for (int count = 0; count < 5; count++) attempt = attempt.fail(now);
-        assertTrue(attempt.isBlocked(now));
-        assertFalse(attempt.isBlocked(now + 5 * 60 * 1000 + 1));
-        LoginAttempt reset = attempt.fail(now + 5 * 60 * 1000 + 1);
-        assertFalse(reset.isExhausted());
+        long afterExpiry = now + 5 * 60 * 1000 + 1;
+        CapturingLoginGate atFailure = new CapturingLoginGate();
+        attempt.evaluate(now, atFailure);
+        assertTrue(atFailure.hasReceived("block"));
+        LoginAttempt reset = attempt.fail(afterExpiry);
+        CapturingLoginGate afterReset = new CapturingLoginGate();
+        reset.evaluate(afterExpiry, afterReset);
+        assertTrue(afterReset.hasReceived("allow"));
     }
 
     @Test

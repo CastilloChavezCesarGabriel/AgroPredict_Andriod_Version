@@ -1,11 +1,11 @@
 package com.agropredict.smoke;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import com.agropredict.application.operation_result.ClassificationResult;
 import com.agropredict.application.operation_result.OperationResult;
 import com.agropredict.application.operation_result.RegistrationResult;
+import com.agropredict.domain.CapturingLoginGate;
 import com.agropredict.domain.Identifier;
 import com.agropredict.domain.LoginAttempt;
 import com.agropredict.domain.Session;
@@ -69,9 +69,10 @@ public final class SmokeTest {
 
     @Test
     public void testLoginAttemptCreation() {
-        LoginAttempt attempt = new LoginAttempt();
-        assertFalse(attempt.isBlocked(System.currentTimeMillis()));
-        assertFalse(attempt.isExhausted());
+        LoginAttempt attempt = new LoginAttempt(0, 0);
+        CapturingLoginGate gate = new CapturingLoginGate();
+        attempt.evaluate(System.currentTimeMillis(), gate);
+        assertTrue(gate.hasReceived("allow"));
     }
 
     @Test

@@ -6,91 +6,95 @@ import org.junit.Test;
 
 public final class LoginAttemptTest {
     @Test
-    public void testFreshAttemptNotBlocked() {
-        LoginAttempt attempt = new LoginAttempt();
-        assertFalse(attempt.isBlocked(System.currentTimeMillis()));
+    public void testFreshAttemptIsAllowed() {
+        LoginAttempt attempt = new LoginAttempt(0, 0);
+        CapturingLoginGate gate = new CapturingLoginGate();
+        attempt.evaluate(System.currentTimeMillis(), gate);
+        assertTrue(gate.hasReceived("allow"));
+        assertFalse(gate.hasReceived("block"));
+        assertFalse(gate.hasReceived("exhaust"));
     }
 
     @Test
-    public void testFreshAttemptNotExhausted() {
-        LoginAttempt attempt = new LoginAttempt();
-        assertFalse(attempt.isExhausted());
-    }
-
-    @Test
-    public void testSingleFailureNotExhausted() {
+    public void testSingleFailureStillAllows() {
         long now = System.currentTimeMillis();
-        LoginAttempt attempt = new LoginAttempt().fail(now);
-        assertFalse(attempt.isExhausted());
+        LoginAttempt attempt = new LoginAttempt(0, 0).fail(now);
+        CapturingLoginGate gate = new CapturingLoginGate();
+        attempt.evaluate(now, gate);
+        assertTrue(gate.hasReceived("allow"));
     }
 
     @Test
-    public void testFourFailuresNotExhausted() {
+    public void testFourFailuresStillAllows() {
         long now = System.currentTimeMillis();
-        LoginAttempt attempt = new LoginAttempt();
+        LoginAttempt attempt = new LoginAttempt(0, 0);
         for (int count = 0; count < 4; count++) attempt = attempt.fail(now);
-        assertFalse(attempt.isExhausted());
+        CapturingLoginGate gate = new CapturingLoginGate();
+        attempt.evaluate(now, gate);
+        assertTrue(gate.hasReceived("allow"));
     }
 
     @Test
-    public void testFiveFailuresExhausted() {
+    public void testFiveFailuresBlocks() {
         long now = System.currentTimeMillis();
-        LoginAttempt attempt = new LoginAttempt();
+        LoginAttempt attempt = new LoginAttempt(0, 0);
         for (int count = 0; count < 5; count++) attempt = attempt.fail(now);
-        assertTrue(attempt.isExhausted());
+        CapturingLoginGate gate = new CapturingLoginGate();
+        attempt.evaluate(now, gate);
+        assertTrue(gate.hasReceived("block"));
     }
 
     @Test
-    public void testBlockedAfterFiveFailures() {
+    public void testStillBlockedDuringWindow() {
         long now = System.currentTimeMillis();
-        LoginAttempt attempt = new LoginAttempt();
+        LoginAttempt attempt = new LoginAttempt(0, 0);
         for (int count = 0; count < 5; count++) attempt = attempt.fail(now);
-        assertTrue(attempt.isBlocked(now));
+        CapturingLoginGate gate = new CapturingLoginGate();
+        attempt.evaluate(now + 4 * 60 * 1000, gate);
+        assertTrue(gate.hasReceived("block"));
     }
 
     @Test
-    public void testBlockedDuringWindow() {
+    public void testExhaustsAfterBlockExpires() {
         long now = System.currentTimeMillis();
-        LoginAttempt attempt = new LoginAttempt();
+        LoginAttempt attempt = new LoginAttempt(0, 0);
         for (int count = 0; count < 5; count++) attempt = attempt.fail(now);
-        assertTrue(attempt.isBlocked(now + 4 * 60 * 1000));
-    }
-
-    @Test
-    public void testUnblockedAfterFiveMinutes() {
-        long now = System.currentTimeMillis();
-        LoginAttempt attempt = new LoginAttempt();
-        for (int count = 0; count < 5; count++) attempt = attempt.fail(now);
-        long afterBlock = now + 5 * 60 * 1000 + 1;
-        assertFalse(attempt.isBlocked(afterBlock));
+        CapturingLoginGate gate = new CapturingLoginGate();
+        attempt.evaluate(now + 5 * 60 * 1000 + 1, gate);
+        assertTrue(gate.hasReceived("exhaust"));
     }
 
     @Test
     public void testSuccessResetsAttempts() {
         long now = System.currentTimeMillis();
-        LoginAttempt attempt = new LoginAttempt();
+        LoginAttempt attempt = new LoginAttempt(0, 0);
         for (int count = 0; count < 3; count++) attempt = attempt.fail(now);
         attempt = attempt.succeed();
-        assertFalse(attempt.isExhausted());
-        assertFalse(attempt.isBlocked(now));
+        CapturingLoginGate gate = new CapturingLoginGate();
+        attempt.evaluate(now, gate);
+        assertTrue(gate.hasReceived("allow"));
     }
 
     @Test
     public void testFailWhileBlockedDoesNotIncrement() {
         long now = System.currentTimeMillis();
-        LoginAttempt attempt = new LoginAttempt();
+        LoginAttempt attempt = new LoginAttempt(0, 0);
         for (int count = 0; count < 5; count++) attempt = attempt.fail(now);
         LoginAttempt blocked = attempt.fail(now);
-        assertTrue(blocked.isBlocked(now));
+        CapturingLoginGate gate = new CapturingLoginGate();
+        blocked.evaluate(now, gate);
+        assertTrue(gate.hasReceived("block"));
     }
 
     @Test
     public void testResetAfterBlockExpires() {
         long now = System.currentTimeMillis();
-        LoginAttempt attempt = new LoginAttempt();
+        LoginAttempt attempt = new LoginAttempt(0, 0);
         for (int count = 0; count < 5; count++) attempt = attempt.fail(now);
         long afterExpiry = now + 5 * 60 * 1000 + 1;
         LoginAttempt reset = attempt.fail(afterExpiry);
-        assertFalse(reset.isExhausted());
+        CapturingLoginGate gate = new CapturingLoginGate();
+        reset.evaluate(afterExpiry, gate);
+        assertTrue(gate.hasReceived("allow"));
     }
 }

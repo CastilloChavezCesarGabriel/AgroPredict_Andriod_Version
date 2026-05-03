@@ -86,10 +86,10 @@ public final class SqliteDiagnosticRepository implements IDiagnosticRepository {
         Diagnostic diagnostic = new Diagnostic(
                 cursor.getString(cursor.getColumnIndexOrThrow("id")), prediction);
         String severity = cursor.getString(cursor.getColumnIndexOrThrow("severity"));
-        if (severity != null) {
-            diagnostic.conclude(severity, new Recommendation(
-                    cursor.getString(cursor.getColumnIndexOrThrow("short_summary")),
-                    cursor.getString(cursor.getColumnIndexOrThrow("recommendation_text"))));
+        String summary = cursor.getString(cursor.getColumnIndexOrThrow("short_summary"));
+        String advice = cursor.getString(cursor.getColumnIndexOrThrow("recommendation_text"));
+        if (severity != null && (summary != null || advice != null)) {
+            diagnostic.conclude(severity, new Recommendation(summary, advice));
         }
         return diagnostic;
     }

@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
+import com.agropredict.domain.CapturingLoginGate;
 import com.agropredict.domain.LoginAttempt;
 import com.agropredict.domain.Session;
 import com.agropredict.domain.input_validation.EmailValidator;
@@ -101,39 +102,50 @@ public final class SecurityTest {
     @Test
     public void testBruteForceProtection() {
         long now = System.currentTimeMillis();
-        LoginAttempt attempt = new LoginAttempt();
+        LoginAttempt attempt = new LoginAttempt(0, 0);
         for (int count = 0; count < 5; count++) attempt = attempt.fail(now);
-        assertTrue(attempt.isBlocked(now));
-        assertTrue(attempt.isBlocked(now + 4 * 60 * 1000));
+        CapturingLoginGate immediate = new CapturingLoginGate();
+        attempt.evaluate(now, immediate);
+        assertTrue(immediate.hasReceived("block"));
+        CapturingLoginGate later = new CapturingLoginGate();
+        attempt.evaluate(now + 4 * 60 * 1000, later);
+        assertTrue(later.hasReceived("block"));
     }
 
     @Test
     public void testBlockDurationExactlyFiveMinutes() {
         long now = 1000000L;
-        LoginAttempt attempt = new LoginAttempt();
+        LoginAttempt attempt = new LoginAttempt(0, 0);
         for (int count = 0; count < 5; count++) attempt = attempt.fail(now);
-        assertTrue(attempt.isBlocked(now + 5 * 60 * 1000));
-        assertFalse(attempt.isBlocked(now + 5 * 60 * 1000 + 1));
+        CapturingLoginGate atBoundary = new CapturingLoginGate();
+        attempt.evaluate(now + 5 * 60 * 1000, atBoundary);
+        assertTrue(atBoundary.hasReceived("block"));
+        CapturingLoginGate justAfter = new CapturingLoginGate();
+        attempt.evaluate(now + 5 * 60 * 1000 + 1, justAfter);
+        assertFalse(justAfter.hasReceived("block"));
     }
 
     @Test
     public void testAttemptsResetAfterBlockExpires() {
         long now = System.currentTimeMillis();
-        LoginAttempt attempt = new LoginAttempt();
+        LoginAttempt attempt = new LoginAttempt(0, 0);
         for (int count = 0; count < 5; count++) attempt = attempt.fail(now);
-        assertTrue(attempt.isExhausted());
         long afterExpiry = now + 5 * 60 * 1000 + 1;
         LoginAttempt reset = attempt.fail(afterExpiry);
-        assertFalse(reset.isExhausted());
+        CapturingLoginGate gate = new CapturingLoginGate();
+        reset.evaluate(afterExpiry, gate);
+        assertTrue(gate.hasReceived("allow"));
     }
 
     @Test
     public void testCannotBypassLockoutByKeepingTrying() {
         long now = System.currentTimeMillis();
-        LoginAttempt attempt = new LoginAttempt();
+        LoginAttempt attempt = new LoginAttempt(0, 0);
         for (int count = 0; count < 5; count++) attempt = attempt.fail(now);
         LoginAttempt stillBlocked = attempt.fail(now + 1000);
-        assertTrue(stillBlocked.isBlocked(now + 1000));
+        CapturingLoginGate gate = new CapturingLoginGate();
+        stillBlocked.evaluate(now + 1000, gate);
+        assertTrue(gate.hasReceived("block"));
     }
 
     @Test

@@ -9,7 +9,7 @@ import com.agropredict.domain.Session;
 public final class LoginUseCase {
     private final IUserRepository userRepository;
     private final ISessionRepository sessionRepository;
-    private LoginAttempt tracker = new LoginAttempt();
+    private LoginAttempt tracker = new LoginAttempt(0, 0);
 
     public LoginUseCase(IUserRepository userRepository, ISessionRepository sessionRepository) {
         this.userRepository = userRepository;
@@ -18,10 +18,12 @@ public final class LoginUseCase {
 
     public OperationResult login(String email, String password) {
         long currentTime = System.currentTimeMillis();
-        if (tracker.isBlocked(currentTime)) {
-            return OperationResult.reject("Account locked. Try again in a few minutes.");
-        }
+        LoginGate gate = new LoginGate();
+        tracker.evaluate(currentTime, gate);
+        return gate.resolve(() -> authenticate(email, password, currentTime));
+    }
 
+    private OperationResult authenticate(String email, String password, long currentTime) {
         Session session = userRepository.authenticate(email, password);
         if (session == null) return reject(currentTime);
         tracker = tracker.succeed();
@@ -31,8 +33,8 @@ public final class LoginUseCase {
 
     private OperationResult reject(long currentTime) {
         tracker = tracker.fail(currentTime);
-        if (tracker.isExhausted())
-            return OperationResult.reject("Too many attempts. Account locked for 5 minutes.");
-        return OperationResult.reject("Incorrect credentials");
+        LoginGate postGate = new LoginGate();
+        tracker.evaluate(currentTime, postGate);
+        return postGate.resolve(() -> OperationResult.reject("Incorrect credentials"));
     }
 }

@@ -7,6 +7,9 @@ public final class Recommendation {
     private final String advice;
 
     public Recommendation(String summary, String advice) {
+        if (summary == null && advice == null) {
+            throw new IllegalArgumentException("recommendation requires summary or advice");
+        }
         this.summary = summary;
         this.advice = advice;
     }
