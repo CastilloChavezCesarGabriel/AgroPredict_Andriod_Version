@@ -13,6 +13,11 @@ import com.agropredict.infrastructure.persistence.repository.SqliteCropRepositor
 import com.agropredict.infrastructure.persistence.repository.SqliteDiagnosticRepository;
 import com.agropredict.infrastructure.persistence.repository.SqlitePhotographRepository;
 import com.agropredict.infrastructure.persistence.repository.SqliteReportRepository;
+import com.agropredict.infrastructure.persistence.repository.SqliteSyncRecorder;
+import com.agropredict.infrastructure.persistence.repository.SyncingCropRepository;
+import com.agropredict.infrastructure.persistence.repository.SyncingDiagnosticRepository;
+import com.agropredict.infrastructure.persistence.repository.SyncingPhotographRepository;
+import com.agropredict.infrastructure.persistence.repository.SyncingReportRepository;
 
 public final class AndroidReviewFactory implements IReviewFactory {
     private final Database database;
@@ -25,17 +30,23 @@ public final class AndroidReviewFactory implements IReviewFactory {
 
     @Override
     public IDiagnosticRepository createDiagnosticRepository() {
-        return new SqliteDiagnosticRepository(database);
+        return new SyncingDiagnosticRepository(
+                new SqliteDiagnosticRepository(database, createSessionRepository()),
+                createSyncRecorder());
     }
 
     @Override
     public ICropRepository createCropRepository() {
-        return new SqliteCropRepository(database, createSessionRepository());
+        return new SyncingCropRepository(
+                new SqliteCropRepository(database, createSessionRepository()),
+                createSyncRecorder());
     }
 
     @Override
     public IPhotographRepository createPhotographRepository() {
-        return new SqlitePhotographRepository(database, createSessionRepository());
+        return new SyncingPhotographRepository(
+                new SqlitePhotographRepository(database, createSessionRepository()),
+                createSyncRecorder());
     }
 
     @Override
@@ -47,6 +58,11 @@ public final class AndroidReviewFactory implements IReviewFactory {
     public CropCleanup createCropCleanup() {
         return new CropCleanup(
                 createDiagnosticRepository(),
-                new CropCleanup(new SqlitePhotographRepository(database, createSessionRepository()), new SqliteReportRepository(database)));
+                new CropCleanup(createPhotographRepository(),
+                        new SyncingReportRepository(new SqliteReportRepository(database), createSyncRecorder())));
+    }
+
+    private SqliteSyncRecorder createSyncRecorder() {
+        return new SqliteSyncRecorder(database, createSessionRepository());
     }
 }

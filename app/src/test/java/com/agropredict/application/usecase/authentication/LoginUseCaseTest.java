@@ -5,7 +5,6 @@ import static org.junit.Assert.assertTrue;
 import com.agropredict.application.repository.ISessionRepository;
 import com.agropredict.application.repository.IUserRepository;
 import com.agropredict.application.request.user_registration.RegistrationRequest;
-import com.agropredict.application.service.IPasswordHasher;
 import com.agropredict.domain.Session;
 import com.agropredict.visitor.TestOperationResultVisitor;
 import org.junit.Test;
@@ -14,7 +13,7 @@ public final class LoginUseCaseTest {
     private IUserRepository fakeUserRepo(Session returnSession) {
         return new IUserRepository() {
             @Override public Session authenticate(String email, String password) { return returnSession; }
-            @Override public void register(RegistrationRequest request, IPasswordHasher hasher) {}
+            @Override public void register(RegistrationRequest request, com.agropredict.application.repository.ICatalogRepository catalog) {}
             @Override public boolean reset(String email, String hash) { return false; }
         };
     }
@@ -60,7 +59,7 @@ public final class LoginUseCaseTest {
             @Override public Session authenticate(String email, String password) {
                 return ++callCount <= 3 ? null : new Session("user_1", "Farmer");
             }
-            @Override public void register(RegistrationRequest request, IPasswordHasher hasher) {}
+            @Override public void register(RegistrationRequest request, com.agropredict.application.repository.ICatalogRepository catalog) {}
             @Override public boolean reset(String email, String hash) { return false; }
         };
         LoginUseCase useCase = new LoginUseCase(conditional, fakeSessionRepo());

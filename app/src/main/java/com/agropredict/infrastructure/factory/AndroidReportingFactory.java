@@ -12,6 +12,10 @@ import com.agropredict.infrastructure.persistence.repository.SessionRepository;
 import com.agropredict.infrastructure.persistence.repository.SqliteCropRepository;
 import com.agropredict.infrastructure.persistence.repository.SqliteDiagnosticRepository;
 import com.agropredict.infrastructure.persistence.repository.SqliteReportRepository;
+import com.agropredict.infrastructure.persistence.repository.SqliteSyncRecorder;
+import com.agropredict.infrastructure.persistence.repository.SyncingCropRepository;
+import com.agropredict.infrastructure.persistence.repository.SyncingDiagnosticRepository;
+import com.agropredict.infrastructure.persistence.repository.SyncingReportRepository;
 import com.agropredict.infrastructure.report_export.CsvReportService;
 import com.agropredict.infrastructure.report_export.PdfReportService;
 import java.io.File;
@@ -27,17 +31,21 @@ public final class AndroidReportingFactory implements IReportingFactory {
 
     @Override
     public ICropRepository createCropRepository() {
-        return new SqliteCropRepository(database, createSessionRepository());
+        return new SyncingCropRepository(
+                new SqliteCropRepository(database, createSessionRepository()),
+                createSyncRecorder());
     }
 
     @Override
     public IDiagnosticRepository createDiagnosticRepository() {
-        return new SqliteDiagnosticRepository(database);
+        return new SyncingDiagnosticRepository(
+                new SqliteDiagnosticRepository(database, createSessionRepository()),
+                createSyncRecorder());
     }
 
     @Override
     public IReportRepository createReportRepository() {
-        return new SqliteReportRepository(database);
+        return new SyncingReportRepository(new SqliteReportRepository(database), createSyncRecorder());
     }
 
     @Override
@@ -54,5 +62,9 @@ public final class AndroidReportingFactory implements IReportingFactory {
     @Override
     public ISessionRepository createSessionRepository() {
         return new SessionRepository(context);
+    }
+
+    private SqliteSyncRecorder createSyncRecorder() {
+        return new SqliteSyncRecorder(database, createSessionRepository());
     }
 }

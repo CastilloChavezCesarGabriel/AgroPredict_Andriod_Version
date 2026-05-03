@@ -1,32 +1,28 @@
 package com.agropredict.presentation.viewmodel.diagnostic_history;
 
-import com.agropredict.application.usecase.DeleteUseCase;
-import com.agropredict.application.usecase.diagnostic.ListDiagnosticUseCase;
 import com.agropredict.application.visitor.IOperationResultVisitor;
 
 public final class HistoryViewModel implements IOperationResultVisitor {
-    private final ListDiagnosticUseCase listUseCase;
-    private final DeleteUseCase deleteUseCase;
+    private final HistoryWorkflow workflow;
     private final IHistoryView view;
     private String pendingUserIdentifier;
 
-    public HistoryViewModel(ListDiagnosticUseCase listUseCase, DeleteUseCase deleteUseCase, IHistoryView view) {
-        this.listUseCase = listUseCase;
-        this.deleteUseCase = deleteUseCase;
+    public HistoryViewModel(HistoryWorkflow workflow, IHistoryView view) {
+        this.workflow = workflow;
         this.view = view;
     }
 
     public void load(String userIdentifier) {
         this.pendingUserIdentifier = userIdentifier;
-        view.display(listUseCase.list(userIdentifier));
+        view.display(workflow.list(userIdentifier));
     }
 
     public void filter(String cropIdentifier) {
-        view.display(listUseCase.filter(pendingUserIdentifier, cropIdentifier));
+        view.display(workflow.filter(pendingUserIdentifier, cropIdentifier));
     }
 
     public void delete(String diagnosticIdentifier) {
-        deleteUseCase.delete(diagnosticIdentifier).accept(this);
+        workflow.delete(diagnosticIdentifier).accept(this);
     }
 
     @Override

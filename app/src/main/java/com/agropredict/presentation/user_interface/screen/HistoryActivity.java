@@ -13,6 +13,7 @@ import com.agropredict.domain.entity.Diagnostic;
 import com.agropredict.presentation.user_interface.display.DiagnosticHistory;
 import com.agropredict.presentation.user_interface.selector.CropTypeFilter;
 import com.agropredict.presentation.viewmodel.diagnostic_history.HistoryViewModel;
+import com.agropredict.presentation.viewmodel.diagnostic_history.HistoryWorkflow;
 import com.agropredict.presentation.viewmodel.diagnostic_history.IHistoryView;
 import java.util.List;
 
@@ -41,7 +42,7 @@ public final class HistoryActivity extends BaseActivity implements IHistoryView 
         DeleteUseCase deleteUseCase = new DeleteUseCase(factory.createDiagnosticRepository());
         CheckSessionUseCase sessionUseCase = new CheckSessionUseCase(factory.createSessionRepository());
         cropUseCase = new ListCropUseCase(factory.createCropRepository());
-        viewModel = new HistoryViewModel(listUseCase, deleteUseCase, this);
+        viewModel = new HistoryViewModel(new HistoryWorkflow(listUseCase, deleteUseCase), this);
         cropFilter = new CropTypeFilter(findViewById(R.id.spnCropFilter), viewModel::filter);
         sessionUseCase.check((identifier, occupation) -> start(identifier));
     }

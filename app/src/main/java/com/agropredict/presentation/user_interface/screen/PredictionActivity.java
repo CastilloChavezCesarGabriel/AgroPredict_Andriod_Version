@@ -22,6 +22,7 @@ import com.agropredict.presentation.user_interface.form.PredictionForm;
 import com.agropredict.presentation.user_interface.selector.DateSelection;
 import com.agropredict.presentation.viewmodel.prediction_diagnosis.IPredictionView;
 import com.agropredict.presentation.viewmodel.prediction_diagnosis.PredictionViewModel;
+import com.agropredict.presentation.viewmodel.prediction_diagnosis.PredictionWorkflow;
 
 public final class PredictionActivity extends BaseActivity implements IPredictionView {
     private PredictionViewModel viewModel;
@@ -69,7 +70,7 @@ public final class PredictionActivity extends BaseActivity implements IPredictio
                 factory.createApiService(), factory.createDiagnosticWorkflow());
         ListCatalogUseCase soilTypes = new ListCatalogUseCase(factory.createSoilTypeCatalog());
         ListCatalogUseCase stages = new ListCatalogUseCase(factory.createStageCatalog());
-        viewModel = new PredictionViewModel(classifyUseCase, submitUseCase, this);
+        viewModel = new PredictionViewModel(new PredictionWorkflow(classifyUseCase, submitUseCase), this);
         viewModel.populate(soilTypes, stages);
     }
 

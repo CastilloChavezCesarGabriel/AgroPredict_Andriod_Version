@@ -1,6 +1,7 @@
 package com.agropredict.infrastructure.persistence.schema;
 
 import android.database.sqlite.SQLiteDatabase;
+import com.agropredict.domain.Identifier;
 
 public final class OptionSeed {
     private final String questionKey;
@@ -14,9 +15,9 @@ public final class OptionSeed {
     public void load(SQLiteDatabase database) {
         for (String option : options) {
             database.execSQL(
-                "INSERT OR IGNORE INTO ai_option (question_id, option_text, option_value) "
-                + "VALUES ((SELECT id FROM ai_question WHERE question_key = ?), ?, ?)",
-                new Object[]{questionKey, option, option});
+                "INSERT OR IGNORE INTO ai_option (id, question_id, option_text, option_value) "
+                + "VALUES (?, (SELECT id FROM ai_question WHERE question_key = ?), ?, ?)",
+                new Object[]{Identifier.generate("option"), questionKey, option, option});
         }
     }
 }

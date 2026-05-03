@@ -7,13 +7,12 @@ public final class DiagnosticTable implements ITable {
     public void create(SQLiteDatabase database) {
         define(database);
         index(database);
-        automate(database);
     }
 
     private void define(SQLiteDatabase database) {
         database.execSQL(
             "CREATE TABLE IF NOT EXISTS diagnostic ("
-            + "id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))), "
+            + "id TEXT PRIMARY KEY, "
             + "crop_id TEXT REFERENCES crop(id) ON DELETE SET NULL, "
             + "image_id TEXT REFERENCES image(id) ON DELETE SET NULL, "
             + "user_id TEXT REFERENCES user(id) ON DELETE SET NULL, "
@@ -25,34 +24,12 @@ public final class DiagnosticTable implements ITable {
             + "humidity REAL, "
             + "recommendation_text TEXT, "
             + "short_summary TEXT, "
-            + "created_at TEXT DEFAULT CURRENT_TIMESTAMP)");
+            + "created_at TEXT NOT NULL)");
     }
 
     private void index(SQLiteDatabase database) {
         database.execSQL("CREATE INDEX IF NOT EXISTS index_diagnostic_crop ON diagnostic(crop_id)");
         database.execSQL("CREATE INDEX IF NOT EXISTS index_diagnostic_user ON diagnostic(user_id)");
         database.execSQL("CREATE INDEX IF NOT EXISTS index_diagnostic_created ON diagnostic(created_at)");
-    }
-
-    private void automate(SQLiteDatabase database) {
-        database.execSQL(
-            "CREATE TRIGGER IF NOT EXISTS diagnostic_defaults "
-            + "AFTER INSERT ON diagnostic FOR EACH ROW BEGIN "
-            + "UPDATE diagnostic SET "
-            + "crop_id = COALESCE(NEW.crop_id, (SELECT id FROM crop ORDER BY created_at DESC LIMIT 1)), "
-            + "image_id = COALESCE(NEW.image_id, (SELECT id FROM image ORDER BY created_at DESC LIMIT 1)), "
-            + "user_id = (SELECT user_id FROM crop ORDER BY created_at DESC LIMIT 1), "
-            + "problem_type_id = (SELECT id FROM catalog_problem_type WHERE name = 'Unknown' LIMIT 1) "
-            + "WHERE id = NEW.id; END");
-        database.execSQL(
-            "CREATE TRIGGER IF NOT EXISTS diagnostic_temperature "
-            + "AFTER INSERT ON ai_user_response "
-            + "WHEN (SELECT question_key FROM ai_question WHERE id = NEW.question_id) = 'temperature' BEGIN "
-            + "UPDATE diagnostic SET temperature = NEW.text_value WHERE id = NEW.diagnostic_id; END");
-        database.execSQL(
-            "CREATE TRIGGER IF NOT EXISTS diagnostic_humidity "
-            + "AFTER INSERT ON ai_user_response "
-            + "WHEN (SELECT question_key FROM ai_question WHERE id = NEW.question_id) = 'humidity' BEGIN "
-            + "UPDATE diagnostic SET humidity = NEW.text_value WHERE id = NEW.diagnostic_id; END");
     }
 }

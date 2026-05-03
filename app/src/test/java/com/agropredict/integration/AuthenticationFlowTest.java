@@ -6,7 +6,6 @@ import static org.junit.Assert.assertTrue;
 import com.agropredict.application.repository.ISessionRepository;
 import com.agropredict.application.repository.IUserRepository;
 import com.agropredict.application.request.user_registration.RegistrationRequest;
-import com.agropredict.application.service.IPasswordHasher;
 import com.agropredict.application.usecase.authentication.LoginUseCase;
 import com.agropredict.application.usecase.authentication.ResetPasswordUseCase;
 import com.agropredict.domain.Session;
@@ -31,7 +30,7 @@ public final class AuthenticationFlowTest {
                 if (stored == null || !hasher.verify(password, stored)) return null;
                 return new Session("user_" + email.hashCode(), "Farmer");
             }
-            @Override public void register(RegistrationRequest request, IPasswordHasher hasher) {}
+            @Override public void register(RegistrationRequest request, com.agropredict.application.repository.ICatalogRepository catalog) {}
             @Override public boolean reset(String email, String newHash) {
                 if (!userStore.containsKey(email)) return false;
                 userStore.put(email, newHash);

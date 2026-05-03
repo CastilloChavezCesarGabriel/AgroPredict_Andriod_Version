@@ -4,13 +4,11 @@ import com.agropredict.domain.visitor.diagnostic.IDiagnosticVisitor;
 
 public final class Assessment {
     private final Severity severity;
-    private final String shortSummary;
-    private final String recommendationText;
+    private final Recommendation recommendation;
 
-    public Assessment(String severity, String shortSummary, String recommendationText) {
+    public Assessment(String severity, Recommendation recommendation) {
         this.severity = Severity.classify(severity);
-        this.shortSummary = shortSummary;
-        this.recommendationText = recommendationText;
+        this.recommendation = recommendation;
     }
 
     public void inspect(ISeverityVisitor visitor) {
@@ -18,9 +16,7 @@ public final class Assessment {
     }
 
     public void accept(IDiagnosticVisitor visitor) {
-        severity.accept(visitor, shortSummary);
-        if (recommendationText != null) {
-            visitor.visitRecommendation(recommendationText);
-        }
+        severity.accept(visitor);
+        if (recommendation != null) recommendation.accept(visitor);
     }
 }

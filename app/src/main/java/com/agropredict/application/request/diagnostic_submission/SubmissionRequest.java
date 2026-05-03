@@ -1,9 +1,9 @@
 package com.agropredict.application.request.diagnostic_submission;
 
-import com.agropredict.application.repository.ICatalogRepository;
-import com.agropredict.application.repository.ICropRepository;
+import com.agropredict.application.diagnostic_submission.Allocation;
+import com.agropredict.application.diagnostic_submission.Cropland;
 import com.agropredict.application.diagnostic_submission.IDiagnosticWorkflow;
-import com.agropredict.application.repository.IPhotographRepository;
+import com.agropredict.application.diagnostic_submission.StampedDiagnostic;
 import com.agropredict.application.repository.IQuestionnaireRepository;
 import com.agropredict.application.request.ai_questionnaire.Questionnaire;
 import com.agropredict.application.service.IDiagnosticApiService;
@@ -24,12 +24,12 @@ public final class SubmissionRequest {
         String identifier = Identifier.generate("diagnosis");
         Diagnostic diagnostic = submission.diagnose(identifier);
         Diagnostic enriched = apiService.submit(diagnostic, this);
-        workflow.persist(this, enriched, identifier);
+        workflow.persist(this, new StampedDiagnostic(identifier, enriched));
         return identifier;
     }
 
-    public void store(ICropRepository cropRepository, IPhotographRepository photoRepository, ICatalogRepository stageCatalog) {
-        submission.store(cropRepository, photoRepository, stageCatalog);
+    public void store(Cropland cropland, Allocation allocation) {
+        submission.store(cropland, allocation);
     }
 
     public void record(IQuestionnaireRepository repository, String identifier) {

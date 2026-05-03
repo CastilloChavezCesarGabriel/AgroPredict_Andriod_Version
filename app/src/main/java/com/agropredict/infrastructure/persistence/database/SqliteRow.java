@@ -17,14 +17,22 @@ public final class SqliteRow implements IRow {
         values.put(column, value);
     }
 
+    public void mark(String column, int value) {
+        values.put(column, value);
+    }
+
+    public String lookup(String column) {
+        return values.getAsString(column);
+    }
+
     public void flush(String table) {
         database.insertWithOnConflict(table, null, values,
                 SQLiteDatabase.CONFLICT_REPLACE);
     }
 
     public boolean overwrite(String table, String keyColumn) {
-        String identifier = values.getAsString(keyColumn);
-        int rows = database.update(table, values, keyColumn + " = ?", new String[]{identifier});
+        int rows = database.update(table, values, keyColumn + " = ?",
+                new String[]{values.getAsString(keyColumn)});
         return rows > 0;
     }
 }

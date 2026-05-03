@@ -5,7 +5,8 @@ plugins {
 android {
     namespace 'com.agropredict'
     compileSdk {
-        version = release(37)
+        //noinspection GradleDependency
+        version = release(36)
     }
 
     defaultConfig {
@@ -14,7 +15,8 @@ android {
             version = release(24)
         }
         targetSdk {
-            version = release(37)
+            //noinspection OldTargetApi
+            version = release(36)
         }
         versionCode 1
         versionName "1.0"

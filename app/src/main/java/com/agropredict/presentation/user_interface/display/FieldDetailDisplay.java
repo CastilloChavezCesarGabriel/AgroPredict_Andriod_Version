@@ -11,6 +11,7 @@ import java.io.File;
 
 public final class FieldDetailDisplay extends DiagnosticDisplay implements IPhotographVisitor {
     private final TextView severityLabel;
+    private final TextView summaryLabel;
     private final TextView recommendationsLabel;
     private final ImageView photoView;
 
@@ -18,18 +19,24 @@ public final class FieldDetailDisplay extends DiagnosticDisplay implements IPhot
         super(new PredictionDisplay(activity.findViewById(R.id.tvCropType),
                         activity.findViewById(R.id.tvConfidence)));
         severityLabel = activity.findViewById(R.id.tvSeverity);
+        summaryLabel = activity.findViewById(R.id.tvSummary);
         recommendationsLabel = activity.findViewById(R.id.tvRecommendations);
         photoView = activity.findViewById(R.id.ivCropPhoto);
     }
 
     @Override
-    public void visitAssessment(String severity, String shortSummary) {
-        severityLabel.setText(severity);
+    public void visitSeverity(String value) {
+        severityLabel.setText(value);
     }
 
     @Override
-    public void visitRecommendation(String recommendationText) {
-        recommendationsLabel.setText(recommendationText);
+    public void visitSummary(String text) {
+        summaryLabel.setText(text);
+    }
+
+    @Override
+    public void visitRecommendation(String text) {
+        recommendationsLabel.setText(text);
     }
 
     public void display(Photograph photograph) {

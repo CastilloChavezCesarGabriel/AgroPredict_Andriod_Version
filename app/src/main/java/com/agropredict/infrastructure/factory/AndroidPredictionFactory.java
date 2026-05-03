@@ -2,9 +2,12 @@ package com.agropredict.infrastructure.factory;
 
 import android.content.Context;
 import com.agropredict.application.diagnostic_submission.AnswerArchive;
+import com.agropredict.application.diagnostic_submission.Archival;
+import com.agropredict.application.diagnostic_submission.Cropland;
 import com.agropredict.application.diagnostic_submission.DiagnosticArchive;
 import com.agropredict.application.diagnostic_submission.DiagnosticWorkflow;
 import com.agropredict.application.diagnostic_submission.FieldRecorder;
+import com.agropredict.application.diagnostic_submission.FieldStorage;
 import com.agropredict.application.diagnostic_submission.IDiagnosticWorkflow;
 import com.agropredict.application.repository.ICatalogRepository;
 import com.agropredict.application.service.IDiagnosticApiService;
@@ -14,6 +17,7 @@ import com.agropredict.application.factory.IPredictionFactory;
 import com.agropredict.infrastructure.api_integration.DiagnosticApiService;
 import com.agropredict.infrastructure.image_classification.BitmapCompressor;
 import com.agropredict.infrastructure.image_classification.ImagePreprocessor;
+import com.agropredict.infrastructure.image_classification.ImageProcessor;
 import com.agropredict.infrastructure.image_classification.ImageValidator;
 import com.agropredict.infrastructure.image_classification.InterpreterLoader;
 import com.agropredict.infrastructure.image_classification.LabelCatalog;
@@ -25,6 +29,10 @@ import com.agropredict.infrastructure.persistence.repository.SqliteCropRepositor
 import com.agropredict.infrastructure.persistence.repository.SqliteDiagnosticRepository;
 import com.agropredict.infrastructure.persistence.repository.SqlitePhotographRepository;
 import com.agropredict.infrastructure.persistence.repository.SqliteQuestionnaireRepository;
+import com.agropredict.infrastructure.persistence.repository.SqliteSyncRecorder;
+import com.agropredict.infrastructure.persistence.repository.SyncingCropRepository;
+import com.agropredict.infrastructure.persistence.repository.SyncingDiagnosticRepository;
+import com.agropredict.infrastructure.persistence.repository.SyncingPhotographRepository;
 import com.agropredict.infrastructure.persistence.schema.CatalogName;
 
 public final class AndroidPredictionFactory implements IPredictionFactory {
@@ -46,7 +54,7 @@ public final class AndroidPredictionFactory implements IPredictionFactory {
             TFLiteModel model = new TFLiteModel(
                     loader.load("models/cultivo_model.tflite"),
                     labels.load("models/classes.json"));
-            classifier = new TFLiteClassifier(model, new ImageValidator(), new ImagePreprocessor());
+            classifier = new TFLiteClassifier(model, new ImageProcessor(new ImageValidator(), new ImagePreprocessor()));
         }
         return classifier;
     }
@@ -64,13 +72,16 @@ public final class AndroidPredictionFactory implements IPredictionFactory {
     @Override
     public IDiagnosticWorkflow createDiagnosticWorkflow() {
         SessionRepository session = new SessionRepository(context);
-        FieldRecorder fieldRecorder = new FieldRecorder(
-                new SqliteCropRepository(database, session),
-                new SqlitePhotographRepository(database, session),
-                createStageCatalog());
-        DiagnosticArchive diagnosticArchive = new DiagnosticArchive(new SqliteDiagnosticRepository(database));
-        AnswerArchive answerArchive = new AnswerArchive(new SqliteQuestionnaireRepository(database));
-        return new DiagnosticWorkflow(fieldRecorder, diagnosticArchive, answerArchive);
+        SqliteSyncRecorder recorder = new SqliteSyncRecorder(database, session);
+        FieldStorage storage = new FieldStorage(
+                new SyncingCropRepository(new SqliteCropRepository(database, session), recorder),
+                new SyncingPhotographRepository(new SqlitePhotographRepository(database, session), recorder));
+        Cropland cropland = new Cropland(storage, createStageCatalog());
+        FieldRecorder fieldRecorder = new FieldRecorder(cropland);
+        Archival archival = new Archival(
+                new DiagnosticArchive(new SyncingDiagnosticRepository(new SqliteDiagnosticRepository(database, session), recorder)),
+                new AnswerArchive(new SqliteQuestionnaireRepository(database)));
+        return new DiagnosticWorkflow(fieldRecorder, archival);
     }
 
     @Override

@@ -13,7 +13,7 @@ public final class CatalogTable implements ITable {
     public void create(SQLiteDatabase database) {
         database.execSQL(
             "CREATE TABLE IF NOT EXISTS " + name + " ("
-            + "id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))), "
+            + "id TEXT PRIMARY KEY, "
             + "name TEXT NOT NULL UNIQUE)");
     }
 }

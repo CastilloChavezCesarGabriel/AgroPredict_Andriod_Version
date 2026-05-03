@@ -18,7 +18,7 @@ import com.agropredict.application.request.diagnostic_submission.Classification;
 import com.agropredict.application.request.diagnostic_submission.Cultivation;
 import com.agropredict.application.request.diagnostic_submission.PhotographInput;
 import com.agropredict.application.request.diagnostic_submission.Submission;
-import com.agropredict.application.request.diagnostic_submission.SubmissionField;
+import com.agropredict.application.request.diagnostic_submission.Subject;
 import com.agropredict.application.request.diagnostic_submission.SubmissionRequest;
 import com.agropredict.domain.component.diagnostic.Prediction;
 import com.agropredict.domain.entity.Diagnostic;
@@ -198,8 +198,8 @@ public final class RealDiagnosticApiServiceTest {
         Classification prediction = new Classification("rice", confidence);
         Cultivation cultivation = new Cultivation("rice", "Vegetative");
         PhotographInput photograph = new PhotographInput("/tmp/test.jpg");
-        SubmissionField field = new SubmissionField(cultivation, photograph);
-        Submission submission = new Submission(prediction, field);
+        Subject subject = new Subject(cultivation, photograph);
+        Submission submission = new Submission(prediction, subject);
         return new SubmissionRequest(submission, survey());
     }
 

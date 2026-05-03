@@ -20,7 +20,7 @@ public final class ReportViewModel {
     }
 
     public void load(ListCropUseCase listCrops, String userIdentifier) {
-        this.exporter = new ReportExporter(factory, view, userIdentifier);
+        this.exporter = new ReportExporter(new ExportScope(factory, userIdentifier), view);
         List<Crop> crops = listCrops.list(userIdentifier);
         view.populate(crops);
     }

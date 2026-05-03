@@ -19,7 +19,7 @@ public final class SubmitDiagnosticUseCaseTest {
     }
 
     private IDiagnosticWorkflow fakeWorkflow() {
-        return (request, enriched, identifier) -> {};
+        return (request, stamped) -> {};
     }
 
     @Test

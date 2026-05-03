@@ -1,5 +1,6 @@
 package com.agropredict.application.request.report_generation;
 
+import com.agropredict.domain.IIdentifierConsumer;
 import com.agropredict.domain.visitor.report.IReportVisitor;
 
 public final class Finding {
@@ -13,5 +14,9 @@ public final class Finding {
 
     public void accept(IReportVisitor visitor) {
         visitor.visitContext(diagnosticIdentifier, cropIdentifier);
+    }
+
+    public void identify(IIdentifierConsumer consumer) {
+        consumer.accept(diagnosticIdentifier);
     }
 }

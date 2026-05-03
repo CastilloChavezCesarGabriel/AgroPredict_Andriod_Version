@@ -23,12 +23,12 @@ public final class DiagnosticReportScribe implements IDiagnosticVisitor {
     }
 
     @Override
-    public void visitAssessment(String severity, String shortSummary) {
-        report.write("summary", shortSummary);
+    public void visitSummary(String text) {
+        report.write("summary", text);
     }
 
     @Override
-    public void visitRecommendation(String recommendationText) {
-        report.write("recommendation", recommendationText);
+    public void visitRecommendation(String text) {
+        report.write("recommendation", text);
     }
 }

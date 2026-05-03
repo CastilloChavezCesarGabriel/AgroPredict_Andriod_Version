@@ -1,5 +1,6 @@
 package com.agropredict.domain.entity;
 
+import com.agropredict.domain.IIdentifierConsumer;
 import com.agropredict.domain.component.crop.CropProfile;
 import com.agropredict.domain.visitor.crop.ICropVisitor;
 
@@ -17,5 +18,9 @@ public final class Crop {
     public void accept(ICropVisitor visitor) {
         visitor.visitIdentity(identifier, cropType);
         profile.accept(visitor);
+    }
+
+    public void identify(IIdentifierConsumer consumer) {
+        consumer.accept(identifier);
     }
 }

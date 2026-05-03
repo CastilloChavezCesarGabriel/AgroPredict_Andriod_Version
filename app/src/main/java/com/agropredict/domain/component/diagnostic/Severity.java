@@ -11,8 +11,8 @@ public abstract class Severity {
 
     public abstract void accept(ISeverityVisitor visitor);
 
-    public final void accept(IDiagnosticVisitor visitor, String shortSummary) {
-        visitor.visitAssessment(value, shortSummary);
+    public final void accept(IDiagnosticVisitor visitor) {
+        visitor.visitSeverity(value);
     }
 
     public static Severity classify(String value) {

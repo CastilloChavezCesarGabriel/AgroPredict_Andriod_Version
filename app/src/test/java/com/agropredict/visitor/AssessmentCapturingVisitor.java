@@ -7,13 +7,13 @@ public final class AssessmentCapturingVisitor implements IDiagnosticVisitor {
     private String recommendationText;
 
     @Override
-    public void visitAssessment(String severity, String shortSummary) {
-        this.shortSummary = shortSummary;
+    public void visitSummary(String text) {
+        this.shortSummary = text;
     }
 
     @Override
-    public void visitRecommendation(String recommendationText) {
-        this.recommendationText = recommendationText;
+    public void visitRecommendation(String text) {
+        this.recommendationText = text;
     }
 
     public boolean recordedSummary(String expected) {

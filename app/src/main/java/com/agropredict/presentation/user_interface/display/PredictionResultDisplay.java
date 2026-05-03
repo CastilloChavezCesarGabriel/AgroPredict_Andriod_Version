@@ -26,14 +26,18 @@ public final class PredictionResultDisplay extends DiagnosticDisplay implements 
     }
 
     @Override
-    public void visitAssessment(String severity, String shortSummary) {
-        severityLabel.setText(severity);
-        summaryLabel.setText(shortSummary);
+    public void visitSeverity(String value) {
+        severityLabel.setText(value);
     }
 
     @Override
-    public void visitRecommendation(String recommendationText) {
-        recommendationsLabel.setText(recommendationText);
+    public void visitSummary(String text) {
+        summaryLabel.setText(text);
+    }
+
+    @Override
+    public void visitRecommendation(String text) {
+        recommendationsLabel.setText(text);
     }
 
     public void display(Photograph photograph) {

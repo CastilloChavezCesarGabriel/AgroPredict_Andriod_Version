@@ -30,7 +30,7 @@ public final class RegisterActivity extends BaseActivity implements IRegisterVie
     private void initialize() {
         IAccessFactory factory = (IAccessFactory) getApplication();
         RegisterUseCase useCase = new RegisterUseCase(
-                factory.createUserRepository(), factory.createPasswordHasher());
+                factory.createUserRepository(), factory.createOccupationCatalog());
         ListCatalogUseCase occupations = new ListCatalogUseCase(factory.createOccupationCatalog());
         viewModel = new RegisterViewModel(useCase, this);
         viewModel.populate(occupations);

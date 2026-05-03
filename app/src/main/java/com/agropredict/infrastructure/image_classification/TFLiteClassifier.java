@@ -6,21 +6,16 @@ import java.nio.ByteBuffer;
 
 public final class TFLiteClassifier implements IImageClassifier {
     private final TFLiteModel model;
-    private final ImageValidator validator;
-    private final ImagePreprocessor preprocessor;
+    private final ImageProcessor processor;
 
-    public TFLiteClassifier(TFLiteModel model, ImageValidator validator, ImagePreprocessor preprocessor) {
+    public TFLiteClassifier(TFLiteModel model, ImageProcessor processor) {
         this.model = model;
-        this.validator = validator;
-        this.preprocessor = preprocessor;
+        this.processor = processor;
     }
 
     @Override
     public void classify(String imagePath, IClassificationResultVisitor consumer) {
-        String error = validator.validate(imagePath);
-        if (error != null) { consumer.onReject(error); return; }
-        ByteBuffer input = preprocessor.prepare(imagePath);
-        if (input == null) { consumer.onReject("Could not process image"); return; }
-        model.infer(input, consumer);
+        ByteBuffer input = processor.prepare(imagePath, consumer);
+        if (input != null) model.infer(input, consumer);
     }
 }

@@ -7,19 +7,18 @@ public final class ReportTable implements ITable {
     public void create(SQLiteDatabase database) {
         define(database);
         index(database);
-        automate(database);
     }
 
     private void define(SQLiteDatabase database) {
         database.execSQL(
             "CREATE TABLE IF NOT EXISTS report ("
-            + "id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))), "
+            + "id TEXT PRIMARY KEY, "
             + "diagnostic_id TEXT REFERENCES diagnostic(id) ON DELETE SET NULL, "
             + "crop_id TEXT REFERENCES crop(id) ON DELETE SET NULL, "
             + "user_id TEXT REFERENCES user(id) ON DELETE SET NULL, "
             + "format TEXT NOT NULL CHECK (format IN ('pdf','csv')), "
             + "file_path TEXT, "
-            + "generated_at TEXT DEFAULT CURRENT_TIMESTAMP)");
+            + "generated_at TEXT NOT NULL)");
         database.execSQL(
             "CREATE TABLE IF NOT EXISTS report_diagnostic ("
             + "report_id TEXT NOT NULL REFERENCES report(id) ON DELETE CASCADE, "
@@ -29,30 +28,14 @@ public final class ReportTable implements ITable {
             + "PRIMARY KEY (report_id, diagnostic_id))");
         database.execSQL(
             "CREATE TABLE IF NOT EXISTS report_sharing ("
-            + "id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))), "
+            + "id TEXT PRIMARY KEY, "
             + "report_id TEXT NOT NULL REFERENCES report(id) ON DELETE CASCADE, "
             + "qr_code TEXT NOT NULL UNIQUE, "
-            + "created_at TEXT DEFAULT CURRENT_TIMESTAMP, "
+            + "created_at TEXT NOT NULL, "
             + "expiration TEXT)");
     }
 
     private void index(SQLiteDatabase database) {
         database.execSQL("CREATE INDEX IF NOT EXISTS index_report_user ON report(user_id)");
-    }
-
-    private void automate(SQLiteDatabase database) {
-        database.execSQL(
-            "CREATE TRIGGER IF NOT EXISTS report_diagnostic_link "
-            + "AFTER INSERT ON report FOR EACH ROW "
-            + "WHEN NEW.diagnostic_id IS NOT NULL BEGIN "
-            + "INSERT INTO report_diagnostic (report_id, diagnostic_id, position, observations) "
-            + "VALUES (NEW.id, NEW.diagnostic_id, 1, "
-            + "'Generated ' || NEW.format || ' report'); END");
-        database.execSQL(
-            "CREATE TRIGGER IF NOT EXISTS report_sharing_generate "
-            + "AFTER INSERT ON report FOR EACH ROW BEGIN "
-            + "INSERT INTO report_sharing (report_id, qr_code, expiration) "
-            + "VALUES (NEW.id, lower(hex(randomblob(16))), "
-            + "datetime('now', '+30 days')); END");
     }
 }

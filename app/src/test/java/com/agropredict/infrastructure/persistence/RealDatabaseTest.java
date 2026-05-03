@@ -12,6 +12,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import androidx.test.core.app.ApplicationProvider;
+import com.agropredict.application.diagnostic_submission.Cropland;
+import com.agropredict.application.diagnostic_submission.FieldStorage;
 import com.agropredict.application.repository.ICatalogRepository;
 import com.agropredict.application.repository.ICropRepository;
 import com.agropredict.application.repository.ISessionRepository;
@@ -21,6 +23,7 @@ import com.agropredict.domain.Session;
 import com.agropredict.domain.entity.Crop;
 import com.agropredict.infrastructure.persistence.database.Database;
 import com.agropredict.infrastructure.persistence.repository.SqliteCropRepository;
+import com.agropredict.infrastructure.persistence.repository.SqlitePhotographRepository;
 import com.agropredict.infrastructure.persistence.schema.CatalogName;
 import org.junit.After;
 import org.junit.Before;
@@ -51,12 +54,16 @@ public final class RealDatabaseTest {
 
     private String enroll(SQLiteDatabase raw, String username) {
         String identifier = Identifier.generate("user");
+        String now = "2026-01-01 00:00:00";
         ContentValues user = new ContentValues();
         user.put("id", identifier);
         user.put("full_name", "Test User");
         user.put("username", username);
         user.put("email", username + "@example.com");
         user.put("password_hash", "abcd:efgh");
+        user.put("created_at", now);
+        user.put("updated_at", now);
+        user.put("is_active", 1);
         long result = raw.insertOrThrow("user", null, user);
         assertFalse("user insert returned -1", result < 0);
         return identifier;
@@ -123,10 +130,14 @@ public final class RealDatabaseTest {
         assertNotNull(stageIdentifier);
 
         ContentValues row = new ContentValues();
+        String now = "2026-01-01 00:00:00";
         row.put("id", Identifier.generate("crop"));
         row.put("user_id", userIdentifier);
         row.put("crop_type", "rice");
         row.put("phenological_stage_id", stageIdentifier);
+        row.put("created_at", now);
+        row.put("updated_at", now);
+        row.put("is_active", 1);
 
         long inserted = raw.insertOrThrow("crop", null, row);
         assertTrue(inserted > 0);
@@ -140,8 +151,9 @@ public final class RealDatabaseTest {
         ICatalogRepository stageCatalog = CatalogName.PHENOLOGICAL_STAGE.open(database);
         ISessionRepository sessionRepository = stub(userIdentifier);
         ICropRepository cropRepository = new SqliteCropRepository(database, sessionRepository);
+        Cropland cropland = new Cropland(new FieldStorage(cropRepository, new SqlitePhotographRepository(database, sessionRepository)), stageCatalog);
 
-        Crop crop = new Cultivation("rice", "Vegetative").cultivate(stageCatalog);
+        Crop crop = new Cultivation("rice", "Vegetative").cultivate("crop_pipeline_1", cropland);
         cropRepository.store(crop);
 
         Cursor cursor = raw.rawQuery(
@@ -166,8 +178,9 @@ public final class RealDatabaseTest {
         ICatalogRepository stageCatalog = CatalogName.PHENOLOGICAL_STAGE.open(database);
         ISessionRepository sessionRepository = stub(userIdentifier);
         ICropRepository cropRepository = new SqliteCropRepository(database, sessionRepository);
+        Cropland cropland = new Cropland(new FieldStorage(cropRepository, new SqlitePhotographRepository(database, sessionRepository)), stageCatalog);
 
-        Crop crop = new Cultivation("tomato", "MysteryStage").cultivate(stageCatalog);
+        Crop crop = new Cultivation("tomato", "MysteryStage").cultivate("crop_pipeline_2", cropland);
         cropRepository.store(crop);
 
         Cursor cursor = raw.rawQuery(
@@ -180,21 +193,21 @@ public final class RealDatabaseTest {
     }
 
     @Test
-    public void testQuestionnaireTableExistsBeforeDiagnosticTriggers() {
+    public void testSchemaIsStructuralWithNoTriggers() {
         SQLiteDatabase raw = database.getReadableDatabase();
-        Cursor cursor = raw.rawQuery(
+        Cursor tables = raw.rawQuery(
                 "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'ai_user_response'",
                 null);
-        assertTrue("ai_user_response must exist for diagnostic triggers", cursor.moveToFirst());
-        cursor.close();
+        assertTrue("ai_user_response table must exist", tables.moveToFirst());
+        tables.close();
 
-        cursor = raw.rawQuery(
-                "SELECT name FROM sqlite_master WHERE type = 'trigger' AND name LIKE 'diagnostic_%'",
+        Cursor triggers = raw.rawQuery(
+                "SELECT name FROM sqlite_master WHERE type = 'trigger'",
                 null);
         int triggerCount = 0;
-        while (cursor.moveToNext()) triggerCount++;
-        cursor.close();
-        assertTrue("diagnostic triggers should be created without errors", triggerCount >= 3);
+        while (triggers.moveToNext()) triggerCount++;
+        triggers.close();
+        assertEquals("schema must have zero triggers", 0, triggerCount);
     }
 
     @Test

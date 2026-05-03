@@ -9,27 +9,30 @@ import com.agropredict.application.request.user_registration.RegistrationExcepti
 import com.agropredict.application.request.user_registration.RegistrationRequest;
 import com.agropredict.application.service.IPasswordHasher;
 import com.agropredict.domain.Session;
+import com.agropredict.infrastructure.persistence.database.Clock;
 import com.agropredict.infrastructure.persistence.database.Database;
 import com.agropredict.infrastructure.persistence.database.SqliteRow;
 import com.agropredict.infrastructure.persistence.visitor.UserPersistenceVisitor;
 
 public final class SqliteUserRepository implements IUserRepository {
     private final Database database;
-    private final ICatalogRepository catalog;
     private final IPasswordHasher hasher;
 
-    public SqliteUserRepository(Database database, ICatalogRepository catalog, IPasswordHasher hasher) {
+    public SqliteUserRepository(Database database, IPasswordHasher hasher) {
         this.database = database;
-        this.catalog = catalog;
         this.hasher = hasher;
     }
 
     @Override
-    public void register(RegistrationRequest request, IPasswordHasher hasher) {
+    public void register(RegistrationRequest request, ICatalogRepository catalog) {
         SqliteRow row = new SqliteRow(database.getWritableDatabase());
         UserPersistenceVisitor visitor = new UserPersistenceVisitor(row);
         request.authenticate(visitor, hasher);
         request.classify(visitor, catalog);
+        String now = Clock.read();
+        row.record("created_at", now);
+        row.record("updated_at", now);
+        row.mark("is_active", 1);
         try {
             row.flush("user");
         } catch (SQLiteConstraintException exception) {
@@ -67,6 +70,7 @@ public final class SqliteUserRepository implements IUserRepository {
         SqliteRow sqliteRow = new SqliteRow(database.getWritableDatabase());
         sqliteRow.record("email", email);
         sqliteRow.record("password_hash", newPasswordHash);
+        sqliteRow.record("updated_at", Clock.read());
         return sqliteRow.overwrite("user", "email");
     }
 }

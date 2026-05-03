@@ -16,7 +16,7 @@ public final class ResetPasswordUseCaseTest {
     private IUserRepository fakeUserRepo(boolean registered, boolean resetSuccess) {
         return new IUserRepository() {
             @Override public Session authenticate(String email, String password) { return null; }
-            @Override public void register(RegistrationRequest request, IPasswordHasher hasher) {}
+            @Override public void register(RegistrationRequest request, com.agropredict.application.repository.ICatalogRepository catalog) {}
             @Override public boolean reset(String email, String hash) { return registered && resetSuccess; }
         };
     }

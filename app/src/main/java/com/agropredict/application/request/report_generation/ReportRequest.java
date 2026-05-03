@@ -17,4 +17,10 @@ public final class ReportRequest {
         finding.accept(visitor);
         destination.accept(visitor);
     }
+
+    public void identify(IReportLinkConsumer consumer) {
+        report.identify(reportIdentifier ->
+                finding.identify(diagnosticIdentifier ->
+                        consumer.accept(reportIdentifier, diagnosticIdentifier)));
+    }
 }

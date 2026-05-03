@@ -10,7 +10,9 @@ import com.agropredict.application.factory.IAccessFactory;
 import com.agropredict.infrastructure.persistence.AuditLogger;
 import com.agropredict.infrastructure.persistence.database.Database;
 import com.agropredict.infrastructure.persistence.repository.SessionRepository;
+import com.agropredict.infrastructure.persistence.repository.SqliteSyncRecorder;
 import com.agropredict.infrastructure.persistence.repository.SqliteUserRepository;
+import com.agropredict.infrastructure.persistence.repository.SyncingUserRepository;
 import com.agropredict.infrastructure.persistence.schema.CatalogName;
 import com.agropredict.infrastructure.security.PasswordHasher;
 
@@ -25,7 +27,8 @@ public final class AndroidAccessFactory implements IAccessFactory {
 
     @Override
     public IUserRepository createUserRepository() {
-        return new SqliteUserRepository(database, createOccupationCatalog(), createPasswordHasher());
+        SqliteUserRepository base = new SqliteUserRepository(database, createPasswordHasher());
+        return new SyncingUserRepository(base, new SqliteSyncRecorder(database, createSessionRepository()));
     }
 
     @Override

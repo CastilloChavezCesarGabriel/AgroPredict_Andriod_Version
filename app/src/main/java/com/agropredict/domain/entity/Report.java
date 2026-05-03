@@ -1,5 +1,6 @@
 package com.agropredict.domain.entity;
 
+import com.agropredict.domain.IIdentifierConsumer;
 import com.agropredict.domain.visitor.report.IReportVisitor;
 
 public final class Report {
@@ -13,5 +14,9 @@ public final class Report {
 
     public void accept(IReportVisitor visitor) {
         visitor.visitIdentity(identifier, format);
+    }
+
+    public void identify(IIdentifierConsumer consumer) {
+        consumer.accept(identifier);
     }
 }

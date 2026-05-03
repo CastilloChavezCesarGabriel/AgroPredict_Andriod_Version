@@ -1,5 +1,6 @@
 package com.agropredict.application.request;
 
+import com.agropredict.domain.IIdentifierConsumer;
 import com.agropredict.domain.entity.Crop;
 import com.agropredict.domain.visitor.crop.ICropVisitor;
 
@@ -12,5 +13,9 @@ public final class CropUpdateRequest {
 
     public void accept(ICropVisitor visitor) {
         crop.accept(visitor);
+    }
+
+    public void identify(IIdentifierConsumer consumer) {
+        crop.identify(consumer);
     }
 }

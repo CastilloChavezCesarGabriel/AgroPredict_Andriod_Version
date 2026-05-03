@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import com.agropredict.application.visitor.IQuestionnaireVisitor;
 import com.agropredict.domain.Identifier;
+import com.agropredict.infrastructure.persistence.database.Clock;
 import com.agropredict.infrastructure.persistence.schema.IKeyConsumer;
 import com.agropredict.infrastructure.persistence.schema.QuestionKey;
 
@@ -62,6 +63,7 @@ public final class QuestionnairePersistenceVisitor implements IQuestionnaireVisi
     public void accept(String key, String value) {
         String questionId = resolve(key);
         insert(questionId, key, value);
+        propagate(key, value);
     }
 
     private String resolve(String key) {
@@ -76,7 +78,18 @@ public final class QuestionnairePersistenceVisitor implements IQuestionnaireVisi
         values.put("question_id", questionId);
         values.put("option_id", locate("ai_option", "option_text", value));
         values.put("text_value", value);
+        values.put("created_at", Clock.read());
         database.insert("ai_user_response", null, values);
+    }
+
+    private void propagate(String key, String value) {
+        if ("temperature".equals(key)) {
+            database.execSQL("UPDATE diagnostic SET temperature = ? WHERE id = ?",
+                    new Object[]{value, diagnosticIdentifier});
+        } else if ("humidity".equals(key)) {
+            database.execSQL("UPDATE diagnostic SET humidity = ? WHERE id = ?",
+                    new Object[]{value, diagnosticIdentifier});
+        }
     }
 
     private String locate(String table, String column, String value) {

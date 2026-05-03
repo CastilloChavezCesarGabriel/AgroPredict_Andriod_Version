@@ -6,6 +6,7 @@ import com.agropredict.application.repository.IPhotographRepository;
 import com.agropredict.application.repository.ISessionRepository;
 import com.agropredict.domain.entity.Crop;
 import com.agropredict.domain.entity.Photograph;
+import com.agropredict.infrastructure.persistence.database.Clock;
 import com.agropredict.infrastructure.persistence.database.Database;
 import com.agropredict.infrastructure.persistence.database.SqliteRow;
 import com.agropredict.infrastructure.persistence.visitor.PhotographPersistenceVisitor;
@@ -25,6 +26,7 @@ public final class SqlitePhotographRepository implements IPhotographRepository {
         PhotographPersistenceVisitor visitor = new PhotographPersistenceVisitor(row, sessionRepository.recall());
         photograph.accept(visitor);
         crop.accept(visitor);
+        row.record("created_at", Clock.read());
         row.flush("image");
     }
 

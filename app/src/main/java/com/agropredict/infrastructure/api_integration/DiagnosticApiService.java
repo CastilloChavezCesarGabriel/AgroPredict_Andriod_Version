@@ -4,6 +4,7 @@ import android.util.Log;
 import com.agropredict.application.request.diagnostic_submission.SubmissionRequest;
 import com.agropredict.application.service.IDiagnosticApiService;
 import com.agropredict.application.visitor.ISubmissionVisitor;
+import com.agropredict.domain.component.diagnostic.Recommendation;
 import com.agropredict.domain.entity.Diagnostic;
 import com.agropredict.infrastructure.persistence.schema.IKeyConsumer;
 import com.agropredict.infrastructure.persistence.schema.QuestionKey;
@@ -111,7 +112,7 @@ public final class DiagnosticApiService implements IDiagnosticApiService, ISubmi
     private void conclude(Diagnostic diagnostic, JSONObject response) {
         JSONObject summary = response.optJSONObject("reporte_resumido");
         String severity = translate(summary == null ? "" : summary.optString("gravedad", ""));
-        diagnostic.conclude(severity, summarize(summary), recommend(response));
+        diagnostic.conclude(severity, new Recommendation(summarize(summary), recommend(response)));
     }
 
     private String summarize(JSONObject summary) {

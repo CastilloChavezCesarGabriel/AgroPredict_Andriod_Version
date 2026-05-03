@@ -1,5 +1,6 @@
 package com.agropredict.domain.entity;
 
+import com.agropredict.domain.IIdentifierConsumer;
 import com.agropredict.domain.visitor.photograph.IPhotographVisitor;
 
 public final class Photograph {
@@ -13,5 +14,9 @@ public final class Photograph {
 
     public void accept(IPhotographVisitor visitor) {
         visitor.visitPhotograph(identifier, filePath);
+    }
+
+    public void identify(IIdentifierConsumer consumer) {
+        consumer.accept(identifier);
     }
 }
