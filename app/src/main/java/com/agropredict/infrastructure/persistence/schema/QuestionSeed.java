@@ -14,8 +14,8 @@ public final class QuestionSeed {
 
     public void load(SQLiteDatabase database) {
         database.execSQL(
-            "INSERT OR IGNORE INTO ai_question (id, question_key, text, position, answer_type) "
-            + "VALUES (?, ?, ?, (SELECT COALESCE(MAX(position), 0) + 1 FROM ai_question), 'single')",
-            new Object[]{Identifier.generate("question"), key, text});
+                "INSERT OR IGNORE INTO ai_question (id, question_key, text, position, answer_type) "
+                        + "VALUES (?, ?, ?, (SELECT COALESCE(MAX(position), 0) + 1 FROM ai_question), 'single')",
+                new Object[]{Identifier.generate("question"), key, text});
     }
 }

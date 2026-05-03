@@ -15,8 +15,8 @@ public final class Seed {
     public void load(SQLiteDatabase database) {
         for (String value : values) {
             database.execSQL(
-                "INSERT OR IGNORE INTO " + table + " (id, name) VALUES (?, ?)",
-                new Object[]{Identifier.generate(table), value});
+                    "INSERT OR IGNORE INTO " + table + " (id, name) VALUES (?, ?)",
+                    new Object[]{Identifier.generate(table), value});
         }
     }
 }

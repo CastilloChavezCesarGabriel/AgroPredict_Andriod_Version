@@ -15,9 +15,9 @@ public final class OptionSeed {
     public void load(SQLiteDatabase database) {
         for (String option : options) {
             database.execSQL(
-                "INSERT OR IGNORE INTO ai_option (id, question_id, option_text, option_value) "
-                + "VALUES (?, (SELECT id FROM ai_question WHERE question_key = ?), ?, ?)",
-                new Object[]{Identifier.generate("option"), questionKey, option, option});
+                    "INSERT OR IGNORE INTO ai_option (id, question_id, option_text, option_value) "
+                            + "VALUES (?, (SELECT id FROM ai_question WHERE question_key = ?), ?, ?)",
+                    new Object[]{Identifier.generate("option"), questionKey, option, option});
         }
     }
 }
