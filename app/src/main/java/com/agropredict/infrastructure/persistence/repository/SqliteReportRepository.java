@@ -1,6 +1,5 @@
 package com.agropredict.infrastructure.persistence.repository;
 
-import com.agropredict.application.repository.ICropRecord;
 import com.agropredict.application.repository.IReportRepository;
 import com.agropredict.application.request.report_generation.ReportRequest;
 import com.agropredict.application.request.report_generation.Destination;
@@ -9,7 +8,7 @@ import com.agropredict.infrastructure.persistence.database.Database;
 import com.agropredict.infrastructure.persistence.database.SqliteRow;
 import com.agropredict.infrastructure.persistence.visitor.ReportPersistenceVisitor;
 
-public final class SqliteReportRepository implements IReportRepository, ICropRecord {
+public final class SqliteReportRepository implements IReportRepository {
     private final Database database;
     private final SqliteReportDiagnostic reportDiagnostic;
     private final SqliteReportSharing reportSharing;
@@ -29,6 +28,7 @@ public final class SqliteReportRepository implements IReportRepository, ICropRec
         request.store(visitor, destination);
         String now = Clock.read();
         row.record("generated_at", now);
+        row.mark("is_active", 1);
         row.flush("report");
         request.identify((reportIdentifier, diagnosticIdentifier)
                 -> link(reportIdentifier, diagnosticIdentifier, now));
@@ -37,10 +37,5 @@ public final class SqliteReportRepository implements IReportRepository, ICropRec
     private void link(String reportIdentifier, String diagnosticIdentifier, String generatedAt) {
         if (diagnosticIdentifier != null) reportDiagnostic.link(reportIdentifier, diagnosticIdentifier);
         reportSharing.share(reportIdentifier, generatedAt);
-    }
-
-    @Override
-    public void discard(String cropIdentifier) {
-        database.getWritableDatabase().delete("report", "crop_id = ?", new String[]{cropIdentifier});
     }
 }

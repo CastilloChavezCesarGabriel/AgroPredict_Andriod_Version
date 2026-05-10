@@ -9,7 +9,6 @@ import com.agropredict.application.factory.IPredictionFactory;
 import com.agropredict.application.factory.IReportingFactory;
 import com.agropredict.application.factory.IReviewFactory;
 import com.agropredict.application.repository.ICatalogRepository;
-import com.agropredict.application.repository.ICropRecord;
 import com.agropredict.application.repository.ICropRepository;
 import com.agropredict.application.repository.IDiagnosticRepository;
 import com.agropredict.application.repository.IPhotographRepository;
@@ -24,7 +23,6 @@ import com.agropredict.application.service.IImageCompressor;
 import com.agropredict.application.service.IPasswordHasher;
 import com.agropredict.application.service.IReportService;
 import com.google.android.material.color.DynamicColors;
-import java.util.List;
 
 public final class AgroPredictApplication extends Application implements
         IAccessFactory, IDashboardFactory, ICatalogFactory,
@@ -93,11 +91,6 @@ public final class AgroPredictApplication extends Application implements
     @Override
     public IPhotographRepository createPhotographRepository() {
         return configuration.createReview().createPhotographRepository();
-    }
-
-    @Override
-    public List<ICropRecord> createCropRecord() {
-        return configuration.createReview().createCropRecord();
     }
 
     @Override

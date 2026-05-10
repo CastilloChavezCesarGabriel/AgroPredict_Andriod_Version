@@ -1,5 +1,6 @@
 package com.agropredict.infrastructure.persistence.repository;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import com.agropredict.application.repository.ICropRepository;
@@ -107,7 +108,20 @@ public final class SqliteCropRepository implements ICropRepository, IRecordErase
 
     @Override
     public void erase(String cropIdentifier) {
-        store.deactivate("crop", cropIdentifier);
+        SQLiteDatabase writable = database.getWritableDatabase();
+        ContentValues deactivation = new ContentValues();
+        deactivation.put("is_active", 0);
+        String[] cropArgs = new String[]{cropIdentifier};
+        writable.beginTransaction();
+        try {
+            writable.update("diagnostic", deactivation, "crop_id = ?", cropArgs);
+            writable.update("image", deactivation, "crop_id = ?", cropArgs);
+            writable.update("report", deactivation, "crop_id = ?", cropArgs);
+            writable.update("crop", deactivation, "id = ?", cropArgs);
+            writable.setTransactionSuccessful();
+        } finally {
+            writable.endTransaction();
+        }
     }
 
     private Crop recover(Cursor cursor) {

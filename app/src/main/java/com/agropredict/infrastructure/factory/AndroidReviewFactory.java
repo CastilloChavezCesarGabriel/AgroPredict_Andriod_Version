@@ -1,7 +1,6 @@
 package com.agropredict.infrastructure.factory;
 
 import android.content.Context;
-import com.agropredict.application.repository.ICropRecord;
 import com.agropredict.application.repository.ICropRepository;
 import com.agropredict.application.repository.IDiagnosticRepository;
 import com.agropredict.application.repository.IPhotographRepository;
@@ -14,13 +13,10 @@ import com.agropredict.infrastructure.persistence.repository.SessionRepository;
 import com.agropredict.infrastructure.persistence.repository.SqliteCropRepository;
 import com.agropredict.infrastructure.persistence.repository.SqliteDiagnosticRepository;
 import com.agropredict.infrastructure.persistence.repository.SqlitePhotographRepository;
-import com.agropredict.infrastructure.persistence.repository.SqliteReportRepository;
 import com.agropredict.infrastructure.persistence.repository.SqliteSyncRecorder;
 import com.agropredict.infrastructure.persistence.repository.SyncingCropRepository;
 import com.agropredict.infrastructure.persistence.repository.SyncingDiagnosticRepository;
 import com.agropredict.infrastructure.persistence.repository.SyncingPhotographRepository;
-import com.agropredict.infrastructure.persistence.repository.SyncingReportRepository;
-import java.util.List;
 
 public final class AndroidReviewFactory implements IReviewFactory {
     private final Database database;
@@ -56,14 +52,6 @@ public final class AndroidReviewFactory implements IReviewFactory {
     @Override
     public ISessionRepository createSessionRepository() {
         return new SessionRepository(context);
-    }
-
-    @Override
-    public List<ICropRecord> createCropRecord() {
-        return List.of(
-                (ICropRecord) createDiagnosticRepository(),
-                (ICropRecord) createPhotographRepository(),
-                new SyncingReportRepository(new SqliteReportRepository(database), createSyncRecorder()));
     }
 
     private SqliteSyncRecorder createSyncRecorder() {

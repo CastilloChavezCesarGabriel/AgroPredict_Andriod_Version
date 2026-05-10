@@ -1,11 +1,10 @@
 package com.agropredict.infrastructure.persistence.repository;
 
-import com.agropredict.application.repository.ICropRecord;
 import com.agropredict.application.repository.IPhotographRepository;
 import com.agropredict.domain.crop.Crop;
 import com.agropredict.domain.photograph.Photograph;
 
-public final class SyncingPhotographRepository implements IPhotographRepository, ICropRecord {
+public final class SyncingPhotographRepository implements IPhotographRepository {
     private final SqlitePhotographRepository delegate;
     private final SqliteSyncRecorder recorder;
 
@@ -23,10 +22,5 @@ public final class SyncingPhotographRepository implements IPhotographRepository,
     @Override
     public Photograph find(String diagnosticIdentifier) {
         return delegate.find(diagnosticIdentifier);
-    }
-
-    @Override
-    public void discard(String cropIdentifier) {
-        delegate.discard(cropIdentifier);
     }
 }

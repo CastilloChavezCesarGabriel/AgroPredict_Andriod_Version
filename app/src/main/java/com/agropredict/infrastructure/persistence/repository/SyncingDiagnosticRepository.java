@@ -1,12 +1,11 @@
 package com.agropredict.infrastructure.persistence.repository;
 
-import com.agropredict.application.repository.ICropRecord;
 import com.agropredict.application.repository.IDiagnosticRepository;
 import com.agropredict.application.repository.IRecordEraser;
 import com.agropredict.domain.diagnostic.Diagnostic;
 import java.util.List;
 
-public final class SyncingDiagnosticRepository implements IDiagnosticRepository, IRecordEraser, ICropRecord {
+public final class SyncingDiagnosticRepository implements IDiagnosticRepository, IRecordEraser {
     private final SqliteDiagnosticRepository delegate;
     private final SqliteSyncRecorder recorder;
 
@@ -25,11 +24,6 @@ public final class SyncingDiagnosticRepository implements IDiagnosticRepository,
     public void erase(String diagnosticIdentifier) {
         delegate.erase(diagnosticIdentifier);
         recorder.delete("diagnostic", diagnosticIdentifier);
-    }
-
-    @Override
-    public void discard(String cropIdentifier) {
-        delegate.discard(cropIdentifier);
     }
 
     @Override

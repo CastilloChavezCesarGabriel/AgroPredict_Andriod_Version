@@ -18,6 +18,7 @@ public final class ReportTable implements ITable {
             + "user_id TEXT REFERENCES user(id) ON DELETE SET NULL, "
             + "format TEXT NOT NULL CHECK (format IN ('pdf','csv')), "
             + "file_path TEXT, "
+            + "is_active INTEGER NOT NULL CHECK (is_active IN (0,1)), "
             + "generated_at TEXT NOT NULL)");
         database.execSQL(
             "CREATE TABLE IF NOT EXISTS report_diagnostic ("

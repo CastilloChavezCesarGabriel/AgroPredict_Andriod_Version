@@ -25,7 +25,7 @@ import java.nio.charset.StandardCharsets;
 public final class DiagnosticApiService implements IDiagnosticApiService, IPredictionConsumer, IAnswerConsumer {
     private static final String TAG = "DiagnosticApiService";
     private static final int CONNECTION_TIMEOUT = 30000;
-    private static final int READ_TIMEOUT = 30000;
+    private static final int READ_TIMEOUT = 60000;
     private final String endpoint;
     private final ISeverityFactory severityFactory;
     private final JSONObject payload;

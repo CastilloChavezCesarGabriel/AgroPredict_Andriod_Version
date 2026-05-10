@@ -8,7 +8,7 @@ import com.agropredict.infrastructure.persistence.schema.SeedLoader;
 
 public final class Database extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "agro_diagnostic.db";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
     private final Schema schema;
 
     public Database(Context context) {

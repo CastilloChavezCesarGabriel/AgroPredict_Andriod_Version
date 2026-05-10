@@ -8,7 +8,7 @@ import com.agropredict.R;
 import com.agropredict.application.factory.IReviewFactory;
 import com.agropredict.application.repository.IPhotographRepository;
 import com.agropredict.application.repository.IRecordEraser;
-import com.agropredict.application.usecase.crop.RemoveCropUseCase;
+import com.agropredict.application.usecase.DeleteUseCase;
 import com.agropredict.application.usecase.crop.TraceCropHistoryUseCase;
 import com.agropredict.application.usecase.diagnostic.FindDiagnosticUseCase;
 import com.agropredict.application.visitor.IOperationResult;
@@ -24,7 +24,7 @@ import java.util.List;
 public final class FieldDetailActivity extends BaseActivity implements IFieldDetailView, IOperationResult {
     private FieldDetailViewModel viewModel;
     private FieldDetailDisplay fieldDetail;
-    private RemoveCropUseCase removeUseCase;
+    private DeleteUseCase removeUseCase;
     private TraceCropHistoryUseCase traceUseCase;
     private IPhotographRepository photographRepository;
     private String cropIdentifier;
@@ -47,7 +47,7 @@ public final class FieldDetailActivity extends BaseActivity implements IFieldDet
     private void initialize() {
         IReviewFactory factory = (IReviewFactory) getApplication();
         FindDiagnosticUseCase findUseCase = new FindDiagnosticUseCase(factory.createDiagnosticRepository());
-        removeUseCase = new RemoveCropUseCase((IRecordEraser) factory.createCropRepository(), factory.createCropRecord());
+        removeUseCase = new DeleteUseCase((IRecordEraser) factory.createCropRepository());
         traceUseCase = new TraceCropHistoryUseCase(factory.createCropRepository());
         photographRepository = factory.createPhotographRepository();
         viewModel = new FieldDetailViewModel(findUseCase, this);
@@ -95,7 +95,7 @@ public final class FieldDetailActivity extends BaseActivity implements IFieldDet
     }
 
     private void delete() {
-        removeUseCase.remove(cropIdentifier).accept(this);
+        removeUseCase.delete(cropIdentifier).accept(this);
     }
 
     @Override

@@ -14,6 +14,7 @@ public final class ImageTable implements ITable {
             + "format TEXT CHECK (format IN ('jpg','png')), "
             + "size_in_megabytes REAL, "
             + "captured_at TEXT, "
+            + "is_active INTEGER NOT NULL CHECK (is_active IN (0,1)), "
             + "created_at TEXT NOT NULL)");
         database.execSQL("CREATE INDEX IF NOT EXISTS index_image_crop ON image(crop_id)");
         database.execSQL("CREATE INDEX IF NOT EXISTS index_image_user ON image(user_id)");
