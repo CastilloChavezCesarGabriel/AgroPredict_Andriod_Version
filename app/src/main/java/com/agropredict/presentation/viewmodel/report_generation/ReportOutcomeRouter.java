@@ -1,9 +1,9 @@
 package com.agropredict.presentation.viewmodel.report_generation;
 
 import com.agropredict.application.request.report_generation.ReportRequest;
-import com.agropredict.application.visitor.IOperationResultVisitor;
+import com.agropredict.application.visitor.IOperationResult;
 
-public final class ReportOutcomeRouter implements IOperationResultVisitor {
+public final class ReportOutcomeRouter implements IOperationResult {
     private final ReportRequest request;
     private final ReportExporter persister;
 
@@ -13,8 +13,17 @@ public final class ReportOutcomeRouter implements IOperationResultVisitor {
     }
 
     @Override
-    public void visit(boolean completed, String filePath) {
-        if (completed) persister.persist(request, filePath);
-        else persister.reject();
+    public void onSucceed(String filePath) {
+        persister.persist(request, filePath);
+    }
+
+    @Override
+    public void onFail() {
+        persister.reject();
+    }
+
+    @Override
+    public void onReject(String reason) {
+        persister.reject();
     }
 }

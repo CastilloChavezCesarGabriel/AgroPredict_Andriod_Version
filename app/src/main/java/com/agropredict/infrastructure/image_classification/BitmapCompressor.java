@@ -5,7 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import com.agropredict.application.service.IImageCompressor;
-import com.agropredict.domain.Identifier;
+import com.agropredict.domain.identifier.IdentifierFactory;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -64,7 +64,7 @@ public final class BitmapCompressor implements IImageCompressor {
     }
 
     private File save(Bitmap bitmap) throws IOException {
-        File outputFile = new File(context.getCacheDir(), Identifier.generate("compressed") + ".jpg");
+        File outputFile = new File(context.getCacheDir(), IdentifierFactory.generate("compressed") + ".jpg");
         try (FileOutputStream outputStream = new FileOutputStream(outputFile)) {
             bitmap.compress(Bitmap.CompressFormat.JPEG, JPEG_QUALITY, outputStream);
             outputStream.flush();

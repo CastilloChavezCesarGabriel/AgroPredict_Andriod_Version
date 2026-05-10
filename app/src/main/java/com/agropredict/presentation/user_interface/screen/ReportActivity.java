@@ -9,7 +9,7 @@ import com.agropredict.R;
 import com.agropredict.application.factory.IReportingFactory;
 import com.agropredict.application.usecase.authentication.CheckSessionUseCase;
 import com.agropredict.application.usecase.crop.ListCropUseCase;
-import com.agropredict.domain.entity.Crop;
+import com.agropredict.domain.crop.Crop;
 import com.agropredict.presentation.user_interface.form.ReportForm;
 import com.agropredict.presentation.user_interface.navigation.PdfLauncher;
 import com.agropredict.presentation.user_interface.selector.DateSelection;

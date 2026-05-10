@@ -6,8 +6,10 @@ import static org.junit.Assert.assertNull;
 import com.agropredict.application.repository.ICropRepository;
 import com.agropredict.application.request.CropUpdateRequest;
 import com.agropredict.domain.history.HistoryRecord;
-import com.agropredict.domain.component.crop.CropProfile;
-import com.agropredict.domain.entity.Crop;
+import com.agropredict.domain.crop.CropProfile;
+import com.agropredict.domain.crop.GrowthCycle;
+import com.agropredict.domain.crop.Plot;
+import com.agropredict.domain.crop.Crop;
 
 import org.junit.Test;
 
@@ -21,13 +23,12 @@ public final class FindCropUseCaseTest {
             @Override public List<Crop> list(String userId) { return List.of(); }
             @Override public Crop find(String id) { return returnValue; }
             @Override public List<HistoryRecord> trace(String id) { return List.of(); }
-            @Override public void delete(String id) {}
         };
     }
 
     @Test
     public void testFindExistingCrop() {
-        Crop crop = new Crop("crop_1", "wheat", new CropProfile(null, null, null));
+        Crop crop = new Crop("crop_1", "wheat", new CropProfile(new Plot(null, null), new GrowthCycle(null, null)));
         Crop result = new FindCropUseCase(stubCrop(crop)).find("crop_1");
         assertNotNull(result);
     }

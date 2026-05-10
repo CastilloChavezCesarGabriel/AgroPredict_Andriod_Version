@@ -1,6 +1,7 @@
 package com.agropredict.infrastructure.image_classification;
 
-import com.agropredict.application.visitor.IClassificationResultVisitor;
+import com.agropredict.domain.diagnostic.UnconfidentClassification;
+import com.agropredict.domain.diagnostic.visitor.IClassificationResult;
 import java.nio.ByteBuffer;
 
 public final class ImageProcessor {
@@ -12,14 +13,14 @@ public final class ImageProcessor {
         this.preprocessor = preprocessor;
     }
 
-    public ByteBuffer prepare(String imagePath, IClassificationResultVisitor consumer) {
+    public ByteBuffer prepare(String imagePath, IClassificationResult visitor) {
         String error = validator.validate(imagePath);
         if (error != null) {
-            consumer.onReject(error);
+            new UnconfidentClassification(error).accept(visitor);
             return null;
         }
         ByteBuffer input = preprocessor.prepare(imagePath);
-        if (input == null) consumer.onReject("Could not process image");
+        if (input == null) new UnconfidentClassification("Could not process image").accept(visitor);
         return input;
     }
 }

@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import com.agropredict.R;
-import com.agropredict.domain.entity.Crop;
+import com.agropredict.domain.crop.Crop;
 import com.agropredict.presentation.user_interface.selector.CropSelection;
 import com.agropredict.presentation.viewmodel.report_generation.ReportViewModel;
 import com.google.android.material.button.MaterialButtonToggleGroup;

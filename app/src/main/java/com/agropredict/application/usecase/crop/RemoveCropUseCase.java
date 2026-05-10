@@ -1,25 +1,29 @@
 package com.agropredict.application.usecase.crop;
 
-import com.agropredict.application.operation_result.OperationResult;
-import com.agropredict.application.repository.IClearable;
-import com.agropredict.application.repository.ICropRepository;
+import com.agropredict.application.operation_result.IUseCaseResult;
+import com.agropredict.application.operation_result.SuccessfulOperation;
+import com.agropredict.application.operation_result.FailedOperation;
+import com.agropredict.application.repository.ICropRecord;
+import com.agropredict.application.repository.IRecordEraser;
+import java.util.List;
+import java.util.Objects;
 
 public final class RemoveCropUseCase {
-    private final ICropRepository cropRepository;
-    private final IClearable cleanup;
+    private final IRecordEraser cropEraser;
+    private final List<ICropRecord> records;
 
-    public RemoveCropUseCase(ICropRepository cropRepository, IClearable cleanup) {
-        this.cropRepository = cropRepository;
-        this.cleanup = cleanup;
+    public RemoveCropUseCase(IRecordEraser cropEraser, List<ICropRecord> records) {
+        this.cropEraser = Objects.requireNonNull(cropEraser, "remove crop use case requires a crop eraser");
+        this.records = List.copyOf(Objects.requireNonNull(records, "remove crop use case requires a record list"));
     }
 
-    public OperationResult remove(String cropIdentifier) {
+    public IUseCaseResult remove(String cropIdentifier) {
         try {
-            cleanup.clear(cropIdentifier);
-            cropRepository.delete(cropIdentifier);
-            return OperationResult.succeed(cropIdentifier);
+            records.forEach(record -> record.discard(cropIdentifier));
+            cropEraser.erase(cropIdentifier);
+            return new SuccessfulOperation(cropIdentifier);
         } catch (RuntimeException exception) {
-            return OperationResult.fail();
+            return new FailedOperation();
         }
     }
 }

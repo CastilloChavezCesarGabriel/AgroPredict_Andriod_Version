@@ -6,9 +6,9 @@ import android.app.Activity;
 import android.widget.EditText;
 import android.widget.Spinner;
 import com.agropredict.R;
-import com.agropredict.application.request.user_registration.Account;
 import com.agropredict.application.request.user_registration.Registrant;
 import com.agropredict.application.request.user_registration.Profile;
+import com.agropredict.application.request.user_registration.Registration;
 import com.agropredict.application.request.user_registration.RegistrationRequest;
 
 public final class RegistrationForm {
@@ -37,8 +37,7 @@ public final class RegistrationForm {
         String username = usernameInput.getText().toString().trim();
         String occupation = occupationSpinner.getSelectedItem().toString();
         Profile profile = new Profile(username, occupation);
-        Account account = new Account(credentialGroup.collect(), profile);
-        return new RegistrationRequest(personalInformation, account);
+        return RegistrationRequest.compose(new Registration(personalInformation, credentialGroup.collect(), profile));
     }
 
     public void populate(java.util.List<String> occupations) {

@@ -1,95 +1,92 @@
 package com.agropredict.domain.input_validation;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
 
 public final class EmailValidatorTest {
-    private final EmailValidator validator = new EmailValidator();
+    private final ValidatorTester tester = new ValidatorTester(new EmailValidator());
 
     @Test
     public void testValidEmail() {
-        assertTrue(validator.isValid("user@example.com"));
+        tester.accepts("user@example.com");
     }
 
     @Test
     public void testValidEmailWithDots() {
-        assertTrue(validator.isValid("user.name@example.com"));
+        tester.accepts("user.name@example.com");
     }
 
     @Test
     public void testValidEmailWithHyphens() {
-        assertTrue(validator.isValid("user-name@example.com"));
+        tester.accepts("user-name@example.com");
     }
 
     @Test
     public void testValidEmailWithUnderscore() {
-        assertTrue(validator.isValid("user_name@example.com"));
+        tester.accepts("user_name@example.com");
     }
 
     @Test
     public void testValidEmailWithNumbers() {
-        assertTrue(validator.isValid("user123@example.com"));
+        tester.accepts("user123@example.com");
     }
 
     @Test
     public void testValidEmailSubdomain() {
-        assertTrue(validator.isValid("user@mail.example.com"));
+        tester.accepts("user@mail.example.com");
     }
 
     @Test
     public void testNullEmail() {
-        assertFalse(validator.isValid(null));
+        tester.rejects(null);
     }
 
     @Test
     public void testEmptyEmail() {
-        assertFalse(validator.isValid(""));
+        tester.rejects("");
     }
 
     @Test
     public void testMissingAtSymbol() {
-        assertFalse(validator.isValid("userexample.com"));
+        tester.rejects("userexample.com");
     }
 
     @Test
     public void testMissingDomain() {
-        assertFalse(validator.isValid("user@"));
+        tester.rejects("user@");
     }
 
     @Test
     public void testMissingUsername() {
-        assertFalse(validator.isValid("@example.com"));
+        tester.rejects("@example.com");
     }
 
     @Test
     public void testMissingTld() {
-        assertFalse(validator.isValid("user@example"));
+        tester.rejects("user@example");
     }
 
     @Test
     public void testSingleCharTld() {
-        assertFalse(validator.isValid("user@example.c"));
+        tester.rejects("user@example.c");
     }
 
     @Test
     public void testSpacesInEmail() {
-        assertFalse(validator.isValid("user @example.com"));
+        tester.rejects("user @example.com");
     }
 
     @Test
     public void testDoubleAt() {
-        assertFalse(validator.isValid("user@@example.com"));
+        tester.rejects("user@@example.com");
     }
 
     @Test
     public void testStartsWithDot() {
-        assertFalse(validator.isValid(".user@example.com"));
+        tester.rejects(".user@example.com");
     }
 
     @Test
     public void testStartsWithSpecialChar() {
-        assertFalse(validator.isValid("!user@example.com"));
+        tester.rejects("!user@example.com");
     }
 }

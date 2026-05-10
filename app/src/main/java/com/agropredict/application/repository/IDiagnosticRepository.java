@@ -1,9 +1,9 @@
 package com.agropredict.application.repository;
 
-import com.agropredict.domain.entity.Diagnostic;
+import com.agropredict.domain.diagnostic.Diagnostic;
 import java.util.List;
 
-public interface IDiagnosticRepository extends IRecordEraser, IClearable {
+public interface IDiagnosticRepository {
     void store(Diagnostic diagnostic);
     List<Diagnostic> list(String userIdentifier);
     List<Diagnostic> filter(String userIdentifier, String cropIdentifier);

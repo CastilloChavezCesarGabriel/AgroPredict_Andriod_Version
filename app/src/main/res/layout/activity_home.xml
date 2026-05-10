@@ -19,6 +19,17 @@
             app:titleTextColor="@color/white">
 
             <ImageButton
+                android:id="@+id/btnProfile"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="start"
+                android:layout_marginStart="@dimen/spacing_8"
+                android:background="@drawable/button_logout_background"
+                android:contentDescription="@string/profile"
+                android:padding="@dimen/spacing_8"
+                android:src="@drawable/icon_profile" />
+
+            <ImageButton
                 android:id="@+id/btnLogout"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
@@ -41,6 +52,15 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="@dimen/spacing_16">
+
+                <TextView
+                    android:id="@+id/tvWelcome"
+                    style="@style/AgroPredict.Text.Headline"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_16"
+                    android:textColor="@color/green_primary_dark"
+                    android:visibility="gone" />
 
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardNewPrediction"

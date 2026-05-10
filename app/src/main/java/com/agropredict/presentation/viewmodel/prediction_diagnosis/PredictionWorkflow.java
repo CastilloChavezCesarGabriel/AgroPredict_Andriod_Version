@@ -1,10 +1,10 @@
 package com.agropredict.presentation.viewmodel.prediction_diagnosis;
 
-import com.agropredict.application.operation_result.OperationResult;
+import com.agropredict.application.operation_result.IUseCaseResult;
 import com.agropredict.application.request.diagnostic_submission.SubmissionRequest;
 import com.agropredict.application.usecase.diagnostic.ClassifyImageUseCase;
 import com.agropredict.application.usecase.diagnostic.SubmitDiagnosticUseCase;
-import com.agropredict.application.visitor.IClassificationResultVisitor;
+import com.agropredict.domain.diagnostic.visitor.IClassificationResult;
 
 public final class PredictionWorkflow {
     private final ClassifyImageUseCase classifyUseCase;
@@ -15,11 +15,11 @@ public final class PredictionWorkflow {
         this.submitUseCase = submitUseCase;
     }
 
-    public void classify(String imagePath, IClassificationResultVisitor consumer) {
-        classifyUseCase.classify(imagePath, consumer);
+    public void classify(String imagePath, IClassificationResult visitor) {
+        classifyUseCase.classify(imagePath, visitor);
     }
 
-    public OperationResult submit(SubmissionRequest request) {
+    public IUseCaseResult submit(SubmissionRequest request) {
         return submitUseCase.submit(request);
     }
 }

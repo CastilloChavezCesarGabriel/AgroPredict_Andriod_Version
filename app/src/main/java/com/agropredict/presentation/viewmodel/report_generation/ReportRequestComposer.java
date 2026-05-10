@@ -2,10 +2,10 @@ package com.agropredict.presentation.viewmodel.report_generation;
 
 import com.agropredict.application.request.report_generation.Finding;
 import com.agropredict.application.request.report_generation.ReportRequest;
-import com.agropredict.domain.entity.Report;
-import com.agropredict.domain.visitor.diagnostic.IDiagnosticPairVisitor;
+import com.agropredict.domain.report.Report;
+import com.agropredict.domain.diagnostic.visitor.IDiagnosticPairConsumer;
 
-public final class ReportRequestComposer implements IDiagnosticPairVisitor {
+public final class ReportRequestComposer implements IDiagnosticPairConsumer {
     private final Report report;
     private final ReportOutcome outcome;
 
@@ -15,8 +15,9 @@ public final class ReportRequestComposer implements IDiagnosticPairVisitor {
     }
 
     @Override
-    public void match(String diagnosticIdentifier, String otherIdentifier) {
-        ReportRequest request = new ReportRequest(report, new Finding(diagnosticIdentifier, otherIdentifier));
+    public void pair(String identifier, String otherIdentifier) {
+        Finding finding = new Finding(identifier, otherIdentifier);
+        ReportRequest request = new ReportRequest(report, finding);
         outcome.route(request);
     }
 }

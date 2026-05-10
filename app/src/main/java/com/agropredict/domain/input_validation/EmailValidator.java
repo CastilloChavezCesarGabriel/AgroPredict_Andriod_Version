@@ -1,11 +1,12 @@
 package com.agropredict.domain.input_validation;
 
-public final class EmailValidator implements ITextValidator {
-    private static final String EMAIL_PATTERN = "^[a-zA-Z0-9]([a-zA-Z0-9_-]*(\\.[a-zA-Z0-9_-]+)*)@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+public final class EmailValidator extends ValidatorChain {
+    private static final String EMAIL_PATTERN =
+            "^[a-zA-Z0-9]([a-zA-Z0-9_-]*(\\.[a-zA-Z0-9_-]+)*)@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
 
     @Override
-    public boolean isValid(String text) {
-        if (text == null || text.isEmpty()) return false;
-        return text.matches(EMAIL_PATTERN);
+    protected void inspect(String text, IValidationGate gate) {
+        new PresenceRule("Invalid email format").check(text, gate);
+        new RegexRule(EMAIL_PATTERN, "Invalid email format").check(text, gate);
     }
 }

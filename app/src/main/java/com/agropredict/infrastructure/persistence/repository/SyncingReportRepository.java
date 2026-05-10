@@ -1,14 +1,15 @@
 package com.agropredict.infrastructure.persistence.repository;
 
+import com.agropredict.application.repository.ICropRecord;
 import com.agropredict.application.repository.IReportRepository;
 import com.agropredict.application.request.report_generation.Destination;
 import com.agropredict.application.request.report_generation.ReportRequest;
 
-public final class SyncingReportRepository implements IReportRepository {
-    private final IReportRepository delegate;
+public final class SyncingReportRepository implements IReportRepository, ICropRecord {
+    private final SqliteReportRepository delegate;
     private final SqliteSyncRecorder recorder;
 
-    public SyncingReportRepository(IReportRepository delegate, SqliteSyncRecorder recorder) {
+    public SyncingReportRepository(SqliteReportRepository delegate, SqliteSyncRecorder recorder) {
         this.delegate = delegate;
         this.recorder = recorder;
     }
@@ -20,7 +21,7 @@ public final class SyncingReportRepository implements IReportRepository {
     }
 
     @Override
-    public void clear(String cropIdentifier) {
-        delegate.clear(cropIdentifier);
+    public void discard(String cropIdentifier) {
+        delegate.discard(cropIdentifier);
     }
 }

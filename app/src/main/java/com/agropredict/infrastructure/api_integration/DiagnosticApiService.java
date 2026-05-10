@@ -3,11 +3,14 @@ package com.agropredict.infrastructure.api_integration;
 import android.util.Log;
 import com.agropredict.application.request.diagnostic_submission.SubmissionRequest;
 import com.agropredict.application.service.IDiagnosticApiService;
-import com.agropredict.application.visitor.ISubmissionVisitor;
-import com.agropredict.domain.component.diagnostic.Recommendation;
-import com.agropredict.domain.entity.Diagnostic;
-import com.agropredict.infrastructure.persistence.schema.IKeyConsumer;
-import com.agropredict.infrastructure.persistence.schema.QuestionKey;
+import com.agropredict.application.visitor.IAnswerConsumer;
+import com.agropredict.domain.diagnostic.visitor.IPredictionConsumer;
+import com.agropredict.domain.diagnostic.Advice;
+import com.agropredict.domain.diagnostic.ISeverityFactory;
+import com.agropredict.domain.diagnostic.Recommendation;
+import com.agropredict.domain.diagnostic.Severity;
+import com.agropredict.domain.diagnostic.Summary;
+import com.agropredict.domain.diagnostic.Diagnostic;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,16 +22,18 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
-public final class DiagnosticApiService implements IDiagnosticApiService, ISubmissionVisitor, IKeyConsumer {
+public final class DiagnosticApiService implements IDiagnosticApiService, IPredictionConsumer, IAnswerConsumer {
     private static final String TAG = "DiagnosticApiService";
     private static final int CONNECTION_TIMEOUT = 30000;
     private static final int READ_TIMEOUT = 30000;
     private final String endpoint;
+    private final ISeverityFactory severityFactory;
     private final JSONObject payload;
     private final JSONObject answers;
 
-    public DiagnosticApiService(String endpoint) {
+    public DiagnosticApiService(String endpoint, ISeverityFactory severityFactory) {
         this.endpoint = endpoint;
+        this.severityFactory = severityFactory;
         this.payload = new JSONObject();
         this.answers = new JSONObject();
         try {
@@ -40,6 +45,7 @@ public final class DiagnosticApiService implements IDiagnosticApiService, ISubmi
     @Override
     public Diagnostic submit(Diagnostic diagnostic, SubmissionRequest request) {
         try {
+            request.dispatch(this);
             request.accept(this);
             JSONObject response = new JSONObject(send(payload));
             conclude(diagnostic, response);
@@ -52,7 +58,7 @@ public final class DiagnosticApiService implements IDiagnosticApiService, ISubmi
     }
 
     @Override
-    public void visitPrediction(String predictedCrop, double confidence) {
+    public void classify(String predictedCrop, double confidence) {
         try {
             payload.put("cultivo_detectado", predictedCrop);
             payload.put("confianza", confidence);
@@ -61,48 +67,7 @@ public final class DiagnosticApiService implements IDiagnosticApiService, ISubmi
     }
 
     @Override
-    public void visitEnvironment(String temperature, String humidity) {
-        QuestionKey.TEMPERATURE.pair(this, temperature);
-        QuestionKey.HUMIDITY.pair(this, humidity);
-    }
-
-    @Override
-    public void visitRain(String precipitation) {
-        QuestionKey.RAIN.pair(this, precipitation);
-    }
-
-    @Override
-    public void visitSoil(String moisture, String acidity) {
-        QuestionKey.SOIL_MOISTURE.pair(this, moisture);
-        QuestionKey.PH.pair(this, acidity);
-    }
-
-    @Override
-    public void visitIrrigation(String irrigation, String fertilization) {
-        QuestionKey.IRRIGATION.pair(this, irrigation);
-        QuestionKey.FERTILIZATION.pair(this, fertilization);
-    }
-
-    @Override
-    public void visitPestControl(String spraying, String weeds) {
-        QuestionKey.SPRAYING.pair(this, spraying);
-        QuestionKey.WEEDS.pair(this, weeds);
-    }
-
-    @Override
-    public void visitSymptom(String symptomType, String severity) {
-        QuestionKey.SYMPTOM.pair(this, symptomType);
-        QuestionKey.SEVERITY.pair(this, severity);
-    }
-
-    @Override
-    public void visitPest(String insects, String animals) {
-        QuestionKey.INSECTS.pair(this, insects);
-        QuestionKey.ANIMALS.pair(this, animals);
-    }
-
-    @Override
-    public void accept(String key, String value) {
+    public void record(String key, String value) {
         try {
             answers.put(key, value);
         } catch (JSONException ignored) {
@@ -110,9 +75,14 @@ public final class DiagnosticApiService implements IDiagnosticApiService, ISubmi
     }
 
     private void conclude(Diagnostic diagnostic, JSONObject response) {
-        JSONObject summary = response.optJSONObject("reporte_resumido");
-        String severity = translate(summary == null ? "" : summary.optString("gravedad", ""));
-        diagnostic.conclude(severity, new Recommendation(summarize(summary), recommend(response)));
+        JSONObject summaryJson = response.optJSONObject("reporte_resumido");
+        String gravity = summaryJson == null ? "" : summaryJson.optString("gravedad", "");
+        Severity severity = severityFactory.classify(gravity);
+        String summaryText = summarize(summaryJson);
+        Summary summary = summaryText.isEmpty() ? null : new Summary(summaryText);
+        String adviceText = recommend(response);
+        Advice advice = adviceText.isEmpty() ? null : new Advice(adviceText);
+        diagnostic.conclude(severity, new Recommendation(summary, advice));
     }
 
     private String summarize(JSONObject summary) {
@@ -159,14 +129,6 @@ public final class DiagnosticApiService implements IDiagnosticApiService, ISubmi
         if (block.isEmpty()) return;
         if (builder.length() > 0) builder.append('\n');
         builder.append(block);
-    }
-
-    private String translate(String spanishSeverity) {
-        return switch (spanishSeverity) {
-            case "Bajo" -> "low";
-            case "Alto" -> "high";
-            default -> "moderate";
-        };
     }
 
     private String send(JSONObject body) throws IOException {

@@ -1,16 +1,17 @@
 package com.agropredict.infrastructure.persistence.repository;
 
 import com.agropredict.application.repository.ICropRepository;
+import com.agropredict.application.repository.IRecordEraser;
 import com.agropredict.application.request.CropUpdateRequest;
-import com.agropredict.domain.entity.Crop;
+import com.agropredict.domain.crop.Crop;
 import com.agropredict.domain.history.HistoryRecord;
 import java.util.List;
 
-public final class SyncingCropRepository implements ICropRepository {
-    private final ICropRepository delegate;
+public final class SyncingCropRepository implements ICropRepository, IRecordEraser {
+    private final SqliteCropRepository delegate;
     private final SqliteSyncRecorder recorder;
 
-    public SyncingCropRepository(ICropRepository delegate, SqliteSyncRecorder recorder) {
+    public SyncingCropRepository(SqliteCropRepository delegate, SqliteSyncRecorder recorder) {
         this.delegate = delegate;
         this.recorder = recorder;
     }
@@ -28,8 +29,8 @@ public final class SyncingCropRepository implements ICropRepository {
     }
 
     @Override
-    public void delete(String cropIdentifier) {
-        delegate.delete(cropIdentifier);
+    public void erase(String cropIdentifier) {
+        delegate.erase(cropIdentifier);
         recorder.delete("crop", cropIdentifier);
     }
 

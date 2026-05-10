@@ -9,12 +9,12 @@ import android.app.Activity;
 import com.agropredict.application.request.diagnostic_submission.SubmissionRequest;
 import com.agropredict.application.request.ai_questionnaire.Condition;
 import com.agropredict.application.request.ai_questionnaire.CropCare;
-import com.agropredict.application.request.diagnostic_submission.Classification;
+import com.agropredict.application.request.diagnostic_submission.ImagePrediction;
 import com.agropredict.application.request.ai_questionnaire.Questionnaire;
 import com.agropredict.application.request.diagnostic_submission.Cultivation;
 import com.agropredict.application.request.diagnostic_submission.Submission;
 import com.agropredict.application.request.diagnostic_submission.PhotographInput;
-import com.agropredict.application.request.diagnostic_submission.Subject;
+import com.agropredict.application.request.diagnostic_submission.DiagnosticSubject;
 import com.agropredict.presentation.user_interface.catalog_input.SoilTypeOption;
 import com.agropredict.presentation.user_interface.catalog_input.StageOption;
 
@@ -41,9 +41,9 @@ public final class QuestionnaireForm {
         catalogGroup.populate(stageOption);
     }
 
-    public SubmissionRequest assemble(Classification prediction, PhotographInput image) {
-        Cultivation crop = prediction.cultivate(catalogGroup.extract());
-        Subject subject = new Subject(crop, image);
+    public SubmissionRequest assemble(ImagePrediction prediction, PhotographInput image) {
+        Cultivation crop = prediction.produce(catalogGroup.extract());
+        DiagnosticSubject subject = new DiagnosticSubject(crop, image);
         Submission diagnostic = new Submission(prediction, subject);
         return new SubmissionRequest(diagnostic, collect());
     }

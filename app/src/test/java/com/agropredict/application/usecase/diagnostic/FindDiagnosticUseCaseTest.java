@@ -4,8 +4,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import com.agropredict.application.repository.IDiagnosticRepository;
-import com.agropredict.domain.component.diagnostic.Prediction;
-import com.agropredict.domain.entity.Diagnostic;
+import com.agropredict.domain.diagnostic.Prediction;
+import com.agropredict.domain.diagnostic.Diagnostic;
 
 import org.junit.Test;
 
@@ -16,8 +16,6 @@ public final class FindDiagnosticUseCaseTest {
     private IDiagnosticRepository stubDiag(Diagnostic returnValue) {
         return new IDiagnosticRepository() {
             @Override public void store(Diagnostic d) {}
-            @Override public void delete(String id) {}
-            @Override public void clear(String cropId) {}
             @Override public List<Diagnostic> list(String userId) { return List.of(); }
             @Override public List<Diagnostic> filter(String userId, String cropId) { return List.of(); }
             @Override public Diagnostic find(String id) { return returnValue; }

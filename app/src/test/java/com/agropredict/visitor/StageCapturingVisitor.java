@@ -1,12 +1,12 @@
 package com.agropredict.visitor;
 
-import com.agropredict.domain.visitor.crop.ICropVisitor;
+import com.agropredict.domain.crop.visitor.IPlantingConsumer;
 
-public final class StageCapturingVisitor implements ICropVisitor {
+public final class StageCapturingVisitor implements IPlantingConsumer {
     private String stageIdentifier;
 
     @Override
-    public void visitPlanting(String date, String stageIdentifier) {
+    public void track(String date, String stageIdentifier) {
         this.stageIdentifier = stageIdentifier;
     }
 

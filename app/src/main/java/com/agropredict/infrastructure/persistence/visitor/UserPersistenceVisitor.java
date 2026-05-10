@@ -1,9 +1,14 @@
 package com.agropredict.infrastructure.persistence.visitor;
 
-import com.agropredict.domain.visitor.user.IUserVisitor;
+import com.agropredict.domain.user.visitor.ICredentialConsumer;
+import com.agropredict.domain.user.visitor.IOccupationConsumer;
+import com.agropredict.domain.user.visitor.IPhoneConsumer;
+import com.agropredict.domain.user.visitor.IUserIdentityConsumer;
+import com.agropredict.domain.user.visitor.IUsernameConsumer;
 import com.agropredict.infrastructure.persistence.database.IRow;
 
-public final class UserPersistenceVisitor implements IUserVisitor {
+public final class UserPersistenceVisitor implements
+        IUserIdentityConsumer, ICredentialConsumer, IUsernameConsumer, IPhoneConsumer, IOccupationConsumer {
     private final IRow row;
 
     public UserPersistenceVisitor(IRow row) {
@@ -11,29 +16,29 @@ public final class UserPersistenceVisitor implements IUserVisitor {
     }
 
     @Override
-    public void visitIdentity(String identifier, String fullName) {
+    public void describe(String identifier, String fullName) {
         row.record("id", identifier);
         row.record("full_name", fullName);
     }
 
     @Override
-    public void visitCredential(String email, String passwordHash) {
+    public void authenticate(String email, String password) {
         row.record("email", email);
-        row.record("password_hash", passwordHash);
+        row.record("password_hash", password);
     }
 
     @Override
-    public void visitUsername(String username) {
+    public void enroll(String username) {
         row.record("username", username);
     }
 
     @Override
-    public void visitPhone(String phoneNumber) {
-        row.record("phone_number", phoneNumber);
+    public void contact(String number) {
+        row.record("phone_number", number);
     }
 
     @Override
-    public void visitOccupation(String occupationIdentifier) {
-        row.record("occupation_id", occupationIdentifier);
+    public void classify(String identifier) {
+        row.record("occupation_id", identifier);
     }
 }

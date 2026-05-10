@@ -1,7 +1,7 @@
 package com.agropredict.presentation.viewmodel.prediction_diagnosis;
 
 import com.agropredict.application.usecase.diagnostic.FindDiagnosticUseCase;
-import com.agropredict.domain.entity.Diagnostic;
+import com.agropredict.domain.diagnostic.Diagnostic;
 
 public final class PredictionResultViewModel {
     private final FindDiagnosticUseCase loadDetailUseCase;

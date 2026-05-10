@@ -1,13 +1,15 @@
 package com.agropredict.infrastructure.factory;
 
 import android.content.Context;
+import com.agropredict.application.repository.ICropRecord;
 import com.agropredict.application.repository.ICropRepository;
 import com.agropredict.application.repository.IDiagnosticRepository;
 import com.agropredict.application.repository.IPhotographRepository;
 import com.agropredict.application.repository.ISessionRepository;
 import com.agropredict.application.factory.IReviewFactory;
-import com.agropredict.application.usecase.crop.CropCleanup;
+import com.agropredict.infrastructure.api_integration.GravitySeverityFactory;
 import com.agropredict.infrastructure.persistence.database.Database;
+import com.agropredict.infrastructure.persistence.repository.DiagnosticContext;
 import com.agropredict.infrastructure.persistence.repository.SessionRepository;
 import com.agropredict.infrastructure.persistence.repository.SqliteCropRepository;
 import com.agropredict.infrastructure.persistence.repository.SqliteDiagnosticRepository;
@@ -18,6 +20,7 @@ import com.agropredict.infrastructure.persistence.repository.SyncingCropReposito
 import com.agropredict.infrastructure.persistence.repository.SyncingDiagnosticRepository;
 import com.agropredict.infrastructure.persistence.repository.SyncingPhotographRepository;
 import com.agropredict.infrastructure.persistence.repository.SyncingReportRepository;
+import java.util.List;
 
 public final class AndroidReviewFactory implements IReviewFactory {
     private final Database database;
@@ -30,8 +33,9 @@ public final class AndroidReviewFactory implements IReviewFactory {
 
     @Override
     public IDiagnosticRepository createDiagnosticRepository() {
+        DiagnosticContext context = new DiagnosticContext(createSessionRepository(), new GravitySeverityFactory());
         return new SyncingDiagnosticRepository(
-                new SqliteDiagnosticRepository(database, createSessionRepository()),
+                new SqliteDiagnosticRepository(database, context),
                 createSyncRecorder());
     }
 
@@ -55,11 +59,11 @@ public final class AndroidReviewFactory implements IReviewFactory {
     }
 
     @Override
-    public CropCleanup createCropCleanup() {
-        return new CropCleanup(
-                createDiagnosticRepository(),
-                new CropCleanup(createPhotographRepository(),
-                        new SyncingReportRepository(new SqliteReportRepository(database), createSyncRecorder())));
+    public List<ICropRecord> createCropRecord() {
+        return List.of(
+                (ICropRecord) createDiagnosticRepository(),
+                (ICropRecord) createPhotographRepository(),
+                new SyncingReportRepository(new SqliteReportRepository(database), createSyncRecorder()));
     }
 
     private SqliteSyncRecorder createSyncRecorder() {

@@ -2,17 +2,28 @@ package com.agropredict.integration;
 
 import static org.junit.Assert.assertTrue;
 
-import com.agropredict.application.diagnostic_submission.Allocation;
-import com.agropredict.application.diagnostic_submission.Cropland;
-import com.agropredict.application.diagnostic_submission.FieldRecorder;
-import com.agropredict.application.diagnostic_submission.FieldStorage;
+import com.agropredict.application.diagnostic_submission.CropDossier;
+import com.agropredict.application.diagnostic_submission.CropRegistry;
+import com.agropredict.application.diagnostic_submission.SubmissionIdentity;
 import com.agropredict.application.repository.ICatalogRepository;
-import com.agropredict.application.request.diagnostic_submission.Classification;
+import com.agropredict.application.request.ai_questionnaire.Condition;
+import com.agropredict.application.request.ai_questionnaire.CropCare;
+import com.agropredict.application.request.ai_questionnaire.FarmManagement;
+import com.agropredict.application.request.ai_questionnaire.Irrigation;
+import com.agropredict.application.request.ai_questionnaire.Observation;
+import com.agropredict.application.request.ai_questionnaire.Pest;
+import com.agropredict.application.request.ai_questionnaire.PestControl;
+import com.agropredict.application.request.ai_questionnaire.Questionnaire;
+import com.agropredict.application.request.ai_questionnaire.Rainfall;
+import com.agropredict.application.request.ai_questionnaire.SoilAnswer;
+import com.agropredict.application.request.ai_questionnaire.Symptom;
+import com.agropredict.application.request.ai_questionnaire.Weather;
+import com.agropredict.application.request.diagnostic_submission.ImagePrediction;
 import com.agropredict.application.request.diagnostic_submission.Cultivation;
 import com.agropredict.application.request.diagnostic_submission.PhotographInput;
 import com.agropredict.application.request.diagnostic_submission.Submission;
 import com.agropredict.application.request.diagnostic_submission.SubmissionRequest;
-import com.agropredict.application.request.diagnostic_submission.Subject;
+import com.agropredict.application.request.diagnostic_submission.DiagnosticSubject;
 import com.agropredict.repository.CapturingCropRepository;
 import com.agropredict.repository.CapturingPhotographRepository;
 import com.agropredict.repository.FixedCatalogRepository;
@@ -23,16 +34,21 @@ import java.util.Map;
 
 public final class SubmissionStoreFlowTest {
     private SubmissionRequest assemble(String predictedCrop, double confidence, String stageName) {
-        Classification prediction = new Classification(predictedCrop, confidence);
+        ImagePrediction prediction = new ImagePrediction(predictedCrop, confidence);
         Cultivation cultivation = new Cultivation(predictedCrop, stageName);
         PhotographInput photograph = new PhotographInput("/tmp/test.jpg");
-        Subject subject = new Subject(cultivation, photograph);
+        DiagnosticSubject subject = new DiagnosticSubject(cultivation, photograph);
         Submission submission = new Submission(prediction, subject);
-        return new SubmissionRequest(submission, null);
+        Questionnaire questionnaire = new Questionnaire(
+                new Condition(new Weather("", "", new Rainfall("")), new SoilAnswer("", "")),
+                new CropCare(
+                        new FarmManagement(new Irrigation("", ""), new PestControl("", "")),
+                        new Observation(new Symptom("", ""), new Pest("", ""))));
+        return new SubmissionRequest(submission, questionnaire);
     }
 
-    private Allocation allocate() {
-        return new Allocation("crop_test_id", "image_test_id");
+    private SubmissionIdentity allocate() {
+        return new SubmissionIdentity("crop_test_id", "image_test_id");
     }
 
     @Test
@@ -41,10 +57,10 @@ public final class SubmissionStoreFlowTest {
         mapping.put("Vegetative", "stage_id_42");
         ICatalogRepository stageCatalog = new FixedCatalogRepository(mapping);
         CapturingCropRepository cropRepository = new CapturingCropRepository();
-        FieldStorage storage = new FieldStorage(cropRepository, new CapturingPhotographRepository());
-        Cropland cropland = new Cropland(storage, stageCatalog);
+        CropDossier dossier = new CropDossier(cropRepository, new CapturingPhotographRepository());
+        CropRegistry registry = new CropRegistry(dossier, stageCatalog);
 
-        assemble("rice", 0.91, "Vegetative").store(cropland, allocate());
+        assemble("rice", 0.91, "Vegetative").store(registry, allocate());
 
         StageCapturingVisitor visitor = new StageCapturingVisitor();
         cropRepository.walk(visitor);
@@ -53,16 +69,15 @@ public final class SubmissionStoreFlowTest {
     }
 
     @Test
-    public void testFieldRecorderRoutesCatalogThroughToCropEntity() {
+    public void testRegistryRoutesCatalogThroughToCropEntity() {
         Map<String, String> mapping = new HashMap<>();
         mapping.put("Flowering", "stage_id_77");
         ICatalogRepository stageCatalog = new FixedCatalogRepository(mapping);
         CapturingCropRepository cropRepository = new CapturingCropRepository();
-        FieldStorage storage = new FieldStorage(cropRepository, new CapturingPhotographRepository());
-        Cropland cropland = new Cropland(storage, stageCatalog);
-        FieldRecorder recorder = new FieldRecorder(cropland);
+        CropDossier dossier = new CropDossier(cropRepository, new CapturingPhotographRepository());
+        CropRegistry registry = new CropRegistry(dossier, stageCatalog);
 
-        recorder.record(assemble("tomato", 0.88, "Flowering"), allocate());
+        assemble("tomato", 0.88, "Flowering").store(registry, allocate());
 
         StageCapturingVisitor visitor = new StageCapturingVisitor();
         cropRepository.walk(visitor);
@@ -70,14 +85,13 @@ public final class SubmissionStoreFlowTest {
     }
 
     @Test
-    public void testFieldRecorderUnknownStageWritesNoIdentifier() {
+    public void testRegistryUnknownStageWritesNoIdentifier() {
         ICatalogRepository emptyCatalog = new FixedCatalogRepository(new HashMap<>());
         CapturingCropRepository cropRepository = new CapturingCropRepository();
-        FieldStorage storage = new FieldStorage(cropRepository, new CapturingPhotographRepository());
-        Cropland cropland = new Cropland(storage, emptyCatalog);
-        FieldRecorder recorder = new FieldRecorder(cropland);
+        CropDossier dossier = new CropDossier(cropRepository, new CapturingPhotographRepository());
+        CropRegistry registry = new CropRegistry(dossier, emptyCatalog);
 
-        recorder.record(assemble("rice", 0.91, "Vegetative"), allocate());
+        assemble("rice", 0.91, "Vegetative").store(registry, allocate());
 
         StageCapturingVisitor visitor = new StageCapturingVisitor();
         cropRepository.walk(visitor);

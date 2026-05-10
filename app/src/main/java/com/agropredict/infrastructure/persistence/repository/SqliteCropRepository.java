@@ -3,16 +3,19 @@ package com.agropredict.infrastructure.persistence.repository;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import com.agropredict.application.repository.ICropRepository;
+import com.agropredict.application.repository.IRecordEraser;
 import com.agropredict.application.request.CropUpdateRequest;
 import com.agropredict.domain.history.HistoryRecord;
 import com.agropredict.domain.history.HistoryTransition;
-import com.agropredict.domain.history.Modification;
+import com.agropredict.domain.history.FieldModification;
+import com.agropredict.domain.history.ChangeMoment;
 import com.agropredict.application.repository.ISessionRepository;
-import com.agropredict.domain.component.crop.CropProfile;
-import com.agropredict.domain.component.crop.Field;
-import com.agropredict.domain.component.crop.GrowthCycle;
-import com.agropredict.domain.component.crop.Soil;
-import com.agropredict.domain.entity.Crop;
+import com.agropredict.domain.crop.CropProfile;
+import com.agropredict.domain.crop.Field;
+import com.agropredict.domain.crop.GrowthCycle;
+import com.agropredict.domain.crop.Plot;
+import com.agropredict.domain.crop.Soil;
+import com.agropredict.domain.crop.Crop;
 import com.agropredict.infrastructure.persistence.database.Clock;
 import com.agropredict.infrastructure.persistence.database.Database;
 import com.agropredict.infrastructure.persistence.database.SqliteRow;
@@ -22,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public final class SqliteCropRepository implements ICropRepository {
+public final class SqliteCropRepository implements ICropRepository, IRecordEraser {
     private static final String SELECT_CROP = "SELECT c.id, c.crop_type, c.field_name, "
             + "c.location, c.planting_date, c.area, c.user_id, "
             + "c.soil_type_id, c.phenological_stage_id, "
@@ -46,7 +49,7 @@ public final class SqliteCropRepository implements ICropRepository {
     @Override
     public void store(Crop crop) {
         SqliteRow row = new SqliteRow(database.getWritableDatabase());
-        crop.accept(new CropPersistenceVisitor(row, sessionRepository.recall()));
+        new CropPersistenceVisitor(row, sessionRepository.recall()).persist(crop);
         String now = Clock.read();
         row.record("created_at", now);
         row.record("updated_at", now);
@@ -57,7 +60,11 @@ public final class SqliteCropRepository implements ICropRepository {
     @Override
     public void update(CropUpdateRequest request) {
         SqliteRow row = new SqliteRow(database.getWritableDatabase());
-        request.accept(new CropPersistenceVisitor(row, sessionRepository.recall()));
+        CropPersistenceVisitor visitor = new CropPersistenceVisitor(row, sessionRepository.recall());
+        request.identify(visitor);
+        request.locate(visitor);
+        request.analyze(visitor);
+        request.track(visitor);
         String identifier = row.lookup("id");
         Map<String, String> previous = history.snapshot(identifier);
         row.record("updated_at", Clock.read());
@@ -87,9 +94,10 @@ public final class SqliteCropRepository implements ICropRepository {
     }
 
     private HistoryRecord rebuild(Cursor cursor) {
-        Modification modification = new Modification(cursor.getString(0), cursor.getString(3));
+        FieldModification modification = new FieldModification(cursor.getString(0));
         HistoryTransition transition = new HistoryTransition(cursor.getString(1), cursor.getString(2));
-        return new HistoryRecord(modification, transition);
+        ChangeMoment timestamp = new ChangeMoment(cursor.getString(3));
+        return new HistoryRecord(modification, transition, timestamp);
     }
 
     @Override
@@ -98,7 +106,7 @@ public final class SqliteCropRepository implements ICropRepository {
     }
 
     @Override
-    public void delete(String cropIdentifier) {
+    public void erase(String cropIdentifier) {
         store.deactivate("crop", cropIdentifier);
     }
 
@@ -109,13 +117,12 @@ public final class SqliteCropRepository implements ICropRepository {
         Soil soil = new Soil(
                 cursor.getString(cursor.getColumnIndexOrThrow("soil_type_id")),
                 cursor.getString(cursor.getColumnIndexOrThrow("area")));
-        GrowthCycle growth = new GrowthCycle(
+        GrowthCycle cycle = new GrowthCycle(
                 cursor.getString(cursor.getColumnIndexOrThrow("planting_date")),
                 cursor.getString(cursor.getColumnIndexOrThrow("phenological_stage_id")));
-        CropProfile profile = new CropProfile(field, soil, growth);
         return new Crop(
                 cursor.getString(cursor.getColumnIndexOrThrow("id")),
                 cursor.getString(cursor.getColumnIndexOrThrow("crop_type")),
-                profile);
+                new CropProfile(new Plot(field, soil), cycle));
     }
 }

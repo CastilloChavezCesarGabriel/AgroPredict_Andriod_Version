@@ -5,11 +5,11 @@ import android.net.Uri;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.agropredict.R;
-import com.agropredict.domain.entity.Photograph;
-import com.agropredict.domain.visitor.photograph.IPhotographVisitor;
+import com.agropredict.domain.photograph.Photograph;
+import com.agropredict.domain.photograph.IPhotographConsumer;
 import java.io.File;
 
-public final class FieldDetailDisplay extends DiagnosticDisplay implements IPhotographVisitor {
+public final class FieldDetailDisplay extends DiagnosticDisplay implements IPhotographConsumer {
     private final TextView severityLabel;
     private final TextView summaryLabel;
     private final TextView recommendationsLabel;
@@ -25,26 +25,26 @@ public final class FieldDetailDisplay extends DiagnosticDisplay implements IPhot
     }
 
     @Override
-    public void visitSeverity(String value) {
+    public void review(String value) {
         severityLabel.setText(value);
     }
 
     @Override
-    public void visitSummary(String text) {
+    public void summarize(String text) {
         summaryLabel.setText(text);
     }
 
     @Override
-    public void visitRecommendation(String text) {
+    public void recommend(String text) {
         recommendationsLabel.setText(text);
     }
 
     public void display(Photograph photograph) {
-        photograph.accept(this);
+        photograph.expose(this);
     }
 
     @Override
-    public void visitPhotograph(String identifier, String filePath) {
+    public void expose(String identifier, String filePath) {
         if (filePath == null || filePath.isEmpty()) return;
         File file = new File(filePath);
         if (!file.exists()) return;

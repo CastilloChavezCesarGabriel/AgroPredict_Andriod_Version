@@ -1,28 +1,29 @@
 package com.agropredict.application.request.diagnostic_submission;
 
-import com.agropredict.application.diagnostic_submission.Allocation;
-import com.agropredict.application.diagnostic_submission.Cropland;
-import com.agropredict.application.visitor.ISubmissionVisitor;
-import com.agropredict.domain.entity.Diagnostic;
+import com.agropredict.application.diagnostic_submission.CropRegistry;
+import com.agropredict.application.diagnostic_submission.SubmissionIdentity;
+import com.agropredict.domain.diagnostic.visitor.IPredictionConsumer;
+import com.agropredict.domain.diagnostic.Diagnostic;
+import java.util.Objects;
 
 public final class Submission {
-    private final Classification prediction;
-    private final Subject subject;
+    private final ImagePrediction prediction;
+    private final DiagnosticSubject subject;
 
-    public Submission(Classification prediction, Subject subject) {
-        this.prediction = prediction;
-        this.subject = subject;
+    public Submission(ImagePrediction prediction, DiagnosticSubject subject) {
+        this.prediction = Objects.requireNonNull(prediction, "submission requires a classification");
+        this.subject = Objects.requireNonNull(subject, "submission requires a subject");
     }
 
     public Diagnostic diagnose(String identifier) {
-        return prediction.derive(identifier);
+        return prediction.diagnose(identifier);
     }
 
-    public void store(Cropland cropland, Allocation allocation) {
-        subject.store(cropland, allocation);
+    public void store(CropRegistry registry, SubmissionIdentity identity) {
+        identity.enroll(subject, registry);
     }
 
-    public void accept(ISubmissionVisitor visitor) {
-        prediction.accept(visitor);
+    public void dispatch(IPredictionConsumer consumer) {
+        prediction.accept(consumer);
     }
 }

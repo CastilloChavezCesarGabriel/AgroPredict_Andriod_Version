@@ -1,7 +1,7 @@
 package com.agropredict.infrastructure.persistence.schema;
 
 import android.database.sqlite.SQLiteDatabase;
-import com.agropredict.domain.Identifier;
+import com.agropredict.domain.identifier.IdentifierFactory;
 
 public final class Seed {
     private final String table;
@@ -16,7 +16,7 @@ public final class Seed {
         for (String value : values) {
             database.execSQL(
                     "INSERT OR IGNORE INTO " + table + " (id, name) VALUES (?, ?)",
-                    new Object[]{Identifier.generate(table), value});
+                    new Object[]{IdentifierFactory.generate(table), value});
         }
     }
 }

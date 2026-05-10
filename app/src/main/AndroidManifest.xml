@@ -42,6 +42,7 @@
         <activity android:name=".presentation.user_interface.screen.EditFieldActivity" />
         <activity android:name=".presentation.user_interface.screen.ReportActivity" />
         <activity android:name=".presentation.user_interface.screen.RecoveryActivity" />
+        <activity android:name=".presentation.user_interface.screen.ProfileActivity" />
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"

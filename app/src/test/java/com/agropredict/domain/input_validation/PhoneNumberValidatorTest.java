@@ -1,70 +1,67 @@
 package com.agropredict.domain.input_validation;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
 
 public final class PhoneNumberValidatorTest {
-    private final PhoneNumberValidator validator = new PhoneNumberValidator();
+    private final ValidatorTester tester = new ValidatorTester(new PhoneNumberValidator());
 
     @Test
     public void testValidPhone() {
-        assertTrue(validator.isValid("3312345678"));
+        tester.accepts("3312345678");
     }
 
     @Test
     public void testValidLongPhone() {
-        assertTrue(validator.isValid("523312345678"));
+        tester.accepts("523312345678");
     }
 
     @Test
     public void testMinimumLength() {
-        assertTrue(validator.isValid("1234567"));
+        tester.accepts("1234567");
     }
 
     @Test
     public void testMaximumLength() {
-        assertTrue(validator.isValid("123456789012345"));
+        tester.accepts("123456789012345");
     }
 
     @Test
     public void testNullPhone() {
-        assertTrue(validator.isValid(null));
+        tester.accepts(null);
     }
 
     @Test
     public void testEmptyPhone() {
-        assertTrue(validator.isValid(""));
+        tester.accepts("");
     }
 
     @Test
     public void testTooShort() {
-        assertFalse(validator.isValid("123456"));
+        tester.rejects("123456");
     }
 
     @Test
     public void testTooLong() {
-        assertFalse(validator.isValid("1234567890123456"));
+        tester.rejects("1234567890123456");
     }
 
     @Test
     public void testContainsLetters() {
-        assertFalse(validator.isValid("33abc12345"));
+        tester.rejects("33abc12345");
     }
 
     @Test
     public void testContainsDashes() {
-        assertFalse(validator.isValid("33-1234-5678"));
+        tester.rejects("33-1234-5678");
     }
 
     @Test
     public void testContainsSpaces() {
-        assertFalse(validator.isValid("33 1234 5678"));
+        tester.rejects("33 1234 5678");
     }
 
     @Test
     public void testContainsPlus() {
-        assertFalse(validator.isValid("+523312345678"));
+        tester.rejects("+523312345678");
     }
 }

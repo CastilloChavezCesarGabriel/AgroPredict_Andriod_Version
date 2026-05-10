@@ -1,12 +1,12 @@
 package com.agropredict.visitor;
 
-import com.agropredict.domain.visitor.crop.ICropVisitor;
+import com.agropredict.domain.crop.visitor.ICropIdentityConsumer;
 
-public final class CropTypeCapturingVisitor implements ICropVisitor {
+public final class CropTypeCapturingVisitor implements ICropIdentityConsumer {
     private String cropType;
 
     @Override
-    public void visitIdentity(String identifier, String cropType) {
+    public void describe(String identifier, String cropType) {
         this.cropType = cropType;
     }
 

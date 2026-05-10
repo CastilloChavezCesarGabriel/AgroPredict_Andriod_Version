@@ -5,11 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import com.agropredict.R;
 import com.agropredict.application.factory.IReviewFactory;
+import com.agropredict.application.repository.IRecordEraser;
 import com.agropredict.application.usecase.DeleteUseCase;
 import com.agropredict.application.usecase.authentication.CheckSessionUseCase;
 import com.agropredict.application.usecase.crop.ListCropUseCase;
 import com.agropredict.application.usecase.diagnostic.ListDiagnosticUseCase;
-import com.agropredict.domain.entity.Diagnostic;
+import com.agropredict.domain.diagnostic.Diagnostic;
 import com.agropredict.presentation.user_interface.display.DiagnosticHistory;
 import com.agropredict.presentation.user_interface.selector.CropTypeFilter;
 import com.agropredict.presentation.viewmodel.diagnostic_history.HistoryViewModel;
@@ -39,7 +40,7 @@ public final class HistoryActivity extends BaseActivity implements IHistoryView 
     private void initialize() {
         IReviewFactory factory = (IReviewFactory) getApplication();
         ListDiagnosticUseCase listUseCase = new ListDiagnosticUseCase(factory.createDiagnosticRepository());
-        DeleteUseCase deleteUseCase = new DeleteUseCase(factory.createDiagnosticRepository());
+        DeleteUseCase deleteUseCase = new DeleteUseCase((IRecordEraser) factory.createDiagnosticRepository());
         CheckSessionUseCase sessionUseCase = new CheckSessionUseCase(factory.createSessionRepository());
         cropUseCase = new ListCropUseCase(factory.createCropRepository());
         viewModel = new HistoryViewModel(new HistoryWorkflow(listUseCase, deleteUseCase), this);

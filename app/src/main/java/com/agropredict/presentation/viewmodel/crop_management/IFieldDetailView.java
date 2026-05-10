@@ -1,7 +1,7 @@
 package com.agropredict.presentation.viewmodel.crop_management;
 
-import com.agropredict.domain.entity.Diagnostic;
-import com.agropredict.domain.entity.Photograph;
+import com.agropredict.domain.diagnostic.Diagnostic;
+import com.agropredict.domain.photograph.Photograph;
 
 public interface IFieldDetailView {
     void display(Diagnostic diagnostic);

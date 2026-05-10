@@ -1,12 +1,12 @@
 package com.agropredict.presentation.viewmodel.report_generation;
 
 import com.agropredict.application.request.report_generation.ReportRequest;
-import com.agropredict.domain.Identifier;
-import com.agropredict.application.operation_result.OperationResult;
+import com.agropredict.domain.identifier.IdentifierFactory;
+import com.agropredict.application.operation_result.IUseCaseResult;
 import com.agropredict.application.usecase.report.GenerateReportUseCase;
-import com.agropredict.domain.entity.Crop;
-import com.agropredict.domain.entity.Diagnostic;
-import com.agropredict.domain.entity.Report;
+import com.agropredict.domain.crop.Crop;
+import com.agropredict.domain.diagnostic.Diagnostic;
+import com.agropredict.domain.report.Report;
 
 public final class ReportExporter {
     private final ExportScope scope;
@@ -24,8 +24,8 @@ public final class ReportExporter {
             view.notify("No data found to export");
             return;
         }
-        Report report = new Report(Identifier.generate("rpt"), format);
-        OperationResult result = new GenerateReportUseCase(scope.prepare(format)).generate(crop, diagnostic);
+        Report report = new Report(IdentifierFactory.generate("rpt"), format);
+        IUseCaseResult result = new GenerateReportUseCase(scope.prepare(format)).generate(crop, diagnostic);
         diagnostic.pair(cropIdentifier, new ReportRequestComposer(report, new ReportOutcome(result, this)));
     }
 

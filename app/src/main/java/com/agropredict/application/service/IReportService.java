@@ -1,9 +1,9 @@
 package com.agropredict.application.service;
 
-import com.agropredict.application.operation_result.OperationResult;
-import com.agropredict.domain.entity.Crop;
-import com.agropredict.domain.entity.Diagnostic;
+import com.agropredict.application.operation_result.IUseCaseResult;
+import com.agropredict.domain.crop.Crop;
+import com.agropredict.domain.diagnostic.Diagnostic;
 
 public interface IReportService {
-    OperationResult generate(Crop crop, Diagnostic diagnostic);
+    IUseCaseResult generate(Crop crop, Diagnostic diagnostic);
 }

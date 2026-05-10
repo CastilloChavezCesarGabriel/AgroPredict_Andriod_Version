@@ -1,29 +1,23 @@
 package com.agropredict.application.operation_result;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import com.agropredict.visitor.TestOperationResultVisitor;
+import com.agropredict.visitor.FailExpecter;
+import com.agropredict.visitor.RejectExpecter;
+import com.agropredict.visitor.SucceedExpecter;
 import org.junit.Test;
 
 public final class OperationResultTest {
     @Test
     public void testSucceed() {
-        TestOperationResultVisitor visitor = new TestOperationResultVisitor();
-        OperationResult.succeed("id_123").accept(visitor);
-        assertTrue(visitor.isCompleted("id_123"));
+        new SuccessfulOperation("id_123").accept(new SucceedExpecter("id_123"));
     }
 
     @Test
     public void testFail() {
-        TestOperationResultVisitor visitor = new TestOperationResultVisitor();
-        OperationResult.fail().accept(visitor);
-        assertFalse(visitor.isCompleted());
+        new FailedOperation().accept(new FailExpecter());
     }
 
     @Test
     public void testReject() {
-        TestOperationResultVisitor visitor = new TestOperationResultVisitor();
-        OperationResult.reject("Account locked").accept(visitor);
-        assertTrue(visitor.isRejected("Account locked"));
+        new RejectedOperation("Account locked").accept(new RejectExpecter("Account locked"));
     }
 }

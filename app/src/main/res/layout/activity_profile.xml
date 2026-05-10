@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/surface"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        style="@style/AgroPredict.Toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:title="@string/profile_title"
+        app:titleTextColor="@color/white" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/spacing_24">
+
+            <TextView
+                style="@style/AgroPredict.Text.Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/full_name_label"
+                android:textColor="@color/text_secondary" />
+
+            <TextView
+                android:id="@+id/tvFullName"
+                style="@style/AgroPredict.Text.Headline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_16"
+                android:textColor="@color/green_primary_dark" />
+
+            <TextView
+                style="@style/AgroPredict.Text.Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/username_label"
+                android:textColor="@color/text_secondary" />
+
+            <TextView
+                android:id="@+id/tvUsername"
+                style="@style/AgroPredict.Text.Headline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_16"
+                android:textColor="@color/green_primary_dark" />
+
+            <TextView
+                style="@style/AgroPredict.Text.Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/email_label"
+                android:textColor="@color/text_secondary" />
+
+            <TextView
+                android:id="@+id/tvEmail"
+                style="@style/AgroPredict.Text.Headline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_16"
+                android:textColor="@color/green_primary_dark" />
+
+            <TextView
+                style="@style/AgroPredict.Text.Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/phone_label"
+                android:textColor="@color/text_secondary" />
+
+            <TextView
+                android:id="@+id/tvPhone"
+                style="@style/AgroPredict.Text.Headline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_16"
+                android:textColor="@color/green_primary_dark" />
+
+            <TextView
+                style="@style/AgroPredict.Text.Label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/occupation_label"
+                android:textColor="@color/text_secondary" />
+
+            <TextView
+                android:id="@+id/tvOccupation"
+                style="@style/AgroPredict.Text.Headline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/green_primary_dark" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

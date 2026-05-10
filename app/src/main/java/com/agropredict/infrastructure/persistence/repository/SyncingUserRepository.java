@@ -3,7 +3,8 @@ package com.agropredict.infrastructure.persistence.repository;
 import com.agropredict.application.repository.ICatalogRepository;
 import com.agropredict.application.repository.IUserRepository;
 import com.agropredict.application.request.user_registration.RegistrationRequest;
-import com.agropredict.domain.Session;
+import com.agropredict.domain.user.ISessionSubject;
+import com.agropredict.domain.user.User;
 
 public final class SyncingUserRepository implements IUserRepository {
     private final IUserRepository delegate;
@@ -15,7 +16,7 @@ public final class SyncingUserRepository implements IUserRepository {
     }
 
     @Override
-    public Session authenticate(String email, String password) {
+    public ISessionSubject authenticate(String email, String password) {
         return delegate.authenticate(email, password);
     }
 
@@ -30,5 +31,10 @@ public final class SyncingUserRepository implements IUserRepository {
         boolean completed = delegate.reset(email, passwordHash);
         if (completed) recorder.update("user", email);
         return completed;
+    }
+
+    @Override
+    public User find(String userIdentifier) {
+        return delegate.find(userIdentifier);
     }
 }

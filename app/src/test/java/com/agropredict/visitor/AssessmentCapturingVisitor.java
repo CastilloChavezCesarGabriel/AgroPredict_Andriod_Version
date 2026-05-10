@@ -1,18 +1,19 @@
 package com.agropredict.visitor;
 
-import com.agropredict.domain.visitor.diagnostic.IDiagnosticVisitor;
+import com.agropredict.domain.diagnostic.visitor.IRecommendationConsumer;
+import com.agropredict.domain.diagnostic.visitor.ISummaryConsumer;
 
-public final class AssessmentCapturingVisitor implements IDiagnosticVisitor {
+public final class AssessmentCapturingVisitor implements ISummaryConsumer, IRecommendationConsumer {
     private String shortSummary;
     private String recommendationText;
 
     @Override
-    public void visitSummary(String text) {
+    public void summarize(String text) {
         this.shortSummary = text;
     }
 
     @Override
-    public void visitRecommendation(String text) {
+    public void recommend(String text) {
         this.recommendationText = text;
     }
 

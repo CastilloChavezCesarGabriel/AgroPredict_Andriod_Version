@@ -1,8 +1,8 @@
 package com.agropredict.presentation.viewmodel.diagnostic_history;
 
-import com.agropredict.application.visitor.IOperationResultVisitor;
+import com.agropredict.application.visitor.IOperationResult;
 
-public final class HistoryViewModel implements IOperationResultVisitor {
+public final class HistoryViewModel implements IOperationResult {
     private final HistoryWorkflow workflow;
     private final IHistoryView view;
     private String pendingUserIdentifier;
@@ -26,12 +26,18 @@ public final class HistoryViewModel implements IOperationResultVisitor {
     }
 
     @Override
-    public void visit(boolean completed, String resultIdentifier) {
-        if (completed) {
-            view.notify("Diagnostic deleted successfully");
-            load(pendingUserIdentifier);
-        } else {
-            view.notify("Error deleting the diagnostic");
-        }
+    public void onSucceed(String value) {
+        view.notify("Diagnostic deleted successfully");
+        load(pendingUserIdentifier);
+    }
+
+    @Override
+    public void onFail() {
+        view.notify("Error deleting the diagnostic");
+    }
+
+    @Override
+    public void onReject(String reason) {
+        view.notify(reason);
     }
 }

@@ -3,78 +3,75 @@ package com.agropredict.regression;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import com.agropredict.domain.CapturingLoginGate;
-import com.agropredict.domain.LoginAttempt;
-import com.agropredict.domain.Session;
+import com.agropredict.domain.authentication.ILoginAttempt;
+import com.agropredict.domain.authentication.InitialAttempt;
+import com.agropredict.domain.authentication.Session;
 import com.agropredict.domain.input_validation.EmailValidator;
 import com.agropredict.domain.input_validation.PasswordValidator;
 import com.agropredict.domain.input_validation.PhoneNumberValidator;
 import com.agropredict.domain.input_validation.UsernameValidator;
-import com.agropredict.visitor.TestClassificationResultVisitor;
-import com.agropredict.visitor.TestOccupationVisitor;
-import com.agropredict.application.operation_result.ClassificationResult;
+import com.agropredict.domain.input_validation.ValidatorTester;
+import com.agropredict.visitor.LimitExpecter;
+import com.agropredict.domain.diagnostic.Prediction;
 import com.agropredict.infrastructure.security.PasswordHasher;
-
 import org.junit.Test;
-
 public final class RegressionTest {
 
     @Test
     public void testBugEmailWithLeadingDot() {
-        assertFalse(new EmailValidator().isValid(".user@example.com"));
+        new ValidatorTester(new EmailValidator()).rejects(".user@example.com");
     }
 
     @Test
     public void testBugEmailWithConsecutiveDots() {
-        assertFalse(new EmailValidator().isValid("user..name@example.com"));
+        new ValidatorTester(new EmailValidator()).rejects("user..name@example.com");
     }
 
     @Test
-    public void testBugPasswordExactlyEightCharsAllCriteria() {
-        assertTrue(new PasswordValidator().isValid("Aa1!xxxx"));
+    public void testBugPasswordExactlyTwelveCharsAllCriteria() {
+        new ValidatorTester(new PasswordValidator()).accepts("Aa1!xxxxxxxx");
     }
 
     @Test
-    public void testBugPasswordSevenCharsWithAllCriteria() {
-        assertFalse(new PasswordValidator().isValid("Aa1!xxx"));
+    public void testBugPasswordElevenCharsWithAllCriteria() {
+        new ValidatorTester(new PasswordValidator()).rejects("Aa1!xxxxxxx");
     }
 
     @Test
     public void testBugUsernameAllUnderscoresNoLetters() {
-        assertFalse(new UsernameValidator().isValid("_____"));
+        new ValidatorTester(new UsernameValidator()).rejects("_____");
     }
 
     @Test
     public void testBugUsernameAllDigitsNoLetters() {
-        assertFalse(new UsernameValidator().isValid("12345"));
+        new ValidatorTester(new UsernameValidator()).rejects("12345");
     }
 
     @Test
     public void testBugPhoneNullIsValid() {
-        assertTrue(new PhoneNumberValidator().isValid(null));
+        new ValidatorTester(new PhoneNumberValidator()).accepts(null);
     }
 
     @Test
     public void testBugPhoneEmptyIsValid() {
-        assertTrue(new PhoneNumberValidator().isValid(""));
+        new ValidatorTester(new PhoneNumberValidator()).accepts("");
     }
 
     @Test
     public void testBugSessionNullOccupationNotAdvanced() {
-        TestOccupationVisitor handler = new TestOccupationVisitor();
-        new Session("user_1", null).observe(handler);
-        assertFalse(handler.sawAdvanced());
+        new Session("user_1", null).observe(new LimitExpecter());
     }
 
     @Test
-    public void testBugLoginAttemptBlockResetAfterExpiry() {
+    public void testBugILoginAttemptBlockResetAfterExpiry() {
         long now = System.currentTimeMillis();
-        LoginAttempt attempt = new LoginAttempt(0, 0);
+        ILoginAttempt attempt = new InitialAttempt();
         for (int count = 0; count < 5; count++) attempt = attempt.fail(now);
         long afterExpiry = now + 5 * 60 * 1000 + 1;
         CapturingLoginGate atFailure = new CapturingLoginGate();
         attempt.evaluate(now, atFailure);
         assertTrue(atFailure.hasReceived("block"));
-        LoginAttempt reset = attempt.fail(afterExpiry);
+        ILoginAttempt reset = attempt.fail(afterExpiry);
         CapturingLoginGate afterReset = new CapturingLoginGate();
         reset.evaluate(afterExpiry, afterReset);
         assertTrue(afterReset.hasReceived("allow"));
@@ -87,20 +84,16 @@ public final class RegressionTest {
 
     @Test
     public void testBugClassificationBoundaryAt045() {
-        TestClassificationResultVisitor visitor = new TestClassificationResultVisitor();
-        new ClassificationResult("Corn", 0.45).accept(visitor);
-        assertTrue(visitor.wasAccepted());
+        assertTrue(new Prediction("Corn", 0.45).isConfident());
     }
 
     @Test
     public void testBugClassificationBoundaryAt044() {
-        TestClassificationResultVisitor visitor = new TestClassificationResultVisitor();
-        new ClassificationResult("Corn", 0.44).accept(visitor);
-        assertTrue(visitor.wasRejected());
+        assertFalse(new Prediction("Corn", 0.44).isConfident());
     }
 
     @Test
     public void testBugEmptySessionIdentifier() {
-        assertFalse(new Session("", "Farmer").isActive());
+        org.junit.Assert.assertThrows(IllegalArgumentException.class, () -> new Session("", "Farmer"));
     }
 }

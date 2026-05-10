@@ -2,8 +2,8 @@ package com.agropredict.infrastructure.persistence.repository;
 
 import android.content.ContentValues;
 import com.agropredict.application.repository.ISessionRepository;
-import com.agropredict.domain.Identifier;
-import com.agropredict.domain.Session;
+import com.agropredict.domain.identifier.IdentifierFactory;
+import com.agropredict.domain.authentication.ISession;
 import com.agropredict.infrastructure.persistence.database.Clock;
 import com.agropredict.infrastructure.persistence.database.Database;
 
@@ -30,9 +30,9 @@ public final class SqliteSyncRecorder {
 
     private void write(String table, String operation, String identifier) {
         ContentValues values = new ContentValues();
-        values.put("id", Identifier.generate("sync"));
-        Session session = sessionRepository.recall();
-        if (session != null) session.accept((userIdentifier, occupation) -> values.put("user_id", userIdentifier));
+        values.put("id", IdentifierFactory.generate("sync"));
+        ISession session = sessionRepository.recall();
+        session.report((userIdentifier, occupation) -> values.put("user_id", userIdentifier));
         values.put("table_name", table);
         values.put("operation", operation);
         values.put("json_data", "{\"id\":\"" + identifier + "\"}");

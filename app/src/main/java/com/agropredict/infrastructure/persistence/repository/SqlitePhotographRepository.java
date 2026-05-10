@@ -2,16 +2,17 @@ package com.agropredict.infrastructure.persistence.repository;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import com.agropredict.application.repository.ICropRecord;
 import com.agropredict.application.repository.IPhotographRepository;
 import com.agropredict.application.repository.ISessionRepository;
-import com.agropredict.domain.entity.Crop;
-import com.agropredict.domain.entity.Photograph;
+import com.agropredict.domain.crop.Crop;
+import com.agropredict.domain.photograph.Photograph;
 import com.agropredict.infrastructure.persistence.database.Clock;
 import com.agropredict.infrastructure.persistence.database.Database;
 import com.agropredict.infrastructure.persistence.database.SqliteRow;
 import com.agropredict.infrastructure.persistence.visitor.PhotographPersistenceVisitor;
 
-public final class SqlitePhotographRepository implements IPhotographRepository {
+public final class SqlitePhotographRepository implements IPhotographRepository, ICropRecord {
     private final Database database;
     private final ISessionRepository sessionRepository;
 
@@ -24,8 +25,8 @@ public final class SqlitePhotographRepository implements IPhotographRepository {
     public void store(Photograph photograph, Crop crop) {
         SqliteRow row = new SqliteRow(database.getWritableDatabase());
         PhotographPersistenceVisitor visitor = new PhotographPersistenceVisitor(row, sessionRepository.recall());
-        photograph.accept(visitor);
-        crop.accept(visitor);
+        photograph.expose(visitor);
+        crop.describe(visitor);
         row.record("created_at", Clock.read());
         row.flush("image");
     }
@@ -49,7 +50,7 @@ public final class SqlitePhotographRepository implements IPhotographRepository {
     }
 
     @Override
-    public void clear(String cropIdentifier) {
+    public void discard(String cropIdentifier) {
         database.getWritableDatabase().delete("image", "crop_id = ?", new String[]{cropIdentifier});
     }
 }

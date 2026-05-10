@@ -1,6 +1,6 @@
 package com.agropredict.presentation.viewmodel.crop_management;
 
-import com.agropredict.domain.entity.Crop;
+import com.agropredict.domain.crop.Crop;
 import com.agropredict.presentation.user_interface.catalog_input.SoilTypeOption;
 import com.agropredict.presentation.user_interface.catalog_input.StageOption;
 

@@ -1,23 +1,22 @@
 package com.agropredict.application.request.ai_questionnaire;
 
-import com.agropredict.application.visitor.IQuestionnaireVisitor;
+import com.agropredict.application.visitor.IAnswerConsumer;
+import java.util.Objects;
 
 public final class Weather {
     private final String temperature;
     private final String humidity;
-    private Rainfall rainfall;
+    private final Rainfall rainfall;
 
-    public Weather(String temperature, String humidity) {
-        this.temperature = temperature;
-        this.humidity = humidity;
+    public Weather(String temperature, String humidity, Rainfall rainfall) {
+        this.temperature = Objects.requireNonNull(temperature, "weather requires a temperature answer");
+        this.humidity = Objects.requireNonNull(humidity, "weather requires a humidity answer");
+        this.rainfall = Objects.requireNonNull(rainfall, "weather requires a rainfall observation");
     }
 
-    public void rain(String precipitation) {
-        this.rainfall = new Rainfall(precipitation);
-    }
-
-    public void accept(IQuestionnaireVisitor visitor) {
-        visitor.visitEnvironment(temperature, humidity);
-        if (rainfall != null) rainfall.accept(visitor);
+    public void accept(IAnswerConsumer consumer) {
+        AnswerKey.TEMPERATURE.pair(consumer, temperature);
+        AnswerKey.HUMIDITY.pair(consumer, humidity);
+        rainfall.accept(consumer);
     }
 }

@@ -7,19 +7,21 @@ import android.widget.Toast;
 import com.agropredict.R;
 import com.agropredict.application.factory.IReviewFactory;
 import com.agropredict.application.repository.IPhotographRepository;
+import com.agropredict.application.repository.IRecordEraser;
 import com.agropredict.application.usecase.crop.RemoveCropUseCase;
 import com.agropredict.application.usecase.crop.TraceCropHistoryUseCase;
 import com.agropredict.application.usecase.diagnostic.FindDiagnosticUseCase;
-import com.agropredict.application.visitor.IOperationResultVisitor;
-import com.agropredict.domain.entity.Diagnostic;
-import com.agropredict.domain.entity.Photograph;
+import com.agropredict.application.visitor.IOperationResult;
+import com.agropredict.domain.diagnostic.Diagnostic;
+import com.agropredict.domain.photograph.Photograph;
 import com.agropredict.domain.history.HistoryRecord;
 import com.agropredict.presentation.user_interface.display.FieldDetailDisplay;
+import com.agropredict.presentation.user_interface.display.HistoryDialogRenderer;
 import com.agropredict.presentation.viewmodel.crop_management.FieldDetailViewModel;
 import com.agropredict.presentation.viewmodel.crop_management.IFieldDetailView;
 import java.util.List;
 
-public final class FieldDetailActivity extends BaseActivity implements IFieldDetailView, IOperationResultVisitor {
+public final class FieldDetailActivity extends BaseActivity implements IFieldDetailView, IOperationResult {
     private FieldDetailViewModel viewModel;
     private FieldDetailDisplay fieldDetail;
     private RemoveCropUseCase removeUseCase;
@@ -45,7 +47,7 @@ public final class FieldDetailActivity extends BaseActivity implements IFieldDet
     private void initialize() {
         IReviewFactory factory = (IReviewFactory) getApplication();
         FindDiagnosticUseCase findUseCase = new FindDiagnosticUseCase(factory.createDiagnosticRepository());
-        removeUseCase = new RemoveCropUseCase(factory.createCropRepository(), factory.createCropCleanup());
+        removeUseCase = new RemoveCropUseCase((IRecordEraser) factory.createCropRepository(), factory.createCropRecord());
         traceUseCase = new TraceCropHistoryUseCase(factory.createCropRepository());
         photographRepository = factory.createPhotographRepository();
         viewModel = new FieldDetailViewModel(findUseCase, this);
@@ -74,13 +76,11 @@ public final class FieldDetailActivity extends BaseActivity implements IFieldDet
     }
 
     private void present(List<HistoryRecord> records) {
-        StringBuilder builder = new StringBuilder();
-        for (HistoryRecord record : records) {
-            record.summarize(builder);
-        }
+        HistoryDialogRenderer renderer = new HistoryDialogRenderer();
+        renderer.render(records);
         new AlertDialog.Builder(this)
                 .setTitle(R.string.view_change_history)
-                .setMessage(builder.toString().trim())
+                .setMessage(renderer.reveal())
                 .setPositiveButton(R.string.confirm, null)
                 .show();
     }
@@ -99,13 +99,19 @@ public final class FieldDetailActivity extends BaseActivity implements IFieldDet
     }
 
     @Override
-    public void visit(boolean completed, String resultIdentifier) {
-        if (completed) {
-            Toast.makeText(this, R.string.field_deleted, Toast.LENGTH_SHORT).show();
-            finish();
-        } else {
-            Toast.makeText(this, R.string.error_general, Toast.LENGTH_SHORT).show();
-        }
+    public void onSucceed(String value) {
+        Toast.makeText(this, R.string.field_deleted, Toast.LENGTH_SHORT).show();
+        finish();
+    }
+
+    @Override
+    public void onFail() {
+        Toast.makeText(this, R.string.error_general, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onReject(String reason) {
+        Toast.makeText(this, R.string.error_general, Toast.LENGTH_SHORT).show();
     }
 
     @Override

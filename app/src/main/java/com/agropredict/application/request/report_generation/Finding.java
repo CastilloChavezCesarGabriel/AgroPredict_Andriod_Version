@@ -1,22 +1,27 @@
 package com.agropredict.application.request.report_generation;
 
-import com.agropredict.domain.IIdentifierConsumer;
-import com.agropredict.domain.visitor.report.IReportVisitor;
+import com.agropredict.domain.guard.ArgumentPrecondition;
+import com.agropredict.domain.identifier.IIdentifierConsumer;
+import com.agropredict.domain.report.IReportContextConsumer;
 
 public final class Finding {
     private final String diagnosticIdentifier;
     private final String cropIdentifier;
 
     public Finding(String diagnosticIdentifier, String cropIdentifier) {
-        this.diagnosticIdentifier = diagnosticIdentifier;
-        this.cropIdentifier = cropIdentifier;
+        this.diagnosticIdentifier = ArgumentPrecondition.validate(diagnosticIdentifier, "finding diagnostic identifier");
+        this.cropIdentifier = ArgumentPrecondition.validate(cropIdentifier, "finding crop identifier");
     }
 
-    public void accept(IReportVisitor visitor) {
-        visitor.visitContext(diagnosticIdentifier, cropIdentifier);
+    public void link(IReportContextConsumer consumer) {
+        consumer.link(diagnosticIdentifier, cropIdentifier);
     }
 
     public void identify(IIdentifierConsumer consumer) {
-        consumer.accept(diagnosticIdentifier);
+        consumer.identify(diagnosticIdentifier);
+    }
+
+    public void pair(IReportLinkConsumer consumer, String reportIdentifier) {
+        consumer.pair(reportIdentifier, diagnosticIdentifier);
     }
 }

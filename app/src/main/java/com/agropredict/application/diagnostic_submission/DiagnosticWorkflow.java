@@ -1,23 +1,22 @@
 package com.agropredict.application.diagnostic_submission;
 
 import com.agropredict.application.request.diagnostic_submission.SubmissionRequest;
-import com.agropredict.domain.Identifier;
+import com.agropredict.domain.diagnostic.Diagnostic;
+import java.util.Objects;
 
-public final class DiagnosticWorkflow implements IDiagnosticWorkflow {
-    private final FieldRecorder fieldRecorder;
-    private final Archival archival;
+public final class DiagnosticWorkflow {
+    private final CropRegistry registry;
+    private final DiagnosticArchive archive;
 
-    public DiagnosticWorkflow(FieldRecorder fieldRecorder, Archival archival) {
-        this.fieldRecorder = fieldRecorder;
-        this.archival = archival;
+    public DiagnosticWorkflow(CropRegistry registry, DiagnosticArchive archive) {
+        this.registry = Objects.requireNonNull(registry, "diagnostic workflow requires a crop registry");
+        this.archive = Objects.requireNonNull(archive, "diagnostic workflow requires a diagnostic archive");
     }
 
-    @Override
-    public void persist(SubmissionRequest request, StampedDiagnostic stamped) {
-        Allocation allocation = new Allocation(
-                Identifier.generate("crop"), Identifier.generate("image"));
-        fieldRecorder.record(request, allocation);
-        stamped.attribute(allocation);
-        stamped.persist(archival, request);
+    public void persist(SubmissionRequest request, Diagnostic diagnostic) {
+        SubmissionIdentity identity = SubmissionIdentity.generate();
+        request.store(registry, identity);
+        identity.link(diagnostic);
+        archive.preserve(diagnostic, request);
     }
 }

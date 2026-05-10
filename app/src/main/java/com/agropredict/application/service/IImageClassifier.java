@@ -1,7 +1,7 @@
 package com.agropredict.application.service;
 
-import com.agropredict.application.visitor.IClassificationResultVisitor;
+import com.agropredict.domain.diagnostic.visitor.IClassificationResult;
 
 public interface IImageClassifier {
-    void classify(String imagePath, IClassificationResultVisitor consumer);
+    void classify(String imagePath, IClassificationResult visitor);
 }

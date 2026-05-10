@@ -1,56 +1,69 @@
 package com.agropredict.infrastructure.persistence.visitor;
 
-import com.agropredict.domain.Session;
-import com.agropredict.domain.visitor.diagnostic.IDiagnosticVisitor;
-import com.agropredict.domain.visitor.session.ISessionVisitor;
+import com.agropredict.domain.identifier.IIdentifierConsumer;
+import com.agropredict.domain.authentication.ISession;
+import com.agropredict.domain.diagnostic.Diagnostic;
+import com.agropredict.domain.diagnostic.visitor.IPredictionConsumer;
+import com.agropredict.domain.diagnostic.visitor.IRecommendationConsumer;
+import com.agropredict.domain.authentication.ISessionConsumer;
+import com.agropredict.domain.diagnostic.visitor.ISeverityLevelConsumer;
+import com.agropredict.domain.diagnostic.visitor.ISummaryConsumer;
+import com.agropredict.domain.diagnostic.visitor.IDiagnosticTargetConsumer;
 import com.agropredict.infrastructure.persistence.database.IRow;
 
-public final class DiagnosticPersistenceVisitor implements IDiagnosticVisitor, ISessionVisitor {
+public final class DiagnosticPersistenceVisitor implements
+        IIdentifierConsumer, IPredictionConsumer, ISeverityLevelConsumer,
+        ISummaryConsumer, IRecommendationConsumer, IDiagnosticTargetConsumer, ISessionConsumer {
     private final IRow row;
 
-    public DiagnosticPersistenceVisitor(IRow row, Session session) {
+    public DiagnosticPersistenceVisitor(IRow row, ISession session) {
         this.row = row;
-        if (session != null) session.accept(this);
+        session.report(this);
+    }
+
+    public void persist(Diagnostic diagnostic) {
+        diagnostic.identify(this);
+        diagnostic.classify(this);
+        diagnostic.review(this);
+        diagnostic.summarize(this);
+        diagnostic.recommend(this);
+        diagnostic.bind(this);
     }
 
     @Override
-    public void visit(String userIdentifier, String occupation) {
+    public void report(String userIdentifier, String occupation) {
         row.record("user_id", userIdentifier);
     }
 
     @Override
-    public void visitIdentity(String identifier) {
+    public void identify(String identifier) {
         row.record("id", identifier);
     }
 
     @Override
-    public void visitPrediction(String predictedCrop, double confidence) {
+    public void classify(String predictedCrop, double confidence) {
         row.record("predicted_crop", predictedCrop);
         row.record("confidence", String.valueOf(confidence));
     }
 
     @Override
-    public void visitSeverity(String value) {
+    public void review(String value) {
         row.record("severity", value);
     }
 
     @Override
-    public void visitSummary(String text) {
+    public void summarize(String text) {
         row.record("short_summary", text);
     }
 
     @Override
-    public void visitRecommendation(String text) {
+    public void recommend(String text) {
         row.record("recommendation_text", text);
     }
 
     @Override
-    public void visitCrop(String identifier) {
-        row.record("crop_id", identifier);
-    }
-
-    @Override
-    public void visitImage(String identifier) {
-        row.record("image_id", identifier);
+    public void bind(String cropIdentifier, String imageIdentifier) {
+        row.record("crop_id", cropIdentifier);
+        row.record("image_id", imageIdentifier);
     }
 }

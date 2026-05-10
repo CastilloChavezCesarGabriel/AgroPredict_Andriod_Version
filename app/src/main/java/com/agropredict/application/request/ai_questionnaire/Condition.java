@@ -1,18 +1,19 @@
 package com.agropredict.application.request.ai_questionnaire;
 
-import com.agropredict.application.visitor.IQuestionnaireVisitor;
+import com.agropredict.application.visitor.IAnswerConsumer;
+import java.util.Objects;
 
 public final class Condition {
     private final Weather environment;
     private final SoilAnswer soil;
 
     public Condition(Weather environment, SoilAnswer soil) {
-        this.environment = environment;
-        this.soil = soil;
+        this.environment = Objects.requireNonNull(environment, "condition requires weather");
+        this.soil = Objects.requireNonNull(soil, "condition requires a soil answer");
     }
 
-    public void accept(IQuestionnaireVisitor visitor) {
-        environment.accept(visitor);
-        soil.accept(visitor);
+    public void accept(IAnswerConsumer consumer) {
+        environment.accept(consumer);
+        soil.accept(consumer);
     }
 }

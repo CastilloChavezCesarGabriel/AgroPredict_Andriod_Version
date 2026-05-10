@@ -1,84 +1,64 @@
 package com.agropredict.domain;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
-import com.agropredict.visitor.TestOccupationVisitor;
+
+import com.agropredict.domain.authentication.Session;
+import com.agropredict.visitor.ElevateExpecter;
+import com.agropredict.visitor.LimitExpecter;
 import com.agropredict.visitor.TestSessionVisitor;
 import org.junit.Test;
 
 public final class SessionTest {
     @Test
-    public void testActiveSession() {
-        assertTrue(new Session("user_123", "Farmer").isActive());
+    public void testNullUserIdentifierRejected() {
+        assertThrows(IllegalArgumentException.class, () -> new Session(null, "Farmer"));
     }
 
     @Test
-    public void testInactiveSessionNull() {
-        assertFalse(new Session(null, "Farmer").isActive());
-    }
-
-    @Test
-    public void testInactiveSessionEmpty() {
-        assertFalse(new Session("", "Farmer").isActive());
+    public void testEmptyUserIdentifierRejected() {
+        assertThrows(IllegalArgumentException.class, () -> new Session("", "Farmer"));
     }
 
     @Test
     public void testAdvancedAgronomist() {
-        TestOccupationVisitor handler = new TestOccupationVisitor();
-        new Session("user_123", "Agronomist").observe(handler);
-        assertTrue(handler.sawAdvanced());
+        new Session("user_123", "Agronomist").observe(new ElevateExpecter());
     }
 
     @Test
     public void testAdvancedSpecialist() {
-        TestOccupationVisitor handler = new TestOccupationVisitor();
-        new Session("user_123", "Specialist").observe(handler);
-        assertTrue(handler.sawAdvanced());
+        new Session("user_123", "Specialist").observe(new ElevateExpecter());
     }
 
     @Test
     public void testAdvancedResearcher() {
-        TestOccupationVisitor handler = new TestOccupationVisitor();
-        new Session("user_123", "Researcher").observe(handler);
-        assertTrue(handler.sawAdvanced());
+        new Session("user_123", "Researcher").observe(new ElevateExpecter());
     }
 
     @Test
     public void testNotAdvancedFarmer() {
-        TestOccupationVisitor handler = new TestOccupationVisitor();
-        new Session("user_123", "Farmer").observe(handler);
-        assertFalse(handler.sawAdvanced());
-        assertTrue(handler.sawBasic());
+        new Session("user_123", "Farmer").observe(new LimitExpecter());
     }
 
     @Test
     public void testNotAdvancedNull() {
-        TestOccupationVisitor handler = new TestOccupationVisitor();
-        new Session("user_123", null).observe(handler);
-        assertFalse(handler.sawAdvanced());
-        assertTrue(handler.sawBasic());
+        new Session("user_123", null).observe(new LimitExpecter());
     }
 
     @Test
     public void testNotAdvancedEmpty() {
-        TestOccupationVisitor handler = new TestOccupationVisitor();
-        new Session("user_123", "").observe(handler);
-        assertFalse(handler.sawAdvanced());
-        assertTrue(handler.sawBasic());
+        new Session("user_123", "").observe(new LimitExpecter());
     }
 
     @Test
     public void testNotAdvancedUnknownRole() {
-        TestOccupationVisitor handler = new TestOccupationVisitor();
-        new Session("user_123", "Student").observe(handler);
-        assertFalse(handler.sawAdvanced());
-        assertTrue(handler.sawBasic());
+        new Session("user_123", "Student").observe(new LimitExpecter());
     }
 
     @Test
     public void testAcceptVisitor() {
         TestSessionVisitor visitor = new TestSessionVisitor();
-        new Session("user_42", "Farmer").accept(visitor);
+        new Session("user_42", "Farmer").report(visitor);
         assertTrue(visitor.isIdentified("user_42"));
         assertTrue(visitor.isOccupied("Farmer"));
     }

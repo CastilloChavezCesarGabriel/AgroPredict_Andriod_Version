@@ -5,14 +5,16 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import com.agropredict.domain.CapturingLoginGate;
-import com.agropredict.domain.LoginAttempt;
-import com.agropredict.domain.Session;
+import com.agropredict.domain.authentication.ILoginAttempt;
+import com.agropredict.domain.authentication.InitialAttempt;
+import com.agropredict.domain.authentication.Session;
 import com.agropredict.domain.input_validation.EmailValidator;
 import com.agropredict.domain.input_validation.FullNameValidator;
 import com.agropredict.domain.input_validation.PasswordValidator;
 import com.agropredict.domain.input_validation.UsernameValidator;
+import com.agropredict.domain.input_validation.ValidatorTester;
 import com.agropredict.infrastructure.security.PasswordHasher;
-import com.agropredict.visitor.TestOccupationVisitor;
+import com.agropredict.visitor.LimitExpecter;
 import org.junit.Test;
 
 public final class SecurityTest {
@@ -102,7 +104,7 @@ public final class SecurityTest {
     @Test
     public void testBruteForceProtection() {
         long now = System.currentTimeMillis();
-        LoginAttempt attempt = new LoginAttempt(0, 0);
+        ILoginAttempt attempt = new InitialAttempt();
         for (int count = 0; count < 5; count++) attempt = attempt.fail(now);
         CapturingLoginGate immediate = new CapturingLoginGate();
         attempt.evaluate(now, immediate);
@@ -115,7 +117,7 @@ public final class SecurityTest {
     @Test
     public void testBlockDurationExactlyFiveMinutes() {
         long now = 1000000L;
-        LoginAttempt attempt = new LoginAttempt(0, 0);
+        ILoginAttempt attempt = new InitialAttempt();
         for (int count = 0; count < 5; count++) attempt = attempt.fail(now);
         CapturingLoginGate atBoundary = new CapturingLoginGate();
         attempt.evaluate(now + 5 * 60 * 1000, atBoundary);
@@ -128,10 +130,10 @@ public final class SecurityTest {
     @Test
     public void testAttemptsResetAfterBlockExpires() {
         long now = System.currentTimeMillis();
-        LoginAttempt attempt = new LoginAttempt(0, 0);
+        ILoginAttempt attempt = new InitialAttempt();
         for (int count = 0; count < 5; count++) attempt = attempt.fail(now);
         long afterExpiry = now + 5 * 60 * 1000 + 1;
-        LoginAttempt reset = attempt.fail(afterExpiry);
+        ILoginAttempt reset = attempt.fail(afterExpiry);
         CapturingLoginGate gate = new CapturingLoginGate();
         reset.evaluate(afterExpiry, gate);
         assertTrue(gate.hasReceived("allow"));
@@ -140,9 +142,9 @@ public final class SecurityTest {
     @Test
     public void testCannotBypassLockoutByKeepingTrying() {
         long now = System.currentTimeMillis();
-        LoginAttempt attempt = new LoginAttempt(0, 0);
+        ILoginAttempt attempt = new InitialAttempt();
         for (int count = 0; count < 5; count++) attempt = attempt.fail(now);
-        LoginAttempt stillBlocked = attempt.fail(now + 1000);
+        ILoginAttempt stillBlocked = attempt.fail(now + 1000);
         CapturingLoginGate gate = new CapturingLoginGate();
         stillBlocked.evaluate(now + 1000, gate);
         assertTrue(gate.hasReceived("block"));
@@ -150,128 +152,118 @@ public final class SecurityTest {
 
     @Test
     public void testSqlInjectionInEmail() {
-        EmailValidator validator = new EmailValidator();
-        assertFalse(validator.isValid("'; DROP TABLE users;--@evil.com"));
-        assertFalse(validator.isValid("admin'--@evil.com"));
-        assertFalse(validator.isValid("1=1@evil.com"));
-        assertFalse(validator.isValid("OR 1=1--@evil.com"));
+        ValidatorTester tester = new ValidatorTester(new EmailValidator());
+        tester.rejects("'; DROP TABLE users;--@evil.com");
+        tester.rejects("admin'--@evil.com");
+        tester.rejects("1=1@evil.com");
+        tester.rejects("OR 1=1--@evil.com");
     }
 
     @Test
     public void testSqlInjectionInUsername() {
-        UsernameValidator validator = new UsernameValidator();
-        assertFalse(validator.isValid("admin'--"));
-        assertFalse(validator.isValid("'; DROP TABLE"));
-        assertFalse(validator.isValid("1=1; --"));
-        assertFalse(validator.isValid("UNION SELECT *"));
+        ValidatorTester tester = new ValidatorTester(new UsernameValidator());
+        tester.rejects("admin'--");
+        tester.rejects("'; DROP TABLE");
+        tester.rejects("1=1; --");
+        tester.rejects("UNION SELECT *");
     }
 
     @Test
     public void testSqlInjectionInPassword() {
-        PasswordValidator validator = new PasswordValidator();
-        assertTrue(validator.isValid("'; DROP1!a"));
+        new ValidatorTester(new PasswordValidator()).accepts("'; DROP1!aXY");
     }
 
     @Test
     public void testXssInEmail() {
-        EmailValidator validator = new EmailValidator();
-        assertFalse(validator.isValid("<script>alert(1)</script>@evil.com"));
-        assertFalse(validator.isValid("user<img>@evil.com"));
-        assertFalse(validator.isValid("user<svg/onload=alert(1)>@evil.com"));
+        ValidatorTester tester = new ValidatorTester(new EmailValidator());
+        tester.rejects("<script>alert(1)</script>@evil.com");
+        tester.rejects("user<img>@evil.com");
+        tester.rejects("user<svg/onload=alert(1)>@evil.com");
     }
 
     @Test
     public void testXssInUsername() {
-        UsernameValidator validator = new UsernameValidator();
-        assertFalse(validator.isValid("<script>alert(1)</script>"));
-        assertFalse(validator.isValid("user<img src=x>"));
-        assertFalse(validator.isValid("onmouseover=alert(1)"));
+        ValidatorTester tester = new ValidatorTester(new UsernameValidator());
+        tester.rejects("<script>alert(1)</script>");
+        tester.rejects("user<img src=x>");
+        tester.rejects("onmouseover=alert(1)");
     }
 
     @Test
     public void testXssInFullName() {
-        FullNameValidator validator = new FullNameValidator();
-        assertFalse(validator.isValid("<script>alert(1)</script>"));
-        assertFalse(validator.isValid("Juan<img>Perez"));
-        assertFalse(validator.isValid("alert('xss')"));
+        ValidatorTester tester = new ValidatorTester(new FullNameValidator());
+        tester.rejects("<script>alert(1)</script>");
+        tester.rejects("Juan<img>Perez");
+        tester.rejects("alert('xss')");
     }
 
     @Test
     public void testPasswordComplexityEnforced() {
-        PasswordValidator validator = new PasswordValidator();
-        assertFalse(validator.isValid("password"));
-        assertFalse(validator.isValid("12345678"));
-        assertFalse(validator.isValid("ABCDEFGH"));
-        assertFalse(validator.isValid("abcdefgh"));
-        assertFalse(validator.isValid("Abcdefgh"));
-        assertFalse(validator.isValid("Abcdef1h"));
+        ValidatorTester tester = new ValidatorTester(new PasswordValidator());
+        tester.rejects("passwordxxxx");
+        tester.rejects("123456789012");
+        tester.rejects("ABCDEFGHIJKL");
+        tester.rejects("abcdefghijkl");
+        tester.rejects("Abcdefghijkl");
+        tester.rejects("Abcdef1hijkl");
     }
 
     @Test
     public void testPasswordMinimumLengthEnforced() {
-        PasswordValidator validator = new PasswordValidator();
-        assertFalse(validator.isValid("Aa1!"));
-        assertFalse(validator.isValid("Aa1!xxx"));
-        assertTrue(validator.isValid("Aa1!xxxx"));
+        ValidatorTester tester = new ValidatorTester(new PasswordValidator());
+        tester.rejects("Aa1!");
+        tester.rejects("Aa1!xxx");
+        tester.rejects("Aa1!xxxxxxx");
+        tester.accepts("Aa1!xxxxxxxx");
     }
 
     @Test
     public void testNullOccupationDoesNotGrantAdvancedAccess() {
-        TestOccupationVisitor handler = new TestOccupationVisitor();
-        new Session("user_1", null).observe(handler);
-        assertFalse(handler.sawAdvanced());
+        new Session("user_1", null).observe(new LimitExpecter());
     }
 
     @Test
     public void testEmptyOccupationDoesNotGrantAdvancedAccess() {
-        TestOccupationVisitor handler = new TestOccupationVisitor();
-        new Session("user_1", "").observe(handler);
-        assertFalse(handler.sawAdvanced());
+        new Session("user_1", "").observe(new LimitExpecter());
     }
 
     @Test
     public void testUnknownOccupationDoesNotGrantAdvancedAccess() {
-        TestOccupationVisitor handler = new TestOccupationVisitor();
-        new Session("user_1", "Hacker").observe(handler);
-        assertFalse(handler.sawAdvanced());
+        new Session("user_1", "Hacker").observe(new LimitExpecter());
     }
 
     @Test
     public void testCaseSensitiveRoleCheck() {
-        TestOccupationVisitor handler = new TestOccupationVisitor();
-        new Session("user_1", "agronomist").observe(handler);
-        assertFalse(handler.sawAdvanced());
+        new Session("user_1", "agronomist").observe(new LimitExpecter());
     }
 
     @Test
-    public void testNullSessionIdentifierIsInactive() {
-        Session session = new Session(null, "Farmer");
-        assertFalse(session.isActive());
+    public void testNullSessionIdentifierRejected() {
+        org.junit.Assert.assertThrows(IllegalArgumentException.class, () -> new Session(null, "Farmer"));
     }
 
     @Test
-    public void testEmptySessionIdentifierIsInactive() {
-        Session session = new Session("", "Farmer");
-        assertFalse(session.isActive());
+    public void testEmptySessionIdentifierRejected() {
+        org.junit.Assert.assertThrows(IllegalArgumentException.class, () -> new Session("", "Farmer"));
     }
 
     @Test
     public void testNullEmailRejected() {
-        assertFalse(new EmailValidator().isValid(null));
+        new ValidatorTester(new EmailValidator()).rejects(null);
     }
 
     @Test
     public void testNullUsernameRejected() {
-        assertFalse(new UsernameValidator().isValid(null));
+        new ValidatorTester(new UsernameValidator()).rejects(null);
     }
 
     @Test
     public void testNullPasswordRejected() {
-        assertFalse(new PasswordValidator().isValid(null));
+        new ValidatorTester(new PasswordValidator()).rejects(null);
     }
 
     @Test
     public void testNullFullNameRejected() {
-        assertFalse(new FullNameValidator().isValid(null));
+        new ValidatorTester(new FullNameValidator()).rejects(null);
     }
 }

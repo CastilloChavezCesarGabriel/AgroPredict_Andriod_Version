@@ -1,7 +1,7 @@
 package com.agropredict.infrastructure.image_classification;
 
 import com.agropredict.application.service.IImageClassifier;
-import com.agropredict.application.visitor.IClassificationResultVisitor;
+import com.agropredict.domain.diagnostic.visitor.IClassificationResult;
 import java.nio.ByteBuffer;
 
 public final class TFLiteClassifier implements IImageClassifier {
@@ -14,8 +14,8 @@ public final class TFLiteClassifier implements IImageClassifier {
     }
 
     @Override
-    public void classify(String imagePath, IClassificationResultVisitor consumer) {
-        ByteBuffer input = processor.prepare(imagePath, consumer);
-        if (input != null) model.infer(input, consumer);
+    public void classify(String imagePath, IClassificationResult visitor) {
+        ByteBuffer input = processor.prepare(imagePath, visitor);
+        if (input != null) model.infer(input, visitor);
     }
 }

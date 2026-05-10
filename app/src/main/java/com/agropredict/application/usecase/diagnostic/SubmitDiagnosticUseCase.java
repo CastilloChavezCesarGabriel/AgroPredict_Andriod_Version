@@ -1,25 +1,28 @@
 package com.agropredict.application.usecase.diagnostic;
 
-import com.agropredict.application.diagnostic_submission.IDiagnosticWorkflow;
+import com.agropredict.application.diagnostic_submission.DiagnosticWorkflow;
 import com.agropredict.application.request.diagnostic_submission.SubmissionRequest;
-import com.agropredict.application.operation_result.OperationResult;
+import com.agropredict.application.operation_result.IUseCaseResult;
+import com.agropredict.application.operation_result.SuccessfulOperation;
+import com.agropredict.application.operation_result.FailedOperation;
 import com.agropredict.application.service.IDiagnosticApiService;
+import java.util.Objects;
 
 public final class SubmitDiagnosticUseCase {
     private final IDiagnosticApiService apiService;
-    private final IDiagnosticWorkflow workflow;
+    private final DiagnosticWorkflow workflow;
 
-    public SubmitDiagnosticUseCase(IDiagnosticApiService apiService, IDiagnosticWorkflow workflow) {
-        this.apiService = apiService;
-        this.workflow = workflow;
+    public SubmitDiagnosticUseCase(IDiagnosticApiService apiService, DiagnosticWorkflow workflow) {
+        this.apiService = Objects.requireNonNull(apiService, "submit diagnostic use case requires an api service");
+        this.workflow = Objects.requireNonNull(workflow, "submit diagnostic use case requires a workflow");
     }
 
-    public OperationResult submit(SubmissionRequest request) {
+    public IUseCaseResult submit(SubmissionRequest request) {
         try {
             String identifier = request.submit(apiService, workflow);
-            return OperationResult.succeed(identifier);
+            return new SuccessfulOperation(identifier);
         } catch (RuntimeException exception) {
-            return OperationResult.fail();
+            return new FailedOperation();
         }
     }
 }

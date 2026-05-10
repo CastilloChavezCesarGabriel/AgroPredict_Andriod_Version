@@ -2,12 +2,16 @@ package com.agropredict.domain;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import com.agropredict.domain.authentication.ILoginAttempt;
+import com.agropredict.domain.authentication.InitialAttempt;
+
 import org.junit.Test;
 
 public final class LoginAttemptTest {
     @Test
-    public void testFreshAttemptIsAllowed() {
-        LoginAttempt attempt = new LoginAttempt(0, 0);
+    public void testInitialAttemptIsAllowed() {
+        ILoginAttempt attempt = new InitialAttempt();
         CapturingLoginGate gate = new CapturingLoginGate();
         attempt.evaluate(System.currentTimeMillis(), gate);
         assertTrue(gate.hasReceived("allow"));
@@ -18,7 +22,7 @@ public final class LoginAttemptTest {
     @Test
     public void testSingleFailureStillAllows() {
         long now = System.currentTimeMillis();
-        LoginAttempt attempt = new LoginAttempt(0, 0).fail(now);
+        ILoginAttempt attempt = new InitialAttempt().fail(now);
         CapturingLoginGate gate = new CapturingLoginGate();
         attempt.evaluate(now, gate);
         assertTrue(gate.hasReceived("allow"));
@@ -27,7 +31,7 @@ public final class LoginAttemptTest {
     @Test
     public void testFourFailuresStillAllows() {
         long now = System.currentTimeMillis();
-        LoginAttempt attempt = new LoginAttempt(0, 0);
+        ILoginAttempt attempt = new InitialAttempt();
         for (int count = 0; count < 4; count++) attempt = attempt.fail(now);
         CapturingLoginGate gate = new CapturingLoginGate();
         attempt.evaluate(now, gate);
@@ -37,7 +41,7 @@ public final class LoginAttemptTest {
     @Test
     public void testFiveFailuresBlocks() {
         long now = System.currentTimeMillis();
-        LoginAttempt attempt = new LoginAttempt(0, 0);
+        ILoginAttempt attempt = new InitialAttempt();
         for (int count = 0; count < 5; count++) attempt = attempt.fail(now);
         CapturingLoginGate gate = new CapturingLoginGate();
         attempt.evaluate(now, gate);
@@ -47,7 +51,7 @@ public final class LoginAttemptTest {
     @Test
     public void testStillBlockedDuringWindow() {
         long now = System.currentTimeMillis();
-        LoginAttempt attempt = new LoginAttempt(0, 0);
+        ILoginAttempt attempt = new InitialAttempt();
         for (int count = 0; count < 5; count++) attempt = attempt.fail(now);
         CapturingLoginGate gate = new CapturingLoginGate();
         attempt.evaluate(now + 4 * 60 * 1000, gate);
@@ -57,7 +61,7 @@ public final class LoginAttemptTest {
     @Test
     public void testExhaustsAfterBlockExpires() {
         long now = System.currentTimeMillis();
-        LoginAttempt attempt = new LoginAttempt(0, 0);
+        ILoginAttempt attempt = new InitialAttempt();
         for (int count = 0; count < 5; count++) attempt = attempt.fail(now);
         CapturingLoginGate gate = new CapturingLoginGate();
         attempt.evaluate(now + 5 * 60 * 1000 + 1, gate);
@@ -67,7 +71,7 @@ public final class LoginAttemptTest {
     @Test
     public void testSuccessResetsAttempts() {
         long now = System.currentTimeMillis();
-        LoginAttempt attempt = new LoginAttempt(0, 0);
+        ILoginAttempt attempt = new InitialAttempt();
         for (int count = 0; count < 3; count++) attempt = attempt.fail(now);
         attempt = attempt.succeed();
         CapturingLoginGate gate = new CapturingLoginGate();
@@ -78,9 +82,9 @@ public final class LoginAttemptTest {
     @Test
     public void testFailWhileBlockedDoesNotIncrement() {
         long now = System.currentTimeMillis();
-        LoginAttempt attempt = new LoginAttempt(0, 0);
+        ILoginAttempt attempt = new InitialAttempt();
         for (int count = 0; count < 5; count++) attempt = attempt.fail(now);
-        LoginAttempt blocked = attempt.fail(now);
+        ILoginAttempt blocked = attempt.fail(now);
         CapturingLoginGate gate = new CapturingLoginGate();
         blocked.evaluate(now, gate);
         assertTrue(gate.hasReceived("block"));
@@ -89,10 +93,10 @@ public final class LoginAttemptTest {
     @Test
     public void testResetAfterBlockExpires() {
         long now = System.currentTimeMillis();
-        LoginAttempt attempt = new LoginAttempt(0, 0);
+        ILoginAttempt attempt = new InitialAttempt();
         for (int count = 0; count < 5; count++) attempt = attempt.fail(now);
         long afterExpiry = now + 5 * 60 * 1000 + 1;
-        LoginAttempt reset = attempt.fail(afterExpiry);
+        ILoginAttempt reset = attempt.fail(afterExpiry);
         CapturingLoginGate gate = new CapturingLoginGate();
         reset.evaluate(afterExpiry, gate);
         assertTrue(gate.hasReceived("allow"));

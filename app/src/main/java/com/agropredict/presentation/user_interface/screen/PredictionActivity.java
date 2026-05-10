@@ -9,7 +9,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import com.agropredict.R;
 import com.agropredict.application.factory.IPredictionFactory;
-import com.agropredict.application.request.diagnostic_submission.Classification;
+import com.agropredict.application.request.diagnostic_submission.ImagePrediction;
 import com.agropredict.application.request.diagnostic_submission.PhotographInput;
 import com.agropredict.application.service.IImageClassifier;
 import com.agropredict.application.service.IImageCompressor;
@@ -29,7 +29,7 @@ public final class PredictionActivity extends BaseActivity implements IPredictio
     private PredictionForm predictionForm;
     private IImageCompressor imageCompressor;
     private String selectedImagePath;
-    private Classification classification;
+    private ImagePrediction classification;
 
     private final ActivityResultLauncher<Intent> cameraLauncher =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
@@ -138,7 +138,7 @@ public final class PredictionActivity extends BaseActivity implements IPredictio
 
     @Override
     public void onClassified(String cropName, double confidence) {
-        this.classification = new Classification(cropName, confidence);
+        this.classification = new ImagePrediction(cropName, confidence);
         runOnUiThread(() -> predictionForm.classify(cropName, confidence));
     }
 

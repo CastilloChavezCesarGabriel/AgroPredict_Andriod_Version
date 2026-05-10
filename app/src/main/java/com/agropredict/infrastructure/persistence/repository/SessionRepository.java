@@ -3,10 +3,12 @@ package com.agropredict.infrastructure.persistence.repository;
 import android.content.Context;
 import android.content.SharedPreferences;
 import com.agropredict.application.repository.ISessionRepository;
-import com.agropredict.domain.Session;
-import com.agropredict.domain.visitor.session.ISessionVisitor;
+import com.agropredict.domain.authentication.ISession;
+import com.agropredict.domain.authentication.NoSession;
+import com.agropredict.domain.authentication.Session;
+import com.agropredict.domain.authentication.ISessionConsumer;
 
-public final class SessionRepository implements ISessionRepository, ISessionVisitor {
+public final class SessionRepository implements ISessionRepository, ISessionConsumer {
     private static final String USER_IDENTIFIER_KEY = "logged_user_id";
     private static final String OCCUPATION_KEY = "logged_occupation";
     private static final String TIMESTAMP_KEY = "session_timestamp";
@@ -19,11 +21,11 @@ public final class SessionRepository implements ISessionRepository, ISessionVisi
 
     @Override
     public void save(Session session) {
-        session.accept(this);
+        session.report(this);
     }
 
     @Override
-    public void visit(String userIdentifier, String occupation) {
+    public void report(String userIdentifier, String occupation) {
         preferences.edit()
                 .putString(USER_IDENTIFIER_KEY, userIdentifier)
                 .putString(OCCUPATION_KEY, occupation)
@@ -32,14 +34,17 @@ public final class SessionRepository implements ISessionRepository, ISessionVisi
     }
 
     @Override
-    public Session recall() {
+    public ISession recall() {
         long timestamp = preferences.getLong(TIMESTAMP_KEY, 0);
-        if (isExpired(timestamp)) {
+        if (timestamp == 0 || isExpired(timestamp)) {
             clear();
-            return new Session(null, null);
+            return new NoSession();
+        }
+        String identifier = preferences.getString(USER_IDENTIFIER_KEY, null);
+        if (identifier == null || identifier.isEmpty()) {
+            return new NoSession();
         }
         refresh();
-        String identifier = preferences.getString(USER_IDENTIFIER_KEY, null);
         String occupation = preferences.getString(OCCUPATION_KEY, null);
         return new Session(identifier, occupation);
     }

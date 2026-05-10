@@ -3,17 +3,16 @@ package com.agropredict.usecase;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import com.agropredict.application.operation_result.OperationResult;
-import com.agropredict.application.usecase.crop.CropCleanup;
 import com.agropredict.application.usecase.crop.RemoveCropUseCase;
-import com.agropredict.domain.component.diagnostic.Prediction;
-import com.agropredict.domain.entity.Diagnostic;
+import com.agropredict.domain.diagnostic.Prediction;
+import com.agropredict.domain.diagnostic.Diagnostic;
 import com.agropredict.repository.CapturingCropRepository;
 import com.agropredict.repository.CapturingDiagnosticRepository;
 import com.agropredict.repository.CapturingPhotographRepository;
 import com.agropredict.repository.CapturingReportRepository;
-import com.agropredict.visitor.TestOperationResultVisitor;
+import com.agropredict.visitor.SucceedExpecter;
 
+import java.util.List;
 import org.junit.Test;
 
 public final class RemoveCropUseCaseTest {
@@ -29,14 +28,10 @@ public final class RemoveCropUseCaseTest {
         photographs.enroll("crop_42");
         photographs.enroll("crop_42");
         reports.enroll("crop_42");
-        CropCleanup cleanup = new CropCleanup(diagnostics, new CropCleanup(photographs, reports));
-        RemoveCropUseCase useCase = new RemoveCropUseCase(crops, cleanup);
+        RemoveCropUseCase useCase = new RemoveCropUseCase(crops, List.of(diagnostics, photographs, reports));
 
-        OperationResult result = useCase.remove("crop_42");
+        useCase.remove("crop_42").accept(new SucceedExpecter("crop_42"));
 
-        TestOperationResultVisitor visitor = new TestOperationResultVisitor();
-        result.accept(visitor);
-        assertTrue(visitor.isCompleted("crop_42"));
         assertTrue(diagnostics.clearedFor("crop_42"));
         assertFalse(diagnostics.remainsFor("crop_42"));
         assertTrue(photographs.clearedFor("crop_42"));
@@ -58,8 +53,7 @@ public final class RemoveCropUseCaseTest {
         photographs.enroll("crop_99");
         reports.enroll("crop_42");
         reports.enroll("crop_99");
-        CropCleanup cleanup = new CropCleanup(diagnostics, new CropCleanup(photographs, reports));
-        RemoveCropUseCase useCase = new RemoveCropUseCase(crops, cleanup);
+        RemoveCropUseCase useCase = new RemoveCropUseCase(crops, List.of(diagnostics, photographs, reports));
 
         useCase.remove("crop_42");
 

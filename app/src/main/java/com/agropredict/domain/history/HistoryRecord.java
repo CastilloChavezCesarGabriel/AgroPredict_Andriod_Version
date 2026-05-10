@@ -1,20 +1,27 @@
 package com.agropredict.domain.history;
 
-public final class HistoryRecord {
-    private final Modification modification;
-    private final HistoryTransition transition;
+import java.util.Objects;
 
-    public HistoryRecord(Modification modification, HistoryTransition transition) {
-        this.modification = modification;
-        this.transition = transition;
+public final class HistoryRecord {
+    private final FieldModification modification;
+    private final HistoryTransition transition;
+    private final ChangeMoment timestamp;
+
+    public HistoryRecord(FieldModification modification, HistoryTransition transition, ChangeMoment timestamp) {
+        this.modification = Objects.requireNonNull(modification, "history record requires a modification");
+        this.transition = Objects.requireNonNull(transition, "history record requires a transition");
+        this.timestamp = Objects.requireNonNull(timestamp, "history record requires a timestamp");
     }
 
-    public void summarize(StringBuilder builder) {
-        modification.describe(builder);
-        builder.append(": ");
-        transition.format(builder);
-        builder.append("\n");
-        modification.stamp(builder);
-        builder.append("\n\n");
+    public void inscribe(IModificationConsumer consumer) {
+        modification.inscribe(consumer);
+    }
+
+    public void link(IHistoryTransitionConsumer consumer) {
+        transition.link(consumer);
+    }
+
+    public void stamp(ITimestampConsumer consumer) {
+        timestamp.stamp(consumer);
     }
 }

@@ -2,48 +2,51 @@ package com.agropredict.smoke;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import com.agropredict.application.operation_result.ClassificationResult;
-import com.agropredict.application.operation_result.OperationResult;
-import com.agropredict.application.operation_result.RegistrationResult;
+import com.agropredict.application.operation_result.SuccessfulOperation;
+import com.agropredict.application.operation_result.FailedOperation;
+import com.agropredict.application.operation_result.RejectedOperation;
+import com.agropredict.domain.diagnostic.ConfidentClassification;
+import com.agropredict.domain.diagnostic.UnconfidentClassification;
 import com.agropredict.domain.CapturingLoginGate;
-import com.agropredict.domain.Identifier;
-import com.agropredict.domain.LoginAttempt;
-import com.agropredict.domain.Session;
+import com.agropredict.domain.identifier.IdentifierFactory;
+import com.agropredict.domain.authentication.ILoginAttempt;
+import com.agropredict.domain.authentication.InitialAttempt;
+import com.agropredict.domain.authentication.Session;
 import com.agropredict.domain.input_validation.EmailValidator;
 import com.agropredict.domain.input_validation.FullNameValidator;
 import com.agropredict.domain.input_validation.PasswordValidator;
 import com.agropredict.domain.input_validation.UsernameValidator;
+import com.agropredict.domain.input_validation.ValidatorTester;
 import com.agropredict.infrastructure.security.PasswordHasher;
 import org.junit.Test;
 
 public final class SmokeTest {
-
     @Test
     public void testValidatorsInstantiate() {
-        assertTrue(new EmailValidator().isValid("test@example.com"));
-        assertTrue(new PasswordValidator().isValid("Passw0rd!"));
-        assertTrue(new UsernameValidator().isValid("testuser"));
-        assertTrue(new FullNameValidator().isValid("Test User"));
+        new EmailValidator();
+        new PasswordValidator();
+        new UsernameValidator();
+        new FullNameValidator();
     }
 
     @Test
     public void testBasicEmailValidation() {
-        assertTrue(new EmailValidator().isValid("test@example.com"));
+        new ValidatorTester(new EmailValidator()).accepts("test@example.com");
     }
 
     @Test
     public void testBasicPasswordValidation() {
-        assertTrue(new PasswordValidator().isValid("Passw0rd!"));
+        new ValidatorTester(new PasswordValidator()).accepts("Passw0rd!XYZ");
     }
 
     @Test
     public void testBasicUsernameValidation() {
-        assertTrue(new UsernameValidator().isValid("testuser"));
+        new ValidatorTester(new UsernameValidator()).accepts("testuser");
     }
 
     @Test
     public void testBasicNameValidation() {
-        assertTrue(new FullNameValidator().isValid("Test User"));
+        new ValidatorTester(new FullNameValidator()).accepts("Test User");
     }
 
     @Test
@@ -56,7 +59,7 @@ public final class SmokeTest {
 
     @Test
     public void testIdentifierGeneration() {
-        String identifier = Identifier.generate("smoke");
+        String identifier = IdentifierFactory.generate("smoke");
         assertNotNull(identifier);
         assertTrue(identifier.startsWith("smoke_"));
     }
@@ -64,12 +67,12 @@ public final class SmokeTest {
     @Test
     public void testSessionCreation() {
         Session session = new Session("user_1", "Farmer");
-        assertTrue(session.isActive());
+        assertNotNull(session);
     }
 
     @Test
-    public void testLoginAttemptCreation() {
-        LoginAttempt attempt = new LoginAttempt(0, 0);
+    public void testILoginAttemptCreation() {
+        ILoginAttempt attempt = new InitialAttempt();
         CapturingLoginGate gate = new CapturingLoginGate();
         attempt.evaluate(System.currentTimeMillis(), gate);
         assertTrue(gate.hasReceived("allow"));
@@ -77,20 +80,14 @@ public final class SmokeTest {
 
     @Test
     public void testOperationResultFactories() {
-        assertNotNull(OperationResult.succeed("ok"));
-        assertNotNull(OperationResult.fail());
-        assertNotNull(OperationResult.reject("reason"));
-    }
-
-    @Test
-    public void testRegistrationResultFactories() {
-        assertNotNull(RegistrationResult.succeed());
-        assertNotNull(RegistrationResult.fail("error"));
+        new SuccessfulOperation("ok");
+        new FailedOperation();
+        new RejectedOperation("reason");
     }
 
     @Test
     public void testClassificationResultCreation() {
-        ClassificationResult result = new ClassificationResult("Tomato", 0.9);
-        assertNotNull(result);
+        new ConfidentClassification("Tomato", 0.9);
+        new UnconfidentClassification("low confidence");
     }
 }

@@ -3,7 +3,7 @@ package com.agropredict.infrastructure.persistence.repository;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import com.agropredict.domain.Identifier;
+import com.agropredict.domain.identifier.IdentifierFactory;
 import com.agropredict.infrastructure.persistence.database.Clock;
 import com.agropredict.infrastructure.persistence.database.Database;
 import java.util.HashMap;
@@ -41,7 +41,7 @@ public final class SqliteCropHistory {
             String newValue = current.get(column);
             if (matches(oldValue, newValue)) continue;
             ContentValues row = new ContentValues();
-            row.put("id", Identifier.generate("crop_history"));
+            row.put("id", IdentifierFactory.generate("crop_history"));
             row.put("crop_id", cropIdentifier);
             row.put("field_modified", column);
             row.put("old_value", oldValue);

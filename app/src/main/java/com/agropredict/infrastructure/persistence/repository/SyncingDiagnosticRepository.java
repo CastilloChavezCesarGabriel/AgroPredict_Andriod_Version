@@ -1,14 +1,16 @@
 package com.agropredict.infrastructure.persistence.repository;
 
+import com.agropredict.application.repository.ICropRecord;
 import com.agropredict.application.repository.IDiagnosticRepository;
-import com.agropredict.domain.entity.Diagnostic;
+import com.agropredict.application.repository.IRecordEraser;
+import com.agropredict.domain.diagnostic.Diagnostic;
 import java.util.List;
 
-public final class SyncingDiagnosticRepository implements IDiagnosticRepository {
-    private final IDiagnosticRepository delegate;
+public final class SyncingDiagnosticRepository implements IDiagnosticRepository, IRecordEraser, ICropRecord {
+    private final SqliteDiagnosticRepository delegate;
     private final SqliteSyncRecorder recorder;
 
-    public SyncingDiagnosticRepository(IDiagnosticRepository delegate, SqliteSyncRecorder recorder) {
+    public SyncingDiagnosticRepository(SqliteDiagnosticRepository delegate, SqliteSyncRecorder recorder) {
         this.delegate = delegate;
         this.recorder = recorder;
     }
@@ -20,14 +22,14 @@ public final class SyncingDiagnosticRepository implements IDiagnosticRepository 
     }
 
     @Override
-    public void delete(String diagnosticIdentifier) {
-        delegate.delete(diagnosticIdentifier);
+    public void erase(String diagnosticIdentifier) {
+        delegate.erase(diagnosticIdentifier);
         recorder.delete("diagnostic", diagnosticIdentifier);
     }
 
     @Override
-    public void clear(String cropIdentifier) {
-        delegate.clear(cropIdentifier);
+    public void discard(String cropIdentifier) {
+        delegate.discard(cropIdentifier);
     }
 
     @Override

@@ -1,8 +1,8 @@
 package com.agropredict.presentation.viewmodel.authentication;
 
-import com.agropredict.application.visitor.IOperationResultVisitor;
+import com.agropredict.application.visitor.IOperationResult;
 
-public final class LoginResultPresenter implements IOperationResultVisitor {
+public final class LoginResultPresenter implements IOperationResult {
     private final ILoginView view;
 
     public LoginResultPresenter(ILoginView view) {
@@ -10,13 +10,17 @@ public final class LoginResultPresenter implements IOperationResultVisitor {
     }
 
     @Override
-    public void visit(boolean completed, String resultIdentifier) {
-        if (completed) {
-            view.proceed();
-        } else if (resultIdentifier != null) {
-            view.notify(resultIdentifier);
-        } else {
-            view.reject();
-        }
+    public void onSucceed(String value) {
+        view.proceed();
+    }
+
+    @Override
+    public void onFail() {
+        view.reject();
+    }
+
+    @Override
+    public void onReject(String reason) {
+        view.notify(reason);
     }
 }

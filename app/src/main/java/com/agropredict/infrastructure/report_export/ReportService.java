@@ -1,12 +1,14 @@
 package com.agropredict.infrastructure.report_export;
 
 import android.util.Log;
-import com.agropredict.application.operation_result.OperationResult;
+import com.agropredict.application.operation_result.IUseCaseResult;
+import com.agropredict.application.operation_result.SuccessfulOperation;
+import com.agropredict.application.operation_result.FailedOperation;
 import com.agropredict.application.service.IReportService;
 import com.agropredict.application.service.IReportWriter;
-import com.agropredict.application.usecase.report.DiagnosticReportScribe;
-import com.agropredict.domain.entity.Crop;
-import com.agropredict.domain.entity.Diagnostic;
+import com.agropredict.application.usecase.report.DiagnosticReportComposer;
+import com.agropredict.domain.crop.Crop;
+import com.agropredict.domain.diagnostic.Diagnostic;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -23,21 +25,21 @@ public abstract class ReportService implements IReportService {
     }
 
     @Override
-    public OperationResult generate(Crop crop, Diagnostic diagnostic) {
+    public IUseCaseResult generate(Crop crop, Diagnostic diagnostic) {
         try {
             String timestamp = stamp();
             IReportWriter writer = prepare(timestamp);
-            new DiagnosticReportScribe(writer).write(diagnostic);
+            new DiagnosticReportComposer(writer).write(diagnostic);
             File file = complete(writer, timestamp);
-            return OperationResult.succeed(file.getAbsolutePath());
+            return new SuccessfulOperation(file.getAbsolutePath());
         } catch (IOException exception) {
             Log.e(TAG, "Failed to generate report into " + outputDirectory.getAbsolutePath()
                     + ". Check storage permission and free space.", exception);
-            return OperationResult.fail();
+            return new FailedOperation();
         } catch (RuntimeException exception) {
             Log.e(TAG, "Report writer threw a runtime error (often: missing diagnostic fields"
                     + " when API submit failed earlier).", exception);
-            return OperationResult.fail();
+            return new FailedOperation();
         }
     }
 

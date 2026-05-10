@@ -1,13 +1,13 @@
 package com.agropredict.visitor;
 
-import com.agropredict.domain.visitor.session.ISessionVisitor;
+import com.agropredict.domain.authentication.ISessionConsumer;
 
-public final class TestSessionVisitor implements ISessionVisitor {
+public final class TestSessionVisitor implements ISessionConsumer {
     private String userIdentifier;
     private String occupation;
 
     @Override
-    public void visit(String userIdentifier, String occupation) {
+    public void report(String userIdentifier, String occupation) {
         this.userIdentifier = userIdentifier;
         this.occupation = occupation;
     }

@@ -3,13 +3,11 @@ package com.agropredict.infrastructure.persistence.visitor;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import com.agropredict.application.visitor.IQuestionnaireVisitor;
-import com.agropredict.domain.Identifier;
+import com.agropredict.application.visitor.IAnswerConsumer;
+import com.agropredict.domain.identifier.IdentifierFactory;
 import com.agropredict.infrastructure.persistence.database.Clock;
-import com.agropredict.infrastructure.persistence.schema.IKeyConsumer;
-import com.agropredict.infrastructure.persistence.schema.QuestionKey;
 
-public final class QuestionnairePersistenceVisitor implements IQuestionnaireVisitor, IKeyConsumer {
+public final class QuestionnairePersistenceVisitor implements IAnswerConsumer {
     private final SQLiteDatabase database;
     private final String diagnosticIdentifier;
 
@@ -19,48 +17,7 @@ public final class QuestionnairePersistenceVisitor implements IQuestionnaireVisi
     }
 
     @Override
-    public void visitEnvironment(String temperature, String humidity) {
-        QuestionKey.TEMPERATURE.pair(this, temperature);
-        QuestionKey.HUMIDITY.pair(this, humidity);
-    }
-
-    @Override
-    public void visitRain(String precipitation) {
-        QuestionKey.RAIN.pair(this, precipitation);
-    }
-
-    @Override
-    public void visitSoil(String moisture, String acidity) {
-        QuestionKey.SOIL_MOISTURE.pair(this, moisture);
-        QuestionKey.PH.pair(this, acidity);
-    }
-
-    @Override
-    public void visitIrrigation(String irrigation, String fertilization) {
-        QuestionKey.IRRIGATION.pair(this, irrigation);
-        QuestionKey.FERTILIZATION.pair(this, fertilization);
-    }
-
-    @Override
-    public void visitPestControl(String spraying, String weeds) {
-        QuestionKey.SPRAYING.pair(this, spraying);
-        QuestionKey.WEEDS.pair(this, weeds);
-    }
-
-    @Override
-    public void visitSymptom(String symptomType, String severity) {
-        QuestionKey.SYMPTOM.pair(this, symptomType);
-        QuestionKey.SEVERITY.pair(this, severity);
-    }
-
-    @Override
-    public void visitPest(String insects, String animals) {
-        QuestionKey.INSECTS.pair(this, insects);
-        QuestionKey.ANIMALS.pair(this, animals);
-    }
-
-    @Override
-    public void accept(String key, String value) {
+    public void record(String key, String value) {
         String questionId = resolve(key);
         insert(questionId, key, value);
         propagate(key, value);
@@ -73,7 +30,7 @@ public final class QuestionnairePersistenceVisitor implements IQuestionnaireVisi
 
     private void insert(String questionId, String key, String value) {
         ContentValues values = new ContentValues();
-        values.put("id", Identifier.generate(key));
+        values.put("id", IdentifierFactory.generate(key));
         values.put("diagnostic_id", diagnosticIdentifier);
         values.put("question_id", questionId);
         values.put("option_id", locate("ai_option", "option_text", value));

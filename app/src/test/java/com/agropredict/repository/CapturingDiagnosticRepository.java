@@ -1,7 +1,9 @@
 package com.agropredict.repository;
 
+import com.agropredict.application.repository.ICropRecord;
 import com.agropredict.application.repository.IDiagnosticRepository;
-import com.agropredict.domain.entity.Diagnostic;
+import com.agropredict.application.repository.IRecordEraser;
+import com.agropredict.domain.diagnostic.Diagnostic;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public final class CapturingDiagnosticRepository implements IDiagnosticRepository {
+public final class CapturingDiagnosticRepository implements IDiagnosticRepository, IRecordEraser, ICropRecord {
     private final Map<String, List<Diagnostic>> diagnosticsByCrop = new HashMap<>();
     private final Set<String> clearedCrops = new HashSet<>();
 
@@ -35,10 +37,10 @@ public final class CapturingDiagnosticRepository implements IDiagnosticRepositor
     }
     @Override public Diagnostic find(String diagnosticIdentifier) { return null; }
     @Override public Diagnostic resolve(String userIdentifier, String cropIdentifier) { return null; }
-    @Override public void delete(String diagnosticIdentifier) {}
+    @Override public void erase(String diagnosticIdentifier) {}
 
     @Override
-    public void clear(String cropIdentifier) {
+    public void discard(String cropIdentifier) {
         diagnosticsByCrop.remove(cropIdentifier);
         clearedCrops.add(cropIdentifier);
     }

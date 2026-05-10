@@ -1,21 +1,24 @@
 package com.agropredict.application.usecase;
 
 import com.agropredict.application.repository.IRecordEraser;
-import com.agropredict.application.operation_result.OperationResult;
+import com.agropredict.application.operation_result.IUseCaseResult;
+import com.agropredict.application.operation_result.SuccessfulOperation;
+import com.agropredict.application.operation_result.FailedOperation;
+import java.util.Objects;
 
 public final class DeleteUseCase {
     private final IRecordEraser repository;
 
     public DeleteUseCase(IRecordEraser repository) {
-        this.repository = repository;
+        this.repository = Objects.requireNonNull(repository, "delete use case requires a record eraser");
     }
 
-    public OperationResult delete(String identifier) {
+    public IUseCaseResult delete(String identifier) {
         try {
-            repository.delete(identifier);
-            return OperationResult.succeed(identifier);
+            repository.erase(identifier);
+            return new SuccessfulOperation(identifier);
         } catch (RuntimeException exception) {
-            return OperationResult.fail();
+            return new FailedOperation();
         }
     }
 }

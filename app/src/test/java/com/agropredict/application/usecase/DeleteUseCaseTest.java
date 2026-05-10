@@ -1,10 +1,8 @@
 package com.agropredict.application.usecase;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import com.agropredict.application.repository.IRecordEraser;
-import com.agropredict.visitor.TestOperationResultVisitor;
+import com.agropredict.visitor.FailExpecter;
+import com.agropredict.visitor.SucceedExpecter;
 
 import org.junit.Test;
 
@@ -18,22 +16,16 @@ public final class DeleteUseCaseTest {
 
     @Test
     public void testSuccessfulDeletion() {
-        TestOperationResultVisitor visitor = new TestOperationResultVisitor();
-        new DeleteUseCase(fakeRepo(false)).delete("entity_123").accept(visitor);
-        assertTrue(visitor.isCompleted());
+        new DeleteUseCase(fakeRepo(false)).delete("entity_123").accept(new SucceedExpecter(null));
     }
 
     @Test
     public void testDeletionReturnsIdentifier() {
-        TestOperationResultVisitor visitor = new TestOperationResultVisitor();
-        new DeleteUseCase(fakeRepo(false)).delete("entity_456").accept(visitor);
-        assertTrue(visitor.isCompleted("entity_456"));
+        new DeleteUseCase(fakeRepo(false)).delete("entity_456").accept(new SucceedExpecter("entity_456"));
     }
 
     @Test
     public void testDeletionDatabaseError() {
-        TestOperationResultVisitor visitor = new TestOperationResultVisitor();
-        new DeleteUseCase(fakeRepo(true)).delete("entity_789").accept(visitor);
-        assertFalse(visitor.isCompleted());
+        new DeleteUseCase(fakeRepo(true)).delete("entity_789").accept(new FailExpecter());
     }
 }

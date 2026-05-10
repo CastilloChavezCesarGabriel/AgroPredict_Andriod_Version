@@ -1,17 +1,16 @@
 package com.agropredict.application.usecase.authentication;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import com.agropredict.application.repository.ICatalogRepository;
 import com.agropredict.application.repository.IUserRepository;
+import com.agropredict.application.request.user_registration.Registration;
 import com.agropredict.application.request.user_registration.RegistrationRequest;
-import com.agropredict.application.request.user_registration.Account;
-import com.agropredict.application.request.user_registration.Authentication;
+import com.agropredict.application.request.user_registration.Credential;
 import com.agropredict.application.request.user_registration.Profile;
 import com.agropredict.application.request.user_registration.Registrant;
 import com.agropredict.repository.FixedCatalogRepository;
 import com.agropredict.repository.ScriptedUserRepository;
-import com.agropredict.visitor.TestRegistrationResultVisitor;
+import com.agropredict.visitor.RejectExpecter;
+import com.agropredict.visitor.SucceedExpecter;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.Test;
@@ -32,89 +31,77 @@ public final class RegisterUseCaseTest {
     }
 
     private RegistrationRequest compose() {
-        return new RegistrationRequest(
+        return RegistrationRequest.compose(new Registration(
             new Registrant("Juan Perez", "3312345678"),
-            new Account(new Authentication("juan@mail.com", "Passw0rd!"), new Profile("juanperez", "Farmer"))
-        );
+            new Credential("juan@mail.com", "Passw0rd!XYZ"),
+            new Profile("juanperez", "Farmer")
+        ));
     }
 
     @Test
     public void testSuccessfulRegistration() {
-        TestRegistrationResultVisitor visitor = new TestRegistrationResultVisitor();
-        new RegisterUseCase(accept(), arrange()).register(compose()).accept(visitor);
-        assertTrue(visitor.isCompleted());
+        new RegisterUseCase(accept(), arrange()).register(compose()).accept(new SucceedExpecter(null));
     }
 
     @Test
     public void testDuplicateEmailRejected() {
-        TestRegistrationResultVisitor visitor = new TestRegistrationResultVisitor();
         new RegisterUseCase(reject("This email is already registered"), arrange())
-            .register(compose()).accept(visitor);
-        assertFalse(visitor.isCompleted());
-        assertTrue(visitor.isRejected("email"));
+            .register(compose()).accept(new RejectExpecter("This email is already registered"));
     }
 
     @Test
     public void testDuplicateUsernameRejected() {
-        TestRegistrationResultVisitor visitor = new TestRegistrationResultVisitor();
         new RegisterUseCase(reject("This username already exists"), arrange())
-            .register(compose()).accept(visitor);
-        assertFalse(visitor.isCompleted());
-        assertTrue(visitor.isRejected("username"));
+            .register(compose()).accept(new RejectExpecter("This username already exists"));
     }
 
     @Test
     public void testInvalidEmailRejected() {
-        TestRegistrationResultVisitor visitor = new TestRegistrationResultVisitor();
-        RegistrationRequest request = new RegistrationRequest(
+        RegistrationRequest request = RegistrationRequest.compose(new Registration(
             new Registrant("Juan Perez", "3312345678"),
-            new Account(new Authentication("not-an-email", "Passw0rd!"), new Profile("juanperez", "Farmer"))
-        );
-        new RegisterUseCase(accept(), arrange()).register(request).accept(visitor);
-        assertFalse(visitor.isCompleted());
+            new Credential("not-an-email", "Passw0rd!XYZ"),
+            new Profile("juanperez", "Farmer")
+        ));
+        new RegisterUseCase(accept(), arrange()).register(request).accept(new RejectExpecter(null));
     }
 
     @Test
     public void testInvalidPasswordRejected() {
-        TestRegistrationResultVisitor visitor = new TestRegistrationResultVisitor();
-        RegistrationRequest request = new RegistrationRequest(
+        RegistrationRequest request = RegistrationRequest.compose(new Registration(
             new Registrant("Juan Perez", "3312345678"),
-            new Account(new Authentication("juan@mail.com", "weak"), new Profile("juanperez", "Farmer"))
-        );
-        new RegisterUseCase(accept(), arrange()).register(request).accept(visitor);
-        assertFalse(visitor.isCompleted());
+            new Credential("juan@mail.com", "weak"),
+            new Profile("juanperez", "Farmer")
+        ));
+        new RegisterUseCase(accept(), arrange()).register(request).accept(new RejectExpecter(null));
     }
 
     @Test
     public void testInvalidUsernameRejected() {
-        TestRegistrationResultVisitor visitor = new TestRegistrationResultVisitor();
-        RegistrationRequest request = new RegistrationRequest(
+        RegistrationRequest request = RegistrationRequest.compose(new Registration(
             new Registrant("Juan Perez", "3312345678"),
-            new Account(new Authentication("juan@mail.com", "Passw0rd!"), new Profile("ab", "Farmer"))
-        );
-        new RegisterUseCase(accept(), arrange()).register(request).accept(visitor);
-        assertFalse(visitor.isCompleted());
+            new Credential("juan@mail.com", "Passw0rd!XYZ"),
+            new Profile("ab", "Farmer")
+        ));
+        new RegisterUseCase(accept(), arrange()).register(request).accept(new RejectExpecter(null));
     }
 
     @Test
     public void testInvalidFullNameRejected() {
-        TestRegistrationResultVisitor visitor = new TestRegistrationResultVisitor();
-        RegistrationRequest request = new RegistrationRequest(
+        RegistrationRequest request = RegistrationRequest.compose(new Registration(
             new Registrant("", "3312345678"),
-            new Account(new Authentication("juan@mail.com", "Passw0rd!"), new Profile("juanperez", "Farmer"))
-        );
-        new RegisterUseCase(accept(), arrange()).register(request).accept(visitor);
-        assertFalse(visitor.isCompleted());
+            new Credential("juan@mail.com", "Passw0rd!XYZ"),
+            new Profile("juanperez", "Farmer")
+        ));
+        new RegisterUseCase(accept(), arrange()).register(request).accept(new RejectExpecter(null));
     }
 
     @Test
     public void testEmptyFieldsRejected() {
-        TestRegistrationResultVisitor visitor = new TestRegistrationResultVisitor();
-        RegistrationRequest request = new RegistrationRequest(
+        RegistrationRequest request = RegistrationRequest.compose(new Registration(
             new Registrant("", ""),
-            new Account(new Authentication("", ""), new Profile("", ""))
-        );
-        new RegisterUseCase(accept(), arrange()).register(request).accept(visitor);
-        assertFalse(visitor.isCompleted());
+            new Credential("", ""),
+            new Profile("", "")
+        ));
+        new RegisterUseCase(accept(), arrange()).register(request).accept(new RejectExpecter(null));
     }
 }

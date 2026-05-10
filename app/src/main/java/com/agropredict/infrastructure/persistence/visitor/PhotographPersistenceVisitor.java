@@ -1,25 +1,25 @@
 package com.agropredict.infrastructure.persistence.visitor;
 
-import com.agropredict.domain.Session;
-import com.agropredict.domain.visitor.session.ISessionVisitor;
-import com.agropredict.domain.visitor.crop.ICropVisitor;
-import com.agropredict.domain.visitor.photograph.IPhotographVisitor;
+import com.agropredict.domain.authentication.ISession;
+import com.agropredict.domain.crop.visitor.ICropIdentityConsumer;
+import com.agropredict.domain.photograph.IPhotographConsumer;
+import com.agropredict.domain.authentication.ISessionConsumer;
 import com.agropredict.infrastructure.persistence.database.IRow;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public final class PhotographPersistenceVisitor implements IPhotographVisitor, ICropVisitor, ISessionVisitor {
+public final class PhotographPersistenceVisitor implements IPhotographConsumer, ICropIdentityConsumer, ISessionConsumer {
     private final IRow row;
 
-    public PhotographPersistenceVisitor(IRow row, Session session) {
+    public PhotographPersistenceVisitor(IRow row, ISession session) {
         this.row = row;
-        session.accept(this);
+        session.report(this);
     }
 
     @Override
-    public void visitPhotograph(String identifier, String filePath) {
+    public void expose(String identifier, String filePath) {
         row.record("id", identifier);
         row.record("file_path", filePath);
         measure(filePath);
@@ -40,12 +40,12 @@ public final class PhotographPersistenceVisitor implements IPhotographVisitor, I
     }
 
     @Override
-    public void visitIdentity(String identifier, String cropType) {
+    public void describe(String identifier, String cropType) {
         row.record("crop_id", identifier);
     }
 
     @Override
-    public void visit(String userIdentifier, String occupation) {
+    public void report(String userIdentifier, String occupation) {
         row.record("user_id", userIdentifier);
     }
 }

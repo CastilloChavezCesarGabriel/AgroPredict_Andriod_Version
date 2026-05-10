@@ -4,7 +4,8 @@ import com.agropredict.application.repository.ICatalogRepository;
 import com.agropredict.application.repository.IUserRepository;
 import com.agropredict.application.request.user_registration.RegistrationException;
 import com.agropredict.application.request.user_registration.RegistrationRequest;
-import com.agropredict.domain.Session;
+import com.agropredict.domain.user.ISessionSubject;
+import com.agropredict.domain.user.User;
 
 public final class ScriptedUserRepository implements IUserRepository {
     private final String rejectionMessage;
@@ -14,7 +15,7 @@ public final class ScriptedUserRepository implements IUserRepository {
     }
 
     @Override
-    public Session authenticate(String email, String password) {
+    public ISessionSubject authenticate(String email, String password) {
         throw new UnsupportedOperationException();
     }
 
@@ -25,6 +26,11 @@ public final class ScriptedUserRepository implements IUserRepository {
 
     @Override
     public boolean reset(String email, String passwordHash) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public User find(String userIdentifier) {
         throw new UnsupportedOperationException();
     }
 }

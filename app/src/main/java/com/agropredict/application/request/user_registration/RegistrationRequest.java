@@ -2,37 +2,54 @@ package com.agropredict.application.request.user_registration;
 
 import com.agropredict.application.repository.ICatalogRepository;
 import com.agropredict.application.service.IPasswordHasher;
-import com.agropredict.domain.IIdentifierConsumer;
-import com.agropredict.domain.Identifier;
-import com.agropredict.domain.visitor.user.IUserVisitor;
+import com.agropredict.domain.guard.ArgumentPrecondition;
+import com.agropredict.domain.identifier.IIdentifierConsumer;
+import com.agropredict.domain.identifier.IdentifierFactory;
+import com.agropredict.domain.user.visitor.ICredentialConsumer;
+import com.agropredict.domain.user.visitor.IOccupationConsumer;
+import com.agropredict.domain.user.visitor.IPhoneConsumer;
+import com.agropredict.domain.user.visitor.IUserIdentityConsumer;
+import com.agropredict.domain.user.visitor.IUsernameConsumer;
+import java.util.Objects;
 
 public final class RegistrationRequest {
-    private final Registrant personal;
-    private final Account account;
     private final String identifier;
+    private final Registration registration;
 
-    public RegistrationRequest(Registrant personal, Account account) {
-        this.personal = personal;
-        this.account = account;
-        this.identifier = Identifier.generate("user");
+    public RegistrationRequest(String identifier, Registration registration) {
+        this.identifier = ArgumentPrecondition.validate(identifier, "registration request identifier");
+        this.registration = Objects.requireNonNull(registration, "registration request requires a registration");
+    }
+
+    public static RegistrationRequest compose(Registration registration) {
+        return new RegistrationRequest(IdentifierFactory.generate("user"), registration);
     }
 
     public void validate() {
-        personal.validate();
-        account.validate();
+        registration.validate();
     }
 
-    public void authenticate(IUserVisitor visitor, IPasswordHasher hasher) {
-        personal.dispatch(visitor, identifier);
-        account.authenticate(visitor, hasher);
-        account.enroll(visitor);
+    public void describe(IUserIdentityConsumer consumer) {
+        registration.describe(consumer, identifier);
     }
 
-    public void classify(IUserVisitor visitor, ICatalogRepository catalog) {
-        account.classify(visitor, catalog);
+    public void contact(IPhoneConsumer consumer) {
+        registration.contact(consumer);
+    }
+
+    public void authenticate(ICredentialConsumer consumer, IPasswordHasher hasher) {
+        registration.authenticate(consumer, hasher);
+    }
+
+    public void enroll(IUsernameConsumer consumer) {
+        registration.enroll(consumer);
+    }
+
+    public void classify(IOccupationConsumer consumer, ICatalogRepository catalog) {
+        registration.classify(consumer, catalog);
     }
 
     public void identify(IIdentifierConsumer consumer) {
-        consumer.accept(identifier);
+        consumer.identify(identifier);
     }
 }

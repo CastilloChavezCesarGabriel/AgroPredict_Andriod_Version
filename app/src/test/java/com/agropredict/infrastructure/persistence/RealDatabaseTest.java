@@ -12,15 +12,15 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import androidx.test.core.app.ApplicationProvider;
-import com.agropredict.application.diagnostic_submission.Cropland;
-import com.agropredict.application.diagnostic_submission.FieldStorage;
+import com.agropredict.application.diagnostic_submission.CropDossier;
+import com.agropredict.application.diagnostic_submission.CropRegistry;
 import com.agropredict.application.repository.ICatalogRepository;
 import com.agropredict.application.repository.ICropRepository;
 import com.agropredict.application.repository.ISessionRepository;
 import com.agropredict.application.request.diagnostic_submission.Cultivation;
-import com.agropredict.domain.Identifier;
-import com.agropredict.domain.Session;
-import com.agropredict.domain.entity.Crop;
+import com.agropredict.domain.identifier.IdentifierFactory;
+import com.agropredict.domain.authentication.Session;
+import com.agropredict.domain.crop.Crop;
 import com.agropredict.infrastructure.persistence.database.Database;
 import com.agropredict.infrastructure.persistence.repository.SqliteCropRepository;
 import com.agropredict.infrastructure.persistence.repository.SqlitePhotographRepository;
@@ -53,7 +53,7 @@ public final class RealDatabaseTest {
     }
 
     private String enroll(SQLiteDatabase raw, String username) {
-        String identifier = Identifier.generate("user");
+        String identifier = IdentifierFactory.generate("user");
         String now = "2026-01-01 00:00:00";
         ContentValues user = new ContentValues();
         user.put("id", identifier);
@@ -109,7 +109,7 @@ public final class RealDatabaseTest {
         String userIdentifier = enroll(raw, "rooted_user");
 
         ContentValues row = new ContentValues();
-        row.put("id", Identifier.generate("crop"));
+        row.put("id", IdentifierFactory.generate("crop"));
         row.put("user_id", userIdentifier);
         row.put("crop_type", "rice");
         row.put("phenological_stage_id", "Vegetative");
@@ -131,7 +131,7 @@ public final class RealDatabaseTest {
 
         ContentValues row = new ContentValues();
         String now = "2026-01-01 00:00:00";
-        row.put("id", Identifier.generate("crop"));
+        row.put("id", IdentifierFactory.generate("crop"));
         row.put("user_id", userIdentifier);
         row.put("crop_type", "rice");
         row.put("phenological_stage_id", stageIdentifier);
@@ -151,9 +151,10 @@ public final class RealDatabaseTest {
         ICatalogRepository stageCatalog = CatalogName.PHENOLOGICAL_STAGE.open(database);
         ISessionRepository sessionRepository = stub(userIdentifier);
         ICropRepository cropRepository = new SqliteCropRepository(database, sessionRepository);
-        Cropland cropland = new Cropland(new FieldStorage(cropRepository, new SqlitePhotographRepository(database, sessionRepository)), stageCatalog);
+        CropDossier dossier = new CropDossier(cropRepository, new SqlitePhotographRepository(database, sessionRepository));
+        CropRegistry registry = new CropRegistry(dossier, stageCatalog);
 
-        Crop crop = new Cultivation("rice", "Vegetative").cultivate("crop_pipeline_1", cropland);
+        Crop crop = new Cultivation("rice", "Vegetative").produce("crop_pipeline_1", registry);
         cropRepository.store(crop);
 
         Cursor cursor = raw.rawQuery(
@@ -178,9 +179,10 @@ public final class RealDatabaseTest {
         ICatalogRepository stageCatalog = CatalogName.PHENOLOGICAL_STAGE.open(database);
         ISessionRepository sessionRepository = stub(userIdentifier);
         ICropRepository cropRepository = new SqliteCropRepository(database, sessionRepository);
-        Cropland cropland = new Cropland(new FieldStorage(cropRepository, new SqlitePhotographRepository(database, sessionRepository)), stageCatalog);
+        CropDossier dossier = new CropDossier(cropRepository, new SqlitePhotographRepository(database, sessionRepository));
+        CropRegistry registry = new CropRegistry(dossier, stageCatalog);
 
-        Crop crop = new Cultivation("tomato", "MysteryStage").cultivate("crop_pipeline_2", cropland);
+        Crop crop = new Cultivation("tomato", "MysteryStage").produce("crop_pipeline_2", registry);
         cropRepository.store(crop);
 
         Cursor cursor = raw.rawQuery(

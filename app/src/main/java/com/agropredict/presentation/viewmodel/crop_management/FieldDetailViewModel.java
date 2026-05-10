@@ -1,10 +1,10 @@
 package com.agropredict.presentation.viewmodel.crop_management;
 
 import com.agropredict.application.usecase.diagnostic.FindDiagnosticUseCase;
-import com.agropredict.domain.component.diagnostic.ISeverityVisitor;
-import com.agropredict.domain.entity.Diagnostic;
+import com.agropredict.domain.diagnostic.visitor.ISeverityConsumer;
+import com.agropredict.domain.diagnostic.Diagnostic;
 
-public final class FieldDetailViewModel implements ISeverityVisitor {
+public final class FieldDetailViewModel implements ISeverityConsumer {
     private static final int SEVERE_URGENCY = 2;
 
     private final FindDiagnosticUseCase loadDetailUseCase;
@@ -19,12 +19,12 @@ public final class FieldDetailViewModel implements ISeverityVisitor {
         Diagnostic diagnostic = loadDetailUseCase.find(diagnosticIdentifier);
         if (diagnostic != null) {
             view.display(diagnostic);
-            diagnostic.inspect(this);
+            diagnostic.label(this);
         }
     }
 
     @Override
-    public void visit(String name, int urgency) {
+    public void label(String name, int urgency) {
         if (urgency >= SEVERE_URGENCY) view.warn();
     }
 }

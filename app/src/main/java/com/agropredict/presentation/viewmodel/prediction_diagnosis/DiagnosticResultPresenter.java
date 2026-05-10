@@ -1,8 +1,8 @@
 package com.agropredict.presentation.viewmodel.prediction_diagnosis;
 
-import com.agropredict.application.visitor.IOperationResultVisitor;
+import com.agropredict.application.visitor.IOperationResult;
 
-public final class DiagnosticResultPresenter implements IOperationResultVisitor {
+public final class DiagnosticResultPresenter implements IOperationResult {
     private final IPredictionView view;
 
     public DiagnosticResultPresenter(IPredictionView view) {
@@ -10,11 +10,17 @@ public final class DiagnosticResultPresenter implements IOperationResultVisitor 
     }
 
     @Override
-    public void visit(boolean completed, String resultIdentifier) {
-        if (completed) {
-            view.onDiagnosed(resultIdentifier);
-        } else {
-            view.onFailed();
-        }
+    public void onSucceed(String value) {
+        view.onDiagnosed(value);
+    }
+
+    @Override
+    public void onFail() {
+        view.onFailed();
+    }
+
+    @Override
+    public void onReject(String reason) {
+        view.onFailed();
     }
 }

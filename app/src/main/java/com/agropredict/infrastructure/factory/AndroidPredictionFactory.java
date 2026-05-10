@@ -1,20 +1,18 @@
 package com.agropredict.infrastructure.factory;
 
 import android.content.Context;
-import com.agropredict.application.diagnostic_submission.AnswerArchive;
-import com.agropredict.application.diagnostic_submission.Archival;
-import com.agropredict.application.diagnostic_submission.Cropland;
+import com.agropredict.application.diagnostic_submission.CropDossier;
+import com.agropredict.application.diagnostic_submission.CropRegistry;
 import com.agropredict.application.diagnostic_submission.DiagnosticArchive;
 import com.agropredict.application.diagnostic_submission.DiagnosticWorkflow;
-import com.agropredict.application.diagnostic_submission.FieldRecorder;
-import com.agropredict.application.diagnostic_submission.FieldStorage;
-import com.agropredict.application.diagnostic_submission.IDiagnosticWorkflow;
 import com.agropredict.application.repository.ICatalogRepository;
 import com.agropredict.application.service.IDiagnosticApiService;
 import com.agropredict.application.service.IImageClassifier;
 import com.agropredict.application.service.IImageCompressor;
 import com.agropredict.application.factory.IPredictionFactory;
 import com.agropredict.infrastructure.api_integration.DiagnosticApiService;
+import com.agropredict.infrastructure.api_integration.GravitySeverityFactory;
+import com.agropredict.infrastructure.persistence.repository.DiagnosticContext;
 import com.agropredict.infrastructure.image_classification.BitmapCompressor;
 import com.agropredict.infrastructure.image_classification.ImagePreprocessor;
 import com.agropredict.infrastructure.image_classification.ImageProcessor;
@@ -66,22 +64,22 @@ public final class AndroidPredictionFactory implements IPredictionFactory {
 
     @Override
     public IDiagnosticApiService createApiService() {
-        return new DiagnosticApiService(DIAGNOSTIC_ENDPOINT);
+        return new DiagnosticApiService(DIAGNOSTIC_ENDPOINT, new GravitySeverityFactory());
     }
 
     @Override
-    public IDiagnosticWorkflow createDiagnosticWorkflow() {
+    public DiagnosticWorkflow createDiagnosticWorkflow() {
         SessionRepository session = new SessionRepository(context);
         SqliteSyncRecorder recorder = new SqliteSyncRecorder(database, session);
-        FieldStorage storage = new FieldStorage(
+        CropDossier dossier = new CropDossier(
                 new SyncingCropRepository(new SqliteCropRepository(database, session), recorder),
                 new SyncingPhotographRepository(new SqlitePhotographRepository(database, session), recorder));
-        Cropland cropland = new Cropland(storage, createStageCatalog());
-        FieldRecorder fieldRecorder = new FieldRecorder(cropland);
-        Archival archival = new Archival(
-                new DiagnosticArchive(new SyncingDiagnosticRepository(new SqliteDiagnosticRepository(database, session), recorder)),
-                new AnswerArchive(new SqliteQuestionnaireRepository(database)));
-        return new DiagnosticWorkflow(fieldRecorder, archival);
+        CropRegistry registry = new CropRegistry(dossier, createStageCatalog());
+        DiagnosticContext context = new DiagnosticContext(session, new GravitySeverityFactory());
+        DiagnosticArchive archive = new DiagnosticArchive(
+                new SyncingDiagnosticRepository(new SqliteDiagnosticRepository(database, context), recorder),
+                new SqliteQuestionnaireRepository(database));
+        return new DiagnosticWorkflow(registry, archive);
     }
 
     @Override

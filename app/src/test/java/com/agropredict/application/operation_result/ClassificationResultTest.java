@@ -1,50 +1,25 @@
 package com.agropredict.application.operation_result;
 
-import static org.junit.Assert.assertTrue;
-import com.agropredict.visitor.TestClassificationResultVisitor;
+import com.agropredict.domain.diagnostic.ConfidentClassification;
+import com.agropredict.domain.diagnostic.UnconfidentClassification;
+import com.agropredict.visitor.ConfidentExpecter;
+import com.agropredict.visitor.UnconfidentExpecter;
 import org.junit.Test;
 
 public final class ClassificationResultTest {
     @Test
-    public void testConfidentPrediction() {
-        TestClassificationResultVisitor visitor = new TestClassificationResultVisitor();
-        new ClassificationResult("Tomato", 0.85).accept(visitor);
-        assertTrue(visitor.isAccepted("Tomato"));
-        assertTrue(visitor.isConfident(0.85));
+    public void testConfidentClassificationDispatchesCropAndConfidence() {
+        new ConfidentClassification("Tomato", 0.85).accept(new ConfidentExpecter("Tomato", 0.85));
     }
 
     @Test
-    public void testLowConfidenceRejected() {
-        TestClassificationResultVisitor visitor = new TestClassificationResultVisitor();
-        new ClassificationResult("Unknown", 0.3).accept(visitor);
-        assertTrue(visitor.wasRejected());
+    public void testConfidentClassificationDispatchesPerfectConfidence() {
+        new ConfidentClassification("Wheat", 1.0).accept(new ConfidentExpecter("Wheat", 1.0));
     }
 
     @Test
-    public void testExactThreshold() {
-        TestClassificationResultVisitor visitor = new TestClassificationResultVisitor();
-        new ClassificationResult("Corn", 0.45).accept(visitor);
-        assertTrue(visitor.isAccepted("Corn"));
-    }
-
-    @Test
-    public void testJustBelowThreshold() {
-        TestClassificationResultVisitor visitor = new TestClassificationResultVisitor();
-        new ClassificationResult("Corn", 0.44).accept(visitor);
-        assertTrue(visitor.wasRejected());
-    }
-
-    @Test
-    public void testZeroConfidence() {
-        TestClassificationResultVisitor visitor = new TestClassificationResultVisitor();
-        new ClassificationResult("no_cultivo", 0.0).accept(visitor);
-        assertTrue(visitor.wasRejected());
-    }
-
-    @Test
-    public void testPerfectConfidence() {
-        TestClassificationResultVisitor visitor = new TestClassificationResultVisitor();
-        new ClassificationResult("Wheat", 1.0).accept(visitor);
-        assertTrue(visitor.isAccepted("Wheat"));
+    public void testUnconfidentClassificationDispatchesReason() {
+        new UnconfidentClassification("Could not identify the crop with certainty")
+            .accept(new UnconfidentExpecter("Could not identify the crop with certainty"));
     }
 }

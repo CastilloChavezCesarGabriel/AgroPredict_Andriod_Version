@@ -1,7 +1,10 @@
 package com.agropredict.infrastructure.image_classification;
 
-import com.agropredict.application.operation_result.ClassificationResult;
-import com.agropredict.application.visitor.IClassificationResultVisitor;
+import com.agropredict.domain.diagnostic.ConfidentClassification;
+import com.agropredict.domain.diagnostic.IImageClassifierResult;
+import com.agropredict.domain.diagnostic.Prediction;
+import com.agropredict.domain.diagnostic.UnconfidentClassification;
+import com.agropredict.domain.diagnostic.visitor.IClassificationResult;
 import org.tensorflow.lite.Interpreter;
 import java.nio.ByteBuffer;
 
@@ -14,17 +17,17 @@ public final class TFLiteModel {
         this.labels = labels;
     }
 
-    public void infer(ByteBuffer input, IClassificationResultVisitor consumer) {
+    public void infer(ByteBuffer input, IClassificationResult visitor) {
         if (interpreter == null) {
-            consumer.onReject("Model not available");
+            new UnconfidentClassification("Model not available").accept(visitor);
             return;
         }
         float[][] output = new float[1][labels.length];
         interpreter.run(input, output);
-        select(output[0]).accept(consumer);
+        select(output[0]).accept(visitor);
     }
 
-    private ClassificationResult select(float[] probabilities) {
+    private IImageClassifierResult select(float[] probabilities) {
         int bestIndex = 0;
         float bestConfidence = probabilities[0];
         for (int index = 1; index < probabilities.length; index++) {
@@ -33,6 +36,9 @@ public final class TFLiteModel {
                 bestIndex = index;
             }
         }
-        return new ClassificationResult(labels[bestIndex], bestConfidence);
+        if (new Prediction(labels[bestIndex], bestConfidence).isConfident()) {
+            return new ConfidentClassification(labels[bestIndex], bestConfidence);
+        }
+        return new UnconfidentClassification("Could not identify the crop with certainty");
     }
 }

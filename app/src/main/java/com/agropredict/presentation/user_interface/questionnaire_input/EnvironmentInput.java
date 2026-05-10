@@ -3,6 +3,7 @@ package com.agropredict.presentation.user_interface.questionnaire_input;
 import android.app.Activity;
 import android.widget.Spinner;
 import com.agropredict.R;
+import com.agropredict.application.request.ai_questionnaire.Rainfall;
 import com.agropredict.application.request.ai_questionnaire.Weather;
 import com.agropredict.presentation.user_interface.catalog_input.SpinnerInput;
 
@@ -19,9 +20,10 @@ public final class EnvironmentInput extends SpinnerInput {
     }
 
     public Weather collect() {
-        Weather weather = new Weather(extract(temperatureSpinner), extract(humiditySpinner));
-        weather.rain(extract(rainSpinner));
-        return weather;
+        String temperature = extract(temperatureSpinner);
+        String humidity = extract(humiditySpinner);
+        Rainfall rainfall = new Rainfall(extract(rainSpinner));
+        return new Weather(temperature, humidity, rainfall);
     }
 
     private void populate() {

@@ -1,8 +1,8 @@
 package com.agropredict.presentation.viewmodel.prediction_diagnosis;
 
-import com.agropredict.application.visitor.IClassificationResultVisitor;
+import com.agropredict.domain.diagnostic.visitor.IClassificationResult;
 
-public final class ClassificationResultPresenter implements IClassificationResultVisitor {
+public final class ClassificationResultPresenter implements IClassificationResult {
     private final IPredictionView view;
 
     public ClassificationResultPresenter(IPredictionView view) {
@@ -10,14 +10,14 @@ public final class ClassificationResultPresenter implements IClassificationResul
     }
 
     @Override
-    public void visitPrediction(String predictedCrop, double confidence) {
+    public void onClassify(String predictedCrop, double confidence) {
         view.onIdle();
         view.onClassified(predictedCrop, confidence);
     }
 
     @Override
-    public void onReject(String errorMessage) {
+    public void onReject(String reason) {
         view.onIdle();
-        view.notify(errorMessage);
+        view.notify(reason);
     }
 }

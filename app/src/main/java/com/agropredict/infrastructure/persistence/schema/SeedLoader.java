@@ -1,15 +1,22 @@
 package com.agropredict.infrastructure.persistence.schema;
 
 import android.database.sqlite.SQLiteDatabase;
+import com.agropredict.application.request.ai_questionnaire.AnswerKey;
 
 public final class SeedLoader {
-    public void load(SQLiteDatabase database) {
-        populate(database);
-        register(database);
-        fill(database);
+    private final SQLiteDatabase database;
+
+    public SeedLoader(SQLiteDatabase database) {
+        this.database = database;
     }
 
-    private void populate(SQLiteDatabase database) {
+    public void load() {
+        populate();
+        register();
+        enumerate();
+    }
+
+    private void populate() {
         CatalogName.SOIL_TYPE.populate(database,
                 new String[]{"Clay", "Sandy", "Loam", "Silt", "Rocky"});
         CatalogName.PHENOLOGICAL_STAGE.populate(database,
@@ -20,48 +27,56 @@ public final class SeedLoader {
                 new String[]{"Disease", "Pest", "Nutrient deficiency", "Water stress", "Environmental damage", "Unknown"});
     }
 
-    private void register(SQLiteDatabase database) {
-        QuestionKey.TEMPERATURE.define(database, "What is the temperature?");
-        QuestionKey.HUMIDITY.define(database, "What is the humidity?");
-        QuestionKey.RAIN.define(database, "When did it last rain?");
-        QuestionKey.SOIL_MOISTURE.define(database, "What is the soil moisture?");
-        QuestionKey.PH.define(database, "What is the soil pH?");
-        QuestionKey.IRRIGATION.define(database, "How often is the crop irrigated?");
-        QuestionKey.FERTILIZATION.define(database, "When was it last fertilized?");
-        QuestionKey.SPRAYING.define(database, "Has the crop been sprayed?");
-        QuestionKey.WEEDS.define(database, "How much weed presence?");
-        QuestionKey.SYMPTOM.define(database, "What symptoms are visible?");
-        QuestionKey.SEVERITY.define(database, "How severe are the symptoms?");
-        QuestionKey.INSECTS.define(database, "What insects are present?");
-        QuestionKey.ANIMALS.define(database, "What animals cause damage?");
+    private void register() {
+        define(AnswerKey.TEMPERATURE, "What is the temperature?");
+        define(AnswerKey.HUMIDITY, "What is the humidity?");
+        define(AnswerKey.RAIN, "When did it last rain?");
+        define(AnswerKey.SOIL_MOISTURE, "What is the soil moisture?");
+        define(AnswerKey.PH, "What is the soil pH?");
+        define(AnswerKey.IRRIGATION, "How often is the crop irrigated?");
+        define(AnswerKey.FERTILIZATION, "When was it last fertilized?");
+        define(AnswerKey.SPRAYING, "Has the crop been sprayed?");
+        define(AnswerKey.WEEDS, "How much weed presence?");
+        define(AnswerKey.SYMPTOM, "What symptoms are visible?");
+        define(AnswerKey.SEVERITY, "How severe are the symptoms?");
+        define(AnswerKey.INSECTS, "What insects are present?");
+        define(AnswerKey.ANIMALS, "What animals cause damage?");
     }
 
-    private void fill(SQLiteDatabase database) {
-        QuestionKey.TEMPERATURE.fill(database,
+    private void define(AnswerKey key, String text) {
+        key.expose(identifier -> new QuestionSeed(identifier, text).load(database));
+    }
+
+    private void enumerate() {
+        supply(AnswerKey.TEMPERATURE,
                 new String[]{"<15°C", "15–25°C", "26–32°C", ">32°C"});
-        QuestionKey.HUMIDITY.fill(database,
+        supply(AnswerKey.HUMIDITY,
                 new String[]{"20–40%", "40–60%", "60–80%", ">80%", "Don't know"});
-        QuestionKey.RAIN.fill(database,
+        supply(AnswerKey.RAIN,
                 new String[]{"Today", "This week", "1 week ago", ">2 weeks ago", "No rain"});
-        QuestionKey.SOIL_MOISTURE.fill(database,
+        supply(AnswerKey.SOIL_MOISTURE,
                 new String[]{"Very dry", "Dry", "Moderate", "Moist", "Waterlogged"});
-        QuestionKey.PH.fill(database,
+        supply(AnswerKey.PH,
                 new String[]{"<5.5", "5.5–7", "7–8", ">8", "Don't know"});
-        QuestionKey.IRRIGATION.fill(database,
+        supply(AnswerKey.IRRIGATION,
                 new String[]{"Daily", "Every 2–3 days", "Weekly", "Very little", "No recent irrigation"});
-        QuestionKey.FERTILIZATION.fill(database,
+        supply(AnswerKey.FERTILIZATION,
                 new String[]{"<1 week", "1–2 weeks", "3 weeks", "Not fertilized", "Don't know"});
-        QuestionKey.SPRAYING.fill(database,
+        supply(AnswerKey.SPRAYING,
                 new String[]{"Yes (last 7 days)", "Yes (last 14 days)", "No", "Don't know"});
-        QuestionKey.WEEDS.fill(database,
+        supply(AnswerKey.WEEDS,
                 new String[]{"Heavy", "Moderate", "Light", "None"});
-        QuestionKey.SYMPTOM.fill(database,
+        supply(AnswerKey.SYMPTOM,
                 new String[]{"Yellow leaves", "Brown spots", "Dry tips", "Weak stems", "Visible fungi", "Insect presence", "Looks normal"});
-        QuestionKey.SEVERITY.fill(database,
+        supply(AnswerKey.SEVERITY,
                 new String[]{"Mild", "Moderate", "Severe", "Very severe"});
-        QuestionKey.INSECTS.fill(database,
+        supply(AnswerKey.INSECTS,
                 new String[]{"Whitefly", "Aphid", "Leafminer", "Thrips", "Caterpillar", "None", "Don't know"});
-        QuestionKey.ANIMALS.fill(database,
+        supply(AnswerKey.ANIMALS,
                 new String[]{"Rodents", "Birds", "Large animals", "None", "Don't know"});
+    }
+
+    private void supply(AnswerKey key, String[] options) {
+        key.expose(identifier -> new OptionSeed(identifier, options).load(database));
     }
 }

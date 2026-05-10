@@ -1,37 +1,33 @@
 package com.agropredict.application.usecase.report;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import com.agropredict.application.operation_result.OperationResult;
+import com.agropredict.application.operation_result.SuccessfulOperation;
+import com.agropredict.application.operation_result.FailedOperation;
 import com.agropredict.application.service.IReportService;
-import com.agropredict.domain.component.crop.CropProfile;
-import com.agropredict.domain.component.diagnostic.Prediction;
-import com.agropredict.domain.entity.Crop;
-import com.agropredict.domain.entity.Diagnostic;
-import com.agropredict.visitor.TestOperationResultVisitor;
+import com.agropredict.domain.crop.CropProfile;
+import com.agropredict.domain.crop.GrowthCycle;
+import com.agropredict.domain.crop.Plot;
+import com.agropredict.domain.diagnostic.Prediction;
+import com.agropredict.domain.crop.Crop;
+import com.agropredict.domain.diagnostic.Diagnostic;
+import com.agropredict.visitor.FailExpecter;
+import com.agropredict.visitor.SucceedExpecter;
 
 import org.junit.Test;
 
 public final class GenerateReportUseCaseTest {
-
     private IReportService fakeReport(boolean success) {
-        return (crop, diagnostic) -> success ? OperationResult.succeed("report_1") : OperationResult.fail();
+        return (crop, diagnostic) -> success ? new SuccessfulOperation("report_1") : new FailedOperation();
     }
 
     @Test
     public void testGenerateSuccess() {
-        TestOperationResultVisitor visitor = new TestOperationResultVisitor();
         new GenerateReportUseCase(fakeReport(true))
-            .generate(new Crop("c1", "wheat", new CropProfile(null, null, null)), new Diagnostic("d1", new Prediction("wheat", 0.85))).accept(visitor);
-        assertTrue(visitor.isCompleted());
+            .generate(new Crop("c1", "wheat", new CropProfile(new Plot(null, null), new GrowthCycle(null, null))), new Diagnostic("d1", new Prediction("wheat", 0.85))).accept(new SucceedExpecter(null));
     }
 
     @Test
     public void testGenerateFailure() {
-        TestOperationResultVisitor visitor = new TestOperationResultVisitor();
         new GenerateReportUseCase(fakeReport(false))
-            .generate(new Crop("c1", "wheat", new CropProfile(null, null, null)), new Diagnostic("d1", new Prediction("wheat", 0.85))).accept(visitor);
-        assertFalse(visitor.isCompleted());
+            .generate(new Crop("c1", "wheat", new CropProfile(new Plot(null, null), new GrowthCycle(null, null))), new Diagnostic("d1", new Prediction("wheat", 0.85))).accept(new FailExpecter());
     }
 }

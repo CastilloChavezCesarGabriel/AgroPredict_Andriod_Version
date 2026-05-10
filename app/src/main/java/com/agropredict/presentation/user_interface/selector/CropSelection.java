@@ -3,13 +3,13 @@ package com.agropredict.presentation.user_interface.selector;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Spinner;
-import com.agropredict.domain.entity.Crop;
-import com.agropredict.domain.visitor.crop.ICropVisitor;
+import com.agropredict.domain.crop.Crop;
+import com.agropredict.domain.crop.visitor.ICropIdentityConsumer;
 import com.agropredict.presentation.user_interface.catalog_input.SpinnerPopulator;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class CropSelection implements ICropVisitor, AdapterView.OnItemSelectedListener {
+public final class CropSelection implements ICropIdentityConsumer, AdapterView.OnItemSelectedListener {
     private final Spinner spinner;
     private final List<String> identifiers;
     private final List<String> labels;
@@ -27,7 +27,7 @@ public final class CropSelection implements ICropVisitor, AdapterView.OnItemSele
         identifiers.clear();
         labels.clear();
         for (Crop crop : crops) {
-            crop.accept(this);
+            crop.describe(this);
         }
         SpinnerPopulator.populate(spinner, labels);
     }
@@ -47,7 +47,7 @@ public final class CropSelection implements ICropVisitor, AdapterView.OnItemSele
     public void onNothingSelected(AdapterView<?> parent) {}
 
     @Override
-    public void visitIdentity(String identifier, String cropType) {
+    public void describe(String identifier, String cropType) {
         identifiers.add(identifier);
         labels.add(cropType != null ? cropType : "Unknown");
     }

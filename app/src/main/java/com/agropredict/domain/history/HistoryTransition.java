@@ -9,9 +9,7 @@ public final class HistoryTransition {
         this.currentValue = currentValue;
     }
 
-    public void format(StringBuilder builder) {
-        builder.append(previousValue);
-        builder.append(" → ");
-        builder.append(currentValue);
+    public void link(IHistoryTransitionConsumer consumer) {
+        consumer.link(previousValue, currentValue);
     }
 }

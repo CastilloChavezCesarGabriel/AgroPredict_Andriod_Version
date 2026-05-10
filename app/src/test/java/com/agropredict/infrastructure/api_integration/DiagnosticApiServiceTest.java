@@ -3,8 +3,9 @@ package com.agropredict.infrastructure.api_integration;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import com.agropredict.domain.component.diagnostic.Prediction;
-import com.agropredict.domain.entity.Diagnostic;
+import com.agropredict.domain.diagnostic.ISeverityFactory;
+import com.agropredict.domain.diagnostic.Prediction;
+import com.agropredict.domain.diagnostic.Diagnostic;
 import com.agropredict.visitor.AssessmentCapturingVisitor;
 import com.agropredict.visitor.SeverityCapturingVisitor;
 import org.json.JSONArray;
@@ -14,16 +15,12 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 public final class DiagnosticApiServiceTest {
+    private final ISeverityFactory severityFactory = new GravitySeverityFactory();
+
     private JSONObject read(DiagnosticApiService service, String fieldName) throws Exception {
         Field field = DiagnosticApiService.class.getDeclaredField(fieldName);
         field.setAccessible(true);
         return (JSONObject) field.get(service);
-    }
-
-    private String translate(DiagnosticApiService service, String spanish) throws Exception {
-        Method method = DiagnosticApiService.class.getDeclaredMethod("translate", String.class);
-        method.setAccessible(true);
-        return (String) method.invoke(service, spanish);
     }
 
     private void conclude(DiagnosticApiService service, Diagnostic diagnostic, JSONObject response) throws Exception {
@@ -34,8 +31,8 @@ public final class DiagnosticApiServiceTest {
 
     @Test
     public void testPayloadCarriesPredictionAtTopLevel() throws Exception {
-        DiagnosticApiService service = new DiagnosticApiService("http://unused.test");
-        service.visitPrediction("rice", 0.87);
+        DiagnosticApiService service = new DiagnosticApiService("http://unused.test", severityFactory);
+        service.classify("rice", 0.87);
 
         JSONObject payload = read(service, "payload");
         assertEquals("rice", payload.getString("cultivo_detectado"));
@@ -44,8 +41,8 @@ public final class DiagnosticApiServiceTest {
 
     @Test
     public void testConfidenceIsNumericNotString() throws Exception {
-        DiagnosticApiService service = new DiagnosticApiService("http://unused.test");
-        service.visitPrediction("tomato", 0.5);
+        DiagnosticApiService service = new DiagnosticApiService("http://unused.test", severityFactory);
+        service.classify("tomato", 0.5);
 
         JSONObject payload = read(service, "payload");
         Object confidence = payload.get("confianza");
@@ -54,8 +51,9 @@ public final class DiagnosticApiServiceTest {
 
     @Test
     public void testAnswersAreNestedNotFlat() throws Exception {
-        DiagnosticApiService service = new DiagnosticApiService("http://unused.test");
-        service.visitEnvironment("hot", "humid");
+        DiagnosticApiService service = new DiagnosticApiService("http://unused.test", severityFactory);
+        service.record("temperature", "hot");
+        service.record("humidity", "humid");
         JSONObject payload = read(service, "payload");
         assertTrue(payload.has("answers"));
         assertFalse("environment keys must NOT be on top-level", payload.has("temperature"));
@@ -66,14 +64,20 @@ public final class DiagnosticApiServiceTest {
 
     @Test
     public void testEveryQuestionnaireSectionFlowsIntoAnswers() throws Exception {
-        DiagnosticApiService service = new DiagnosticApiService("http://unused.test");
-        service.visitEnvironment("26-32C", "60-80%");
-        service.visitRain("Today");
-        service.visitSoil("Moderate", "5.5-7");
-        service.visitIrrigation("Daily", "1-2 weeks");
-        service.visitPestControl("No", "Light");
-        service.visitSymptom("Yellow leaves", "Mild");
-        service.visitPest("Aphid", "None");
+        DiagnosticApiService service = new DiagnosticApiService("http://unused.test", severityFactory);
+        service.record("temperature", "26-32C");
+        service.record("humidity", "60-80%");
+        service.record("rain", "Today");
+        service.record("soilMoisture", "Moderate");
+        service.record("ph", "5.5-7");
+        service.record("irrigation", "Daily");
+        service.record("fertilization", "1-2 weeks");
+        service.record("spraying", "No");
+        service.record("weeds", "Light");
+        service.record("symptom", "Yellow leaves");
+        service.record("severity", "Mild");
+        service.record("insects", "Aphid");
+        service.record("animals", "None");
 
         JSONObject answers = read(service, "answers");
         assertEquals("26-32C", answers.getString("temperature"));
@@ -92,33 +96,8 @@ public final class DiagnosticApiServiceTest {
     }
 
     @Test
-    public void testTranslateLowToLow() throws Exception {
-        DiagnosticApiService service = new DiagnosticApiService("http://unused.test");
-        assertEquals("low", translate(service, "Bajo"));
-    }
-
-    @Test
-    public void testTranslateAltoToHigh() throws Exception {
-        DiagnosticApiService service = new DiagnosticApiService("http://unused.test");
-        assertEquals("high", translate(service, "Alto"));
-    }
-
-    @Test
-    public void testTranslateMedioFallsBackToModerate() throws Exception {
-        DiagnosticApiService service = new DiagnosticApiService("http://unused.test");
-        assertEquals("moderate", translate(service, "Medio"));
-    }
-
-    @Test
-    public void testTranslateUnknownFallsBackToModerate() throws Exception {
-        DiagnosticApiService service = new DiagnosticApiService("http://unused.test");
-        assertEquals("moderate", translate(service, ""));
-        assertEquals("moderate", translate(service, "GarbageInput"));
-    }
-
-    @Test
     public void testConcludeExtractsHighSeverityFromSummaryReport() throws Exception {
-        DiagnosticApiService service = new DiagnosticApiService("http://unused.test");
+        DiagnosticApiService service = new DiagnosticApiService("http://unused.test", severityFactory);
         Diagnostic diagnostic = new Diagnostic("d_1", new Prediction("rice", 0.9));
 
         JSONObject response = new JSONObject()
@@ -129,27 +108,28 @@ public final class DiagnosticApiServiceTest {
         conclude(service, diagnostic, response);
 
         SeverityCapturingVisitor visitor = new SeverityCapturingVisitor();
-        diagnostic.inspect(visitor);
+        diagnostic.label(visitor);
         assertTrue(visitor.recordedSevere());
     }
 
     @Test
-    public void testConcludeWithMissingSummaryReportYieldsModerate() throws Exception {
-        DiagnosticApiService service = new DiagnosticApiService("http://unused.test");
+    public void testConcludeWithMissingSummaryReportYieldsUnknown() throws Exception {
+        DiagnosticApiService service = new DiagnosticApiService("http://unused.test", severityFactory);
         Diagnostic diagnostic = new Diagnostic("d_2", new Prediction("rice", 0.9));
         JSONObject response = new JSONObject().put("texto_largo", "");
         conclude(service, diagnostic, response);
         SeverityCapturingVisitor visitor = new SeverityCapturingVisitor();
-        diagnostic.inspect(visitor);
-        assertTrue(visitor.recordedModerate());
+        diagnostic.label(visitor);
+        assertTrue(visitor.recordedUnknown());
     }
 
     @Test
     public void testPayloadStructureSatisfiesServerContract() throws Exception {
-        DiagnosticApiService service = new DiagnosticApiService("http://unused.test");
-        service.visitPrediction("wheat", 0.72);
-        service.visitEnvironment("15-25C", "40-60%");
-        service.visitRain("This week");
+        DiagnosticApiService service = new DiagnosticApiService("http://unused.test", severityFactory);
+        service.classify("wheat", 0.72);
+        service.record("temperature", "15-25C");
+        service.record("humidity", "40-60%");
+        service.record("rain", "This week");
 
         JSONObject payload = read(service, "payload");
         assertTrue(payload.has("cultivo_detectado"));
@@ -162,7 +142,7 @@ public final class DiagnosticApiServiceTest {
 
     @Test
     public void testConcludeJoinsMainProblemAndShortDescriptionForRicherSummary() throws Exception {
-        DiagnosticApiService service = new DiagnosticApiService("http://unused.test");
+        DiagnosticApiService service = new DiagnosticApiService("http://unused.test", severityFactory);
         Diagnostic diagnostic = new Diagnostic("d_rich_1", new Prediction("tomato", 0.91));
         JSONObject response = new JSONObject()
                 .put("reporte_resumido", new JSONObject()
@@ -172,14 +152,15 @@ public final class DiagnosticApiServiceTest {
         conclude(service, diagnostic, response);
 
         AssessmentCapturingVisitor visitor = new AssessmentCapturingVisitor();
-        diagnostic.accept(visitor);
+        diagnostic.summarize(visitor);
+        diagnostic.recommend(visitor);
         assertTrue(visitor.summaryMentions("Pulgon detectado en hojas"));
         assertTrue(visitor.summaryMentions("Aplicar control localizado"));
     }
 
     @Test
     public void testConcludeOmitsDuplicateSummaryFragments() throws Exception {
-        DiagnosticApiService service = new DiagnosticApiService("http://unused.test");
+        DiagnosticApiService service = new DiagnosticApiService("http://unused.test", severityFactory);
         Diagnostic diagnostic = new Diagnostic("d_rich_2", new Prediction("rice", 0.9));
         JSONObject response = new JSONObject()
                 .put("reporte_resumido", new JSONObject()
@@ -189,13 +170,14 @@ public final class DiagnosticApiServiceTest {
         conclude(service, diagnostic, response);
 
         AssessmentCapturingVisitor visitor = new AssessmentCapturingVisitor();
-        diagnostic.accept(visitor);
+        diagnostic.summarize(visitor);
+        diagnostic.recommend(visitor);
         assertTrue(visitor.recordedSummary("Sin problemas"));
     }
 
     @Test
     public void testConcludeBuildsRecommendationFromSeccionesBullets() throws Exception {
-        DiagnosticApiService service = new DiagnosticApiService("http://unused.test");
+        DiagnosticApiService service = new DiagnosticApiService("http://unused.test", severityFactory);
         Diagnostic diagnostic = new Diagnostic("d_rich_3", new Prediction("tomato", 0.91));
         JSONObject response = new JSONObject()
                 .put("reporte_resumido", new JSONObject()
@@ -217,7 +199,8 @@ public final class DiagnosticApiServiceTest {
         conclude(service, diagnostic, response);
 
         AssessmentCapturingVisitor visitor = new AssessmentCapturingVisitor();
-        diagnostic.accept(visitor);
+        diagnostic.summarize(visitor);
+        diagnostic.recommend(visitor);
         assertTrue(visitor.recommendationMentions("Recomendaciones combinadas"));
         assertTrue(visitor.recommendationMentions("Acciones para hoy"));
         assertTrue(visitor.recommendationMentions("Regar a nivel de suelo"));
@@ -230,7 +213,7 @@ public final class DiagnosticApiServiceTest {
 
     @Test
     public void testConcludeFallsBackToTextoLargoWhenSeccionesMissing() throws Exception {
-        DiagnosticApiService service = new DiagnosticApiService("http://unused.test");
+        DiagnosticApiService service = new DiagnosticApiService("http://unused.test", severityFactory);
         Diagnostic diagnostic = new Diagnostic("d_rich_4", new Prediction("rice", 0.9));
         JSONObject response = new JSONObject()
                 .put("reporte_resumido", new JSONObject()
@@ -240,13 +223,14 @@ public final class DiagnosticApiServiceTest {
         conclude(service, diagnostic, response);
 
         AssessmentCapturingVisitor visitor = new AssessmentCapturingVisitor();
-        diagnostic.accept(visitor);
+        diagnostic.summarize(visitor);
+        diagnostic.recommend(visitor);
         assertTrue(visitor.recommendationMentions("Diagnostico detallado para Arroz"));
     }
 
     @Test
     public void testConcludeIgnoresUnrelatedSeccionesEntries() throws Exception {
-        DiagnosticApiService service = new DiagnosticApiService("http://unused.test");
+        DiagnosticApiService service = new DiagnosticApiService("http://unused.test", severityFactory);
         Diagnostic diagnostic = new Diagnostic("d_rich_5", new Prediction("rice", 0.9));
         JSONObject response = new JSONObject()
                 .put("reporte_resumido", new JSONObject()
@@ -262,7 +246,8 @@ public final class DiagnosticApiServiceTest {
         conclude(service, diagnostic, response);
 
         AssessmentCapturingVisitor visitor = new AssessmentCapturingVisitor();
-        diagnostic.accept(visitor);
+        diagnostic.summarize(visitor);
+        diagnostic.recommend(visitor);
         assertTrue(visitor.recommendationMentions("Mantener riego"));
         assertTrue("Problemas section must not pollute recommendations",
                 visitor.recommendationLacks("UNUSED PROBLEM ENTRY"));

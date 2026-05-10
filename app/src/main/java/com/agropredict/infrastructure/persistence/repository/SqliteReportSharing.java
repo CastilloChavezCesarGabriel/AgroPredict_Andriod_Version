@@ -1,7 +1,7 @@
 package com.agropredict.infrastructure.persistence.repository;
 
 import android.content.ContentValues;
-import com.agropredict.domain.Identifier;
+import com.agropredict.domain.identifier.IdentifierFactory;
 import com.agropredict.infrastructure.persistence.database.Database;
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
@@ -19,7 +19,7 @@ public final class SqliteReportSharing {
 
     public void share(String reportIdentifier, String generatedAt) {
         ContentValues values = new ContentValues();
-        values.put("id", Identifier.generate("report_sharing"));
+        values.put("id", IdentifierFactory.generate("report_sharing"));
         values.put("report_id", reportIdentifier);
         values.put("qr_code", token());
         values.put("created_at", generatedAt);

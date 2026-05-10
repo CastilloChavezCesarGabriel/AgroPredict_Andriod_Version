@@ -3,7 +3,9 @@ package com.agropredict.application.usecase.authentication;
 import static org.junit.Assert.assertTrue;
 
 import com.agropredict.application.repository.ISessionRepository;
-import com.agropredict.domain.Session;
+import com.agropredict.domain.authentication.ISession;
+import com.agropredict.domain.authentication.NoSession;
+import com.agropredict.domain.authentication.Session;
 
 import org.junit.Test;
 
@@ -13,7 +15,7 @@ public final class LogoutUseCaseTest {
         boolean[] cleared = {false};
         ISessionRepository repo = new ISessionRepository() {
             @Override public void save(Session session) {}
-            @Override public Session recall() { return null; }
+            @Override public ISession recall() { return new NoSession(); }
             @Override public void clear() { cleared[0] = true; }
         };
         new LogoutUseCase(repo).logout();

@@ -1,11 +1,15 @@
 package com.agropredict.infrastructure.persistence.repository;
 
 import android.database.Cursor;
+import com.agropredict.application.repository.ICropRecord;
 import com.agropredict.application.repository.IDiagnosticRepository;
-import com.agropredict.application.repository.ISessionRepository;
-import com.agropredict.domain.entity.Diagnostic;
-import com.agropredict.domain.component.diagnostic.Prediction;
-import com.agropredict.domain.component.diagnostic.Recommendation;
+import com.agropredict.application.repository.IRecordEraser;
+import com.agropredict.domain.diagnostic.Diagnostic;
+import com.agropredict.domain.diagnostic.Advice;
+import com.agropredict.domain.diagnostic.Prediction;
+import com.agropredict.domain.diagnostic.Recommendation;
+import com.agropredict.domain.diagnostic.Severity;
+import com.agropredict.domain.diagnostic.Summary;
 import com.agropredict.infrastructure.persistence.database.Clock;
 import com.agropredict.infrastructure.persistence.database.Database;
 import com.agropredict.infrastructure.persistence.database.SqliteRow;
@@ -13,7 +17,7 @@ import com.agropredict.infrastructure.persistence.database.SqliteRowStore;
 import com.agropredict.infrastructure.persistence.visitor.DiagnosticPersistenceVisitor;
 import java.util.List;
 
-public final class SqliteDiagnosticRepository implements IDiagnosticRepository {
+public final class SqliteDiagnosticRepository implements IDiagnosticRepository, IRecordEraser, ICropRecord {
     private static final String SELECT_DIAGNOSTIC = "SELECT d.id, d.predicted_crop, "
             + "d.confidence, d.severity, d.recommendation_text, d.short_summary, "
             + "d.created_at, d.crop_id, d.image_id, d.user_id, "
@@ -26,29 +30,29 @@ public final class SqliteDiagnosticRepository implements IDiagnosticRepository {
 
     private final Database database;
     private final SqliteRowStore store;
-    private final ISessionRepository sessionRepository;
+    private final DiagnosticContext context;
 
-    public SqliteDiagnosticRepository(Database database, ISessionRepository sessionRepository) {
+    public SqliteDiagnosticRepository(Database database, DiagnosticContext context) {
         this.database = database;
         this.store = new SqliteRowStore(database);
-        this.sessionRepository = sessionRepository;
+        this.context = context;
     }
 
     @Override
     public void store(Diagnostic diagnostic) {
         SqliteRow row = new SqliteRow(database.getWritableDatabase());
-        diagnostic.accept(new DiagnosticPersistenceVisitor(row, sessionRepository.recall()));
+        new DiagnosticPersistenceVisitor(row, context.recall()).persist(diagnostic);
         row.record("created_at", Clock.read());
         row.flush("diagnostic");
     }
 
     @Override
-    public void delete(String diagnosticIdentifier) {
+    public void erase(String diagnosticIdentifier) {
         database.getWritableDatabase().delete("diagnostic", "id = ?", new String[]{diagnosticIdentifier});
     }
 
     @Override
-    public void clear(String cropIdentifier) {
+    public void discard(String cropIdentifier) {
         database.getWritableDatabase().delete("diagnostic", "crop_id = ?", new String[]{cropIdentifier});
     }
 
@@ -85,11 +89,14 @@ public final class SqliteDiagnosticRepository implements IDiagnosticRepository {
                 cursor.getDouble(cursor.getColumnIndexOrThrow("confidence")));
         Diagnostic diagnostic = new Diagnostic(
                 cursor.getString(cursor.getColumnIndexOrThrow("id")), prediction);
-        String severity = cursor.getString(cursor.getColumnIndexOrThrow("severity"));
+        String severityValue = cursor.getString(cursor.getColumnIndexOrThrow("severity"));
         String summary = cursor.getString(cursor.getColumnIndexOrThrow("short_summary"));
         String advice = cursor.getString(cursor.getColumnIndexOrThrow("recommendation_text"));
-        if (severity != null && (summary != null || advice != null)) {
-            diagnostic.conclude(severity, new Recommendation(summary, advice));
+        if (severityValue != null && (summary != null || advice != null)) {
+            Severity severity = context.classify(severityValue);
+            Summary summaryPart = summary == null ? null : new Summary(summary);
+            Advice advicePart = advice == null ? null : new Advice(advice);
+            diagnostic.conclude(severity, new Recommendation(summaryPart, advicePart));
         }
         return diagnostic;
     }

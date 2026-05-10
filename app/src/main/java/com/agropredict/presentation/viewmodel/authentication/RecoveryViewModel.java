@@ -1,6 +1,6 @@
 package com.agropredict.presentation.viewmodel.authentication;
 
-import com.agropredict.application.operation_result.OperationResult;
+import com.agropredict.application.operation_result.IUseCaseResult;
 import com.agropredict.application.usecase.authentication.ResetPasswordUseCase;
 
 public final class RecoveryViewModel {
@@ -13,7 +13,7 @@ public final class RecoveryViewModel {
     }
 
     public void reset(String email, String newPassword) {
-        OperationResult result = resetUseCase.reset(email, newPassword);
+        IUseCaseResult result = resetUseCase.reset(email, newPassword);
         result.accept(new RecoveryResultPresenter(view));
     }
 }

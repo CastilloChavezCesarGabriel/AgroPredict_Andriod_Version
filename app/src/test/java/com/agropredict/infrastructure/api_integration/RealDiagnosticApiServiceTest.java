@@ -13,15 +13,16 @@ import com.agropredict.application.request.ai_questionnaire.PestControl;
 import com.agropredict.application.request.ai_questionnaire.Questionnaire;
 import com.agropredict.application.request.ai_questionnaire.SoilAnswer;
 import com.agropredict.application.request.ai_questionnaire.Symptom;
+import com.agropredict.application.request.ai_questionnaire.Rainfall;
 import com.agropredict.application.request.ai_questionnaire.Weather;
-import com.agropredict.application.request.diagnostic_submission.Classification;
+import com.agropredict.application.request.diagnostic_submission.ImagePrediction;
 import com.agropredict.application.request.diagnostic_submission.Cultivation;
 import com.agropredict.application.request.diagnostic_submission.PhotographInput;
 import com.agropredict.application.request.diagnostic_submission.Submission;
-import com.agropredict.application.request.diagnostic_submission.Subject;
+import com.agropredict.application.request.diagnostic_submission.DiagnosticSubject;
 import com.agropredict.application.request.diagnostic_submission.SubmissionRequest;
-import com.agropredict.domain.component.diagnostic.Prediction;
-import com.agropredict.domain.entity.Diagnostic;
+import com.agropredict.domain.diagnostic.Prediction;
+import com.agropredict.domain.diagnostic.Diagnostic;
 import com.agropredict.visitor.SeverityCapturingVisitor;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -47,7 +48,7 @@ public final class RealDiagnosticApiServiceTest {
     public void setup() throws IOException {
         server = new MockWebServer();
         server.start();
-        service = new DiagnosticApiService(server.url("/diagnostic").toString());
+        service = new DiagnosticApiService(server.url("/diagnostic").toString(), new GravitySeverityFactory());
     }
 
     @After
@@ -128,7 +129,7 @@ public final class RealDiagnosticApiServiceTest {
         Diagnostic enriched = service.submit(diagnostic, build(0.9));
 
         SeverityCapturingVisitor visitor = new SeverityCapturingVisitor();
-        enriched.inspect(visitor);
+        enriched.label(visitor);
         assertTrue(visitor.recordedSevere());
     }
 
@@ -140,7 +141,7 @@ public final class RealDiagnosticApiServiceTest {
         Diagnostic enriched = service.submit(diagnostic, build(0.9));
 
         SeverityCapturingVisitor visitor = new SeverityCapturingVisitor();
-        enriched.inspect(visitor);
+        enriched.label(visitor);
         assertTrue(visitor.recordedHealthy());
     }
 
@@ -152,7 +153,7 @@ public final class RealDiagnosticApiServiceTest {
         Diagnostic enriched = service.submit(diagnostic, build(0.9));
 
         SeverityCapturingVisitor visitor = new SeverityCapturingVisitor();
-        enriched.inspect(visitor);
+        enriched.label(visitor);
         assertTrue("server failure must yield Pending assessment", visitor.recordedPending());
     }
 
@@ -164,7 +165,7 @@ public final class RealDiagnosticApiServiceTest {
         Diagnostic enriched = service.submit(diagnostic, build(0.9));
 
         SeverityCapturingVisitor visitor = new SeverityCapturingVisitor();
-        enriched.inspect(visitor);
+        enriched.label(visitor);
         assertTrue(visitor.recordedPending());
     }
 
@@ -195,17 +196,16 @@ public final class RealDiagnosticApiServiceTest {
     }
 
     private SubmissionRequest build(double confidence) {
-        Classification prediction = new Classification("rice", confidence);
+        ImagePrediction prediction = new ImagePrediction("rice", confidence);
         Cultivation cultivation = new Cultivation("rice", "Vegetative");
         PhotographInput photograph = new PhotographInput("/tmp/test.jpg");
-        Subject subject = new Subject(cultivation, photograph);
+        DiagnosticSubject subject = new DiagnosticSubject(cultivation, photograph);
         Submission submission = new Submission(prediction, subject);
         return new SubmissionRequest(submission, survey());
     }
 
     private Questionnaire survey() {
-        Weather weather = new Weather("26-32C", "60-80%");
-        weather.rain("Today");
+        Weather weather = new Weather("26-32C", "60-80%", new Rainfall("Today"));
         SoilAnswer soil = new SoilAnswer("Moderate", "5.5-7");
         Condition condition = new Condition(weather, soil);
 

@@ -1,7 +1,7 @@
 package com.agropredict.presentation.viewmodel.prediction_diagnosis;
 
 import com.agropredict.application.request.diagnostic_submission.SubmissionRequest;
-import com.agropredict.application.operation_result.OperationResult;
+import com.agropredict.application.operation_result.IUseCaseResult;
 import com.agropredict.application.usecase.catalog.ListCatalogUseCase;
 import com.agropredict.presentation.user_interface.catalog_input.SoilTypeOption;
 import com.agropredict.presentation.user_interface.catalog_input.StageOption;
@@ -35,7 +35,7 @@ public final class PredictionViewModel {
     }
 
     private void diagnose(SubmissionRequest request) {
-        OperationResult result = workflow.submit(request);
+        IUseCaseResult result = workflow.submit(request);
         result.accept(new DiagnosticResultPresenter(view));
     }
 

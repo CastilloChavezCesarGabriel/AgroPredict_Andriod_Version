@@ -6,7 +6,7 @@ import com.agropredict.application.factory.ICatalogFactory;
 import com.agropredict.application.usecase.catalog.ListCatalogUseCase;
 import com.agropredict.application.usecase.crop.FindCropUseCase;
 import com.agropredict.application.usecase.crop.UpdateCropUseCase;
-import com.agropredict.domain.entity.Crop;
+import com.agropredict.domain.crop.Crop;
 import com.agropredict.presentation.user_interface.catalog_input.SoilTypeOption;
 import com.agropredict.presentation.user_interface.catalog_input.StageOption;
 import com.agropredict.presentation.user_interface.selector.FieldEditor;

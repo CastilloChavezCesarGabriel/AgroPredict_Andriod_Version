@@ -3,7 +3,7 @@ package com.agropredict.application.usecase.authentication;
 import static org.junit.Assert.assertTrue;
 
 import com.agropredict.application.repository.ISessionRepository;
-import com.agropredict.domain.Session;
+import com.agropredict.domain.authentication.Session;
 import com.agropredict.visitor.TestSessionVisitor;
 
 import org.junit.Test;

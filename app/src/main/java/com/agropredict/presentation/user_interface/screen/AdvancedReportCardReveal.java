@@ -1,9 +1,9 @@
 package com.agropredict.presentation.user_interface.screen;
 
 import android.view.View;
-import com.agropredict.domain.IOccupationVisitor;
+import com.agropredict.domain.user.IOccupationListener;
 
-public final class AdvancedReportCardReveal implements IOccupationVisitor {
+public final class AdvancedReportCardReveal implements IOccupationListener {
     private final View reportCard;
 
     public AdvancedReportCardReveal(View reportCard) {
@@ -11,7 +11,10 @@ public final class AdvancedReportCardReveal implements IOccupationVisitor {
     }
 
     @Override
-    public void visit(String label, boolean advanced) {
-        if (advanced) reportCard.setVisibility(View.VISIBLE);
+    public void onElevate(String label) {
+        reportCard.setVisibility(View.VISIBLE);
     }
+
+    @Override
+    public void onLimit(String label) {}
 }

@@ -1,6 +1,6 @@
 package com.agropredict.presentation.viewmodel.diagnostic_history;
 
-import com.agropredict.domain.entity.Diagnostic;
+import com.agropredict.domain.diagnostic.Diagnostic;
 import java.util.List;
 
 public interface IHistoryView {

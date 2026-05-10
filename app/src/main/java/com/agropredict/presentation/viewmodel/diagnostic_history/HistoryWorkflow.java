@@ -1,9 +1,9 @@
 package com.agropredict.presentation.viewmodel.diagnostic_history;
 
-import com.agropredict.application.operation_result.OperationResult;
+import com.agropredict.application.operation_result.IUseCaseResult;
 import com.agropredict.application.usecase.DeleteUseCase;
 import com.agropredict.application.usecase.diagnostic.ListDiagnosticUseCase;
-import com.agropredict.domain.entity.Diagnostic;
+import com.agropredict.domain.diagnostic.Diagnostic;
 import java.util.List;
 
 public final class HistoryWorkflow {
@@ -23,7 +23,7 @@ public final class HistoryWorkflow {
         return listUseCase.filter(userIdentifier, cropIdentifier);
     }
 
-    public OperationResult delete(String diagnosticIdentifier) {
+    public IUseCaseResult delete(String diagnosticIdentifier) {
         return deleteUseCase.delete(diagnosticIdentifier);
     }
 }

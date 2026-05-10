@@ -8,7 +8,7 @@ import android.widget.TextView;
 import android.net.Uri;
 import com.agropredict.R;
 import com.agropredict.application.request.diagnostic_submission.SubmissionRequest;
-import com.agropredict.application.request.diagnostic_submission.Classification;
+import com.agropredict.application.request.diagnostic_submission.ImagePrediction;
 import com.agropredict.application.request.diagnostic_submission.PhotographInput;
 import com.agropredict.presentation.user_interface.catalog_input.SoilTypeOption;
 import com.agropredict.presentation.user_interface.catalog_input.StageOption;
@@ -61,7 +61,7 @@ public final class PredictionForm {
         questionnaire.populate(stageOption);
     }
 
-    public SubmissionRequest collect(Classification prediction, PhotographInput image) {
+    public SubmissionRequest collect(ImagePrediction prediction, PhotographInput image) {
         return questionnaire.assemble(prediction, image);
     }
 }

@@ -1,13 +1,13 @@
 package com.agropredict.visitor;
 
-import com.agropredict.domain.component.diagnostic.ISeverityVisitor;
+import com.agropredict.domain.diagnostic.visitor.ISeverityConsumer;
 
-public final class SeverityCapturingVisitor implements ISeverityVisitor {
+public final class SeverityCapturingVisitor implements ISeverityConsumer {
     private String name;
     private int urgency = -1;
 
     @Override
-    public void visit(String name, int urgency) {
+    public void label(String name, int urgency) {
         this.name = name;
         this.urgency = urgency;
     }
@@ -26,5 +26,9 @@ public final class SeverityCapturingVisitor implements ISeverityVisitor {
 
     public boolean recordedPending() {
         return urgency == 0 && "Pending".equals(name);
+    }
+
+    public boolean recordedUnknown() {
+        return urgency == 0 && "Analysis complete".equals(name);
     }
 }

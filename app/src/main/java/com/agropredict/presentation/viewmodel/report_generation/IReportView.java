@@ -1,6 +1,6 @@
 package com.agropredict.presentation.viewmodel.report_generation;
 
-import com.agropredict.domain.entity.Crop;
+import com.agropredict.domain.crop.Crop;
 import java.util.List;
 
 public interface IReportView {

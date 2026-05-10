@@ -1,7 +1,7 @@
 package com.agropredict.core;
 
 import android.app.Application;
-import com.agropredict.application.diagnostic_submission.IDiagnosticWorkflow;
+import com.agropredict.application.diagnostic_submission.DiagnosticWorkflow;
 import com.agropredict.application.factory.IAccessFactory;
 import com.agropredict.application.factory.ICatalogFactory;
 import com.agropredict.application.factory.IDashboardFactory;
@@ -9,6 +9,7 @@ import com.agropredict.application.factory.IPredictionFactory;
 import com.agropredict.application.factory.IReportingFactory;
 import com.agropredict.application.factory.IReviewFactory;
 import com.agropredict.application.repository.ICatalogRepository;
+import com.agropredict.application.repository.ICropRecord;
 import com.agropredict.application.repository.ICropRepository;
 import com.agropredict.application.repository.IDiagnosticRepository;
 import com.agropredict.application.repository.IPhotographRepository;
@@ -22,8 +23,8 @@ import com.agropredict.application.service.IImageClassifier;
 import com.agropredict.application.service.IImageCompressor;
 import com.agropredict.application.service.IPasswordHasher;
 import com.agropredict.application.service.IReportService;
-import com.agropredict.application.usecase.crop.CropCleanup;
 import com.google.android.material.color.DynamicColors;
+import java.util.List;
 
 public final class AgroPredictApplication extends Application implements
         IAccessFactory, IDashboardFactory, ICatalogFactory,
@@ -95,8 +96,8 @@ public final class AgroPredictApplication extends Application implements
     }
 
     @Override
-    public CropCleanup createCropCleanup() {
-        return configuration.createReview().createCropCleanup();
+    public List<ICropRecord> createCropRecord() {
+        return configuration.createReview().createCropRecord();
     }
 
     @Override
@@ -115,7 +116,7 @@ public final class AgroPredictApplication extends Application implements
     }
 
     @Override
-    public IDiagnosticWorkflow createDiagnosticWorkflow() {
+    public DiagnosticWorkflow createDiagnosticWorkflow() {
         return configuration.createPrediction().createDiagnosticWorkflow();
     }
 

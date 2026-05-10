@@ -6,8 +6,8 @@ import com.agropredict.application.request.report_generation.ReportRequest;
 import com.agropredict.application.service.IReportService;
 import com.agropredict.application.usecase.crop.FindCropUseCase;
 import com.agropredict.application.usecase.report.StoreReportUseCase;
-import com.agropredict.domain.entity.Crop;
-import com.agropredict.domain.entity.Diagnostic;
+import com.agropredict.domain.crop.Crop;
+import com.agropredict.domain.diagnostic.Diagnostic;
 
 public final class ExportScope {
     private final IReportingFactory factory;

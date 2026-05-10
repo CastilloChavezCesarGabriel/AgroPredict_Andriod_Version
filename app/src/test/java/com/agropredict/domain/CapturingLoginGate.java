@@ -1,5 +1,7 @@
 package com.agropredict.domain;
 
+import com.agropredict.domain.authentication.ILoginGate;
+
 import java.util.ArrayList;
 import java.util.List;
 

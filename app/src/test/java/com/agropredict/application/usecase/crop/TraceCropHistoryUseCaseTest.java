@@ -8,8 +8,9 @@ import com.agropredict.application.repository.ICropRepository;
 import com.agropredict.application.request.CropUpdateRequest;
 import com.agropredict.domain.history.HistoryRecord;
 import com.agropredict.domain.history.HistoryTransition;
-import com.agropredict.domain.history.Modification;
-import com.agropredict.domain.entity.Crop;
+import com.agropredict.domain.history.FieldModification;
+import com.agropredict.domain.history.ChangeMoment;
+import com.agropredict.domain.crop.Crop;
 
 import org.junit.Test;
 
@@ -24,13 +25,15 @@ public final class TraceCropHistoryUseCaseTest {
             @Override public List<Crop> list(String userId) { return List.of(); }
             @Override public Crop find(String id) { return null; }
             @Override public List<HistoryRecord> trace(String id) { return history; }
-            @Override public void delete(String id) {}
         };
     }
 
     @Test
     public void testTraceReturnsHistory() {
-        HistoryRecord record = new HistoryRecord(new Modification("field_name", "2026-03-01"), new HistoryTransition("old", "new"));
+        HistoryRecord record = new HistoryRecord(
+                new FieldModification("field_name"),
+                new HistoryTransition("old", "new"),
+                new ChangeMoment("2026-03-01"));
         List<HistoryRecord> result = new TraceCropHistoryUseCase(stubCrop(List.of(record))).trace("crop_1");
         assertEquals(1, result.size());
     }
