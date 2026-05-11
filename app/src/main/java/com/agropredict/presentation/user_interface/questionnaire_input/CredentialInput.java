@@ -3,7 +3,7 @@ package com.agropredict.presentation.user_interface.questionnaire_input;
 import android.app.Activity;
 import android.widget.EditText;
 import com.agropredict.R;
-import com.agropredict.application.request.user_registration.Credential;
+import com.agropredict.application.authentication.request.Credential;
 
 public final class CredentialInput {
     private final EditText emailInput;

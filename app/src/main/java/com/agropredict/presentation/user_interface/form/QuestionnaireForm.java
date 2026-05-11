@@ -6,15 +6,15 @@ import com.agropredict.presentation.user_interface.questionnaire_input.Managemen
 import com.agropredict.presentation.user_interface.questionnaire_input.SoilInput;
 import com.agropredict.presentation.user_interface.questionnaire_input.SymptomInput;
 import android.app.Activity;
-import com.agropredict.application.request.diagnostic_submission.SubmissionRequest;
-import com.agropredict.application.request.ai_questionnaire.Condition;
-import com.agropredict.application.request.ai_questionnaire.CropCare;
-import com.agropredict.application.request.diagnostic_submission.ImagePrediction;
-import com.agropredict.application.request.ai_questionnaire.Questionnaire;
-import com.agropredict.application.request.diagnostic_submission.Cultivation;
-import com.agropredict.application.request.diagnostic_submission.Submission;
-import com.agropredict.application.request.diagnostic_submission.PhotographInput;
-import com.agropredict.application.request.diagnostic_submission.DiagnosticSubject;
+import com.agropredict.application.diagnostic_submission.request.SubmissionRequest;
+import com.agropredict.application.diagnostic_submission.ai_questionnaire.Condition;
+import com.agropredict.application.diagnostic_submission.ai_questionnaire.CropCare;
+import com.agropredict.application.diagnostic_submission.request.ImagePrediction;
+import com.agropredict.application.diagnostic_submission.ai_questionnaire.Questionnaire;
+import com.agropredict.application.diagnostic_submission.request.Cultivation;
+import com.agropredict.application.diagnostic_submission.request.Submission;
+import com.agropredict.application.diagnostic_submission.request.PhotographInput;
+import com.agropredict.application.diagnostic_submission.request.DiagnosticSubject;
 import com.agropredict.presentation.user_interface.catalog_input.SoilTypeOption;
 import com.agropredict.presentation.user_interface.catalog_input.StageOption;
 

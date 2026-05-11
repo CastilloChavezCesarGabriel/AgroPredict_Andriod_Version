@@ -3,26 +3,29 @@ package com.agropredict.infrastructure.api_integration;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import com.agropredict.application.request.ai_questionnaire.Condition;
-import com.agropredict.application.request.ai_questionnaire.CropCare;
-import com.agropredict.application.request.ai_questionnaire.FarmManagement;
-import com.agropredict.application.request.ai_questionnaire.Irrigation;
-import com.agropredict.application.request.ai_questionnaire.Observation;
-import com.agropredict.application.request.ai_questionnaire.Pest;
-import com.agropredict.application.request.ai_questionnaire.PestControl;
-import com.agropredict.application.request.ai_questionnaire.Questionnaire;
-import com.agropredict.application.request.ai_questionnaire.SoilAnswer;
-import com.agropredict.application.request.ai_questionnaire.Symptom;
-import com.agropredict.application.request.ai_questionnaire.Rainfall;
-import com.agropredict.application.request.ai_questionnaire.Weather;
-import com.agropredict.application.request.diagnostic_submission.ImagePrediction;
-import com.agropredict.application.request.diagnostic_submission.Cultivation;
-import com.agropredict.application.request.diagnostic_submission.PhotographInput;
-import com.agropredict.application.request.diagnostic_submission.Submission;
-import com.agropredict.application.request.diagnostic_submission.DiagnosticSubject;
-import com.agropredict.application.request.diagnostic_submission.SubmissionRequest;
+import com.agropredict.application.diagnostic_submission.ai_questionnaire.Condition;
+import com.agropredict.application.diagnostic_submission.ai_questionnaire.CropCare;
+import com.agropredict.application.diagnostic_submission.ai_questionnaire.FarmManagement;
+import com.agropredict.application.diagnostic_submission.ai_questionnaire.Irrigation;
+import com.agropredict.application.diagnostic_submission.ai_questionnaire.Observation;
+import com.agropredict.application.diagnostic_submission.ai_questionnaire.Pest;
+import com.agropredict.application.diagnostic_submission.ai_questionnaire.PestControl;
+import com.agropredict.application.diagnostic_submission.ai_questionnaire.Questionnaire;
+import com.agropredict.application.diagnostic_submission.ai_questionnaire.SoilAnswer;
+import com.agropredict.application.diagnostic_submission.ai_questionnaire.Symptom;
+import com.agropredict.application.diagnostic_submission.ai_questionnaire.Rainfall;
+import com.agropredict.application.diagnostic_submission.ai_questionnaire.Weather;
+import com.agropredict.application.diagnostic_submission.request.ImagePrediction;
+import com.agropredict.application.diagnostic_submission.request.Cultivation;
+import com.agropredict.application.diagnostic_submission.request.PhotographInput;
+import com.agropredict.application.diagnostic_submission.request.Submission;
+import com.agropredict.application.diagnostic_submission.request.DiagnosticSubject;
+import com.agropredict.application.diagnostic_submission.request.SubmissionRequest;
+import com.agropredict.domain.diagnostic.ISeverityFactory;
 import com.agropredict.domain.diagnostic.Prediction;
 import com.agropredict.domain.diagnostic.Diagnostic;
+import com.agropredict.domain.diagnostic.Severity;
+import com.agropredict.domain.diagnostic.SeverityClassifier;
 import com.agropredict.visitor.SeverityCapturingVisitor;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
@@ -35,6 +38,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -48,7 +52,17 @@ public final class RealDiagnosticApiServiceTest {
     public void setup() throws IOException {
         server = new MockWebServer();
         server.start();
-        service = new DiagnosticApiService(server.url("/diagnostic").toString(), new GravitySeverityFactory());
+        DiagnosticHTTPGateway gateway = new DiagnosticHTTPGateway(server.url("/diagnostic").toString());
+        DiagnosticResponseReader reader = new DiagnosticResponseReader(build());
+        service = new DiagnosticApiService(gateway, reader);
+    }
+
+    private static ISeverityFactory build() {
+        SeverityClassifier healthy = new SeverityClassifier(List.of("bajo", "low"), new Severity("low", "Healthy", 0));
+        SeverityClassifier moderate = new SeverityClassifier(List.of("moderado", "moderate"), new Severity("moderate", "Moderate issue", 1));
+        SeverityClassifier severe = new SeverityClassifier(List.of("alto", "high", "critico", "critical"), new Severity("high", "Severe issue", 2));
+        Severity unknown = new Severity(null, "Analysis complete", 0);
+        return new GravitySeverityFactory(List.of(healthy, moderate, severe), unknown);
     }
 
     @After

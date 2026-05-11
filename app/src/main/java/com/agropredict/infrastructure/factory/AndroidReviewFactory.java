@@ -6,7 +6,7 @@ import com.agropredict.application.repository.IDiagnosticRepository;
 import com.agropredict.application.repository.IPhotographRepository;
 import com.agropredict.application.repository.ISessionRepository;
 import com.agropredict.application.factory.IReviewFactory;
-import com.agropredict.infrastructure.api_integration.GravitySeverityFactory;
+import com.agropredict.domain.diagnostic.ISeverityFactory;
 import com.agropredict.infrastructure.persistence.database.Database;
 import com.agropredict.infrastructure.persistence.repository.DiagnosticContext;
 import com.agropredict.infrastructure.persistence.repository.SessionRepository;
@@ -21,15 +21,17 @@ import com.agropredict.infrastructure.persistence.repository.SyncingPhotographRe
 public final class AndroidReviewFactory implements IReviewFactory {
     private final Database database;
     private final Context context;
+    private final ISeverityFactory severityFactory;
 
-    public AndroidReviewFactory(Database database, Context context) {
+    public AndroidReviewFactory(Database database, Context context, ISeverityFactory severityFactory) {
         this.database = database;
         this.context = context;
+        this.severityFactory = severityFactory;
     }
 
     @Override
     public IDiagnosticRepository createDiagnosticRepository() {
-        DiagnosticContext context = new DiagnosticContext(createSessionRepository(), new GravitySeverityFactory());
+        DiagnosticContext context = new DiagnosticContext(createSessionRepository(), severityFactory);
         return new SyncingDiagnosticRepository(
                 new SqliteDiagnosticRepository(database, context),
                 createSyncRecorder());

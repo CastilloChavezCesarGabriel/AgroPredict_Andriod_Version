@@ -3,7 +3,7 @@ package com.agropredict.infrastructure.persistence.visitor;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import com.agropredict.application.visitor.IAnswerConsumer;
+import com.agropredict.application.IAnswerConsumer;
 import com.agropredict.domain.identifier.IdentifierFactory;
 import com.agropredict.infrastructure.persistence.database.Clock;
 

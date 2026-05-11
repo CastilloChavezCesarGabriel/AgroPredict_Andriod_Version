@@ -1,8 +1,9 @@
 package com.agropredict.application.usecase.authentication;
 
+import com.agropredict.application.authentication.usecase.LoginUseCase;
 import com.agropredict.application.repository.ISessionRepository;
 import com.agropredict.application.repository.IUserRepository;
-import com.agropredict.application.request.user_registration.RegistrationRequest;
+import com.agropredict.application.authentication.request.RegistrationRequest;
 import com.agropredict.domain.authentication.ISession;
 import com.agropredict.domain.authentication.NoSession;
 import com.agropredict.domain.authentication.Session;

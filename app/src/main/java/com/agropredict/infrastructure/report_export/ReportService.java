@@ -6,7 +6,7 @@ import com.agropredict.application.operation_result.SuccessfulOperation;
 import com.agropredict.application.operation_result.FailedOperation;
 import com.agropredict.application.service.IReportService;
 import com.agropredict.application.service.IReportWriter;
-import com.agropredict.application.usecase.report.DiagnosticReportComposer;
+import com.agropredict.application.report_generation.usecase.DiagnosticReportComposer;
 import com.agropredict.domain.crop.Crop;
 import com.agropredict.domain.diagnostic.Diagnostic;
 import java.io.File;

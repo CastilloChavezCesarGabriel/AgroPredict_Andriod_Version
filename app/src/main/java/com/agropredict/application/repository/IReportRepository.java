@@ -1,7 +1,7 @@
 package com.agropredict.application.repository;
 
-import com.agropredict.application.request.report_generation.ReportRequest;
-import com.agropredict.application.request.report_generation.Destination;
+import com.agropredict.application.report_generation.request.ReportRequest;
+import com.agropredict.application.report_generation.request.Destination;
 
 public interface IReportRepository {
     void store(ReportRequest request, Destination destination);

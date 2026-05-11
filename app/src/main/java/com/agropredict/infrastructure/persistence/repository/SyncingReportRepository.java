@@ -1,8 +1,8 @@
 package com.agropredict.infrastructure.persistence.repository;
 
 import com.agropredict.application.repository.IReportRepository;
-import com.agropredict.application.request.report_generation.Destination;
-import com.agropredict.application.request.report_generation.ReportRequest;
+import com.agropredict.application.report_generation.request.Destination;
+import com.agropredict.application.report_generation.request.ReportRequest;
 
 public final class SyncingReportRepository implements IReportRepository {
     private final SqliteReportRepository delegate;

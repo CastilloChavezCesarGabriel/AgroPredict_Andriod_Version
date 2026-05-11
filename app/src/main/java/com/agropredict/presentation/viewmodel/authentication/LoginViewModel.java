@@ -1,6 +1,6 @@
 package com.agropredict.presentation.viewmodel.authentication;
 
-import com.agropredict.application.usecase.authentication.LoginUseCase;
+import com.agropredict.application.authentication.usecase.LoginUseCase;
 import com.agropredict.application.operation_result.IUseCaseResult;
 
 public final class LoginViewModel {

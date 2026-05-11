@@ -1,6 +1,6 @@
 package com.agropredict.visitor;
 
-import com.agropredict.application.visitor.IOperationResult;
+import com.agropredict.application.operation_result.IOperationResult;
 
 public final class SucceedExpecter implements IOperationResult {
     private final String expectedIdentifier;

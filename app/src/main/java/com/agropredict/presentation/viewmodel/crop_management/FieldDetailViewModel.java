@@ -1,6 +1,6 @@
 package com.agropredict.presentation.viewmodel.crop_management;
 
-import com.agropredict.application.usecase.diagnostic.FindDiagnosticUseCase;
+import com.agropredict.application.diagnostic_history.FindDiagnosticUseCase;
 import com.agropredict.domain.diagnostic.visitor.ISeverityConsumer;
 import com.agropredict.domain.diagnostic.Diagnostic;
 

@@ -3,8 +3,9 @@ package com.agropredict.application.usecase.crop;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import com.agropredict.application.crop_management.usecase.FindCropUseCase;
 import com.agropredict.application.repository.ICropRepository;
-import com.agropredict.application.request.CropUpdateRequest;
+import com.agropredict.application.crop_management.request.CropUpdateRequest;
 import com.agropredict.domain.history.HistoryRecord;
 import com.agropredict.domain.crop.CropProfile;
 import com.agropredict.domain.crop.GrowthCycle;

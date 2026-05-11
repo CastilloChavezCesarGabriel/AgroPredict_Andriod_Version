@@ -1,8 +1,8 @@
 package com.agropredict.presentation.viewmodel.authentication;
 
-import com.agropredict.application.request.user_registration.RegistrationRequest;
-import com.agropredict.application.usecase.authentication.RegisterUseCase;
-import com.agropredict.application.usecase.catalog.ListCatalogUseCase;
+import com.agropredict.application.authentication.request.RegistrationRequest;
+import com.agropredict.application.authentication.usecase.RegisterUseCase;
+import com.agropredict.application.catalog.ListCatalogUseCase;
 
 public final class RegisterViewModel {
     private final RegisterUseCase registerUseCase;

@@ -1,12 +1,13 @@
 package com.agropredict.application.usecase.authentication;
 
+import com.agropredict.application.authentication.usecase.RegisterUseCase;
 import com.agropredict.application.repository.ICatalogRepository;
 import com.agropredict.application.repository.IUserRepository;
-import com.agropredict.application.request.user_registration.Registration;
-import com.agropredict.application.request.user_registration.RegistrationRequest;
-import com.agropredict.application.request.user_registration.Credential;
-import com.agropredict.application.request.user_registration.Profile;
-import com.agropredict.application.request.user_registration.Registrant;
+import com.agropredict.application.authentication.request.Registration;
+import com.agropredict.application.authentication.request.RegistrationRequest;
+import com.agropredict.application.authentication.request.Credential;
+import com.agropredict.application.authentication.request.Profile;
+import com.agropredict.application.authentication.request.Registrant;
 import com.agropredict.repository.FixedCatalogRepository;
 import com.agropredict.repository.ScriptedUserRepository;
 import com.agropredict.visitor.RejectExpecter;

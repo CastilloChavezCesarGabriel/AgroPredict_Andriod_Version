@@ -4,8 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import com.agropredict.application.crop_management.usecase.TraceCropHistoryUseCase;
 import com.agropredict.application.repository.ICropRepository;
-import com.agropredict.application.request.CropUpdateRequest;
+import com.agropredict.application.crop_management.request.CropUpdateRequest;
 import com.agropredict.domain.history.HistoryRecord;
 import com.agropredict.domain.history.HistoryTransition;
 import com.agropredict.domain.history.FieldModification;

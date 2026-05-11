@@ -5,8 +5,8 @@ import android.widget.EditText;
 import com.agropredict.R;
 import com.agropredict.application.factory.IAccessFactory;
 import com.agropredict.application.service.IAuditLogger;
-import com.agropredict.application.usecase.authentication.CheckSessionUseCase;
-import com.agropredict.application.usecase.authentication.LoginUseCase;
+import com.agropredict.application.authentication.usecase.CheckSessionUseCase;
+import com.agropredict.application.authentication.usecase.LoginUseCase;
 import com.agropredict.presentation.viewmodel.authentication.ILoginView;
 import com.agropredict.presentation.viewmodel.authentication.LoginViewModel;
 

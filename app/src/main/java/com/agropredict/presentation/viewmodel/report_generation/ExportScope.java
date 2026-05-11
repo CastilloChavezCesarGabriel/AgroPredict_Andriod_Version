@@ -1,11 +1,11 @@
 package com.agropredict.presentation.viewmodel.report_generation;
 
 import com.agropredict.application.factory.IReportingFactory;
-import com.agropredict.application.request.report_generation.Destination;
-import com.agropredict.application.request.report_generation.ReportRequest;
+import com.agropredict.application.report_generation.request.Destination;
+import com.agropredict.application.report_generation.request.ReportRequest;
 import com.agropredict.application.service.IReportService;
-import com.agropredict.application.usecase.crop.FindCropUseCase;
-import com.agropredict.application.usecase.report.StoreReportUseCase;
+import com.agropredict.application.crop_management.usecase.FindCropUseCase;
+import com.agropredict.application.report_generation.usecase.StoreReportUseCase;
 import com.agropredict.domain.crop.Crop;
 import com.agropredict.domain.diagnostic.Diagnostic;
 

@@ -1,6 +1,6 @@
 package com.agropredict.presentation.viewmodel.diagnostic_history;
 
-import com.agropredict.application.visitor.IOperationResult;
+import com.agropredict.application.operation_result.IOperationResult;
 
 public final class HistoryViewModel implements IOperationResult {
     private final HistoryWorkflow workflow;

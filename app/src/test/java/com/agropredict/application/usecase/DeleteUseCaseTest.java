@@ -1,5 +1,6 @@
 package com.agropredict.application.usecase;
 
+import com.agropredict.application.DeleteUseCase;
 import com.agropredict.application.repository.IRecordEraser;
 import com.agropredict.visitor.FailExpecter;
 import com.agropredict.visitor.SucceedExpecter;

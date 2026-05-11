@@ -1,8 +1,8 @@
 package com.agropredict.presentation.viewmodel.prediction_diagnosis;
 
-import com.agropredict.application.request.diagnostic_submission.SubmissionRequest;
+import com.agropredict.application.diagnostic_submission.request.SubmissionRequest;
 import com.agropredict.application.operation_result.IUseCaseResult;
-import com.agropredict.application.usecase.catalog.ListCatalogUseCase;
+import com.agropredict.application.catalog.ListCatalogUseCase;
 import com.agropredict.presentation.user_interface.catalog_input.SoilTypeOption;
 import com.agropredict.presentation.user_interface.catalog_input.StageOption;
 import java.util.concurrent.ExecutorService;

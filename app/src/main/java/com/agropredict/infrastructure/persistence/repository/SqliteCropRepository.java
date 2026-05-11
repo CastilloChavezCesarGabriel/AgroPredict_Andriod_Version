@@ -5,7 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import com.agropredict.application.repository.ICropRepository;
 import com.agropredict.application.repository.IRecordEraser;
-import com.agropredict.application.request.CropUpdateRequest;
+import com.agropredict.application.crop_management.request.CropUpdateRequest;
 import com.agropredict.domain.history.HistoryRecord;
 import com.agropredict.domain.history.HistoryTransition;
 import com.agropredict.domain.history.FieldModification;

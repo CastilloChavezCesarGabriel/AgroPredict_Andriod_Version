@@ -7,9 +7,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.net.Uri;
 import com.agropredict.R;
-import com.agropredict.application.request.diagnostic_submission.SubmissionRequest;
-import com.agropredict.application.request.diagnostic_submission.ImagePrediction;
-import com.agropredict.application.request.diagnostic_submission.PhotographInput;
+import com.agropredict.application.diagnostic_submission.request.SubmissionRequest;
+import com.agropredict.application.diagnostic_submission.request.ImagePrediction;
+import com.agropredict.application.diagnostic_submission.request.PhotographInput;
 import com.agropredict.presentation.user_interface.catalog_input.SoilTypeOption;
 import com.agropredict.presentation.user_interface.catalog_input.StageOption;
 

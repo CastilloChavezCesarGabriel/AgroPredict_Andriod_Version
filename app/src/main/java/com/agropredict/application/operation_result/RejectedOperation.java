@@ -1,6 +1,5 @@
 package com.agropredict.application.operation_result;
 
-import com.agropredict.application.visitor.IOperationResult;
 import com.agropredict.domain.guard.ArgumentPrecondition;
 
 public final class RejectedOperation implements IUseCaseResult {

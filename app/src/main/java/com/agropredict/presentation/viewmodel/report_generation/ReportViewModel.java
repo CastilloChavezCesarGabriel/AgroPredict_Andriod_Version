@@ -1,7 +1,7 @@
 package com.agropredict.presentation.viewmodel.report_generation;
 
 import com.agropredict.application.factory.IReportingFactory;
-import com.agropredict.application.usecase.crop.ListCropUseCase;
+import com.agropredict.application.crop_management.usecase.ListCropUseCase;
 import com.agropredict.domain.crop.Crop;
 import java.util.List;
 import java.util.concurrent.ExecutorService;

@@ -1,6 +1,6 @@
 package com.agropredict.application.factory;
 
-import com.agropredict.application.diagnostic_submission.DiagnosticWorkflow;
+import com.agropredict.application.diagnostic_submission.workflow.DiagnosticWorkflow;
 import com.agropredict.application.repository.ICatalogRepository;
 import com.agropredict.application.service.IDiagnosticApiService;
 import com.agropredict.application.service.IImageClassifier;

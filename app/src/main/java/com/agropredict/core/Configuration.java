@@ -7,25 +7,29 @@ import com.agropredict.application.factory.IDashboardFactory;
 import com.agropredict.application.factory.IPredictionFactory;
 import com.agropredict.application.factory.IReportingFactory;
 import com.agropredict.application.factory.IReviewFactory;
+import com.agropredict.domain.diagnostic.ISeverityFactory;
+import com.agropredict.domain.diagnostic.Severity;
+import com.agropredict.domain.diagnostic.SeverityClassifier;
+import com.agropredict.infrastructure.api_integration.GravitySeverityFactory;
+import com.agropredict.infrastructure.database_backup.DatabaseBackupSchedule;
 import com.agropredict.infrastructure.factory.AndroidAccessFactory;
 import com.agropredict.infrastructure.factory.AndroidCatalogFactory;
 import com.agropredict.infrastructure.factory.AndroidDashboardFactory;
 import com.agropredict.infrastructure.factory.AndroidPredictionFactory;
 import com.agropredict.infrastructure.factory.AndroidReportingFactory;
 import com.agropredict.infrastructure.factory.AndroidReviewFactory;
-import com.agropredict.infrastructure.database_backup.DatabaseBackup;
 import com.agropredict.infrastructure.persistence.database.Database;
-import java.io.File;
+import java.util.List;
 
 public final class Configuration {
-    private static final long BACKUP_INTERVAL_MILLIS = 24L * 60L * 60L * 1000L;
     private final Database database;
     private final Context context;
-    private IPredictionFactory predictionFactory;
+    private final ISeverityFactory severityFactory;
 
     public Configuration(Context context) {
         this.database = new Database(context);
         this.context = context;
+        this.severityFactory = createSeverityFactory();
     }
 
     public IAccessFactory createAccess() {
@@ -41,30 +45,29 @@ public final class Configuration {
     }
 
     public IReviewFactory createReview() {
-        return new AndroidReviewFactory(database, context);
+        return new AndroidReviewFactory(database, context, severityFactory);
     }
 
     public IPredictionFactory createPrediction() {
-        if (predictionFactory == null) {
-            predictionFactory = new AndroidPredictionFactory(database, context);
-        }
-        return predictionFactory;
+        return new AndroidPredictionFactory(database, context, severityFactory);
     }
 
     public IReportingFactory createReporting() {
-        return new AndroidReportingFactory(database, context);
+        return new AndroidReportingFactory(database, context, severityFactory);
     }
 
-    public void backup() {
-        String name = database.getDatabaseName();
-        File destination = new File(context.getExternalFilesDir(null), "backups/" + name);
-        if (skip(destination)) return;
-        File source = context.getDatabasePath(name);
-        new DatabaseBackup(source, destination).backup();
+    public DatabaseBackupSchedule createBackup() {
+        return new DatabaseBackupSchedule(database, context);
     }
 
-    private boolean skip(File destination) {
-        return destination.exists()
-                && System.currentTimeMillis() - destination.lastModified() < BACKUP_INTERVAL_MILLIS;
+    private ISeverityFactory createSeverityFactory() {
+        Severity healthyLabel = new Severity("low", "Healthy", 0);
+        Severity moderateLabel = new Severity("moderate", "Moderate issue", 1);
+        Severity severeLabel = new Severity("high", "Severe issue", 2);
+        Severity unknown = new Severity(null, "Analysis complete", 0);
+        SeverityClassifier healthy = new SeverityClassifier(List.of("bajo", "low"), healthyLabel);
+        SeverityClassifier moderate = new SeverityClassifier(List.of("moderado", "moderate"), moderateLabel);
+        SeverityClassifier severe = new SeverityClassifier(List.of("alto", "high", "critico", "critical"), severeLabel);
+        return new GravitySeverityFactory(List.of(healthy, moderate, severe), unknown);
     }
 }

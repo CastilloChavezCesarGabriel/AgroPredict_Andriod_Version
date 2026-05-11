@@ -3,8 +3,8 @@ package com.agropredict.presentation.user_interface.questionnaire_input;
 import android.app.Activity;
 import android.widget.Spinner;
 import com.agropredict.R;
-import com.agropredict.application.request.ai_questionnaire.Rainfall;
-import com.agropredict.application.request.ai_questionnaire.Weather;
+import com.agropredict.application.diagnostic_submission.ai_questionnaire.Rainfall;
+import com.agropredict.application.diagnostic_submission.ai_questionnaire.Weather;
 import com.agropredict.presentation.user_interface.catalog_input.SpinnerInput;
 
 public final class EnvironmentInput extends SpinnerInput {

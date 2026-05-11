@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.widget.EditText;
 import android.widget.Spinner;
 import com.agropredict.R;
-import com.agropredict.application.request.CropUpdateRequest;
+import com.agropredict.application.crop_management.request.CropUpdateRequest;
 import com.agropredict.domain.crop.CropProfile;
 import com.agropredict.domain.crop.Field;
 import com.agropredict.domain.crop.GrowthCycle;

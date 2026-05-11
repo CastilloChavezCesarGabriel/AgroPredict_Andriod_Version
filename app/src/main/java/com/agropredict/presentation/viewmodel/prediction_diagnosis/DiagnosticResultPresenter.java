@@ -1,6 +1,6 @@
 package com.agropredict.presentation.viewmodel.prediction_diagnosis;
 
-import com.agropredict.application.visitor.IOperationResult;
+import com.agropredict.application.operation_result.IOperationResult;
 
 public final class DiagnosticResultPresenter implements IOperationResult {
     private final IPredictionView view;

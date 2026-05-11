@@ -1,17 +1,19 @@
 package com.agropredict.infrastructure.factory;
 
 import android.content.Context;
-import com.agropredict.application.diagnostic_submission.CropDossier;
-import com.agropredict.application.diagnostic_submission.CropRegistry;
-import com.agropredict.application.diagnostic_submission.DiagnosticArchive;
-import com.agropredict.application.diagnostic_submission.DiagnosticWorkflow;
+import com.agropredict.application.diagnostic_submission.workflow.CropDossier;
+import com.agropredict.application.diagnostic_submission.workflow.CropRegistry;
+import com.agropredict.application.diagnostic_submission.workflow.DiagnosticArchive;
+import com.agropredict.application.diagnostic_submission.workflow.DiagnosticWorkflow;
 import com.agropredict.application.repository.ICatalogRepository;
 import com.agropredict.application.service.IDiagnosticApiService;
 import com.agropredict.application.service.IImageClassifier;
 import com.agropredict.application.service.IImageCompressor;
 import com.agropredict.application.factory.IPredictionFactory;
+import com.agropredict.domain.diagnostic.ISeverityFactory;
 import com.agropredict.infrastructure.api_integration.DiagnosticApiService;
-import com.agropredict.infrastructure.api_integration.GravitySeverityFactory;
+import com.agropredict.infrastructure.api_integration.DiagnosticHTTPGateway;
+import com.agropredict.infrastructure.api_integration.DiagnosticResponseReader;
 import com.agropredict.infrastructure.persistence.repository.DiagnosticContext;
 import com.agropredict.infrastructure.image_classification.BitmapCompressor;
 import com.agropredict.infrastructure.image_classification.ImagePreprocessor;
@@ -37,24 +39,22 @@ public final class AndroidPredictionFactory implements IPredictionFactory {
     private static final String DIAGNOSTIC_ENDPOINT = "https://proyecto-diagnostico.onrender.com/diagnostic";
     private final Database database;
     private final Context context;
-    private IImageClassifier classifier;
+    private final ISeverityFactory severityFactory;
 
-    public AndroidPredictionFactory(Database database, Context context) {
+    public AndroidPredictionFactory(Database database, Context context, ISeverityFactory severityFactory) {
         this.database = database;
         this.context = context;
+        this.severityFactory = severityFactory;
     }
 
     @Override
     public IImageClassifier createImageClassifier() {
-        if (classifier == null) {
-            InterpreterLoader loader = new InterpreterLoader(context.getAssets());
-            LabelCatalog labels = new LabelCatalog(context.getAssets());
-            TFLiteModel model = new TFLiteModel(
-                    loader.load("models/cultivo_model.tflite"),
-                    labels.load("models/classes.json"));
-            classifier = new TFLiteClassifier(model, new ImageProcessor(new ImageValidator(), new ImagePreprocessor()));
-        }
-        return classifier;
+        InterpreterLoader loader = new InterpreterLoader(context.getAssets());
+        LabelCatalog labels = new LabelCatalog(context.getAssets());
+        TFLiteModel model = new TFLiteModel(
+                loader.load("models/cultivo_model.tflite"),
+                labels.load("models/classes.json"));
+        return new TFLiteClassifier(model, new ImageProcessor(new ImageValidator(), new ImagePreprocessor()));
     }
 
     @Override
@@ -64,7 +64,9 @@ public final class AndroidPredictionFactory implements IPredictionFactory {
 
     @Override
     public IDiagnosticApiService createApiService() {
-        return new DiagnosticApiService(DIAGNOSTIC_ENDPOINT, new GravitySeverityFactory());
+        DiagnosticHTTPGateway gateway = new DiagnosticHTTPGateway(DIAGNOSTIC_ENDPOINT);
+        DiagnosticResponseReader reader = new DiagnosticResponseReader(severityFactory);
+        return new DiagnosticApiService(gateway, reader);
     }
 
     @Override
@@ -75,7 +77,7 @@ public final class AndroidPredictionFactory implements IPredictionFactory {
                 new SyncingCropRepository(new SqliteCropRepository(database, session), recorder),
                 new SyncingPhotographRepository(new SqlitePhotographRepository(database, session), recorder));
         CropRegistry registry = new CropRegistry(dossier, createStageCatalog());
-        DiagnosticContext context = new DiagnosticContext(session, new GravitySeverityFactory());
+        DiagnosticContext context = new DiagnosticContext(session, severityFactory);
         DiagnosticArchive archive = new DiagnosticArchive(
                 new SyncingDiagnosticRepository(new SqliteDiagnosticRepository(database, context), recorder),
                 new SqliteQuestionnaireRepository(database));

@@ -2,7 +2,7 @@ package com.agropredict.infrastructure.persistence.repository;
 
 import android.database.sqlite.SQLiteDatabase;
 import com.agropredict.application.repository.IQuestionnaireRepository;
-import com.agropredict.application.request.ai_questionnaire.Questionnaire;
+import com.agropredict.application.diagnostic_submission.ai_questionnaire.Questionnaire;
 import com.agropredict.infrastructure.persistence.database.Database;
 import com.agropredict.infrastructure.persistence.visitor.QuestionnairePersistenceVisitor;
 

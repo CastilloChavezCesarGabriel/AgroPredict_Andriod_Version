@@ -1,9 +1,9 @@
 package com.agropredict.presentation.viewmodel.report_generation;
 
-import com.agropredict.application.request.report_generation.ReportRequest;
+import com.agropredict.application.report_generation.request.ReportRequest;
 import com.agropredict.domain.identifier.IdentifierFactory;
 import com.agropredict.application.operation_result.IUseCaseResult;
-import com.agropredict.application.usecase.report.GenerateReportUseCase;
+import com.agropredict.application.report_generation.usecase.GenerateReportUseCase;
 import com.agropredict.domain.crop.Crop;
 import com.agropredict.domain.diagnostic.Diagnostic;
 import com.agropredict.domain.report.Report;

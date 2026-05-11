@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.widget.EditText;
 import com.agropredict.R;
 import com.agropredict.application.factory.IAccessFactory;
-import com.agropredict.application.usecase.authentication.ResetPasswordUseCase;
+import com.agropredict.application.authentication.usecase.ResetPasswordUseCase;
 import com.agropredict.presentation.viewmodel.authentication.IRecoveryView;
 import com.agropredict.presentation.viewmodel.authentication.RecoveryViewModel;
 

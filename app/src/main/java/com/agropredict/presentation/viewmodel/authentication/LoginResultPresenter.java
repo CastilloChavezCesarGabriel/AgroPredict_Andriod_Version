@@ -1,6 +1,6 @@
 package com.agropredict.presentation.viewmodel.authentication;
 
-import com.agropredict.application.visitor.IOperationResult;
+import com.agropredict.application.operation_result.IOperationResult;
 
 public final class LoginResultPresenter implements IOperationResult {
     private final ILoginView view;

@@ -1,6 +1,6 @@
 package com.agropredict.presentation.viewmodel.home_dashboard;
 
-import com.agropredict.application.usecase.authentication.LogoutUseCase;
+import com.agropredict.application.authentication.usecase.LogoutUseCase;
 
 public final class HomeViewModel {
     private final LogoutUseCase logoutUseCase;

@@ -2,6 +2,7 @@ package com.agropredict.application.usecase.report;
 
 import com.agropredict.application.operation_result.SuccessfulOperation;
 import com.agropredict.application.operation_result.FailedOperation;
+import com.agropredict.application.report_generation.usecase.GenerateReportUseCase;
 import com.agropredict.application.service.IReportService;
 import com.agropredict.domain.crop.CropProfile;
 import com.agropredict.domain.crop.GrowthCycle;

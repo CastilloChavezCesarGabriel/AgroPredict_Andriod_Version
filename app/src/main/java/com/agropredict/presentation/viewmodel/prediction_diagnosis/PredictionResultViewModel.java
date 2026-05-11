@@ -1,6 +1,6 @@
 package com.agropredict.presentation.viewmodel.prediction_diagnosis;
 
-import com.agropredict.application.usecase.diagnostic.FindDiagnosticUseCase;
+import com.agropredict.application.diagnostic_history.FindDiagnosticUseCase;
 import com.agropredict.domain.diagnostic.Diagnostic;
 
 public final class PredictionResultViewModel {

@@ -7,27 +7,22 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 
 public final class AssetExtractor implements IAssetService {
     private final Context context;
 
     public AssetExtractor(Context context) {
-        this.context = context;
+        this.context = Objects.requireNonNull(context, "asset extractor requires a context");
     }
 
     @Override
     public String extract(String path) throws IOException {
-        String fileName = resolve(path);
-        File outputFile = new File(context.getCacheDir(), fileName);
+        File outputFile = new File(context.getCacheDir(), new File(path).getName());
         if (!outputFile.exists()) {
             copy(path, outputFile);
         }
         return outputFile.getAbsolutePath();
-    }
-
-    private String resolve(String path) {
-        int separator = path.lastIndexOf('/');
-        return separator >= 0 ? path.substring(separator + 1) : path;
     }
 
     private void copy(String path, File destination) throws IOException {

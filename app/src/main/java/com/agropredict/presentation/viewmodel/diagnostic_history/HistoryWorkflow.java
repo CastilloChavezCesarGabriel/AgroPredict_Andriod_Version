@@ -1,8 +1,8 @@
 package com.agropredict.presentation.viewmodel.diagnostic_history;
 
 import com.agropredict.application.operation_result.IUseCaseResult;
-import com.agropredict.application.usecase.DeleteUseCase;
-import com.agropredict.application.usecase.diagnostic.ListDiagnosticUseCase;
+import com.agropredict.application.DeleteUseCase;
+import com.agropredict.application.diagnostic_history.ListDiagnosticUseCase;
 import com.agropredict.domain.diagnostic.Diagnostic;
 import java.util.List;
 

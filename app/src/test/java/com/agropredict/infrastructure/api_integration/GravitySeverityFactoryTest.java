@@ -4,12 +4,23 @@ import static org.junit.Assert.assertTrue;
 
 import com.agropredict.domain.diagnostic.ISeverityFactory;
 import com.agropredict.domain.diagnostic.Severity;
+import com.agropredict.domain.diagnostic.SeverityClassifier;
 import com.agropredict.visitor.SeverityCapturingVisitor;
 
 import org.junit.Test;
 
+import java.util.List;
+
 public final class GravitySeverityFactoryTest {
-    private final ISeverityFactory factory = new GravitySeverityFactory();
+    private final ISeverityFactory factory = build();
+
+    private static ISeverityFactory build() {
+        SeverityClassifier healthy = new SeverityClassifier(List.of("bajo", "low"), new Severity("low", "Healthy", 0));
+        SeverityClassifier moderate = new SeverityClassifier(List.of("moderado", "moderate"), new Severity("moderate", "Moderate issue", 1));
+        SeverityClassifier severe = new SeverityClassifier(List.of("alto", "high", "critico", "critical"), new Severity("high", "Severe issue", 2));
+        Severity unknown = new Severity(null, "Analysis complete", 0);
+        return new GravitySeverityFactory(List.of(healthy, moderate, severe), unknown);
+    }
 
     @Test
     public void testClassifyBajoYieldsHealthy() {

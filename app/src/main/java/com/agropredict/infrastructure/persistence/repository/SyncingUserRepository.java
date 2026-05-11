@@ -2,7 +2,7 @@ package com.agropredict.infrastructure.persistence.repository;
 
 import com.agropredict.application.repository.ICatalogRepository;
 import com.agropredict.application.repository.IUserRepository;
-import com.agropredict.application.request.user_registration.RegistrationRequest;
+import com.agropredict.application.authentication.request.RegistrationRequest;
 import com.agropredict.domain.user.ISessionSubject;
 import com.agropredict.domain.user.User;
 

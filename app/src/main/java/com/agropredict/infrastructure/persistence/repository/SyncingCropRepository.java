@@ -2,7 +2,7 @@ package com.agropredict.infrastructure.persistence.repository;
 
 import com.agropredict.application.repository.ICropRepository;
 import com.agropredict.application.repository.IRecordEraser;
-import com.agropredict.application.request.CropUpdateRequest;
+import com.agropredict.application.crop_management.request.CropUpdateRequest;
 import com.agropredict.domain.crop.Crop;
 import com.agropredict.domain.history.HistoryRecord;
 import java.util.List;

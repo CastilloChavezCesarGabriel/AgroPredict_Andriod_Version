@@ -1,6 +1,6 @@
 package com.agropredict.application.repository;
 
-import com.agropredict.application.request.user_registration.RegistrationRequest;
+import com.agropredict.application.authentication.request.RegistrationRequest;
 import com.agropredict.domain.user.ISessionSubject;
 import com.agropredict.domain.user.User;
 

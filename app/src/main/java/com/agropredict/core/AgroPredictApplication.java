@@ -1,7 +1,7 @@
 package com.agropredict.core;
 
 import android.app.Application;
-import com.agropredict.application.diagnostic_submission.DiagnosticWorkflow;
+import com.agropredict.application.diagnostic_submission.workflow.DiagnosticWorkflow;
 import com.agropredict.application.factory.IAccessFactory;
 import com.agropredict.application.factory.ICatalogFactory;
 import com.agropredict.application.factory.IDashboardFactory;
@@ -27,7 +27,6 @@ import com.google.android.material.color.DynamicColors;
 public final class AgroPredictApplication extends Application implements
         IAccessFactory, IDashboardFactory, ICatalogFactory,
         IReviewFactory, IPredictionFactory, IReportingFactory {
-
     private Configuration configuration;
 
     @Override
@@ -35,7 +34,7 @@ public final class AgroPredictApplication extends Application implements
         super.onCreate();
         DynamicColors.applyToActivitiesIfAvailable(this);
         configuration = new Configuration(this);
-        configuration.backup();
+        configuration.createBackup().backup();
     }
 
     @Override

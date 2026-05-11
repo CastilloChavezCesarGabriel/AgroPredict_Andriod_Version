@@ -1,9 +1,9 @@
 package com.agropredict.presentation.viewmodel.prediction_diagnosis;
 
 import com.agropredict.application.operation_result.IUseCaseResult;
-import com.agropredict.application.request.diagnostic_submission.SubmissionRequest;
-import com.agropredict.application.usecase.diagnostic.ClassifyImageUseCase;
-import com.agropredict.application.usecase.diagnostic.SubmitDiagnosticUseCase;
+import com.agropredict.application.diagnostic_submission.request.SubmissionRequest;
+import com.agropredict.application.diagnostic_submission.usecase.ClassifyImageUseCase;
+import com.agropredict.application.diagnostic_submission.usecase.SubmitDiagnosticUseCase;
 import com.agropredict.domain.diagnostic.visitor.IClassificationResult;
 
 public final class PredictionWorkflow {

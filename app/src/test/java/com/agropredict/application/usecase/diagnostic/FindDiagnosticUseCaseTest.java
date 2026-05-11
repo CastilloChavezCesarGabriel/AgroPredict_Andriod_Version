@@ -3,6 +3,7 @@ package com.agropredict.application.usecase.diagnostic;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import com.agropredict.application.diagnostic_history.FindDiagnosticUseCase;
 import com.agropredict.application.repository.IDiagnosticRepository;
 import com.agropredict.domain.diagnostic.Prediction;
 import com.agropredict.domain.diagnostic.Diagnostic;

@@ -3,8 +3,9 @@ package com.agropredict.application.request.diagnostic_submission;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import com.agropredict.application.diagnostic_submission.CropDossier;
-import com.agropredict.application.diagnostic_submission.CropRegistry;
+import com.agropredict.application.diagnostic_submission.workflow.CropDossier;
+import com.agropredict.application.diagnostic_submission.workflow.CropRegistry;
+import com.agropredict.application.diagnostic_submission.request.Cultivation;
 import com.agropredict.application.repository.ICatalogRepository;
 import com.agropredict.domain.crop.Crop;
 import com.agropredict.repository.CapturingCropRepository;

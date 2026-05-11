@@ -7,7 +7,7 @@ import com.agropredict.application.repository.IReportRepository;
 import com.agropredict.application.repository.ISessionRepository;
 import com.agropredict.application.service.IReportService;
 import com.agropredict.application.factory.IReportingFactory;
-import com.agropredict.infrastructure.api_integration.GravitySeverityFactory;
+import com.agropredict.domain.diagnostic.ISeverityFactory;
 import com.agropredict.infrastructure.persistence.database.Database;
 import com.agropredict.infrastructure.persistence.repository.DiagnosticContext;
 import com.agropredict.infrastructure.persistence.repository.SessionRepository;
@@ -25,10 +25,12 @@ import java.io.File;
 public final class AndroidReportingFactory implements IReportingFactory {
     private final Database database;
     private final Context context;
+    private final ISeverityFactory severityFactory;
 
-    public AndroidReportingFactory(Database database, Context context) {
+    public AndroidReportingFactory(Database database, Context context, ISeverityFactory severityFactory) {
         this.database = database;
         this.context = context;
+        this.severityFactory = severityFactory;
     }
 
     @Override
@@ -40,7 +42,7 @@ public final class AndroidReportingFactory implements IReportingFactory {
 
     @Override
     public IDiagnosticRepository createDiagnosticRepository() {
-        DiagnosticContext context = new DiagnosticContext(createSessionRepository(), new GravitySeverityFactory());
+        DiagnosticContext context = new DiagnosticContext(createSessionRepository(), severityFactory);
         return new SyncingDiagnosticRepository(
                 new SqliteDiagnosticRepository(database, context),
                 createSyncRecorder());

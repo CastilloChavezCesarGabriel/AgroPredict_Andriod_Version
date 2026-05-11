@@ -1,7 +1,7 @@
 package com.agropredict.infrastructure.persistence.schema;
 
 import android.database.sqlite.SQLiteDatabase;
-import com.agropredict.application.request.ai_questionnaire.AnswerKey;
+import com.agropredict.application.diagnostic_submission.ai_questionnaire.AnswerKey;
 
 public final class SeedLoader {
     private final SQLiteDatabase database;

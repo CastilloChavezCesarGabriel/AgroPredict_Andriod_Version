@@ -1,8 +1,8 @@
 package com.agropredict.infrastructure.persistence.repository;
 
 import com.agropredict.application.repository.IReportRepository;
-import com.agropredict.application.request.report_generation.ReportRequest;
-import com.agropredict.application.request.report_generation.Destination;
+import com.agropredict.application.report_generation.request.ReportRequest;
+import com.agropredict.application.report_generation.request.Destination;
 import com.agropredict.infrastructure.persistence.database.Clock;
 import com.agropredict.infrastructure.persistence.database.Database;
 import com.agropredict.infrastructure.persistence.database.SqliteRow;

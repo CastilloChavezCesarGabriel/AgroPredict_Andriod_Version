@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import com.agropredict.application.diagnostic_history.ListDiagnosticUseCase;
 import com.agropredict.application.repository.IDiagnosticRepository;
 import com.agropredict.domain.diagnostic.Prediction;
 import com.agropredict.domain.diagnostic.Diagnostic;

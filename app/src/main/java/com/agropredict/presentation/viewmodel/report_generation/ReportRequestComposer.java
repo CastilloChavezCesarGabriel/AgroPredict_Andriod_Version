@@ -1,7 +1,7 @@
 package com.agropredict.presentation.viewmodel.report_generation;
 
-import com.agropredict.application.request.report_generation.Finding;
-import com.agropredict.application.request.report_generation.ReportRequest;
+import com.agropredict.application.report_generation.request.Finding;
+import com.agropredict.application.report_generation.request.ReportRequest;
 import com.agropredict.domain.report.Report;
 import com.agropredict.domain.diagnostic.visitor.IDiagnosticPairConsumer;
 

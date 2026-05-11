@@ -1,7 +1,8 @@
 package com.agropredict.application.usecase.authentication;
 
+import com.agropredict.application.authentication.usecase.ResetPasswordUseCase;
 import com.agropredict.application.repository.IUserRepository;
-import com.agropredict.application.request.user_registration.RegistrationRequest;
+import com.agropredict.application.authentication.request.RegistrationRequest;
 import com.agropredict.application.service.IPasswordHasher;
 import com.agropredict.domain.user.AnonymousUser;
 import com.agropredict.domain.user.ISessionSubject;

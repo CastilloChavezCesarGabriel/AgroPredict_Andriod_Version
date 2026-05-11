@@ -4,7 +4,7 @@ import android.os.Bundle;
 import com.agropredict.R;
 import com.agropredict.application.factory.IReviewFactory;
 import com.agropredict.application.repository.IPhotographRepository;
-import com.agropredict.application.usecase.diagnostic.FindDiagnosticUseCase;
+import com.agropredict.application.diagnostic_history.FindDiagnosticUseCase;
 import com.agropredict.domain.diagnostic.Diagnostic;
 import com.agropredict.domain.photograph.Photograph;
 import com.agropredict.presentation.user_interface.display.PredictionResultDisplay;
