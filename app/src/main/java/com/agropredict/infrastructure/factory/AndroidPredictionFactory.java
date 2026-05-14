@@ -33,6 +33,7 @@ import com.agropredict.infrastructure.persistence.repository.SqliteSyncRecorder;
 import com.agropredict.infrastructure.persistence.repository.SyncingCropRepository;
 import com.agropredict.infrastructure.persistence.repository.SyncingDiagnosticRepository;
 import com.agropredict.infrastructure.persistence.repository.SyncingPhotographRepository;
+import com.agropredict.infrastructure.notification.CropNotificationService;
 import com.agropredict.infrastructure.persistence.schema.CatalogName;
 
 public final class AndroidPredictionFactory implements IPredictionFactory {
@@ -81,7 +82,7 @@ public final class AndroidPredictionFactory implements IPredictionFactory {
         DiagnosticArchive archive = new DiagnosticArchive(
                 new SyncingDiagnosticRepository(new SqliteDiagnosticRepository(database, context), recorder),
                 new SqliteQuestionnaireRepository(database));
-        return new DiagnosticWorkflow(registry, archive);
+        return new DiagnosticWorkflow(registry, archive, new CropNotificationService(this.context));
     }
 
     @Override

@@ -1,12 +1,22 @@
 package com.agropredict.presentation.user_interface.screen;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
+import com.agropredict.infrastructure.notification.WeeklyReminderWorker;
+import java.util.concurrent.TimeUnit;
 import com.agropredict.R;
 import com.agropredict.application.factory.IAccessFactory;
 import com.agropredict.application.factory.IDashboardFactory;
@@ -24,9 +34,14 @@ import java.io.IOException;
 
 public final class HomeActivity extends BaseActivity implements IHomeView, IUserIdentityConsumer {
     private static final String PEST_GUIDE_PATH = "pdf/manual_sostenible.pdf";
+    private static final String WEEKLY_WORK_TAG = "weekly_crop_reminder";
     private HomeViewModel viewModel;
     private IAssetService assetService;
     private GreetUserUseCase greetUseCase;
+
+    private final ActivityResultLauncher<String> notificationPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(),
+                    granted -> scheduleWeeklyReminder());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +49,7 @@ public final class HomeActivity extends BaseActivity implements IHomeView, IUser
         setContentView(R.layout.activity_home);
         initialize();
         listen();
+        requestNotificationPermission();
     }
 
     private void initialize() {
@@ -91,6 +107,24 @@ public final class HomeActivity extends BaseActivity implements IHomeView, IUser
                 .setPositiveButton(R.string.confirm, (dialog, which) -> viewModel.logout())
                 .setNegativeButton(R.string.cancel, null)
                 .show();
+    }
+
+    private void requestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+                return;
+            }
+        }
+        scheduleWeeklyReminder();
+    }
+
+    private void scheduleWeeklyReminder() {
+        PeriodicWorkRequest weekly = new PeriodicWorkRequest.Builder(
+                WeeklyReminderWorker.class, 7, TimeUnit.DAYS)
+                .build();
+        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+                WEEKLY_WORK_TAG, ExistingPeriodicWorkPolicy.KEEP, weekly);
     }
 
     private void browse(String url) {

@@ -22,6 +22,7 @@ import com.agropredict.application.service.IImageClassifier;
 import com.agropredict.application.service.IImageCompressor;
 import com.agropredict.application.service.IPasswordHasher;
 import com.agropredict.application.service.IReportService;
+import com.agropredict.infrastructure.notification.CropNotificationService;
 import com.google.android.material.color.DynamicColors;
 
 public final class AgroPredictApplication extends Application implements
@@ -35,6 +36,7 @@ public final class AgroPredictApplication extends Application implements
         DynamicColors.applyToActivitiesIfAvailable(this);
         configuration = new Configuration(this);
         configuration.createBackup().backup();
+        CropNotificationService.createChannels(this);
     }
 
     @Override

@@ -161,6 +161,16 @@
     <string name="phone_label">Phone</string>
     <string name="occupation_label">Occupation</string>
 
+    <!-- Notifications -->
+    <string name="notif_severe_title">Severe crop issue detected</string>
+    <string name="notif_severe_text">One of your crops needs urgent attention. Tap to review.</string>
+    <string name="notif_weekly_title">Time to check your crops</string>
+    <string name="notif_weekly_text">Keep your crops healthy — run a diagnosis this week.</string>
+    <string name="notif_channel_alerts">Crop Alerts</string>
+    <string name="notif_channel_alerts_desc">Urgent alerts about your crop health</string>
+    <string name="notif_channel_reminders">Crop Reminders</string>
+    <string name="notif_channel_reminders_desc">Periodic reminders to check your crops</string>
+
     <!-- General -->
     <string name="loading">Loading…</string>
     <string name="error_general">An unexpected error occurred</string>
