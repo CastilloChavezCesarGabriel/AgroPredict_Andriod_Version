@@ -12,12 +12,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 
-public abstract class ReportService implements IReportService {
+public abstract class ExportService implements IReportService {
     protected final File outputDirectory;
     protected final IClock clock;
     private final UtcTimestamp filenameTimestamp;
 
-    protected ReportService(File outputDirectory, IClock clock) {
+    protected ExportService(File outputDirectory, IClock clock) {
         this.outputDirectory = Objects.requireNonNull(outputDirectory,
                 "report service requires an output directory");
         this.clock = Objects.requireNonNull(clock,

@@ -8,7 +8,7 @@ import com.agropredict.domain.diagnostic.Diagnostic;
 import java.io.File;
 import java.io.IOException;
 
-public final class CsvReportService extends ReportService {
+public final class CsvReportService extends ExportService {
     public CsvReportService(File outputDirectory, IClock clock) {
         super(outputDirectory, clock);
     }

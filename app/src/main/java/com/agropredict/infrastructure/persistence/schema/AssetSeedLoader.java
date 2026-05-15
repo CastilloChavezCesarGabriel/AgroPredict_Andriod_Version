@@ -11,12 +11,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Objects;
 
-public final class SeedLoader {
+public final class AssetSeedLoader {
     private static final String SEED_ASSET = "seed.json";
     private final SQLiteDatabase database;
     private final AssetManager assets;
 
-    public SeedLoader(SQLiteDatabase database, AssetManager assets) {
+    public AssetSeedLoader(SQLiteDatabase database, AssetManager assets) {
         this.database = Objects.requireNonNull(database, "seed loader requires a database");
         this.assets = Objects.requireNonNull(assets, "seed loader requires an asset manager");
     }

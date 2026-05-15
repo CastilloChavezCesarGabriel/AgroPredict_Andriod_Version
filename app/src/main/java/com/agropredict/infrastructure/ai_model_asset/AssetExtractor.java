@@ -2,7 +2,7 @@ package com.agropredict.infrastructure.ai_model_asset;
 
 import android.content.Context;
 import com.agropredict.application.service.IAssetService;
-import com.agropredict.infrastructure.database_backup.FileCopier;
+import com.agropredict.infrastructure.database_backup.StreamCopier;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -29,7 +29,7 @@ public final class AssetExtractor implements IAssetService {
     private void copy(String path, File destination) {
         try (InputStream input = context.getAssets().open(path);
              FileOutputStream output = new FileOutputStream(destination)) {
-            new FileCopier().copy(input, output);
+            new StreamCopier().copy(input, output);
         } catch (IOException ioFailure) {
             throw new UncheckedIOException(ioFailure);
         }

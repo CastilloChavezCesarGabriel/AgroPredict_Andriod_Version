@@ -9,7 +9,7 @@ import com.agropredict.infrastructure.persistence.database.UtcTimestamp;
 import java.io.File;
 import java.io.IOException;
 
-public final class PdfReportService extends ReportService {
+public final class PdfReportService extends ExportService {
     private final UtcTimestamp displayTimestamp;
 
     public PdfReportService(File outputDirectory, IClock clock) {

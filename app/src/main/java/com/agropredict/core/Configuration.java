@@ -39,7 +39,7 @@ import com.agropredict.infrastructure.factory.UserPersistence;
 import com.agropredict.infrastructure.persistence.database.Database;
 import com.agropredict.infrastructure.persistence.database.SqliteRowFactory;
 import com.agropredict.infrastructure.persistence.database.SystemClock;
-import com.agropredict.infrastructure.persistence.repository.DiagnosticContext;
+import com.agropredict.infrastructure.persistence.repository.DiagnosticPersistenceContext;
 import com.agropredict.infrastructure.persistence.repository.SessionRepository;
 import com.agropredict.infrastructure.report_export.AndroidReportServiceCatalog;
 import com.agropredict.infrastructure.report_export.CsvReportService;
@@ -84,7 +84,7 @@ public final class Configuration {
 
     public IReviewFactory createReview(ISeverityFactory severityFactory) {
         SqliteRowFactory rowFactory = createRowFactory();
-        DiagnosticContext diagnosticContext = new DiagnosticContext(session, severityResolver, severityFactory);
+        DiagnosticPersistenceContext diagnosticContext = new DiagnosticPersistenceContext(session, severityResolver, severityFactory);
         return new AndroidReviewFactory(
                 new DiagnosticPersistence(database, rowFactory, diagnosticContext),
                 new CropPersistence(database, rowFactory, session),
@@ -101,7 +101,7 @@ public final class Configuration {
 
     public IDiagnosticWorkflowFactory createDiagnosticWorkflow(ISeverityFactory severityFactory) {
         SqliteRowFactory rowFactory = createRowFactory();
-        DiagnosticContext diagnosticContext = new DiagnosticContext(session, severityResolver, severityFactory);
+        DiagnosticPersistenceContext diagnosticContext = new DiagnosticPersistenceContext(session, severityResolver, severityFactory);
         return new AndroidDiagnosticWorkflow(
                 new CropPersistence(database, rowFactory, session),
                 new DiagnosticPersistence(database, rowFactory, diagnosticContext));

@@ -34,7 +34,7 @@ public final class DatabaseBackup {
     private void transfer() {
         try (FileInputStream input = new FileInputStream(source);
              FileOutputStream output = new FileOutputStream(destination)) {
-            new FileCopier().copy(input, output);
+            new StreamCopier().copy(input, output);
         } catch (IOException ioFailure) {
             Log.e(TAG, "Database backup copy failed from "
                     + source.getAbsolutePath() + " to " + destination.getAbsolutePath(), ioFailure);

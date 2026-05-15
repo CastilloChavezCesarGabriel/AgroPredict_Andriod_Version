@@ -33,10 +33,10 @@ public final class SqliteDiagnosticRepository implements IDiagnosticRepository, 
             + "LEFT JOIN image i ON d.image_id = i.id ";
 
     private final SqliteRowStore store;
-    private final DiagnosticContext context;
+    private final DiagnosticPersistenceContext context;
     private final SqliteRowFactory rowFactory;
 
-    public SqliteDiagnosticRepository(Database database, DiagnosticContext context, SqliteRowFactory rowFactory) {
+    public SqliteDiagnosticRepository(Database database, DiagnosticPersistenceContext context, SqliteRowFactory rowFactory) {
         Objects.requireNonNull(database, "diagnostic repository requires a database");
         this.context = Objects.requireNonNull(context, "diagnostic repository requires a context");
         this.rowFactory = Objects.requireNonNull(rowFactory, "diagnostic repository requires a row factory");

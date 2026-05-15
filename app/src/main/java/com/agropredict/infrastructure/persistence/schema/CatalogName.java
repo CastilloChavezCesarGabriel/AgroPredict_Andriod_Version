@@ -30,7 +30,7 @@ public enum CatalogName implements ITable {
     }
 
     public void populate(SQLiteDatabase database, String[] entries) {
-        new Seed(table, entries).load(database);
+        new CatalogSeed(table, entries).load(database);
     }
 
     public ICatalogRepository open(Database database) {

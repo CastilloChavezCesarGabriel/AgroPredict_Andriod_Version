@@ -3,7 +3,7 @@ package com.agropredict.infrastructure.factory;
 import android.content.Context;
 import com.agropredict.application.factory.IImageRejectionFactory;
 import com.agropredict.infrastructure.image_classification.InterpreterLoader;
-import com.agropredict.infrastructure.image_classification.LabelCatalog;
+import com.agropredict.infrastructure.image_classification.LabelLoader;
 import com.agropredict.infrastructure.image_classification.TFLiteModel;
 import java.util.Objects;
 
@@ -21,7 +21,7 @@ public final class TFLiteModelFactory {
     public TFLiteModel create() {
         return new TFLiteModel(
                 new InterpreterLoader(context.getAssets()).load(MODEL_ASSET),
-                new LabelCatalog(context.getAssets()).load(LABELS_ASSET),
+                new LabelLoader(context.getAssets()).load(LABELS_ASSET),
                 rejectionFactory.createConfidenceLow());
     }
 }

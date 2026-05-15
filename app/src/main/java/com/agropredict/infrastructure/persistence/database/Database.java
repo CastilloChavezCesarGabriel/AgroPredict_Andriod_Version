@@ -4,7 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import com.agropredict.infrastructure.persistence.schema.SqliteSchema;
-import com.agropredict.infrastructure.persistence.schema.SeedLoader;
+import com.agropredict.infrastructure.persistence.schema.AssetSeedLoader;
 
 public final class Database extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 6;
@@ -25,7 +25,7 @@ public final class Database extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase database) {
         schema.create(database);
-        new SeedLoader(database, context.getAssets()).load();
+        new AssetSeedLoader(database, context.getAssets()).load();
     }
 
     @Override

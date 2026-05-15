@@ -8,10 +8,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Objects;
 
-public final class LabelCatalog {
+public final class LabelLoader {
     private final AssetManager assetManager;
 
-    public LabelCatalog(AssetManager assetManager) {
+    public LabelLoader(AssetManager assetManager) {
         this.assetManager = Objects.requireNonNull(assetManager, "label catalog requires an asset manager");
     }
 
