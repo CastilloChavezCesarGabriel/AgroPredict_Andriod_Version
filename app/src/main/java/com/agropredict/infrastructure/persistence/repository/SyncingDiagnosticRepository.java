@@ -4,14 +4,15 @@ import com.agropredict.application.repository.IDiagnosticRepository;
 import com.agropredict.application.repository.IRecordEraser;
 import com.agropredict.domain.diagnostic.Diagnostic;
 import java.util.List;
+import java.util.Objects;
 
 public final class SyncingDiagnosticRepository implements IDiagnosticRepository, IRecordEraser {
     private final SqliteDiagnosticRepository delegate;
     private final SqliteSyncRecorder recorder;
 
     public SyncingDiagnosticRepository(SqliteDiagnosticRepository delegate, SqliteSyncRecorder recorder) {
-        this.delegate = delegate;
-        this.recorder = recorder;
+        this.delegate = Objects.requireNonNull(delegate, "syncing diagnostic repository requires a delegate");
+        this.recorder = Objects.requireNonNull(recorder, "syncing diagnostic repository requires a sync recorder");
     }
 
     @Override

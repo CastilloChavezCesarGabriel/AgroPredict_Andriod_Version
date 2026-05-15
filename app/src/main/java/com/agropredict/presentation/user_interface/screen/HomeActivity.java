@@ -14,13 +14,13 @@ import com.agropredict.application.service.IAssetService;
 import com.agropredict.application.authentication.usecase.CheckSessionUseCase;
 import com.agropredict.application.authentication.usecase.LogoutUseCase;
 import com.agropredict.application.profile.GreetUserUseCase;
-import com.agropredict.domain.authentication.Session;
+import com.agropredict.domain.authentication.session.Session;
 import com.agropredict.domain.user.visitor.IUserIdentityConsumer;
 import com.agropredict.presentation.user_interface.navigation.BackNavigationGuard;
 import com.agropredict.presentation.user_interface.navigation.PdfLauncher;
 import com.agropredict.presentation.viewmodel.home_dashboard.HomeViewModel;
 import com.agropredict.presentation.viewmodel.home_dashboard.IHomeView;
-import java.io.IOException;
+import java.io.UncheckedIOException;
 
 public final class HomeActivity extends BaseActivity implements IHomeView, IUserIdentityConsumer {
     private static final String PEST_GUIDE_PATH = "pdf/manual_sostenible.pdf";
@@ -79,7 +79,7 @@ public final class HomeActivity extends BaseActivity implements IHomeView, IUser
         try {
             String filePath = assetService.extract(PEST_GUIDE_PATH);
             PdfLauncher.open(this, filePath);
-        } catch (IOException exception) {
+        } catch (UncheckedIOException exception) {
             Toast.makeText(this, R.string.error_general, Toast.LENGTH_SHORT).show();
         }
     }

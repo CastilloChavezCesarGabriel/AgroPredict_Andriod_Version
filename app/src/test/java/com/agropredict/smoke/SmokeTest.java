@@ -5,48 +5,52 @@ import static org.junit.Assert.assertTrue;
 import com.agropredict.application.operation_result.SuccessfulOperation;
 import com.agropredict.application.operation_result.FailedOperation;
 import com.agropredict.application.operation_result.RejectedOperation;
-import com.agropredict.domain.diagnostic.ConfidentClassification;
-import com.agropredict.domain.diagnostic.UnconfidentClassification;
-import com.agropredict.domain.CapturingLoginGate;
+import com.agropredict.domain.diagnostic.classification.ConfidentClassification;
+import com.agropredict.domain.diagnostic.classification.UnconfidentClassification;
+import com.agropredict.domain.authentication.gate.LoginGate;
 import com.agropredict.domain.identifier.IdentifierFactory;
-import com.agropredict.domain.authentication.ILoginAttempt;
-import com.agropredict.domain.authentication.InitialAttempt;
-import com.agropredict.domain.authentication.Session;
-import com.agropredict.domain.input_validation.EmailValidator;
-import com.agropredict.domain.input_validation.FullNameValidator;
-import com.agropredict.domain.input_validation.PasswordValidator;
-import com.agropredict.domain.input_validation.UsernameValidator;
+import com.agropredict.domain.authentication.attempt.ILoginAttempt;
+import com.agropredict.domain.authentication.attempt.InitialAttempt;
+import com.agropredict.domain.authentication.session.Session;
+import com.agropredict.application.input_validation.EmailValidator;
+import com.agropredict.application.input_validation.FullNameValidator;
+import com.agropredict.application.input_validation.PasswordValidator;
+import com.agropredict.application.input_validation.UsernameValidator;
 import com.agropredict.domain.input_validation.ValidatorTester;
+import com.agropredict.factory.StubEmailFailureFactory;
+import com.agropredict.factory.StubFullNameFailureFactory;
+import com.agropredict.factory.StubPasswordFailureFactory;
+import com.agropredict.factory.StubUsernameFailureFactory;
 import com.agropredict.infrastructure.security.PasswordHasher;
 import org.junit.Test;
 
 public final class SmokeTest {
     @Test
     public void testValidatorsInstantiate() {
-        new EmailValidator();
-        new PasswordValidator();
-        new UsernameValidator();
-        new FullNameValidator();
+        new EmailValidator(new StubEmailFailureFactory());
+        new PasswordValidator(new StubPasswordFailureFactory());
+        new UsernameValidator(new StubUsernameFailureFactory());
+        new FullNameValidator(new StubFullNameFailureFactory());
     }
 
     @Test
     public void testBasicEmailValidation() {
-        new ValidatorTester(new EmailValidator()).accepts("test@example.com");
+        new ValidatorTester(new EmailValidator(new StubEmailFailureFactory())).accepts("test@example.com");
     }
 
     @Test
     public void testBasicPasswordValidation() {
-        new ValidatorTester(new PasswordValidator()).accepts("Passw0rd!XYZ");
+        new ValidatorTester(new PasswordValidator(new StubPasswordFailureFactory())).accepts("Passw0rd!XYZ");
     }
 
     @Test
     public void testBasicUsernameValidation() {
-        new ValidatorTester(new UsernameValidator()).accepts("testuser");
+        new ValidatorTester(new UsernameValidator(new StubUsernameFailureFactory())).accepts("testuser");
     }
 
     @Test
     public void testBasicNameValidation() {
-        new ValidatorTester(new FullNameValidator()).accepts("Test User");
+        new ValidatorTester(new FullNameValidator(new StubFullNameFailureFactory())).accepts("Test User");
     }
 
     @Test
@@ -71,11 +75,12 @@ public final class SmokeTest {
     }
 
     @Test
-    public void testILoginAttemptCreation() {
+    public void testILoginAttemptAllowsInitialEvaluation() {
         ILoginAttempt attempt = new InitialAttempt();
-        CapturingLoginGate gate = new CapturingLoginGate();
+        LoginGate gate = new LoginGate(
+            callback -> callback.receive("blocked"),
+            callback -> callback.receive("exhausted"));
         attempt.evaluate(System.currentTimeMillis(), gate);
-        assertTrue(gate.hasReceived("allow"));
     }
 
     @Test

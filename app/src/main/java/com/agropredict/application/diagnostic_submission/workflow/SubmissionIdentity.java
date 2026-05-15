@@ -1,11 +1,11 @@
 package com.agropredict.application.diagnostic_submission.workflow;
 
-import com.agropredict.application.diagnostic_submission.request.DiagnosticSubject;
-import com.agropredict.domain.crop.Crop;
+import com.agropredict.application.diagnostic_submission.request.PhotographInput;
+import com.agropredict.application.repository.IPhotographRepository;
 import com.agropredict.domain.diagnostic.Diagnostic;
-import com.agropredict.domain.photograph.Photograph;
 import com.agropredict.domain.guard.ArgumentPrecondition;
 import com.agropredict.domain.identifier.IdentifierFactory;
+import com.agropredict.domain.photograph.Photograph;
 
 public final class SubmissionIdentity {
     private final String cropIdentifier;
@@ -16,19 +16,16 @@ public final class SubmissionIdentity {
         this.imageIdentifier = ArgumentPrecondition.validate(imageIdentifier, "submission image identifier");
     }
 
-    public static SubmissionIdentity generate() {
-        String cropIdentifier = IdentifierFactory.generate("crop");
-        String imageIdentifier = IdentifierFactory.generate("image");
-        return new SubmissionIdentity(cropIdentifier, imageIdentifier);
+    public static SubmissionIdentity bind(String cropIdentifier) {
+        return new SubmissionIdentity(cropIdentifier, IdentifierFactory.generate("image"));
     }
 
-    public void link(Diagnostic diagnostic) {
-        diagnostic.link(cropIdentifier, imageIdentifier);
+    public Diagnostic link(Diagnostic diagnostic) {
+        return diagnostic.link(cropIdentifier, imageIdentifier);
     }
 
-    public void enroll(DiagnosticSubject subject, CropRegistry registry) {
-        Crop crop = subject.produce(cropIdentifier, registry);
-        Photograph photograph = subject.capture(imageIdentifier);
-        registry.register(crop, photograph);
+    public void enroll(PhotographInput input, IPhotographRepository repository) {
+        Photograph photograph = input.produce(imageIdentifier);
+        repository.store(photograph, cropIdentifier);
     }
 }

@@ -1,6 +1,7 @@
 package com.agropredict.domain.crop;
 
 import com.agropredict.domain.crop.visitor.ISoilConsumer;
+import com.agropredict.domain.guard.ArgumentPrecondition;
 
 public final class Soil {
     private final String typeIdentifier;
@@ -8,7 +9,7 @@ public final class Soil {
 
     public Soil(String typeIdentifier, String area) {
         this.typeIdentifier = typeIdentifier;
-        this.area = area;
+        this.area = ArgumentPrecondition.validate(area, "soil area");
     }
 
     public void analyze(ISoilConsumer consumer) {

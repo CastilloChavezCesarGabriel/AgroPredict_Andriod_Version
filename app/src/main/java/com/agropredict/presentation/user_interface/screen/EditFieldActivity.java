@@ -22,18 +22,14 @@ public final class EditFieldActivity extends BaseActivity implements IEditFieldV
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_field);
-        bind();
         initialize();
         listen();
         load();
     }
 
-    private void bind() {
-        fieldEditor = new FieldEditor(this);
-    }
-
     private void initialize() {
         ICatalogFactory factory = (ICatalogFactory) getApplication();
+        fieldEditor = new FieldEditor(this, factory.createSoilTypeCatalog(), factory.createStageCatalog());
         UpdateCropUseCase updateUseCase = new UpdateCropUseCase(factory.createCropRepository());
         loadUseCase = new FindCropUseCase(factory.createCropRepository());
         ListCatalogUseCase soilTypes = new ListCatalogUseCase(factory.createSoilTypeCatalog());

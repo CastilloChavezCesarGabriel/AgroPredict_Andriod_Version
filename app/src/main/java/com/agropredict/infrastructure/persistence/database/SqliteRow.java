@@ -2,17 +2,19 @@ package com.agropredict.infrastructure.persistence.database;
 
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
+import java.util.Objects;
 
-public final class SqliteRow implements IRow {
+public final class SqliteRow {
     private final ContentValues values;
     private final SQLiteDatabase database;
+    private final UtcTimestamp timestamp;
 
-    public SqliteRow(SQLiteDatabase database) {
+    public SqliteRow(SQLiteDatabase database, UtcTimestamp timestamp) {
         this.values = new ContentValues();
-        this.database = database;
+        this.database = Objects.requireNonNull(database, "sqlite row requires a database");
+        this.timestamp = Objects.requireNonNull(timestamp, "sqlite row requires a timestamp");
     }
 
-    @Override
     public void record(String column, String value) {
         values.put(column, value);
     }
@@ -21,8 +23,8 @@ public final class SqliteRow implements IRow {
         values.put(column, value);
     }
 
-    public String lookup(String column) {
-        return values.getAsString(column);
+    public void stamp(String column) {
+        values.put(column, timestamp.serialize());
     }
 
     public void flush(String table) {

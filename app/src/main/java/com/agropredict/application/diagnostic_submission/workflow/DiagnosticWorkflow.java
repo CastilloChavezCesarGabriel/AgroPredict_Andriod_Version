@@ -1,22 +1,37 @@
 package com.agropredict.application.diagnostic_submission.workflow;
 
+import com.agropredict.application.crop_management.usecase.RegisterCropUseCase;
 import com.agropredict.application.diagnostic_submission.request.SubmissionRequest;
+import com.agropredict.application.repository.IPhotographRepository;
 import com.agropredict.domain.diagnostic.Diagnostic;
 import java.util.Objects;
 
 public final class DiagnosticWorkflow {
-    private final CropRegistry registry;
-    private final DiagnosticArchive archive;
+    private final RegisterCropUseCase registerCropUseCase;
+    private final IPhotographRepository photographRepository;
+    private final DiagnosticArchive diagnosticArchive;
 
-    public DiagnosticWorkflow(CropRegistry registry, DiagnosticArchive archive) {
-        this.registry = Objects.requireNonNull(registry, "diagnostic workflow requires a crop registry");
-        this.archive = Objects.requireNonNull(archive, "diagnostic workflow requires a diagnostic archive");
+    public DiagnosticWorkflow(RegisterCropUseCase registerCropUseCase,
+                              IPhotographRepository photographRepository,
+                              DiagnosticArchive diagnosticArchive) {
+        this.registerCropUseCase = Objects.requireNonNull(registerCropUseCase, 
+            "diagnostic workflow requires a register crop use case");
+        this.photographRepository = Objects.requireNonNull(photographRepository, 
+            "diagnostic workflow requires a photograph repository");
+        this.diagnosticArchive = Objects.requireNonNull(diagnosticArchive, 
+            "diagnostic workflow requires a diagnostic archive");
     }
 
     public void persist(SubmissionRequest request, Diagnostic diagnostic) {
-        SubmissionIdentity identity = SubmissionIdentity.generate();
-        request.store(registry, identity);
-        identity.link(diagnostic);
-        archive.preserve(diagnostic, request);
+        request.establish(registerCropUseCase, cropIdentifier -> {
+            Diagnostic linked = attach(cropIdentifier, request, diagnostic);
+            diagnosticArchive.preserve(linked, request);
+        });
+    }
+
+    private Diagnostic attach(String cropIdentifier, SubmissionRequest request, Diagnostic diagnostic) {
+        SubmissionIdentity identity = SubmissionIdentity.bind(cropIdentifier);
+        request.archive(photographRepository, identity);
+        return identity.link(diagnostic);
     }
 }

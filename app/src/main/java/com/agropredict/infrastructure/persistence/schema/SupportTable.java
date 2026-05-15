@@ -15,7 +15,7 @@ public final class SupportTable implements ITable {
             + "id TEXT PRIMARY KEY, "
             + "user_id TEXT REFERENCES user(id) ON DELETE SET NULL, "
             + "table_name TEXT NOT NULL, "
-            + "operation TEXT NOT NULL CHECK (operation IN ('INSERT','UPDATE','DELETE')), "
+            + "operation TEXT NOT NULL, "
             + "json_data TEXT NOT NULL, "
             + "created_at TEXT NOT NULL)");
         database.execSQL(

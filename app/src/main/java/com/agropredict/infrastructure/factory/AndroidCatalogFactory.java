@@ -1,35 +1,33 @@
 package com.agropredict.infrastructure.factory;
 
-import android.content.Context;
+import com.agropredict.application.factory.ICatalogFactory;
 import com.agropredict.application.repository.ICatalogRepository;
 import com.agropredict.application.repository.ICropRepository;
-import com.agropredict.application.factory.ICatalogFactory;
-import com.agropredict.infrastructure.persistence.database.Database;
-import com.agropredict.infrastructure.persistence.repository.SessionRepository;
-import com.agropredict.infrastructure.persistence.repository.SqliteCropRepository;
-import com.agropredict.infrastructure.persistence.schema.CatalogName;
+import java.util.Objects;
 
 public final class AndroidCatalogFactory implements ICatalogFactory {
-    private final Database database;
-    private final Context context;
+    private final CropPersistence cropPersistence;
+    private final CatalogPersistence catalogPersistence;
 
-    public AndroidCatalogFactory(Database database, Context context) {
-        this.database = database;
-        this.context = context;
+    public AndroidCatalogFactory(CropPersistence cropPersistence, CatalogPersistence catalogPersistence) {
+        this.cropPersistence = Objects.requireNonNull(cropPersistence,
+                "android catalog factory requires a crop persistence");
+        this.catalogPersistence = Objects.requireNonNull(catalogPersistence,
+                "android catalog factory requires a catalog persistence");
     }
 
     @Override
     public ICropRepository createCropRepository() {
-        return new SqliteCropRepository(database, new SessionRepository(context));
+        return cropPersistence.createCropRepository();
     }
 
     @Override
     public ICatalogRepository createSoilTypeCatalog() {
-        return CatalogName.SOIL_TYPE.open(database);
+        return catalogPersistence.createSoilTypeCatalog();
     }
 
     @Override
     public ICatalogRepository createStageCatalog() {
-        return CatalogName.PHENOLOGICAL_STAGE.open(database);
+        return catalogPersistence.createStageCatalog();
     }
 }

@@ -1,7 +1,7 @@
 package com.agropredict.application.profile;
 
 import com.agropredict.application.repository.IUserRepository;
-import com.agropredict.domain.user.User;
+import com.agropredict.domain.user.IUser;
 import java.util.Objects;
 
 public final class FindUserUseCase {
@@ -11,7 +11,7 @@ public final class FindUserUseCase {
         this.userRepository = Objects.requireNonNull(userRepository, "find user use case requires a user repository");
     }
 
-    public User find(String userIdentifier) {
+    public IUser find(String userIdentifier) {
         return userRepository.find(userIdentifier);
     }
 }

@@ -10,6 +10,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
+import java.util.Objects;
 
 public final class BitmapCompressor implements IImageCompressor {
     private static final int JPEG_QUALITY = 80;
@@ -18,7 +20,8 @@ public final class BitmapCompressor implements IImageCompressor {
     private final Context context;
 
     public BitmapCompressor(Context context) {
-        this.context = context;
+        this.context = Objects.requireNonNull(context,
+                "bitmap compressor requires a context");
     }
 
     @Override
@@ -26,12 +29,14 @@ public final class BitmapCompressor implements IImageCompressor {
         Uri imageUri = Uri.parse(imageUriString);
         try {
             Bitmap bitmap = decode(imageUri);
-            if (bitmap == null) return imageUriString;
+            if (bitmap == null) {
+                throw new IllegalStateException("Bitmap decode returned null for " + imageUriString);
+            }
             File compressed = save(bitmap);
             bitmap.recycle();
             return compressed.getAbsolutePath();
-        } catch (IOException exception) {
-            return imageUriString;
+        } catch (IOException ioFailure) {
+            throw new UncheckedIOException("Bitmap compression failed for " + imageUriString, ioFailure);
         }
     }
 

@@ -8,10 +8,12 @@ import com.agropredict.application.crop_management.usecase.ListCropUseCase;
 import com.agropredict.application.repository.ICropRepository;
 import com.agropredict.application.crop_management.request.CropUpdateRequest;
 import com.agropredict.domain.history.HistoryRecord;
+import com.agropredict.domain.crop.Crop;
 import com.agropredict.domain.crop.CropProfile;
+import com.agropredict.domain.crop.Field;
 import com.agropredict.domain.crop.GrowthCycle;
 import com.agropredict.domain.crop.Plot;
-import com.agropredict.domain.crop.Crop;
+import com.agropredict.domain.crop.Soil;
 
 import org.junit.Test;
 
@@ -31,9 +33,11 @@ public final class ListCropUseCaseTest {
 
     @Test
     public void testListReturnsAllCrops() {
+        Plot plot = new Plot(new Field("F", "L"), new Soil("Clay", "1ha"));
+        GrowthCycle cycle = new GrowthCycle("2026-01-01", "Vegetative");
         List<Crop> crops = List.of(
-            new Crop("crop_1", "wheat", new CropProfile(new Plot(null, null), new GrowthCycle(null, null))),
-            new Crop("crop_2", "corn", new CropProfile(new Plot(null, null), new GrowthCycle(null, null)))
+            new Crop("crop_1", "wheat", new CropProfile(plot, cycle)),
+            new Crop("crop_2", "corn", new CropProfile(plot, cycle))
         );
         List<Crop> result = new ListCropUseCase(stubCrop(crops)).list("user_1");
         assertEquals(2, result.size());

@@ -1,9 +1,11 @@
 package com.agropredict.domain.input_validation;
 
+import com.agropredict.application.input_validation.PasswordValidator;
+import com.agropredict.factory.StubPasswordFailureFactory;
 import org.junit.Test;
 
 public final class PasswordValidatorTest {
-    private final ValidatorTester tester = new ValidatorTester(new PasswordValidator());
+    private final ValidatorTester tester = new ValidatorTester(new PasswordValidator(new StubPasswordFailureFactory()));
 
     @Test
     public void testValidComplexPassword() {

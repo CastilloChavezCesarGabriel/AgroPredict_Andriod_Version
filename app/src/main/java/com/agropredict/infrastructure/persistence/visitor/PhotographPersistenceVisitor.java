@@ -1,21 +1,24 @@
 package com.agropredict.infrastructure.persistence.visitor;
 
-import com.agropredict.domain.authentication.ISession;
-import com.agropredict.domain.crop.visitor.ICropIdentityConsumer;
+import com.agropredict.domain.authentication.session.ISession;
 import com.agropredict.domain.photograph.IPhotographConsumer;
-import com.agropredict.domain.authentication.ISessionConsumer;
-import com.agropredict.infrastructure.persistence.database.IRow;
+import com.agropredict.domain.authentication.session.ISessionConsumer;
+import com.agropredict.infrastructure.persistence.database.SqliteRow;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public final class PhotographPersistenceVisitor implements IPhotographConsumer, ICropIdentityConsumer, ISessionConsumer {
-    private final IRow row;
+public final class PhotographPersistenceVisitor implements IPhotographConsumer, ISessionConsumer {
+    private final SqliteRow row;
 
-    public PhotographPersistenceVisitor(IRow row, ISession session) {
+    public PhotographPersistenceVisitor(SqliteRow row, ISession session) {
         this.row = row;
         session.report(this);
+    }
+
+    public void link(String cropIdentifier) {
+        row.record("crop_id", cropIdentifier);
     }
 
     @Override
@@ -37,11 +40,6 @@ public final class PhotographPersistenceVisitor implements IPhotographConsumer, 
         String captured = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
                 .format(new Date(file.lastModified()));
         row.record("captured_at", captured);
-    }
-
-    @Override
-    public void describe(String identifier, String cropType) {
-        row.record("crop_id", identifier);
     }
 
     @Override

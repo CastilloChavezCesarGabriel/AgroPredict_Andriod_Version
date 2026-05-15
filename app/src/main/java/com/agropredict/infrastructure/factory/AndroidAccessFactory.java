@@ -1,53 +1,49 @@
 package com.agropredict.infrastructure.factory;
 
-import android.content.Context;
+import com.agropredict.application.factory.IAccessFactory;
 import com.agropredict.application.repository.ICatalogRepository;
 import com.agropredict.application.repository.ISessionRepository;
 import com.agropredict.application.repository.IUserRepository;
 import com.agropredict.application.service.IAuditLogger;
 import com.agropredict.application.service.IPasswordHasher;
-import com.agropredict.application.factory.IAccessFactory;
-import com.agropredict.infrastructure.persistence.AuditLogger;
-import com.agropredict.infrastructure.persistence.database.Database;
-import com.agropredict.infrastructure.persistence.repository.SessionRepository;
-import com.agropredict.infrastructure.persistence.repository.SqliteSyncRecorder;
-import com.agropredict.infrastructure.persistence.repository.SqliteUserRepository;
-import com.agropredict.infrastructure.persistence.repository.SyncingUserRepository;
-import com.agropredict.infrastructure.persistence.schema.CatalogName;
-import com.agropredict.infrastructure.security.PasswordHasher;
+import java.util.Objects;
 
 public final class AndroidAccessFactory implements IAccessFactory {
-    private final Database database;
-    private final Context context;
+    private final UserPersistence userPersistence;
+    private final SessionPersistence sessionPersistence;
+    private final CatalogPersistence catalogPersistence;
 
-    public AndroidAccessFactory(Database database, Context context) {
-        this.database = database;
-        this.context = context;
+    public AndroidAccessFactory(UserPersistence userPersistence, SessionPersistence sessionPersistence, CatalogPersistence catalogPersistence) {
+        this.userPersistence = Objects.requireNonNull(userPersistence,
+                "android access factory requires a user persistence");
+        this.sessionPersistence = Objects.requireNonNull(sessionPersistence,
+                "android access factory requires a session persistence");
+        this.catalogPersistence = Objects.requireNonNull(catalogPersistence,
+                "android access factory requires a catalog persistence");
     }
 
     @Override
     public IUserRepository createUserRepository() {
-        SqliteUserRepository base = new SqliteUserRepository(database, createPasswordHasher());
-        return new SyncingUserRepository(base, new SqliteSyncRecorder(database, createSessionRepository()));
+        return userPersistence.createUserRepository();
     }
 
     @Override
     public ISessionRepository createSessionRepository() {
-        return new SessionRepository(context);
+        return sessionPersistence.createSessionRepository();
     }
 
     @Override
     public IPasswordHasher createPasswordHasher() {
-        return new PasswordHasher();
+        return userPersistence.createPasswordHasher();
     }
 
     @Override
     public IAuditLogger createAuditLogger() {
-        return new AuditLogger(database);
+        return userPersistence.createAuditLogger();
     }
 
     @Override
     public ICatalogRepository createOccupationCatalog() {
-        return CatalogName.OCCUPATION.open(database);
+        return catalogPersistence.createOccupationCatalog();
     }
 }

@@ -5,12 +5,13 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import com.agropredict.R;
 import com.agropredict.application.crop_management.request.CropUpdateRequest;
+import com.agropredict.application.repository.ICatalogRepository;
+import com.agropredict.domain.crop.Crop;
 import com.agropredict.domain.crop.CropProfile;
 import com.agropredict.domain.crop.Field;
 import com.agropredict.domain.crop.GrowthCycle;
 import com.agropredict.domain.crop.Plot;
 import com.agropredict.domain.crop.Soil;
-import com.agropredict.domain.crop.Crop;
 import com.agropredict.domain.crop.visitor.IFieldConsumer;
 import com.agropredict.domain.crop.visitor.IPlantingConsumer;
 import com.agropredict.domain.crop.visitor.ISoilConsumer;
@@ -18,23 +19,20 @@ import com.agropredict.presentation.user_interface.catalog_input.SoilTypeOption;
 import com.agropredict.presentation.user_interface.catalog_input.StageOption;
 
 public final class FieldEditor implements IFieldConsumer, ISoilConsumer, IPlantingConsumer {
-    private final EditText cropNameInput;
-    private final EditText areaInput;
-    private final Spinner soilTypeSpinner;
-    private final Spinner stageSpinner;
+    private final Activity activity;
+    private final ICatalogRepository soilTypes;
+    private final ICatalogRepository stages;
 
-    public FieldEditor(Activity activity) {
-        cropNameInput = activity.findViewById(R.id.etFieldName);
-        areaInput = activity.findViewById(R.id.etArea);
-        soilTypeSpinner = activity.findViewById(R.id.spnSoilType);
-        stageSpinner = activity.findViewById(R.id.spnStage);
+    public FieldEditor(Activity activity, ICatalogRepository soilTypes, ICatalogRepository stages) {
+        this.activity = activity;
+        this.soilTypes = soilTypes;
+        this.stages = stages;
     }
 
     public CropUpdateRequest collect(String identifier) {
-        Field field = new Field(cropNameInput.getText().toString().trim(), null);
-        Soil soil = new Soil(soilTypeSpinner.getSelectedItem().toString(),
-                areaInput.getText().toString().trim());
-        GrowthCycle cycle = new GrowthCycle(null, stageSpinner.getSelectedItem().toString());
+        Field field = new Field(read(R.id.etFieldName), read(R.id.etLocation));
+        Soil soil = new Soil(soilTypes.resolve(pick(R.id.spnSoilType)), read(R.id.etArea));
+        GrowthCycle cycle = new GrowthCycle(read(R.id.etPlantingDate), stages.resolve(pick(R.id.spnStage)));
         return new CropUpdateRequest(identifier, new CropProfile(new Plot(field, soil), cycle));
     }
 
@@ -45,31 +43,50 @@ public final class FieldEditor implements IFieldConsumer, ISoilConsumer, IPlanti
     }
 
     public void populate(SoilTypeOption soilTypeOption) {
-        soilTypeOption.populate(soilTypeSpinner);
+        soilTypeOption.populate(activity.findViewById(R.id.spnSoilType));
     }
 
     public void populate(StageOption stageOption) {
-        stageOption.populate(stageSpinner);
+        stageOption.populate(activity.findViewById(R.id.spnStage));
     }
 
     @Override
     public void locate(String name, String location) {
-        cropNameInput.setText(name);
+        write(R.id.etFieldName, name);
+        write(R.id.etLocation, location);
     }
 
     @Override
     public void analyze(String typeIdentifier, String area) {
-        select(soilTypeSpinner, typeIdentifier);
-        areaInput.setText(area != null ? area : "");
+        choose(R.id.spnSoilType, typeIdentifier);
+        write(R.id.etArea, area);
     }
 
     @Override
     public void track(String date, String stageIdentifier) {
-        select(stageSpinner, stageIdentifier);
+        write(R.id.etPlantingDate, date);
+        choose(R.id.spnStage, stageIdentifier);
     }
 
-    private void select(Spinner spinner, String value) {
-        if (value == null || spinner.getAdapter() == null) return;
+    private String read(int viewId) {
+        EditText input = activity.findViewById(viewId);
+        return input.getText().toString().trim();
+    }
+
+    private String pick(int spinnerId) {
+        Spinner spinner = activity.findViewById(spinnerId);
+        return spinner.getSelectedItem().toString();
+    }
+
+    private void write(int viewId, String value) {
+        EditText input = activity.findViewById(viewId);
+        input.setText(value != null ? value : "");
+    }
+
+    private void choose(int spinnerId, String value) {
+        if (value == null) return;
+        Spinner spinner = activity.findViewById(spinnerId);
+        if (spinner.getAdapter() == null) return;
         for (int index = 0; index < spinner.getCount(); index++) {
             if (spinner.getItemAtPosition(index).toString().equals(value)) {
                 spinner.setSelection(index);

@@ -1,9 +1,11 @@
 package com.agropredict.domain.input_validation;
 
+import com.agropredict.application.input_validation.UsernameValidator;
+import com.agropredict.factory.StubUsernameFailureFactory;
 import org.junit.Test;
 
 public final class UsernameValidatorTest {
-    private final ValidatorTester tester = new ValidatorTester(new UsernameValidator());
+    private final ValidatorTester tester = new ValidatorTester(new UsernameValidator(new StubUsernameFailureFactory()));
 
     @Test
     public void testValidUsername() {

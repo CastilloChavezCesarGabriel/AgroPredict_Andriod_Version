@@ -7,12 +7,13 @@ import com.agropredict.infrastructure.persistence.schema.Schema;
 import com.agropredict.infrastructure.persistence.schema.SeedLoader;
 
 public final class Database extends SQLiteOpenHelper {
-    private static final String DATABASE_NAME = "agro_diagnostic.db";
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 6;
     private final Schema schema;
+    private final Context context;
 
-    public Database(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    public Database(Context context, String name) {
+        super(context, name, null, DATABASE_VERSION);
+        this.context = context;
         this.schema = new Schema();
     }
 
@@ -23,7 +24,7 @@ public final class Database extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase database) {
-        SeedLoader seedLoader = new SeedLoader(database);
+        SeedLoader seedLoader = new SeedLoader(database, context.getAssets());
         schema.create(database);
         seedLoader.load();
     }

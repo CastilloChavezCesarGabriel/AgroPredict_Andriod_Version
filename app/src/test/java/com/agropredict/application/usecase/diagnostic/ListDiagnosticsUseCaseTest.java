@@ -6,8 +6,9 @@ import static org.junit.Assert.assertTrue;
 
 import com.agropredict.application.diagnostic_history.ListDiagnosticUseCase;
 import com.agropredict.application.repository.IDiagnosticRepository;
-import com.agropredict.domain.diagnostic.Prediction;
+import com.agropredict.domain.diagnostic.classification.Prediction;
 import com.agropredict.domain.diagnostic.Diagnostic;
+import com.agropredict.domain.diagnostic.severity.PendingSeverity;
 
 import org.junit.Test;
 
@@ -29,9 +30,10 @@ public final class ListDiagnosticsUseCaseTest {
     @Test
     public void testListAllDiagnostics() {
         Prediction prediction = new Prediction("wheat", 0.85);
+        PendingSeverity pending = new PendingSeverity(() -> "Pending");
         List<Diagnostic> diags = List.of(
-            new Diagnostic("d1", prediction),
-            new Diagnostic("d2", prediction)
+            Diagnostic.begin("d1", prediction, pending),
+            Diagnostic.begin("d2", prediction, pending)
         );
         List<Diagnostic> result = new ListDiagnosticUseCase(stubDiag(diags, List.of())).list("user_1");
         assertEquals(2, result.size());
@@ -46,7 +48,7 @@ public final class ListDiagnosticsUseCaseTest {
 
     @Test
     public void testFilterByCrop() {
-        List<Diagnostic> filtered = List.of(new Diagnostic("d1", new Prediction("corn", 0.9)));
+        List<Diagnostic> filtered = List.of(Diagnostic.begin("d1", new Prediction("corn", 0.9), new PendingSeverity(() -> "Pending")));
         List<Diagnostic> result = new ListDiagnosticUseCase(stubDiag(List.of(), filtered)).filter("user_1", "crop_1");
         assertEquals(1, result.size());
     }

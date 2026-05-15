@@ -4,9 +4,11 @@ import android.os.Bundle;
 import android.widget.EditText;
 import com.agropredict.R;
 import com.agropredict.application.factory.IAccessFactory;
+import com.agropredict.application.repository.ISessionRepository;
 import com.agropredict.application.service.IAuditLogger;
 import com.agropredict.application.authentication.usecase.CheckSessionUseCase;
 import com.agropredict.application.authentication.usecase.LoginUseCase;
+import com.agropredict.presentation.viewmodel.authentication.AndroidAuthenticationFailureFactory;
 import com.agropredict.presentation.viewmodel.authentication.ILoginView;
 import com.agropredict.presentation.viewmodel.authentication.LoginViewModel;
 
@@ -15,6 +17,7 @@ public final class LoginActivity extends BaseActivity implements ILoginView {
     private EditText emailInput;
     private EditText passwordInput;
     private IAuditLogger auditLogger;
+    private ISessionRepository sessionRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,11 +35,13 @@ public final class LoginActivity extends BaseActivity implements ILoginView {
 
     private void initialize() {
         IAccessFactory factory = (IAccessFactory) getApplication();
+        sessionRepository = factory.createSessionRepository();
         LoginUseCase loginUseCase = new LoginUseCase(
-                factory.createUserRepository(), factory.createSessionRepository());
+                factory.createUserRepository(), sessionRepository,
+                new AndroidAuthenticationFailureFactory(this));
         viewModel = new LoginViewModel(loginUseCase, this);
         auditLogger = factory.createAuditLogger();
-        new CheckSessionUseCase(factory.createSessionRepository()).check((identifier, occupation) -> {
+        new CheckSessionUseCase(sessionRepository).check((identifier, occupation) -> {
             if (identifier != null) redirect(HomeActivity.class);
         });
     }
@@ -58,8 +63,10 @@ public final class LoginActivity extends BaseActivity implements ILoginView {
     }
 
     @Override
-    public void proceed() {
-        auditLogger.log(null, "LOGIN");
+    public void proceed(String email) {
+        notify(getString(R.string.login_success, email));
+        sessionRepository.recall().report((identifier, occupation) ->
+                auditLogger.log(identifier, "LOGIN"));
         redirect(HomeActivity.class);
     }
 

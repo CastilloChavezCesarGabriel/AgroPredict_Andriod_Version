@@ -1,5 +1,7 @@
 package com.agropredict.domain.input_validation;
 
+import com.agropredict.domain.input_validation.failure.IValidationFailure;
+import com.agropredict.domain.input_validation.gate.IValidationGate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +14,7 @@ public final class CapturingValidationGate implements IValidationGate {
     }
 
     @Override
-    public void fail(String reason) {
+    public void fail(IValidationFailure failure) {
         outcomes.add("fail");
     }
 

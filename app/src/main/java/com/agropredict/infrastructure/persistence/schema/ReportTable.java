@@ -16,9 +16,9 @@ public final class ReportTable implements ITable {
             + "diagnostic_id TEXT REFERENCES diagnostic(id) ON DELETE SET NULL, "
             + "crop_id TEXT REFERENCES crop(id) ON DELETE SET NULL, "
             + "user_id TEXT REFERENCES user(id) ON DELETE SET NULL, "
-            + "format TEXT NOT NULL CHECK (format IN ('pdf','csv')), "
-            + "file_path TEXT, "
-            + "is_active INTEGER NOT NULL CHECK (is_active IN (0,1)), "
+            + "format TEXT NOT NULL, "
+            + "file_path TEXT NOT NULL, "
+            + "is_active INTEGER NOT NULL, "
             + "generated_at TEXT NOT NULL)");
         database.execSQL(
             "CREATE TABLE IF NOT EXISTS report_diagnostic ("

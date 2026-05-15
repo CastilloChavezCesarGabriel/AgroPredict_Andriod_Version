@@ -8,26 +8,39 @@ import android.provider.MediaStore;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import com.agropredict.R;
-import com.agropredict.application.factory.IPredictionFactory;
+import com.agropredict.application.authentication.usecase.CheckSessionUseCase;
+import com.agropredict.application.catalog.ListCatalogUseCase;
+import com.agropredict.application.crop_management.usecase.ListCropUseCase;
 import com.agropredict.application.diagnostic_submission.request.ImagePrediction;
 import com.agropredict.application.diagnostic_submission.request.PhotographInput;
-import com.agropredict.application.service.IImageClassifier;
-import com.agropredict.application.service.IImageCompressor;
-import com.agropredict.application.catalog.ListCatalogUseCase;
+import com.agropredict.application.diagnostic_submission.rejection.IImageRejection;
 import com.agropredict.application.diagnostic_submission.usecase.ClassifyImageUseCase;
 import com.agropredict.application.diagnostic_submission.usecase.SubmitDiagnosticUseCase;
+import com.agropredict.application.factory.ICatalogFactory;
+import com.agropredict.application.factory.IDashboardFactory;
+import com.agropredict.application.factory.IDiagnosticApiFactory;
+import com.agropredict.application.factory.IDiagnosticWorkflowFactory;
+import com.agropredict.application.factory.IImageClassificationFactory;
+import com.agropredict.application.service.IImageClassifier;
+import com.agropredict.application.service.IImageCompressor;
+import com.agropredict.application.service.IImageValidator;
+import com.agropredict.domain.crop.Crop;
 import com.agropredict.presentation.user_interface.catalog_input.SoilTypeOption;
 import com.agropredict.presentation.user_interface.catalog_input.StageOption;
 import com.agropredict.presentation.user_interface.form.PredictionForm;
 import com.agropredict.presentation.user_interface.selector.DateSelection;
+import com.agropredict.presentation.viewmodel.diagnostic_history.AndroidSeverityFactory;
+import com.agropredict.presentation.viewmodel.prediction_diagnosis.ClassificationResultPresenter;
 import com.agropredict.presentation.viewmodel.prediction_diagnosis.IPredictionView;
 import com.agropredict.presentation.viewmodel.prediction_diagnosis.PredictionViewModel;
 import com.agropredict.presentation.viewmodel.prediction_diagnosis.PredictionWorkflow;
+import java.util.List;
 
 public final class PredictionActivity extends BaseActivity implements IPredictionView {
     private PredictionViewModel viewModel;
     private PredictionForm predictionForm;
     private IImageCompressor imageCompressor;
+    private IImageValidator imageValidator;
     private String selectedImagePath;
     private ImagePrediction classification;
 
@@ -52,26 +65,32 @@ public final class PredictionActivity extends BaseActivity implements IPredictio
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_prediction);
-        bind();
         initialize();
         listen();
     }
 
-    private void bind() {
-        predictionForm = new PredictionForm(this);
-    }
-
     private void initialize() {
-        IPredictionFactory factory = (IPredictionFactory) getApplication();
-        IImageClassifier classifier = factory.createImageClassifier();
-        imageCompressor = factory.createImageCompressor();
+        IImageClassificationFactory imageFactory = (IImageClassificationFactory) getApplication();
+        IDiagnosticApiFactory apiFactory = (IDiagnosticApiFactory) getApplication();
+        IDiagnosticWorkflowFactory workflowFactory = (IDiagnosticWorkflowFactory) getApplication();
+        ICatalogFactory catalogFactory = (ICatalogFactory) getApplication();
+        IDashboardFactory dashboardFactory = (IDashboardFactory) getApplication();
+        IImageClassifier classifier = imageFactory.createImageClassifier();
+        imageCompressor = imageFactory.createImageCompressor();
+        imageValidator = imageFactory.createImageValidator();
+        predictionForm = new PredictionForm(this,
+                catalogFactory.createSoilTypeCatalog(),
+                catalogFactory.createStageCatalog());
         ClassifyImageUseCase classifyUseCase = new ClassifyImageUseCase(classifier);
         SubmitDiagnosticUseCase submitUseCase = new SubmitDiagnosticUseCase(
-                factory.createApiService(), factory.createDiagnosticWorkflow());
-        ListCatalogUseCase soilTypes = new ListCatalogUseCase(factory.createSoilTypeCatalog());
-        ListCatalogUseCase stages = new ListCatalogUseCase(factory.createStageCatalog());
+                apiFactory.createApiService(), workflowFactory.createDiagnosticWorkflow());
+        ListCatalogUseCase soilTypes = new ListCatalogUseCase(catalogFactory.createSoilTypeCatalog());
+        ListCatalogUseCase stages = new ListCatalogUseCase(catalogFactory.createStageCatalog());
+        ListCropUseCase listCrops = new ListCropUseCase(catalogFactory.createCropRepository());
         viewModel = new PredictionViewModel(new PredictionWorkflow(classifyUseCase, submitUseCase), this);
         viewModel.populate(soilTypes, stages);
+        new CheckSessionUseCase(dashboardFactory.createSessionRepository())
+                .check((identifier, occupation) -> viewModel.load(listCrops, identifier));
     }
 
     private void listen() {
@@ -98,8 +117,6 @@ public final class PredictionActivity extends BaseActivity implements IPredictio
     }
 
     private void diagnose() {
-        android.util.Log.i("PredictionActivity", "Submit tapped. imagePath=" + selectedImagePath
-                        + " classification=" + (classification == null ? "NULL" : "set"));
         if (selectedImagePath == null || selectedImagePath.isEmpty()) {
             notify(getString(R.string.image_invalid));
             return;
@@ -114,7 +131,17 @@ public final class PredictionActivity extends BaseActivity implements IPredictio
 
     private void present(Uri imageUri) {
         if (imageUri == null) return;
-        selectedImagePath = imageCompressor.compress(imageUri.toString());
+        IImageRejection rejection = imageValidator.validate(imageUri.toString());
+        if (rejection != null) {
+            rejection.encode(new ClassificationResultPresenter(this));
+            return;
+        }
+        try {
+            selectedImagePath = imageCompressor.compress(imageUri.toString());
+        } catch (RuntimeException compressionFailed) {
+            notify(getString(R.string.image_processing_failed));
+            return;
+        }
         predictionForm.preview(imageUri);
         viewModel.classify(selectedImagePath);
     }
@@ -138,7 +165,8 @@ public final class PredictionActivity extends BaseActivity implements IPredictio
 
     @Override
     public void onClassified(String cropName, double confidence) {
-        this.classification = new ImagePrediction(cropName, confidence);
+        this.classification = new ImagePrediction(cropName, confidence,
+                new AndroidSeverityFactory(this).createPending());
         runOnUiThread(() -> predictionForm.classify(cropName, confidence));
     }
 
@@ -153,13 +181,18 @@ public final class PredictionActivity extends BaseActivity implements IPredictio
     }
 
     @Override
-    public void populate(SoilTypeOption soilTypeOption) {
-        predictionForm.populate(soilTypeOption);
+    public void furnish(SoilTypeOption soilTypeOption) {
+        predictionForm.furnish(soilTypeOption);
     }
 
     @Override
-    public void populate(StageOption stageOption) {
-        predictionForm.populate(stageOption);
+    public void arrange(StageOption stageOption) {
+        predictionForm.arrange(stageOption);
+    }
+
+    @Override
+    public void offer(List<Crop> crops) {
+        runOnUiThread(() -> predictionForm.offer(crops));
     }
 
     @Override

@@ -5,13 +5,13 @@ import com.agropredict.domain.user.visitor.IOccupationConsumer;
 import com.agropredict.domain.user.visitor.IPhoneConsumer;
 import com.agropredict.domain.user.visitor.IUserIdentityConsumer;
 import com.agropredict.domain.user.visitor.IUsernameConsumer;
-import com.agropredict.infrastructure.persistence.database.IRow;
+import com.agropredict.infrastructure.persistence.database.SqliteRow;
 
 public final class UserPersistenceVisitor implements
         IUserIdentityConsumer, ICredentialConsumer, IUsernameConsumer, IPhoneConsumer, IOccupationConsumer {
-    private final IRow row;
+    private final SqliteRow row;
 
-    public UserPersistenceVisitor(IRow row) {
+    public UserPersistenceVisitor(SqliteRow row) {
         this.row = row;
     }
 

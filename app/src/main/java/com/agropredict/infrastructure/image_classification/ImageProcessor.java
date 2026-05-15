@@ -1,26 +1,25 @@
 package com.agropredict.infrastructure.image_classification;
 
-import com.agropredict.domain.diagnostic.UnconfidentClassification;
+import com.agropredict.application.diagnostic_submission.rejection.IImageRejection;
 import com.agropredict.domain.diagnostic.visitor.IClassificationResult;
 import java.nio.ByteBuffer;
+import java.util.Objects;
 
 public final class ImageProcessor {
-    private final ImageValidator validator;
     private final ImagePreprocessor preprocessor;
+    private final IImageRejection processingFailedRejection;
 
-    public ImageProcessor(ImageValidator validator, ImagePreprocessor preprocessor) {
-        this.validator = validator;
-        this.preprocessor = preprocessor;
+    public ImageProcessor(ImagePreprocessor preprocessor, IImageRejection processingFailedRejection) {
+        this.preprocessor = Objects.requireNonNull(preprocessor, "image processor requires a preprocessor");
+        this.processingFailedRejection = Objects.requireNonNull(processingFailedRejection,
+                "image processor requires a processing-failed rejection");
     }
 
     public ByteBuffer prepare(String imagePath, IClassificationResult visitor) {
-        String error = validator.validate(imagePath);
-        if (error != null) {
-            new UnconfidentClassification(error).accept(visitor);
-            return null;
+        ByteBuffer preparedBuffer = preprocessor.prepare(imagePath);
+        if (preparedBuffer == null) {
+            processingFailedRejection.encode(visitor);
         }
-        ByteBuffer input = preprocessor.prepare(imagePath);
-        if (input == null) new UnconfidentClassification("Could not process image").accept(visitor);
-        return input;
+        return preparedBuffer;
     }
 }

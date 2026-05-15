@@ -3,7 +3,7 @@ package com.agropredict.domain;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 
-import com.agropredict.domain.authentication.Session;
+import com.agropredict.domain.authentication.session.Session;
 import com.agropredict.visitor.ElevateExpecter;
 import com.agropredict.visitor.LimitExpecter;
 import com.agropredict.visitor.TestSessionVisitor;

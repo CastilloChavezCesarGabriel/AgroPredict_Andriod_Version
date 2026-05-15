@@ -1,13 +1,15 @@
 package com.agropredict.application.diagnostic_submission.request;
 
-import com.agropredict.application.diagnostic_submission.workflow.CropRegistry;
+import com.agropredict.application.crop_management.usecase.RegisterCropUseCase;
 import com.agropredict.application.diagnostic_submission.workflow.DiagnosticWorkflow;
 import com.agropredict.application.diagnostic_submission.workflow.SubmissionIdentity;
+import com.agropredict.application.repository.IPhotographRepository;
 import com.agropredict.application.repository.IQuestionnaireRepository;
 import com.agropredict.application.diagnostic_submission.ai_questionnaire.Questionnaire;
 import com.agropredict.application.service.IDiagnosticApiService;
 import com.agropredict.application.IAnswerConsumer;
 import com.agropredict.domain.diagnostic.visitor.IPredictionConsumer;
+import com.agropredict.domain.identifier.IIdentifierConsumer;
 import com.agropredict.domain.identifier.IdentifierFactory;
 import com.agropredict.domain.diagnostic.Diagnostic;
 import java.util.Objects;
@@ -15,10 +17,12 @@ import java.util.Objects;
 public final class SubmissionRequest {
     private final Submission submission;
     private final Questionnaire questionnaire;
+    private final ICropReference cropReference;
 
-    public SubmissionRequest(Submission submission, Questionnaire questionnaire) {
+    public SubmissionRequest(Submission submission, Questionnaire questionnaire, ICropReference cropReference) {
         this.submission = Objects.requireNonNull(submission, "submission request requires a submission");
         this.questionnaire = Objects.requireNonNull(questionnaire, "submission request requires a questionnaire");
+        this.cropReference = Objects.requireNonNull(cropReference, "submission request requires a crop reference");
     }
 
     public String submit(IDiagnosticApiService apiService, DiagnosticWorkflow workflow) {
@@ -29,8 +33,12 @@ public final class SubmissionRequest {
         return identifier;
     }
 
-    public void store(CropRegistry registry, SubmissionIdentity identity) {
-        submission.store(registry, identity);
+    public void establish(RegisterCropUseCase useCase, IIdentifierConsumer consumer) {
+        cropReference.establish(useCase, consumer);
+    }
+
+    public void archive(IPhotographRepository repository, SubmissionIdentity identity) {
+        submission.archive(repository, identity);
     }
 
     public void record(IQuestionnaireRepository repository, String identifier) {

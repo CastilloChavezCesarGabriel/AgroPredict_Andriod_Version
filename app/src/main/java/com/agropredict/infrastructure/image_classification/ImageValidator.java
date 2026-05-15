@@ -1,21 +1,28 @@
 package com.agropredict.infrastructure.image_classification;
 
-import java.io.File;
+import android.content.Context;
+import android.net.Uri;
+import com.agropredict.application.diagnostic_submission.rejection.IImageRejection;
+import com.agropredict.application.service.IImageValidator;
 import java.util.List;
+import java.util.Objects;
 
-public final class ImageValidator {
-    private final List<IImageCheck> checks;
+public final class ImageValidator implements IImageValidator {
+    private final Context context;
+    private final List<IImageChecker> checkers;
 
-    public ImageValidator() {
-        this.checks = List.of(new FormatCheck(), new SizeCheck(), new DimensionCheck());
+    public ImageValidator(Context context, List<IImageChecker> checkers) {
+        this.context = Objects.requireNonNull(context, "image validator requires a context");
+        this.checkers = List.copyOf(Objects.requireNonNull(checkers,
+                "image validator requires checkers"));
     }
 
-    public String validate(String imagePath) {
-        File file = new File(imagePath);
-        if (!file.exists()) return "File does not exist";
-        for (IImageCheck check : checks) {
-            String error = check.inspect(imagePath, file);
-            if (error != null) return error;
+    @Override
+    public IImageRejection validate(String uriString) {
+        Uri uri = Uri.parse(uriString);
+        for (IImageChecker checker : checkers) {
+            IImageRejection rejection = checker.inspect(uri, context);
+            if (rejection != null) return rejection;
         }
         return null;
     }

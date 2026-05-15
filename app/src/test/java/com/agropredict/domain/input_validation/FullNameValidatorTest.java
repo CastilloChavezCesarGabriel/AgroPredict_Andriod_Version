@@ -1,9 +1,11 @@
 package com.agropredict.domain.input_validation;
 
+import com.agropredict.application.input_validation.FullNameValidator;
+import com.agropredict.factory.StubFullNameFailureFactory;
 import org.junit.Test;
 
 public final class FullNameValidatorTest {
-    private final ValidatorTester tester = new ValidatorTester(new FullNameValidator());
+    private final ValidatorTester tester = new ValidatorTester(new FullNameValidator(new StubFullNameFailureFactory()));
 
     @Test
     public void testValidFullName() {

@@ -6,7 +6,8 @@ import com.agropredict.application.authentication.request.RegistrationRequest;
 import com.agropredict.application.service.IPasswordHasher;
 import com.agropredict.domain.user.AnonymousUser;
 import com.agropredict.domain.user.ISessionSubject;
-import com.agropredict.domain.user.User;
+import com.agropredict.domain.user.IUser;
+import com.agropredict.factory.StubPasswordFailureFactory;
 import com.agropredict.visitor.FailExpecter;
 import com.agropredict.visitor.SucceedExpecter;
 
@@ -19,7 +20,7 @@ public final class ResetPasswordUseCaseTest {
             @Override public ISessionSubject authenticate(String email, String password) { return new AnonymousUser(); }
             @Override public void register(RegistrationRequest request, com.agropredict.application.repository.ICatalogRepository catalog) {}
             @Override public boolean reset(String email, String hash) { return registered && resetSuccess; }
-            @Override public User find(String userIdentifier) { return null; }
+            @Override public IUser find(String userIdentifier) { return null; }
         };
     }
 
@@ -30,31 +31,31 @@ public final class ResetPasswordUseCaseTest {
 
     @Test
     public void testSuccessfulReset() {
-        new ResetPasswordUseCase(fakeUserRepo(true, true), fakeHasher)
+        new ResetPasswordUseCase(fakeUserRepo(true, true), fakeHasher, new StubPasswordFailureFactory())
             .reset("user@mail.com", "NewPass1!XYZ").accept(new SucceedExpecter(null));
     }
 
     @Test
     public void testResetUnregisteredEmail() {
-        new ResetPasswordUseCase(fakeUserRepo(false, false), fakeHasher)
+        new ResetPasswordUseCase(fakeUserRepo(false, false), fakeHasher, new StubPasswordFailureFactory())
             .reset("noone@mail.com", "NewPass1!XYZ").accept(new FailExpecter());
     }
 
     @Test
     public void testResetWeakPassword() {
-        new ResetPasswordUseCase(fakeUserRepo(true, true), fakeHasher)
+        new ResetPasswordUseCase(fakeUserRepo(true, true), fakeHasher, new StubPasswordFailureFactory())
             .reset("user@mail.com", "weak").accept(new FailExpecter());
     }
 
     @Test
     public void testResetPasswordMissingUppercase() {
-        new ResetPasswordUseCase(fakeUserRepo(true, true), fakeHasher)
+        new ResetPasswordUseCase(fakeUserRepo(true, true), fakeHasher, new StubPasswordFailureFactory())
             .reset("user@mail.com", "passw0rd!xyz").accept(new FailExpecter());
     }
 
     @Test
     public void testResetDatabaseFailure() {
-        new ResetPasswordUseCase(fakeUserRepo(true, false), fakeHasher)
+        new ResetPasswordUseCase(fakeUserRepo(true, false), fakeHasher, new StubPasswordFailureFactory())
             .reset("user@mail.com", "NewPass1!XYZ").accept(new FailExpecter());
     }
 }

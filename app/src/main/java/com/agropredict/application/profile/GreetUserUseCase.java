@@ -1,7 +1,7 @@
 package com.agropredict.application.profile;
 
 import com.agropredict.application.repository.IUserRepository;
-import com.agropredict.domain.user.User;
+import com.agropredict.domain.user.IUser;
 import com.agropredict.domain.user.visitor.IUserIdentityConsumer;
 import java.util.Objects;
 
@@ -13,7 +13,7 @@ public final class GreetUserUseCase {
     }
 
     public void greet(String userIdentifier, IUserIdentityConsumer consumer) {
-        User user = userRepository.find(userIdentifier);
-        if (user != null) user.describe(consumer);
+        IUser user = userRepository.find(userIdentifier);
+        user.describe(consumer);
     }
 }

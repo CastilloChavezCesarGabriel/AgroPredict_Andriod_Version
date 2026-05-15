@@ -4,9 +4,9 @@ import static org.junit.Assert.assertTrue;
 
 import com.agropredict.application.authentication.usecase.LogoutUseCase;
 import com.agropredict.application.repository.ISessionRepository;
-import com.agropredict.domain.authentication.ISession;
-import com.agropredict.domain.authentication.NoSession;
-import com.agropredict.domain.authentication.Session;
+import com.agropredict.domain.authentication.session.ISession;
+import com.agropredict.domain.authentication.session.NoSession;
+import com.agropredict.domain.authentication.session.Session;
 
 import org.junit.Test;
 

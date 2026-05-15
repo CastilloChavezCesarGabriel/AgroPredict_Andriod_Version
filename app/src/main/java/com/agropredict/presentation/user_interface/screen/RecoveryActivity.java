@@ -5,6 +5,7 @@ import android.widget.EditText;
 import com.agropredict.R;
 import com.agropredict.application.factory.IAccessFactory;
 import com.agropredict.application.authentication.usecase.ResetPasswordUseCase;
+import com.agropredict.presentation.viewmodel.authentication.AndroidPasswordFailureFactory;
 import com.agropredict.presentation.viewmodel.authentication.IRecoveryView;
 import com.agropredict.presentation.viewmodel.authentication.RecoveryViewModel;
 
@@ -32,7 +33,8 @@ public final class RecoveryActivity extends BaseActivity implements IRecoveryVie
     private void initialize() {
         IAccessFactory factory = (IAccessFactory) getApplication();
         ResetPasswordUseCase useCase = new ResetPasswordUseCase(
-                factory.createUserRepository(), factory.createPasswordHasher());
+                factory.createUserRepository(), factory.createPasswordHasher(),
+                new AndroidPasswordFailureFactory(this));
         viewModel = new RecoveryViewModel(useCase, this);
     }
 
@@ -58,8 +60,8 @@ public final class RecoveryActivity extends BaseActivity implements IRecoveryVie
     }
 
     @Override
-    public void confirm() {
-        notify(getString(R.string.password_updated));
+    public void confirm(String email) {
+        notify(getString(R.string.password_updated, email));
     }
 
     @Override

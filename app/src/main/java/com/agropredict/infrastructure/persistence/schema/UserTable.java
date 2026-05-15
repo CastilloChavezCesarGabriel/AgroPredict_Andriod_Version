@@ -16,6 +16,6 @@ public final class UserTable implements ITable {
             + "phone_number TEXT, "
             + "created_at TEXT NOT NULL, "
             + "updated_at TEXT NOT NULL, "
-            + "is_active INTEGER NOT NULL CHECK (is_active IN (0,1)))");
+            + "is_active INTEGER NOT NULL)");
     }
 }

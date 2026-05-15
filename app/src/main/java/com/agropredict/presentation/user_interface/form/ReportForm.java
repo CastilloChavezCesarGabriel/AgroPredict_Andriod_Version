@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import com.agropredict.R;
+import com.agropredict.application.service.ReportFormat;
 import com.agropredict.domain.crop.Crop;
 import com.agropredict.presentation.user_interface.selector.CropSelection;
 import com.agropredict.presentation.viewmodel.report_generation.ReportViewModel;
@@ -49,12 +50,11 @@ public final class ReportForm {
     public void generate(ReportViewModel viewModel) {
         String cropIdentifier = cropSelection.resolve();
         if (cropIdentifier == null) return;
-        String format = format();
-        viewModel.generate(cropIdentifier, format);
+        viewModel.generate(cropIdentifier, format());
     }
 
-    private String format() {
+    private ReportFormat format() {
         int checkedId = formatToggleGroup.getCheckedButtonId();
-        return checkedId == R.id.radioCsv ? "csv" : "pdf";
+        return checkedId == R.id.radioCsv ? ReportFormat.CSV : ReportFormat.PDF;
     }
 }

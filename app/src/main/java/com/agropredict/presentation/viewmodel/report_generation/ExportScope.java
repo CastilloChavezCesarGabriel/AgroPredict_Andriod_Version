@@ -1,36 +1,38 @@
 package com.agropredict.presentation.viewmodel.report_generation;
 
-import com.agropredict.application.factory.IReportingFactory;
 import com.agropredict.application.report_generation.request.Destination;
 import com.agropredict.application.report_generation.request.ReportRequest;
 import com.agropredict.application.service.IReportService;
-import com.agropredict.application.crop_management.usecase.FindCropUseCase;
-import com.agropredict.application.report_generation.usecase.StoreReportUseCase;
+import com.agropredict.application.service.IReportServiceCatalog;
+import com.agropredict.application.service.ReportFormat;
 import com.agropredict.domain.crop.Crop;
 import com.agropredict.domain.diagnostic.Diagnostic;
+import java.util.Objects;
 
 public final class ExportScope {
-    private final IReportingFactory factory;
+    private final ReportingData data;
+    private final IReportServiceCatalog reportCatalog;
     private final String userIdentifier;
 
-    public ExportScope(IReportingFactory factory, String userIdentifier) {
-        this.factory = factory;
-        this.userIdentifier = userIdentifier;
+    public ExportScope(ReportingData data, IReportServiceCatalog reportCatalog, String userIdentifier) {
+        this.data = Objects.requireNonNull(data, "export scope requires reporting data");
+        this.reportCatalog = Objects.requireNonNull(reportCatalog, "export scope requires a report catalog");
+        this.userIdentifier = Objects.requireNonNull(userIdentifier, "export scope requires a user identifier");
     }
 
     public Crop find(String cropIdentifier) {
-        return new FindCropUseCase(factory.createCropRepository()).find(cropIdentifier);
+        return data.find(cropIdentifier);
     }
 
     public Diagnostic resolve(String cropIdentifier) {
-        return factory.createDiagnosticRepository().resolve(userIdentifier, cropIdentifier);
+        return data.resolve(userIdentifier, cropIdentifier);
     }
 
-    public IReportService prepare(String format) {
-        return factory.createReportService(format);
+    public IReportService prepare(ReportFormat format) {
+        return reportCatalog.select(format);
     }
 
     public void archive(ReportRequest request, String filePath) {
-        new StoreReportUseCase(factory.createReportRepository()).store(request, new Destination(userIdentifier, filePath));
+        data.store(request, new Destination(userIdentifier, filePath));
     }
 }

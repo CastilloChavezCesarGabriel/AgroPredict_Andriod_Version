@@ -4,29 +4,31 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import com.agropredict.application.repository.IPhotographRepository;
 import com.agropredict.application.repository.ISessionRepository;
-import com.agropredict.domain.crop.Crop;
 import com.agropredict.domain.photograph.Photograph;
-import com.agropredict.infrastructure.persistence.database.Clock;
 import com.agropredict.infrastructure.persistence.database.Database;
 import com.agropredict.infrastructure.persistence.database.SqliteRow;
+import com.agropredict.infrastructure.persistence.database.SqliteRowFactory;
 import com.agropredict.infrastructure.persistence.visitor.PhotographPersistenceVisitor;
+import java.util.Objects;
 
 public final class SqlitePhotographRepository implements IPhotographRepository {
     private final Database database;
     private final ISessionRepository sessionRepository;
+    private final SqliteRowFactory rowFactory;
 
-    public SqlitePhotographRepository(Database database, ISessionRepository sessionRepository) {
-        this.database = database;
-        this.sessionRepository = sessionRepository;
+    public SqlitePhotographRepository(Database database, ISessionRepository sessionRepository, SqliteRowFactory rowFactory) {
+        this.database = Objects.requireNonNull(database, "photograph repository requires a database");
+        this.sessionRepository = Objects.requireNonNull(sessionRepository, "photograph repository requires a session repository");
+        this.rowFactory = Objects.requireNonNull(rowFactory, "photograph repository requires a row factory");
     }
 
     @Override
-    public void store(Photograph photograph, Crop crop) {
-        SqliteRow row = new SqliteRow(database.getWritableDatabase());
+    public void store(Photograph photograph, String cropIdentifier) {
+        SqliteRow row = rowFactory.open();
         PhotographPersistenceVisitor visitor = new PhotographPersistenceVisitor(row, sessionRepository.recall());
         photograph.expose(visitor);
-        crop.describe(visitor);
-        row.record("created_at", Clock.read());
+        visitor.link(cropIdentifier);
+        row.stamp("created_at");
         row.mark("is_active", 1);
         row.flush("image");
     }

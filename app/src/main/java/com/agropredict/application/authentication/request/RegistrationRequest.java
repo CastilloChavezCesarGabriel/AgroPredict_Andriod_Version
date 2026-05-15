@@ -1,5 +1,6 @@
 package com.agropredict.application.authentication.request;
 
+import com.agropredict.application.operation_result.IUseCaseResult;
 import com.agropredict.application.repository.ICatalogRepository;
 import com.agropredict.application.service.IPasswordHasher;
 import com.agropredict.domain.guard.ArgumentPrecondition;
@@ -51,5 +52,9 @@ public final class RegistrationRequest {
 
     public void identify(IIdentifierConsumer consumer) {
         consumer.identify(identifier);
+    }
+
+    public IUseCaseResult succeed() {
+        return registration.succeed();
     }
 }

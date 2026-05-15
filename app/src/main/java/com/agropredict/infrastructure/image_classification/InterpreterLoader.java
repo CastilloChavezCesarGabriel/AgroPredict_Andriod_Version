@@ -2,25 +2,22 @@ package com.agropredict.infrastructure.image_classification;
 
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
-import android.util.Log;
 import org.tensorflow.lite.Interpreter;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.Objects;
 
 public final class InterpreterLoader {
-    private static final String TAG = "InterpreterLoader";
     private final AssetManager assetManager;
 
     public InterpreterLoader(AssetManager assetManager) {
-        this.assetManager = assetManager;
+        this.assetManager = Objects.requireNonNull(assetManager, "interpreter loader requires an asset manager");
     }
 
     public Interpreter load(String modelAsset) {
-        MappedByteBuffer buffer = map(modelAsset);
-        if (buffer == null) return null;
-        return build(modelAsset, buffer);
+        return build(modelAsset, map(modelAsset));
     }
 
     private MappedByteBuffer map(String modelAsset) {
@@ -31,9 +28,9 @@ public final class InterpreterLoader {
                     descriptor.getStartOffset(),
                     descriptor.getDeclaredLength());
         } catch (IOException exception) {
-            Log.e(TAG, "Failed to read model asset '" + modelAsset
-                    + "'. Confirm noCompress 'tflite' is set in build.gradle.", exception);
-            return null;
+            throw new IllegalStateException(
+                    "Failed to read model asset '" + modelAsset
+                            + "'. Confirm noCompress 'tflite' is set in build.gradle.", exception);
         }
     }
 
@@ -41,16 +38,18 @@ public final class InterpreterLoader {
         try {
             return new Interpreter(buffer, configure());
         } catch (RuntimeException exception) {
-            Log.e(TAG, "TFLite Interpreter rejected model asset '" + modelAsset
-                    + "'. Likely an op-version mismatch with litert.", exception);
-            return null;
+            throw new IllegalStateException(
+                    "TFLite Interpreter rejected model asset '" + modelAsset
+                            + "'. Likely an op-version mismatch with litert.", exception);
         }
     }
 
     private Interpreter.Options configure() {
+        int inferenceThreads = 2;
+        boolean usesCpuAccelerator = false;
         Interpreter.Options options = new Interpreter.Options();
-        options.setUseXNNPACK(false);
-        options.setNumThreads(2);
+        options.setUseXNNPACK(usesCpuAccelerator);
+        options.setNumThreads(inferenceThreads);
         return options;
     }
 }

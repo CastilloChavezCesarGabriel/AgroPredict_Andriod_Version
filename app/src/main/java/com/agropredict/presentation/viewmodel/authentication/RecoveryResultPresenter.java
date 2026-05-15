@@ -11,7 +11,7 @@ public final class RecoveryResultPresenter implements IOperationResult {
 
     @Override
     public void onSucceed(String value) {
-        view.confirm();
+        view.confirm(value);
         view.dismiss();
     }
 

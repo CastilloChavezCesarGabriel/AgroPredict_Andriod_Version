@@ -19,12 +19,12 @@ public final class DiagnosticTable implements ITable {
             + "problem_type_id TEXT REFERENCES catalog_problem_type(id) ON DELETE SET NULL, "
             + "predicted_crop TEXT, "
             + "confidence REAL, "
-            + "severity TEXT CHECK (severity IN ('low','moderate','high')), "
+            + "severity TEXT, "
             + "temperature REAL, "
             + "humidity REAL, "
             + "recommendation_text TEXT, "
             + "short_summary TEXT, "
-            + "is_active INTEGER NOT NULL CHECK (is_active IN (0,1)), "
+            + "is_active INTEGER NOT NULL, "
             + "created_at TEXT NOT NULL)");
     }
 

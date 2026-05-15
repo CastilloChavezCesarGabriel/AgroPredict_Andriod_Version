@@ -1,7 +1,9 @@
 package com.agropredict.infrastructure.security;
 
 import com.agropredict.application.service.IPasswordHasher;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
 import java.security.spec.KeySpec;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
@@ -41,8 +43,8 @@ public final class PasswordHasher implements IPasswordHasher {
             KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, ITERATIONS, KEY_LENGTH);
             SecretKeyFactory factory = SecretKeyFactory.getInstance(ALGORITHM);
             return factory.generateSecret(spec).getEncoded();
-        } catch (Exception exception) {
-            throw new RuntimeException(exception);
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException exception) {
+            throw new IllegalStateException("password hashing failed", exception);
         }
     }
 

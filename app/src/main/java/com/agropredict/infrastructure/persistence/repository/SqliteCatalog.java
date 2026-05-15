@@ -3,17 +3,19 @@ package com.agropredict.infrastructure.persistence.repository;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import com.agropredict.application.repository.ICatalogRepository;
+import com.agropredict.domain.guard.ArgumentPrecondition;
 import com.agropredict.infrastructure.persistence.database.Database;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public final class SqliteCatalog implements ICatalogRepository {
     private final Database database;
     private final String tableName;
 
     public SqliteCatalog(Database database, String tableName) {
-        this.database = database;
-        this.tableName = tableName;
+        this.database = Objects.requireNonNull(database, "sqlite catalog requires a database");
+        this.tableName = ArgumentPrecondition.validate(tableName, "sqlite catalog table name");
     }
 
     @Override

@@ -15,8 +15,7 @@ public final class QuestionnaireTable implements ITable {
             + "question_key TEXT NOT NULL UNIQUE, "
             + "text TEXT NOT NULL, "
             + "position INTEGER NOT NULL, "
-            + "answer_type TEXT NOT NULL "
-            + "CHECK (answer_type IN ('single','multiple','numeric','date')))");
+            + "answer_type TEXT NOT NULL)");
         database.execSQL(
             "CREATE TABLE IF NOT EXISTS ai_option ("
             + "id TEXT PRIMARY KEY, "

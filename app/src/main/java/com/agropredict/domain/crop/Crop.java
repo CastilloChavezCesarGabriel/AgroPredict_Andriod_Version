@@ -3,6 +3,7 @@ package com.agropredict.domain.crop;
 import java.util.Objects;
 import com.agropredict.domain.identifier.IIdentifierConsumer;
 import com.agropredict.domain.guard.ArgumentPrecondition;
+import com.agropredict.domain.crop.visitor.ICropDescriptionConsumer;
 import com.agropredict.domain.crop.visitor.ICropIdentityConsumer;
 import com.agropredict.domain.crop.visitor.IFieldConsumer;
 import com.agropredict.domain.crop.visitor.IPlantingConsumer;
@@ -21,6 +22,11 @@ public final class Crop {
 
     public void describe(ICropIdentityConsumer consumer) {
         consumer.describe(identifier, type);
+    }
+
+    public void represent(ICropDescriptionConsumer consumer) {
+        profile.track((date, stageIdentifier)
+                -> consumer.describe(identifier, type, date));
     }
 
     public void locate(IFieldConsumer consumer) {

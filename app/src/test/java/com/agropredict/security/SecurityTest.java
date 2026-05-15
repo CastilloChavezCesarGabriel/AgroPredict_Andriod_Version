@@ -4,15 +4,20 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
-import com.agropredict.domain.CapturingLoginGate;
-import com.agropredict.domain.authentication.ILoginAttempt;
-import com.agropredict.domain.authentication.InitialAttempt;
-import com.agropredict.domain.authentication.Session;
-import com.agropredict.domain.input_validation.EmailValidator;
-import com.agropredict.domain.input_validation.FullNameValidator;
-import com.agropredict.domain.input_validation.PasswordValidator;
-import com.agropredict.domain.input_validation.UsernameValidator;
+import com.agropredict.domain.authentication.attempt.ILoginAttempt;
+import com.agropredict.domain.authentication.attempt.InitialAttempt;
+import com.agropredict.domain.authentication.gate.LoginGate;
+import com.agropredict.domain.authentication.gate.LoginRejectedException;
+import com.agropredict.domain.authentication.session.Session;
+import com.agropredict.application.input_validation.EmailValidator;
+import com.agropredict.application.input_validation.FullNameValidator;
+import com.agropredict.application.input_validation.PasswordValidator;
+import com.agropredict.application.input_validation.UsernameValidator;
 import com.agropredict.domain.input_validation.ValidatorTester;
+import com.agropredict.factory.StubEmailFailureFactory;
+import com.agropredict.factory.StubFullNameFailureFactory;
+import com.agropredict.factory.StubPasswordFailureFactory;
+import com.agropredict.factory.StubUsernameFailureFactory;
 import com.agropredict.infrastructure.security.PasswordHasher;
 import com.agropredict.visitor.LimitExpecter;
 import org.junit.Test;
@@ -104,55 +109,39 @@ public final class SecurityTest {
     @Test
     public void testBruteForceProtection() {
         long now = System.currentTimeMillis();
-        ILoginAttempt attempt = new InitialAttempt();
-        for (int count = 0; count < 5; count++) attempt = attempt.fail(now);
-        CapturingLoginGate immediate = new CapturingLoginGate();
-        attempt.evaluate(now, immediate);
-        assertTrue(immediate.hasReceived("block"));
-        CapturingLoginGate later = new CapturingLoginGate();
-        attempt.evaluate(now + 4 * 60 * 1000, later);
-        assertTrue(later.hasReceived("block"));
+        ILoginAttempt attempt = blockedAttempt(now);
+        assertEquals("blocked", evaluate(attempt, now));
+        assertEquals("blocked", evaluate(attempt, now + 4 * 60 * 1000));
     }
 
     @Test
     public void testBlockDurationExactlyFiveMinutes() {
         long now = 1000000L;
-        ILoginAttempt attempt = new InitialAttempt();
-        for (int count = 0; count < 5; count++) attempt = attempt.fail(now);
-        CapturingLoginGate atBoundary = new CapturingLoginGate();
-        attempt.evaluate(now + 5 * 60 * 1000, atBoundary);
-        assertTrue(atBoundary.hasReceived("block"));
-        CapturingLoginGate justAfter = new CapturingLoginGate();
-        attempt.evaluate(now + 5 * 60 * 1000 + 1, justAfter);
-        assertFalse(justAfter.hasReceived("block"));
+        ILoginAttempt attempt = blockedAttempt(now);
+        assertEquals("blocked", evaluate(attempt, now + 5 * 60 * 1000));
+        assertNotEquals("blocked", evaluate(attempt, now + 5 * 60 * 1000 + 1));
     }
 
     @Test
     public void testAttemptsResetAfterBlockExpires() {
         long now = System.currentTimeMillis();
-        ILoginAttempt attempt = new InitialAttempt();
-        for (int count = 0; count < 5; count++) attempt = attempt.fail(now);
+        ILoginAttempt attempt = blockedAttempt(now);
         long afterExpiry = now + 5 * 60 * 1000 + 1;
         ILoginAttempt reset = attempt.fail(afterExpiry);
-        CapturingLoginGate gate = new CapturingLoginGate();
-        reset.evaluate(afterExpiry, gate);
-        assertTrue(gate.hasReceived("allow"));
+        assertEquals("allow", evaluate(reset, afterExpiry));
     }
 
     @Test
     public void testCannotBypassLockoutByKeepingTrying() {
         long now = System.currentTimeMillis();
-        ILoginAttempt attempt = new InitialAttempt();
-        for (int count = 0; count < 5; count++) attempt = attempt.fail(now);
+        ILoginAttempt attempt = blockedAttempt(now);
         ILoginAttempt stillBlocked = attempt.fail(now + 1000);
-        CapturingLoginGate gate = new CapturingLoginGate();
-        stillBlocked.evaluate(now + 1000, gate);
-        assertTrue(gate.hasReceived("block"));
+        assertEquals("blocked", evaluate(stillBlocked, now + 1000));
     }
 
     @Test
     public void testSqlInjectionInEmail() {
-        ValidatorTester tester = new ValidatorTester(new EmailValidator());
+        ValidatorTester tester = new ValidatorTester(new EmailValidator(new StubEmailFailureFactory()));
         tester.rejects("'; DROP TABLE users;--@evil.com");
         tester.rejects("admin'--@evil.com");
         tester.rejects("1=1@evil.com");
@@ -161,7 +150,7 @@ public final class SecurityTest {
 
     @Test
     public void testSqlInjectionInUsername() {
-        ValidatorTester tester = new ValidatorTester(new UsernameValidator());
+        ValidatorTester tester = new ValidatorTester(new UsernameValidator(new StubUsernameFailureFactory()));
         tester.rejects("admin'--");
         tester.rejects("'; DROP TABLE");
         tester.rejects("1=1; --");
@@ -170,12 +159,12 @@ public final class SecurityTest {
 
     @Test
     public void testSqlInjectionInPassword() {
-        new ValidatorTester(new PasswordValidator()).accepts("'; DROP1!aXY");
+        new ValidatorTester(new PasswordValidator(new StubPasswordFailureFactory())).accepts("'; DROP1!aXY");
     }
 
     @Test
     public void testXssInEmail() {
-        ValidatorTester tester = new ValidatorTester(new EmailValidator());
+        ValidatorTester tester = new ValidatorTester(new EmailValidator(new StubEmailFailureFactory()));
         tester.rejects("<script>alert(1)</script>@evil.com");
         tester.rejects("user<img>@evil.com");
         tester.rejects("user<svg/onload=alert(1)>@evil.com");
@@ -183,7 +172,7 @@ public final class SecurityTest {
 
     @Test
     public void testXssInUsername() {
-        ValidatorTester tester = new ValidatorTester(new UsernameValidator());
+        ValidatorTester tester = new ValidatorTester(new UsernameValidator(new StubUsernameFailureFactory()));
         tester.rejects("<script>alert(1)</script>");
         tester.rejects("user<img src=x>");
         tester.rejects("onmouseover=alert(1)");
@@ -191,7 +180,7 @@ public final class SecurityTest {
 
     @Test
     public void testXssInFullName() {
-        ValidatorTester tester = new ValidatorTester(new FullNameValidator());
+        ValidatorTester tester = new ValidatorTester(new FullNameValidator(new StubFullNameFailureFactory()));
         tester.rejects("<script>alert(1)</script>");
         tester.rejects("Juan<img>Perez");
         tester.rejects("alert('xss')");
@@ -199,7 +188,7 @@ public final class SecurityTest {
 
     @Test
     public void testPasswordComplexityEnforced() {
-        ValidatorTester tester = new ValidatorTester(new PasswordValidator());
+        ValidatorTester tester = new ValidatorTester(new PasswordValidator(new StubPasswordFailureFactory()));
         tester.rejects("passwordxxxx");
         tester.rejects("123456789012");
         tester.rejects("ABCDEFGHIJKL");
@@ -210,7 +199,7 @@ public final class SecurityTest {
 
     @Test
     public void testPasswordMinimumLengthEnforced() {
-        ValidatorTester tester = new ValidatorTester(new PasswordValidator());
+        ValidatorTester tester = new ValidatorTester(new PasswordValidator(new StubPasswordFailureFactory()));
         tester.rejects("Aa1!");
         tester.rejects("Aa1!xxx");
         tester.rejects("Aa1!xxxxxxx");
@@ -249,21 +238,39 @@ public final class SecurityTest {
 
     @Test
     public void testNullEmailRejected() {
-        new ValidatorTester(new EmailValidator()).rejects(null);
+        new ValidatorTester(new EmailValidator(new StubEmailFailureFactory())).rejects(null);
     }
 
     @Test
     public void testNullUsernameRejected() {
-        new ValidatorTester(new UsernameValidator()).rejects(null);
+        new ValidatorTester(new UsernameValidator(new StubUsernameFailureFactory())).rejects(null);
     }
 
     @Test
     public void testNullPasswordRejected() {
-        new ValidatorTester(new PasswordValidator()).rejects(null);
+        new ValidatorTester(new PasswordValidator(new StubPasswordFailureFactory())).rejects(null);
     }
 
     @Test
     public void testNullFullNameRejected() {
-        new ValidatorTester(new FullNameValidator()).rejects(null);
+        new ValidatorTester(new FullNameValidator(new StubFullNameFailureFactory())).rejects(null);
+    }
+
+    private ILoginAttempt blockedAttempt(long now) {
+        ILoginAttempt attempt = new InitialAttempt();
+        for (int count = 0; count < 5; count++) attempt = attempt.fail(now);
+        return attempt;
+    }
+
+    private String evaluate(ILoginAttempt attempt, long time) {
+        LoginGate gate = new LoginGate(
+            callback -> callback.receive("blocked"),
+            callback -> callback.receive("exhausted"));
+        try {
+            attempt.evaluate(time, gate);
+            return "allow";
+        } catch (LoginRejectedException rejected) {
+            return rejected.getMessage();
+        }
     }
 }

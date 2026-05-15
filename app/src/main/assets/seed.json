@@ -1,0 +1,24 @@
+{
+  "catalogs": {
+    "SOIL_TYPE":          ["Clay", "Sandy", "Loam", "Silt", "Rocky"],
+    "PHENOLOGICAL_STAGE": ["Germination", "Vegetative", "Flowering", "Fruiting", "Maturity"],
+    "OCCUPATION":         ["Farmer", "Agronomist", "Technician", "Engineer", "Specialist", "Researcher", "Other"],
+    "PROBLEM_TYPE":       ["Disease", "Pest", "Nutrient deficiency", "Water stress", "Environmental damage", "Unknown"]
+  },
+
+  "questions": [
+    { "key": "TEMPERATURE",    "text": "What is the temperature?",        "options": ["<15°C", "15–25°C", "26–32°C", ">32°C"] },
+    { "key": "HUMIDITY",       "text": "What is the humidity?",           "options": ["20–40%", "40–60%", "60–80%", ">80%", "Don't know"] },
+    { "key": "RAIN",           "text": "When did it last rain?",          "options": ["Today", "This week", "1 week ago", ">2 weeks ago", "No rain"] },
+    { "key": "SOIL_MOISTURE",  "text": "What is the soil moisture?",      "options": ["Very dry", "Dry", "Moderate", "Moist", "Waterlogged"] },
+    { "key": "PH",             "text": "What is the soil pH?",            "options": ["<5.5", "5.5–7", "7–8", ">8", "Don't know"] },
+    { "key": "IRRIGATION",     "text": "How often is the crop irrigated?", "options": ["Daily", "Every 2–3 days", "Weekly", "Very little", "No recent irrigation"] },
+    { "key": "FERTILIZATION",  "text": "When was it last fertilized?",    "options": ["<1 week", "1–2 weeks", "3 weeks", "Not fertilized", "Don't know"] },
+    { "key": "SPRAYING",       "text": "Has the crop been sprayed?",      "options": ["Yes (last 7 days)", "Yes (last 14 days)", "No", "Don't know"] },
+    { "key": "WEEDS",          "text": "How much weed presence?",         "options": ["Heavy", "Moderate", "Light", "None"] },
+    { "key": "SYMPTOM",        "text": "What symptoms are visible?",      "options": ["Yellow leaves", "Brown spots", "Dry tips", "Weak stems", "Visible fungi", "Insect presence", "Looks normal"] },
+    { "key": "SEVERITY",       "text": "How severe are the symptoms?",    "options": ["Mild", "Moderate", "Severe", "Very severe"] },
+    { "key": "INSECTS",        "text": "What insects are present?",       "options": ["Whitefly", "Aphid", "Leafminer", "Thrips", "Caterpillar", "None", "Don't know"] },
+    { "key": "ANIMALS",        "text": "What animals cause damage?",      "options": ["Rodents", "Birds", "Large animals", "None", "Don't know"] }
+  ]
+}

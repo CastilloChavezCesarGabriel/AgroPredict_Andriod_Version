@@ -2,12 +2,13 @@ package com.agropredict.infrastructure.persistence.repository;
 
 import android.content.ContentValues;
 import com.agropredict.infrastructure.persistence.database.Database;
+import java.util.Objects;
 
 public final class SqliteReportDiagnostic {
     private final Database database;
 
     public SqliteReportDiagnostic(Database database) {
-        this.database = database;
+        this.database = Objects.requireNonNull(database, "sqlite report diagnostic requires a database");
     }
 
     public void link(String reportIdentifier, String diagnosticIdentifier) {

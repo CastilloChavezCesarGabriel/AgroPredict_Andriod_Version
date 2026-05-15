@@ -3,18 +3,15 @@ package com.agropredict.domain.crop;
 import com.agropredict.domain.crop.visitor.IFieldConsumer;
 import com.agropredict.domain.crop.visitor.IPlantingConsumer;
 import com.agropredict.domain.crop.visitor.ISoilConsumer;
+import java.util.Objects;
 
 public final class CropProfile {
     private final Plot plot;
     private final GrowthCycle growthCycle;
 
     public CropProfile(Plot plot, GrowthCycle growthCycle) {
-        this.plot = plot;
-        this.growthCycle = growthCycle;
-    }
-
-    public static CropProfile compose(String stageIdentifier) {
-        return new CropProfile(new Plot(null, null), new GrowthCycle(null, stageIdentifier));
+        this.plot = Objects.requireNonNull(plot, "crop profile requires a plot");
+        this.growthCycle = Objects.requireNonNull(growthCycle, "crop profile requires a growth cycle");
     }
 
     public void locate(IFieldConsumer consumer) {

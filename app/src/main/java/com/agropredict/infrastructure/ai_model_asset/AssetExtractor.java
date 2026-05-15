@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.util.Objects;
 
 public final class AssetExtractor implements IAssetService {
@@ -17,7 +18,7 @@ public final class AssetExtractor implements IAssetService {
     }
 
     @Override
-    public String extract(String path) throws IOException {
+    public String extract(String path) {
         File outputFile = new File(context.getCacheDir(), new File(path).getName());
         if (!outputFile.exists()) {
             copy(path, outputFile);
@@ -25,10 +26,12 @@ public final class AssetExtractor implements IAssetService {
         return outputFile.getAbsolutePath();
     }
 
-    private void copy(String path, File destination) throws IOException {
+    private void copy(String path, File destination) {
         try (InputStream input = context.getAssets().open(path);
              FileOutputStream output = new FileOutputStream(destination)) {
-            FileCopier.copy(input, output);
+            new FileCopier().copy(input, output);
+        } catch (IOException ioFailure) {
+            throw new UncheckedIOException(ioFailure);
         }
     }
 }

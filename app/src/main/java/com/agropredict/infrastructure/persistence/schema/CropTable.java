@@ -18,10 +18,10 @@ public final class CropTable implements ITable {
             + "phenological_stage_id TEXT REFERENCES phenological_stage(id) ON DELETE SET NULL, "
             + "field_name TEXT, "
             + "crop_type TEXT NOT NULL, "
-            + "location TEXT, "
-            + "area REAL, "
-            + "planting_date TEXT, "
-            + "is_active INTEGER NOT NULL CHECK (is_active IN (0,1)), "
+            + "location TEXT NOT NULL, "
+            + "area REAL NOT NULL, "
+            + "planting_date TEXT NOT NULL, "
+            + "is_active INTEGER NOT NULL, "
             + "created_at TEXT NOT NULL, "
             + "updated_at TEXT NOT NULL)");
         database.execSQL(

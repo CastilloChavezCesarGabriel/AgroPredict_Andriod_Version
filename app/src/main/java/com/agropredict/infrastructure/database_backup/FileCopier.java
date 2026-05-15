@@ -5,10 +5,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public final class FileCopier {
-    private static final int BUFFER_SIZE = 4096;
-
-    public static void copy(InputStream input, OutputStream output) throws IOException {
-        byte[] buffer = new byte[BUFFER_SIZE];
+    public void copy(InputStream input, OutputStream output) throws IOException {
+        int bufferSize = 4096;
+        byte[] buffer = new byte[bufferSize];
         int bytesRead;
         while ((bytesRead = input.read(buffer)) != -1) {
             output.write(buffer, 0, bytesRead);

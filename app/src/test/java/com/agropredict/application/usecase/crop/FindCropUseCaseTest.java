@@ -7,10 +7,12 @@ import com.agropredict.application.crop_management.usecase.FindCropUseCase;
 import com.agropredict.application.repository.ICropRepository;
 import com.agropredict.application.crop_management.request.CropUpdateRequest;
 import com.agropredict.domain.history.HistoryRecord;
+import com.agropredict.domain.crop.Crop;
 import com.agropredict.domain.crop.CropProfile;
+import com.agropredict.domain.crop.Field;
 import com.agropredict.domain.crop.GrowthCycle;
 import com.agropredict.domain.crop.Plot;
-import com.agropredict.domain.crop.Crop;
+import com.agropredict.domain.crop.Soil;
 
 import org.junit.Test;
 
@@ -29,7 +31,7 @@ public final class FindCropUseCaseTest {
 
     @Test
     public void testFindExistingCrop() {
-        Crop crop = new Crop("crop_1", "wheat", new CropProfile(new Plot(null, null), new GrowthCycle(null, null)));
+        Crop crop = new Crop("crop_1", "wheat", new CropProfile(new Plot(new Field("F", "L"), new Soil("Clay", "1ha")), new GrowthCycle("2026-01-01", "Vegetative")));
         Crop result = new FindCropUseCase(stubCrop(crop)).find("crop_1");
         assertNotNull(result);
     }

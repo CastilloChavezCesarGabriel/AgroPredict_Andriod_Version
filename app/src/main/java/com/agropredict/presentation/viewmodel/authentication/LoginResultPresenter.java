@@ -11,7 +11,7 @@ public final class LoginResultPresenter implements IOperationResult {
 
     @Override
     public void onSucceed(String value) {
-        view.proceed();
+        view.proceed(value);
     }
 
     @Override

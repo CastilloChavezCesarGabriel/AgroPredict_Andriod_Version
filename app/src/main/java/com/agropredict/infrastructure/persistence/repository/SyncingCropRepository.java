@@ -6,14 +6,15 @@ import com.agropredict.application.crop_management.request.CropUpdateRequest;
 import com.agropredict.domain.crop.Crop;
 import com.agropredict.domain.history.HistoryRecord;
 import java.util.List;
+import java.util.Objects;
 
 public final class SyncingCropRepository implements ICropRepository, IRecordEraser {
     private final SqliteCropRepository delegate;
     private final SqliteSyncRecorder recorder;
 
     public SyncingCropRepository(SqliteCropRepository delegate, SqliteSyncRecorder recorder) {
-        this.delegate = delegate;
-        this.recorder = recorder;
+        this.delegate = Objects.requireNonNull(delegate, "syncing crop repository requires a delegate");
+        this.recorder = Objects.requireNonNull(recorder, "syncing crop repository requires a sync recorder");
     }
 
     @Override

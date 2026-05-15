@@ -13,33 +13,39 @@ import com.agropredict.domain.user.AnonymousUser;
 import com.agropredict.domain.user.Credential;
 import com.agropredict.domain.user.ContactInformation;
 import com.agropredict.domain.user.ISessionSubject;
+import com.agropredict.domain.user.IUser;
+import com.agropredict.domain.user.NoUser;
+import com.agropredict.domain.user.Phone;
 import com.agropredict.domain.user.User;
-import com.agropredict.infrastructure.persistence.database.Clock;
+import com.agropredict.domain.user.occupation.OccupationCatalog;
 import com.agropredict.infrastructure.persistence.database.Database;
 import com.agropredict.infrastructure.persistence.database.SqliteRow;
+import com.agropredict.infrastructure.persistence.database.SqliteRowFactory;
 import com.agropredict.infrastructure.persistence.visitor.UserPersistenceVisitor;
+import java.util.Objects;
 
 public final class SqliteUserRepository implements IUserRepository {
     private final Database database;
     private final IPasswordHasher hasher;
+    private final SqliteRowFactory rowFactory;
 
-    public SqliteUserRepository(Database database, IPasswordHasher hasher) {
-        this.database = database;
-        this.hasher = hasher;
+    public SqliteUserRepository(Database database, IPasswordHasher hasher, SqliteRowFactory rowFactory) {
+        this.database = Objects.requireNonNull(database, "user repository requires a database");
+        this.hasher = Objects.requireNonNull(hasher, "user repository requires a password hasher");
+        this.rowFactory = Objects.requireNonNull(rowFactory, "user repository requires a row factory");
     }
 
     @Override
     public void register(RegistrationRequest request, ICatalogRepository catalog) {
-        SqliteRow row = new SqliteRow(database.getWritableDatabase());
+        SqliteRow row = rowFactory.open();
         UserPersistenceVisitor visitor = new UserPersistenceVisitor(row);
         request.describe(visitor);
         request.contact(visitor);
         request.authenticate(visitor, hasher);
         request.enroll(visitor);
         request.classify(visitor, catalog);
-        String now = Clock.read();
-        row.record("created_at", now);
-        row.record("updated_at", now);
+        row.stamp("created_at");
+        row.stamp("updated_at");
         row.mark("is_active", 1);
         try {
             row.flush("user");
@@ -71,12 +77,12 @@ public final class SqliteUserRepository implements IUserRepository {
         if (!hasher.verify(password, storedHash)) return new AnonymousUser();
         ContactInformation identity = new ContactInformation(
                 cursor.getString(cursor.getColumnIndexOrThrow("full_name")),
-                cursor.getString(cursor.getColumnIndexOrThrow("phone_number")));
+                Phone.resolve(cursor.getString(cursor.getColumnIndexOrThrow("phone_number"))));
         Credential credential = new Credential(email, storedHash);
         Account account = new Account(
                 cursor.getString(cursor.getColumnIndexOrThrow("username")),
                 credential,
-                cursor.getString(cursor.getColumnIndexOrThrow("occupation_id")));
+                new OccupationCatalog().classify(cursor.getString(cursor.getColumnIndexOrThrow("occupation_id"))));
         return new User(
                 cursor.getString(cursor.getColumnIndexOrThrow("id")),
                 identity,
@@ -85,20 +91,20 @@ public final class SqliteUserRepository implements IUserRepository {
 
     @Override
     public boolean reset(String email, String newPasswordHash) {
-        SqliteRow sqliteRow = new SqliteRow(database.getWritableDatabase());
-        sqliteRow.record("email", email);
-        sqliteRow.record("password_hash", newPasswordHash);
-        sqliteRow.record("updated_at", Clock.read());
-        return sqliteRow.overwrite("user", "email");
+        SqliteRow row = rowFactory.open();
+        row.record("email", email);
+        row.record("password_hash", newPasswordHash);
+        row.stamp("updated_at");
+        return row.overwrite("user", "email");
     }
 
     @Override
-    public User find(String userIdentifier) {
+    public IUser find(String userIdentifier) {
         SQLiteDatabase readable = database.getReadableDatabase();
         String query = "SELECT id, email, full_name, username, password_hash, occupation_id, phone_number "
                 + "FROM user WHERE id = ? AND is_active = 1";
         Cursor cursor = readable.rawQuery(query, new String[]{userIdentifier});
-        User user = cursor.moveToFirst() ? rebuild(cursor) : null;
+        IUser user = cursor.moveToFirst() ? rebuild(cursor) : new NoUser();
         cursor.close();
         return user;
     }
@@ -106,14 +112,14 @@ public final class SqliteUserRepository implements IUserRepository {
     private User rebuild(Cursor cursor) {
         ContactInformation identity = new ContactInformation(
                 cursor.getString(cursor.getColumnIndexOrThrow("full_name")),
-                cursor.getString(cursor.getColumnIndexOrThrow("phone_number")));
+                Phone.resolve(cursor.getString(cursor.getColumnIndexOrThrow("phone_number"))));
         Credential credential = new Credential(
                 cursor.getString(cursor.getColumnIndexOrThrow("email")),
                 cursor.getString(cursor.getColumnIndexOrThrow("password_hash")));
         Account account = new Account(
                 cursor.getString(cursor.getColumnIndexOrThrow("username")),
                 credential,
-                cursor.getString(cursor.getColumnIndexOrThrow("occupation_id")));
+                new OccupationCatalog().classify(cursor.getString(cursor.getColumnIndexOrThrow("occupation_id"))));
         return new User(
                 cursor.getString(cursor.getColumnIndexOrThrow("id")),
                 identity,

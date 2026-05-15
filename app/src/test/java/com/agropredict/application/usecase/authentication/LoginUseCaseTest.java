@@ -4,15 +4,19 @@ import com.agropredict.application.authentication.usecase.LoginUseCase;
 import com.agropredict.application.repository.ISessionRepository;
 import com.agropredict.application.repository.IUserRepository;
 import com.agropredict.application.authentication.request.RegistrationRequest;
-import com.agropredict.domain.authentication.ISession;
-import com.agropredict.domain.authentication.NoSession;
-import com.agropredict.domain.authentication.Session;
+import com.agropredict.domain.authentication.session.ISession;
+import com.agropredict.domain.authentication.session.NoSession;
+import com.agropredict.domain.authentication.session.Session;
 import com.agropredict.domain.user.Account;
 import com.agropredict.domain.user.AnonymousUser;
 import com.agropredict.domain.user.Credential;
 import com.agropredict.domain.user.ContactInformation;
 import com.agropredict.domain.user.ISessionSubject;
+import com.agropredict.domain.user.IUser;
+import com.agropredict.domain.user.NoPhone;
 import com.agropredict.domain.user.User;
+import com.agropredict.domain.user.occupation.StandardOccupation;
+import com.agropredict.factory.StubAuthenticationFailureFactory;
 import com.agropredict.visitor.RejectExpecter;
 import com.agropredict.visitor.SucceedExpecter;
 import static org.junit.Assert.assertTrue;
@@ -20,15 +24,15 @@ import org.junit.Test;
 
 public final class LoginUseCaseTest {
     private final User farmer = new User("user_1",
-            new ContactInformation("Test Name", null),
-            new Account("test_user", new Credential("test@mail.com", "hash"), "Farmer"));
+            new ContactInformation("Test Name", new NoPhone()),
+            new Account("test_user", new Credential("test@mail.com", "hash"), new StandardOccupation("Farmer")));
 
     private IUserRepository fakeUserRepo(ISessionSubject returnSubject) {
         return new IUserRepository() {
             @Override public ISessionSubject authenticate(String email, String password) { return returnSubject; }
             @Override public void register(RegistrationRequest request, com.agropredict.application.repository.ICatalogRepository catalog) {}
             @Override public boolean reset(String email, String hash) { return false; }
-            @Override public User find(String userIdentifier) { return null; }
+            @Override public IUser find(String userIdentifier) { return null; }
         };
     }
 
@@ -42,19 +46,19 @@ public final class LoginUseCaseTest {
 
     @Test
     public void testSuccessfulLogin() {
-        LoginUseCase useCase = new LoginUseCase(fakeUserRepo(farmer), fakeSessionRepo());
+        LoginUseCase useCase = new LoginUseCase(fakeUserRepo(farmer), fakeSessionRepo(), new StubAuthenticationFailureFactory());
         useCase.login("test@mail.com", "Passw0rd!XYZ").accept(new SucceedExpecter(null));
     }
 
     @Test
     public void testFailedLogin() {
-        LoginUseCase useCase = new LoginUseCase(fakeUserRepo(new AnonymousUser()), fakeSessionRepo());
+        LoginUseCase useCase = new LoginUseCase(fakeUserRepo(new AnonymousUser()), fakeSessionRepo(), new StubAuthenticationFailureFactory());
         useCase.login("wrong@mail.com", "wrong").accept(new RejectExpecter("Incorrect credentials"));
     }
 
     @Test
     public void testAccountLockAfterFiveFailures() {
-        LoginUseCase useCase = new LoginUseCase(fakeUserRepo(new AnonymousUser()), fakeSessionRepo());
+        LoginUseCase useCase = new LoginUseCase(fakeUserRepo(new AnonymousUser()), fakeSessionRepo(), new StubAuthenticationFailureFactory());
         for (int attempt = 0; attempt < 5; attempt++)
             useCase.login("bad@mail.com", "wrong");
         useCase.login("bad@mail.com", "wrong").accept(new RejectExpecter("Account locked. Try again in a few minutes."));
@@ -69,9 +73,9 @@ public final class LoginUseCaseTest {
             }
             @Override public void register(RegistrationRequest request, com.agropredict.application.repository.ICatalogRepository catalog) {}
             @Override public boolean reset(String email, String hash) { return false; }
-            @Override public User find(String userIdentifier) { return null; }
+            @Override public IUser find(String userIdentifier) { return null; }
         };
-        LoginUseCase useCase = new LoginUseCase(conditional, fakeSessionRepo());
+        LoginUseCase useCase = new LoginUseCase(conditional, fakeSessionRepo(), new StubAuthenticationFailureFactory());
         useCase.login("x@m.com", "w");
         useCase.login("x@m.com", "w");
         useCase.login("x@m.com", "w");
@@ -86,7 +90,7 @@ public final class LoginUseCaseTest {
             @Override public ISession recall() { return new NoSession(); }
             @Override public void clear() {}
         };
-        new LoginUseCase(fakeUserRepo(farmer), trackingSession)
+        new LoginUseCase(fakeUserRepo(farmer), trackingSession, new StubAuthenticationFailureFactory())
             .login("test@mail.com", "Passw0rd!XYZ");
         assertTrue(saved[0]);
     }

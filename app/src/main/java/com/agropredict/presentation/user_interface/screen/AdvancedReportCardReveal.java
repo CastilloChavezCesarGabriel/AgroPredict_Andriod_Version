@@ -1,7 +1,7 @@
 package com.agropredict.presentation.user_interface.screen;
 
 import android.view.View;
-import com.agropredict.domain.user.IOccupationListener;
+import com.agropredict.domain.user.occupation.IOccupationListener;
 
 public final class AdvancedReportCardReveal implements IOccupationListener {
     private final View reportCard;

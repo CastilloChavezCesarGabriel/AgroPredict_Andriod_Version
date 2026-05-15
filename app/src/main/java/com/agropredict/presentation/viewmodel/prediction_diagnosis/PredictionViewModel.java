@@ -1,5 +1,6 @@
 package com.agropredict.presentation.viewmodel.prediction_diagnosis;
 
+import com.agropredict.application.crop_management.usecase.ListCropUseCase;
 import com.agropredict.application.diagnostic_submission.request.SubmissionRequest;
 import com.agropredict.application.operation_result.IUseCaseResult;
 import com.agropredict.application.catalog.ListCatalogUseCase;
@@ -20,8 +21,12 @@ public final class PredictionViewModel {
     }
 
     public void populate(ListCatalogUseCase soilTypesUseCase, ListCatalogUseCase stagesUseCase) {
-        view.populate(new SoilTypeOption(soilTypesUseCase.list()));
-        view.populate(new StageOption(stagesUseCase.list()));
+        view.furnish(new SoilTypeOption(soilTypesUseCase.list()));
+        view.arrange(new StageOption(stagesUseCase.list()));
+    }
+
+    public void load(ListCropUseCase listCrops, String userIdentifier) {
+        view.offer(listCrops.list(userIdentifier));
     }
 
     public void classify(String imagePath) {

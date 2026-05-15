@@ -5,8 +5,9 @@ import static org.junit.Assert.assertNull;
 
 import com.agropredict.application.diagnostic_history.FindDiagnosticUseCase;
 import com.agropredict.application.repository.IDiagnosticRepository;
-import com.agropredict.domain.diagnostic.Prediction;
+import com.agropredict.domain.diagnostic.classification.Prediction;
 import com.agropredict.domain.diagnostic.Diagnostic;
+import com.agropredict.domain.diagnostic.severity.PendingSeverity;
 
 import org.junit.Test;
 
@@ -26,7 +27,7 @@ public final class FindDiagnosticUseCaseTest {
 
     @Test
     public void testFindExistingDiagnostic() {
-        Diagnostic diag = new Diagnostic("diag_1", new Prediction("wheat", 0.85));
+        Diagnostic diag = Diagnostic.begin("diag_1", new Prediction("wheat", 0.85), new PendingSeverity(() -> "Pending"));
         assertNotNull(new FindDiagnosticUseCase(stubDiag(diag)).find("diag_1"));
     }
 

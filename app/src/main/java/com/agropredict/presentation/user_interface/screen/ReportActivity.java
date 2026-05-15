@@ -6,15 +6,22 @@ import android.os.Bundle;
 import android.widget.Button;
 import androidx.core.content.FileProvider;
 import com.agropredict.R;
+import com.agropredict.application.factory.ICatalogFactory;
 import com.agropredict.application.factory.IReportingFactory;
+import com.agropredict.application.factory.IReviewFactory;
+import com.agropredict.application.service.IReportServiceCatalog;
 import com.agropredict.application.authentication.usecase.CheckSessionUseCase;
+import com.agropredict.application.crop_management.usecase.FindCropUseCase;
 import com.agropredict.application.crop_management.usecase.ListCropUseCase;
+import com.agropredict.application.diagnostic_history.ResolveDiagnosticUseCase;
+import com.agropredict.application.report_generation.usecase.StoreReportUseCase;
 import com.agropredict.domain.crop.Crop;
 import com.agropredict.presentation.user_interface.form.ReportForm;
 import com.agropredict.presentation.user_interface.navigation.PdfLauncher;
 import com.agropredict.presentation.user_interface.selector.DateSelection;
 import com.agropredict.presentation.viewmodel.report_generation.IReportView;
 import com.agropredict.presentation.viewmodel.report_generation.ReportViewModel;
+import com.agropredict.presentation.viewmodel.report_generation.ReportingData;
 import java.io.File;
 import java.util.List;
 
@@ -38,10 +45,17 @@ public final class ReportActivity extends BaseActivity implements IReportView {
     }
 
     private void initialize() {
-        IReportingFactory factory = (IReportingFactory) getApplication();
-        listCrops = new ListCropUseCase(factory.createCropRepository());
-        CheckSessionUseCase sessionUseCase = new CheckSessionUseCase(factory.createSessionRepository());
-        viewModel = new ReportViewModel(factory, this);
+        ICatalogFactory catalogFactory = (ICatalogFactory) getApplication();
+        IReviewFactory reviewFactory = (IReviewFactory) getApplication();
+        IReportingFactory reportingFactory = (IReportingFactory) getApplication();
+        IReportServiceCatalog reportCatalog = (IReportServiceCatalog) getApplication();
+        listCrops = new ListCropUseCase(catalogFactory.createCropRepository());
+        CheckSessionUseCase sessionUseCase = new CheckSessionUseCase(reviewFactory.createSessionRepository());
+        ReportingData data = new ReportingData(
+                new FindCropUseCase(catalogFactory.createCropRepository()),
+                new ResolveDiagnosticUseCase(reviewFactory.createDiagnosticRepository()),
+                new StoreReportUseCase(reportingFactory.createReportRepository()));
+        viewModel = new ReportViewModel(data, reportCatalog, this);
         sessionUseCase.check((identifier, occupation) -> start(identifier));
     }
 

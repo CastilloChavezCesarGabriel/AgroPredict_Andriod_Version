@@ -3,12 +3,12 @@ package com.agropredict.infrastructure.persistence.repository;
 import android.content.Context;
 import android.content.SharedPreferences;
 import com.agropredict.application.repository.ISessionRepository;
-import com.agropredict.domain.authentication.ISession;
-import com.agropredict.domain.authentication.NoSession;
-import com.agropredict.domain.authentication.Session;
-import com.agropredict.domain.authentication.ISessionConsumer;
+import com.agropredict.domain.authentication.session.ISession;
+import com.agropredict.domain.authentication.session.NoSession;
+import com.agropredict.domain.authentication.session.Session;
+import java.util.Objects;
 
-public final class SessionRepository implements ISessionRepository, ISessionConsumer {
+public final class SessionRepository implements ISessionRepository {
     private static final String USER_IDENTIFIER_KEY = "logged_user_id";
     private static final String OCCUPATION_KEY = "logged_occupation";
     private static final String TIMESTAMP_KEY = "session_timestamp";
@@ -16,28 +16,19 @@ public final class SessionRepository implements ISessionRepository, ISessionCons
     private final SharedPreferences preferences;
 
     public SessionRepository(Context context) {
-        this.preferences = context.getSharedPreferences("agropredict_session", Context.MODE_PRIVATE);
+        this.preferences = Objects.requireNonNull(context, "session repository requires a context")
+                .getSharedPreferences("agropredict_session", Context.MODE_PRIVATE);
     }
 
     @Override
     public void save(Session session) {
-        session.report(this);
-    }
-
-    @Override
-    public void report(String userIdentifier, String occupation) {
-        preferences.edit()
-                .putString(USER_IDENTIFIER_KEY, userIdentifier)
-                .putString(OCCUPATION_KEY, occupation)
-                .putLong(TIMESTAMP_KEY, System.currentTimeMillis())
-                .apply();
+        session.report(this::persist);
     }
 
     @Override
     public ISession recall() {
         long timestamp = preferences.getLong(TIMESTAMP_KEY, 0);
         if (timestamp == 0 || isExpired(timestamp)) {
-            clear();
             return new NoSession();
         }
         String identifier = preferences.getString(USER_IDENTIFIER_KEY, null);
@@ -52,6 +43,14 @@ public final class SessionRepository implements ISessionRepository, ISessionCons
     @Override
     public void clear() {
         preferences.edit().clear().apply();
+    }
+
+    private void persist(String userIdentifier, String occupation) {
+        preferences.edit()
+                .putString(USER_IDENTIFIER_KEY, userIdentifier)
+                .putString(OCCUPATION_KEY, occupation)
+                .putLong(TIMESTAMP_KEY, System.currentTimeMillis())
+                .apply();
     }
 
     private boolean isExpired(long timestamp) {

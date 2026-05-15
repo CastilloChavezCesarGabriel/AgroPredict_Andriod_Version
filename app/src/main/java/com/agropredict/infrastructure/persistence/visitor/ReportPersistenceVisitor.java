@@ -3,13 +3,13 @@ package com.agropredict.infrastructure.persistence.visitor;
 import com.agropredict.domain.report.IReportContextConsumer;
 import com.agropredict.domain.report.IReportIdentityConsumer;
 import com.agropredict.domain.report.IReportStorageConsumer;
-import com.agropredict.infrastructure.persistence.database.IRow;
+import com.agropredict.infrastructure.persistence.database.SqliteRow;
 
 public final class ReportPersistenceVisitor implements
         IReportIdentityConsumer, IReportContextConsumer, IReportStorageConsumer {
-    private final IRow row;
+    private final SqliteRow row;
 
-    public ReportPersistenceVisitor(IRow row) {
+    public ReportPersistenceVisitor(SqliteRow row) {
         this.row = row;
     }
 

@@ -56,8 +56,8 @@ public final class RegisterActivity extends BaseActivity implements IRegisterVie
     }
 
     @Override
-    public void confirm() {
-        notify(getString(R.string.registration_success));
+    public void confirm(String username) {
+        notify(getString(R.string.registration_success, username));
     }
 
     @Override

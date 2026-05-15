@@ -22,11 +22,9 @@ public final class Schema {
         new DiagnosticTable().create(database);
         new ReportTable().create(database);
         new SupportTable().create(database);
-        new DiagnosticSummaryView().create(database);
     }
 
     public void drop(SQLiteDatabase database) {
-        database.execSQL("DROP VIEW IF EXISTS diagnostic_summary");
         for (String table : DROP_TABLES) {
             database.execSQL("DROP TABLE IF EXISTS " + table);
         }

@@ -16,9 +16,7 @@ public final class PdfReportService extends ReportService {
 
     @Override
     protected IReportWriter prepare(String timestamp) throws IOException {
-        PdfReport report = new PdfReport();
-        report.open(locate(timestamp));
-        return report;
+        return new PdfReport(locate(timestamp));
     }
 
     @Override

@@ -6,19 +6,21 @@ import org.json.JSONException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Objects;
 
 public final class LabelCatalog {
     private final AssetManager assetManager;
 
     public LabelCatalog(AssetManager assetManager) {
-        this.assetManager = assetManager;
+        this.assetManager = Objects.requireNonNull(assetManager, "label catalog requires an asset manager");
     }
 
     public String[] load(String labelsAsset) {
         try {
             return parse(read(labelsAsset));
-        } catch (IOException | JSONException exception) {
-            return new String[0];
+        } catch (IOException | JSONException loadFailure) {
+            throw new IllegalStateException("Failed to load labels asset '" + labelsAsset
+                    + "'. Classifier cannot operate without class names.", loadFailure);
         }
     }
 

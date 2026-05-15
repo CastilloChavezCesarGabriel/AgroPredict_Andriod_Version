@@ -1,73 +1,141 @@
 package com.agropredict.core;
 
 import android.content.Context;
+import com.agropredict.application.factory.IImageRejectionFactory;
 import com.agropredict.application.factory.IAccessFactory;
 import com.agropredict.application.factory.ICatalogFactory;
 import com.agropredict.application.factory.IDashboardFactory;
-import com.agropredict.application.factory.IPredictionFactory;
+import com.agropredict.application.factory.IDiagnosticApiFactory;
+import com.agropredict.application.factory.IDiagnosticWorkflowFactory;
+import com.agropredict.application.factory.IImageClassificationFactory;
 import com.agropredict.application.factory.IReportingFactory;
 import com.agropredict.application.factory.IReviewFactory;
-import com.agropredict.domain.diagnostic.ISeverityFactory;
-import com.agropredict.domain.diagnostic.Severity;
-import com.agropredict.domain.diagnostic.SeverityClassifier;
-import com.agropredict.infrastructure.api_integration.GravitySeverityFactory;
-import com.agropredict.infrastructure.database_backup.DatabaseBackupSchedule;
+import com.agropredict.application.factory.ISeverityFactory;
+import com.agropredict.application.backup.BackupPolicy;
+import com.agropredict.application.backup.BackupSchedule;
+import com.agropredict.application.backup.IBackup;
+import com.agropredict.application.repository.ISessionRepository;
+import com.agropredict.application.service.IClock;
+import com.agropredict.application.service.IReportServiceBuilder;
+import com.agropredict.application.service.IReportServiceCatalog;
+import com.agropredict.domain.diagnostic.severity.GravitySeverityResolver;
+import com.agropredict.domain.diagnostic.severity.ISeverityResolver;
+import com.agropredict.domain.diagnostic.severity.SeverityClassifier;
+import com.agropredict.infrastructure.database_backup.DatabaseBackup;
 import com.agropredict.infrastructure.factory.AndroidAccessFactory;
 import com.agropredict.infrastructure.factory.AndroidCatalogFactory;
 import com.agropredict.infrastructure.factory.AndroidDashboardFactory;
-import com.agropredict.infrastructure.factory.AndroidPredictionFactory;
+import com.agropredict.infrastructure.factory.AndroidDiagnosticApi;
+import com.agropredict.infrastructure.factory.AndroidDiagnosticWorkflow;
+import com.agropredict.infrastructure.factory.AndroidImageClassification;
 import com.agropredict.infrastructure.factory.AndroidReportingFactory;
 import com.agropredict.infrastructure.factory.AndroidReviewFactory;
+import com.agropredict.infrastructure.factory.CatalogPersistence;
+import com.agropredict.infrastructure.factory.CropPersistence;
+import com.agropredict.infrastructure.factory.DiagnosticPersistence;
+import com.agropredict.infrastructure.factory.ReportPersistence;
+import com.agropredict.infrastructure.factory.SessionPersistence;
+import com.agropredict.infrastructure.factory.UserPersistence;
 import com.agropredict.infrastructure.persistence.database.Database;
+import com.agropredict.infrastructure.persistence.database.SqliteRowFactory;
+import com.agropredict.infrastructure.persistence.database.SystemClock;
+import com.agropredict.infrastructure.persistence.database.UtcTimestamp;
+import com.agropredict.infrastructure.persistence.repository.DiagnosticContext;
+import com.agropredict.infrastructure.persistence.repository.SessionRepository;
+import com.agropredict.infrastructure.report_export.AndroidReportServiceCatalog;
+import com.agropredict.infrastructure.report_export.CsvReportServiceBuilder;
+import com.agropredict.infrastructure.report_export.PdfReportServiceBuilder;
+import java.io.File;
 import java.util.List;
 
 public final class Configuration {
-    private final Database database;
+    private static final String DATABASE_NAME = "agro_diagnostic.db";
+    private static final String BACKUP_SUBDIRECTORY = "backups";
+    private static final long BACKUP_INTERVAL_MILLIS = 24L * 60 * 60 * 1000;
     private final Context context;
-    private final ISeverityFactory severityFactory;
+    private final Database database;
+    private final IClock clock;
+    private final ISeverityResolver severityResolver;
+    private final ISessionRepository session;
 
-    public Configuration(Context context) {
-        this.database = new Database(context);
+    public Configuration(Context context, ISeverityFactory severityFactory) {
         this.context = context;
-        this.severityFactory = createSeverityFactory();
+        this.database = new Database(context, DATABASE_NAME);
+        this.clock = new SystemClock();
+        this.severityResolver = createSeverityResolver(severityFactory);
+        this.session = new SessionRepository(context);
     }
 
     public IAccessFactory createAccess() {
-        return new AndroidAccessFactory(database, context);
+        return new AndroidAccessFactory(
+                new UserPersistence(database, createRowFactory(), session),
+                new SessionPersistence(context),
+                new CatalogPersistence(database));
     }
 
     public IDashboardFactory createDashboard() {
-        return new AndroidDashboardFactory(context);
+        return new AndroidDashboardFactory(new SessionPersistence(context), context);
     }
 
     public ICatalogFactory createCatalog() {
-        return new AndroidCatalogFactory(database, context);
+        SqliteRowFactory rowFactory = createRowFactory();
+        return new AndroidCatalogFactory(
+                new CropPersistence(database, rowFactory, session),
+                new CatalogPersistence(database));
     }
 
-    public IReviewFactory createReview() {
-        return new AndroidReviewFactory(database, context, severityFactory);
+    public IReviewFactory createReview(ISeverityFactory severityFactory) {
+        SqliteRowFactory rowFactory = createRowFactory();
+        DiagnosticContext diagnosticContext = new DiagnosticContext(session, severityResolver, severityFactory);
+        return new AndroidReviewFactory(
+                new DiagnosticPersistence(database, rowFactory, diagnosticContext),
+                new CropPersistence(database, rowFactory, session),
+                new SessionPersistence(context));
     }
 
-    public IPredictionFactory createPrediction() {
-        return new AndroidPredictionFactory(database, context, severityFactory);
+    public IImageClassificationFactory createImageClassification(IImageRejectionFactory rejectionFactory) {
+        return new AndroidImageClassification(context, rejectionFactory);
+    }
+
+    public IDiagnosticApiFactory createDiagnosticApi() {
+        return new AndroidDiagnosticApi(severityResolver);
+    }
+
+    public IDiagnosticWorkflowFactory createDiagnosticWorkflow(ISeverityFactory severityFactory) {
+        SqliteRowFactory rowFactory = createRowFactory();
+        DiagnosticContext diagnosticContext = new DiagnosticContext(session, severityResolver, severityFactory);
+        return new AndroidDiagnosticWorkflow(
+                new CropPersistence(database, rowFactory, session),
+                new DiagnosticPersistence(database, rowFactory, diagnosticContext));
     }
 
     public IReportingFactory createReporting() {
-        return new AndroidReportingFactory(database, context, severityFactory);
+        return new AndroidReportingFactory(new ReportPersistence(database, createRowFactory(), session));
     }
 
-    public DatabaseBackupSchedule createBackup() {
-        return new DatabaseBackupSchedule(database, context);
+    public IReportServiceCatalog createReportServiceCatalog() {
+        List<IReportServiceBuilder> builders = List.of(
+                new CsvReportServiceBuilder(),
+                new PdfReportServiceBuilder());
+        return new AndroidReportServiceCatalog(context, builders);
     }
 
-    private ISeverityFactory createSeverityFactory() {
-        Severity healthyLabel = new Severity("low", "Healthy", 0);
-        Severity moderateLabel = new Severity("moderate", "Moderate issue", 1);
-        Severity severeLabel = new Severity("high", "Severe issue", 2);
-        Severity unknown = new Severity(null, "Analysis complete", 0);
-        SeverityClassifier healthy = new SeverityClassifier(List.of("bajo", "low"), healthyLabel);
-        SeverityClassifier moderate = new SeverityClassifier(List.of("moderado", "moderate"), moderateLabel);
-        SeverityClassifier severe = new SeverityClassifier(List.of("alto", "high", "critico", "critical"), severeLabel);
-        return new GravitySeverityFactory(List.of(healthy, moderate, severe), unknown);
+    public IBackup createBackup() {
+        BackupSchedule schedule = new BackupSchedule(new BackupPolicy(BACKUP_INTERVAL_MILLIS), clock);
+        File source = context.getDatabasePath(DATABASE_NAME);
+        File destination = new File(context.getExternalFilesDir(null), BACKUP_SUBDIRECTORY + File.separator + DATABASE_NAME);
+        DatabaseBackup databaseBackup = new DatabaseBackup(source, destination);
+        return () -> databaseBackup.backup(schedule);
+    }
+
+    private SqliteRowFactory createRowFactory() {
+        return new SqliteRowFactory(database, new UtcTimestamp(clock));
+    }
+
+    private ISeverityResolver createSeverityResolver(ISeverityFactory severityFactory) {
+        SeverityClassifier healthy = new SeverityClassifier(List.of("bajo", "low"), severityFactory.createHealthy());
+        SeverityClassifier moderate = new SeverityClassifier(List.of("moderado", "moderate"), severityFactory.createModerate());
+        SeverityClassifier severe = new SeverityClassifier(List.of("alto", "high", "critico", "critical"), severityFactory.createSevere());
+        return new GravitySeverityResolver(List.of(healthy, moderate, severe), severityFactory.createUnknown());
     }
 }

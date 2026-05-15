@@ -1,6 +1,6 @@
 package com.agropredict.visitor;
 
-import com.agropredict.domain.authentication.ISessionConsumer;
+import com.agropredict.domain.authentication.session.ISessionConsumer;
 
 public final class TestSessionVisitor implements ISessionConsumer {
     private String userIdentifier;

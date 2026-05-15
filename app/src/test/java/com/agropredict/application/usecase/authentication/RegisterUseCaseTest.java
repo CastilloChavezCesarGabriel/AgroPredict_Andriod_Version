@@ -3,11 +3,18 @@ package com.agropredict.application.usecase.authentication;
 import com.agropredict.application.authentication.usecase.RegisterUseCase;
 import com.agropredict.application.repository.ICatalogRepository;
 import com.agropredict.application.repository.IUserRepository;
+import com.agropredict.application.authentication.request.CredentialDraft;
+import com.agropredict.application.authentication.request.CredentialFailureContext;
 import com.agropredict.application.authentication.request.Registration;
 import com.agropredict.application.authentication.request.RegistrationRequest;
-import com.agropredict.application.authentication.request.Credential;
 import com.agropredict.application.authentication.request.Profile;
 import com.agropredict.application.authentication.request.Registrant;
+import com.agropredict.application.authentication.request.RegistrantFailureContext;
+import com.agropredict.factory.StubEmailFailureFactory;
+import com.agropredict.factory.StubFullNameFailureFactory;
+import com.agropredict.factory.StubPasswordFailureFactory;
+import com.agropredict.factory.StubPhoneNumberFailureFactory;
+import com.agropredict.factory.StubUsernameFailureFactory;
 import com.agropredict.repository.FixedCatalogRepository;
 import com.agropredict.repository.ScriptedUserRepository;
 import com.agropredict.visitor.RejectExpecter;
@@ -17,6 +24,12 @@ import java.util.Map;
 import org.junit.Test;
 
 public final class RegisterUseCaseTest {
+    private final RegistrantFailureContext registrantFailures = new RegistrantFailureContext(
+            new StubFullNameFailureFactory(), new StubPhoneNumberFailureFactory());
+    private final CredentialFailureContext credentialFailures = new CredentialFailureContext(
+            new StubEmailFailureFactory(), new StubPasswordFailureFactory());
+    private final StubUsernameFailureFactory usernameFailures = new StubUsernameFailureFactory();
+
     private ICatalogRepository arrange() {
         Map<String, String> entries = new HashMap<>();
         entries.put("Farmer", "occupation_farmer");
@@ -32,10 +45,14 @@ public final class RegisterUseCaseTest {
     }
 
     private RegistrationRequest compose() {
+        return compose("Juan Perez", "3312345678", "juan@mail.com", "Passw0rd!XYZ", "juanperez");
+    }
+
+    private RegistrationRequest compose(String fullName, String phone, String email, String password, String username) {
         return RegistrationRequest.compose(new Registration(
-            new Registrant("Juan Perez", "3312345678"),
-            new Credential("juan@mail.com", "Passw0rd!XYZ"),
-            new Profile("juanperez", "Farmer")
+            new Registrant(fullName, phone, registrantFailures),
+            new CredentialDraft(email, password, credentialFailures),
+            new Profile(username, "Farmer", usernameFailures)
         ));
     }
 
@@ -58,51 +75,31 @@ public final class RegisterUseCaseTest {
 
     @Test
     public void testInvalidEmailRejected() {
-        RegistrationRequest request = RegistrationRequest.compose(new Registration(
-            new Registrant("Juan Perez", "3312345678"),
-            new Credential("not-an-email", "Passw0rd!XYZ"),
-            new Profile("juanperez", "Farmer")
-        ));
+        RegistrationRequest request = compose("Juan Perez", "3312345678", "not-an-email", "Passw0rd!XYZ", "juanperez");
         new RegisterUseCase(accept(), arrange()).register(request).accept(new RejectExpecter(null));
     }
 
     @Test
     public void testInvalidPasswordRejected() {
-        RegistrationRequest request = RegistrationRequest.compose(new Registration(
-            new Registrant("Juan Perez", "3312345678"),
-            new Credential("juan@mail.com", "weak"),
-            new Profile("juanperez", "Farmer")
-        ));
+        RegistrationRequest request = compose("Juan Perez", "3312345678", "juan@mail.com", "weak", "juanperez");
         new RegisterUseCase(accept(), arrange()).register(request).accept(new RejectExpecter(null));
     }
 
     @Test
     public void testInvalidUsernameRejected() {
-        RegistrationRequest request = RegistrationRequest.compose(new Registration(
-            new Registrant("Juan Perez", "3312345678"),
-            new Credential("juan@mail.com", "Passw0rd!XYZ"),
-            new Profile("ab", "Farmer")
-        ));
+        RegistrationRequest request = compose("Juan Perez", "3312345678", "juan@mail.com", "Passw0rd!XYZ", "ab");
         new RegisterUseCase(accept(), arrange()).register(request).accept(new RejectExpecter(null));
     }
 
     @Test
     public void testInvalidFullNameRejected() {
-        RegistrationRequest request = RegistrationRequest.compose(new Registration(
-            new Registrant("", "3312345678"),
-            new Credential("juan@mail.com", "Passw0rd!XYZ"),
-            new Profile("juanperez", "Farmer")
-        ));
+        RegistrationRequest request = compose("", "3312345678", "juan@mail.com", "Passw0rd!XYZ", "juanperez");
         new RegisterUseCase(accept(), arrange()).register(request).accept(new RejectExpecter(null));
     }
 
     @Test
-    public void testEmptyFieldsRejected() {
-        RegistrationRequest request = RegistrationRequest.compose(new Registration(
-            new Registrant("", ""),
-            new Credential("", ""),
-            new Profile("", "")
-        ));
+    public void testEmptyValidatedFieldsRejected() {
+        RegistrationRequest request = compose("", "", "", "", "minuser");
         new RegisterUseCase(accept(), arrange()).register(request).accept(new RejectExpecter(null));
     }
 }

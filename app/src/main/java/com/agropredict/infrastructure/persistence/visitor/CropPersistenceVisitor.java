@@ -1,20 +1,20 @@
 package com.agropredict.infrastructure.persistence.visitor;
 
-import com.agropredict.domain.authentication.ISession;
+import com.agropredict.domain.authentication.session.ISession;
 import com.agropredict.domain.crop.Crop;
 import com.agropredict.domain.crop.visitor.ICropIdentityConsumer;
 import com.agropredict.domain.crop.visitor.IFieldConsumer;
 import com.agropredict.domain.crop.visitor.IPlantingConsumer;
-import com.agropredict.domain.authentication.ISessionConsumer;
+import com.agropredict.domain.authentication.session.ISessionConsumer;
 import com.agropredict.domain.crop.visitor.ISoilConsumer;
 import com.agropredict.domain.identifier.IIdentifierConsumer;
-import com.agropredict.infrastructure.persistence.database.IRow;
+import com.agropredict.infrastructure.persistence.database.SqliteRow;
 
 public final class CropPersistenceVisitor implements
         ICropIdentityConsumer, IIdentifierConsumer, IFieldConsumer, ISoilConsumer, IPlantingConsumer, ISessionConsumer {
-    private final IRow row;
+    private final SqliteRow row;
 
-    public CropPersistenceVisitor(IRow row, ISession session) {
+    public CropPersistenceVisitor(SqliteRow row, ISession session) {
         this.row = row;
         session.report(this);
     }

@@ -1,6 +1,6 @@
 package com.agropredict.domain.user;
 
-import com.agropredict.domain.authentication.ISessionBuilder;
+import com.agropredict.domain.authentication.session.ISessionBuilder;
 import com.agropredict.domain.guard.ArgumentPrecondition;
 import com.agropredict.domain.user.visitor.ICredentialConsumer;
 import com.agropredict.domain.user.visitor.IEmailConsumer;
@@ -11,12 +11,12 @@ import java.util.Objects;
 public final class Account {
     private final String username;
     private final Credential credential;
-    private final String occupation;
+    private final Occupation occupation;
 
-    public Account(String username, Credential credential, String occupation) {
+    public Account(String username, Credential credential, Occupation occupation) {
         this.username = ArgumentPrecondition.validate(username, "account username");
         this.credential = Objects.requireNonNull(credential, "account requires a credential");
-        this.occupation = occupation;
+        this.occupation = Objects.requireNonNull(occupation, "account requires an occupation");
     }
 
     public void enroll(IUsernameConsumer consumer) {
@@ -32,10 +32,10 @@ public final class Account {
     }
 
     public void classify(IOccupationConsumer consumer) {
-        if (occupation != null) consumer.classify(occupation);
+        occupation.classify(consumer);
     }
 
     public void expose(ISessionBuilder builder, String identifier) {
-        builder.build(identifier, occupation);
+        occupation.expose(builder, identifier);
     }
 }

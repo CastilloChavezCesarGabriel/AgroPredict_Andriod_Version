@@ -17,14 +17,15 @@ import com.agropredict.domain.crop.GrowthCycle;
 import com.agropredict.domain.crop.Plot;
 import com.agropredict.domain.crop.Soil;
 import com.agropredict.domain.crop.Crop;
-import com.agropredict.infrastructure.persistence.database.Clock;
 import com.agropredict.infrastructure.persistence.database.Database;
 import com.agropredict.infrastructure.persistence.database.SqliteRow;
+import com.agropredict.infrastructure.persistence.database.SqliteRowFactory;
 import com.agropredict.infrastructure.persistence.database.SqliteRowStore;
 import com.agropredict.infrastructure.persistence.visitor.CropPersistenceVisitor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public final class SqliteCropRepository implements ICropRepository, IRecordEraser {
     private static final String SELECT_CROP = "SELECT c.id, c.crop_type, c.field_name, "
@@ -38,39 +39,41 @@ public final class SqliteCropRepository implements ICropRepository, IRecordErase
     private final Database database;
     private final SqliteRowStore store;
     private final ISessionRepository sessionRepository;
+    private final SqliteRowFactory rowFactory;
     private final SqliteCropHistory history;
 
-    public SqliteCropRepository(Database database, ISessionRepository sessionRepository) {
-        this.database = database;
+    public SqliteCropRepository(Database database, ISessionRepository sessionRepository, SqliteRowFactory rowFactory) {
+        this.database = Objects.requireNonNull(database, "crop repository requires a database");
+        this.sessionRepository = Objects.requireNonNull(sessionRepository, "crop repository requires a session repository");
+        this.rowFactory = Objects.requireNonNull(rowFactory, "crop repository requires a row factory");
         this.store = new SqliteRowStore(database);
-        this.sessionRepository = sessionRepository;
-        this.history = new SqliteCropHistory(database);
+        this.history = new SqliteCropHistory(database, rowFactory);
     }
 
     @Override
     public void store(Crop crop) {
-        SqliteRow row = new SqliteRow(database.getWritableDatabase());
+        SqliteRow row = rowFactory.open();
         new CropPersistenceVisitor(row, sessionRepository.recall()).persist(crop);
-        String now = Clock.read();
-        row.record("created_at", now);
-        row.record("updated_at", now);
+        row.stamp("created_at");
+        row.stamp("updated_at");
         row.mark("is_active", 1);
         row.flush("crop");
     }
 
     @Override
     public void update(CropUpdateRequest request) {
-        SqliteRow row = new SqliteRow(database.getWritableDatabase());
+        SqliteRow row = rowFactory.open();
         CropPersistenceVisitor visitor = new CropPersistenceVisitor(row, sessionRepository.recall());
         request.identify(visitor);
         request.locate(visitor);
         request.analyze(visitor);
         request.track(visitor);
-        String identifier = row.lookup("id");
-        Map<String, String> previous = history.snapshot(identifier);
-        row.record("updated_at", Clock.read());
-        row.overwrite("crop", "id");
-        history.track(identifier, previous);
+        request.identify(identifier -> {
+            Map<String, String> previous = history.snapshot(identifier);
+            row.stamp("updated_at");
+            row.overwrite("crop", "id");
+            history.track(identifier, previous);
+        });
     }
 
     @Override
@@ -97,8 +100,8 @@ public final class SqliteCropRepository implements ICropRepository, IRecordErase
     private HistoryRecord rebuild(Cursor cursor) {
         FieldModification modification = new FieldModification(cursor.getString(0));
         HistoryTransition transition = new HistoryTransition(cursor.getString(1), cursor.getString(2));
-        ChangeMoment timestamp = new ChangeMoment(cursor.getString(3));
-        return new HistoryRecord(modification, transition, timestamp);
+        ChangeMoment moment = new ChangeMoment(cursor.getString(3));
+        return new HistoryRecord(modification, transition, moment);
     }
 
     @Override

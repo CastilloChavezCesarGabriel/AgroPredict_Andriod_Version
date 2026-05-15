@@ -1,7 +1,7 @@
 package com.agropredict.application.authentication.usecase;
 
 import com.agropredict.application.repository.ISessionRepository;
-import com.agropredict.domain.authentication.ISessionConsumer;
+import com.agropredict.domain.authentication.session.ISessionConsumer;
 import java.util.Objects;
 
 public final class CheckSessionUseCase {

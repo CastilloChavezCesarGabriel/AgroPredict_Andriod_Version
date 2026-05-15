@@ -1,9 +1,11 @@
 package com.agropredict.domain.input_validation;
 
+import com.agropredict.application.input_validation.PhoneNumberValidator;
+import com.agropredict.factory.StubPhoneNumberFailureFactory;
 import org.junit.Test;
 
 public final class PhoneNumberValidatorTest {
-    private final ValidatorTester tester = new ValidatorTester(new PhoneNumberValidator());
+    private final ValidatorTester tester = new ValidatorTester(new PhoneNumberValidator(new StubPhoneNumberFailureFactory()));
 
     @Test
     public void testValidPhone() {

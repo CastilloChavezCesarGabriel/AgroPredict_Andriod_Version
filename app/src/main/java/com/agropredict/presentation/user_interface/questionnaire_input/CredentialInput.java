@@ -3,7 +3,8 @@ package com.agropredict.presentation.user_interface.questionnaire_input;
 import android.app.Activity;
 import android.widget.EditText;
 import com.agropredict.R;
-import com.agropredict.application.authentication.request.Credential;
+import com.agropredict.application.authentication.request.CredentialDraft;
+import com.agropredict.application.authentication.request.CredentialFailureContext;
 
 public final class CredentialInput {
     private final EditText emailInput;
@@ -22,9 +23,9 @@ public final class CredentialInput {
         return password.equals(confirmation);
     }
 
-    public Credential collect() {
+    public CredentialDraft collect(CredentialFailureContext failureContext) {
         String email = emailInput.getText().toString().trim();
         String password = passwordInput.getText().toString();
-        return new Credential(email, password);
+        return new CredentialDraft(email, password, failureContext);
     }
 }

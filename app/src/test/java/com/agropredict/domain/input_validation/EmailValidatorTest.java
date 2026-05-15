@@ -1,9 +1,11 @@
 package com.agropredict.domain.input_validation;
 
+import com.agropredict.application.input_validation.EmailValidator;
+import com.agropredict.factory.StubEmailFailureFactory;
 import org.junit.Test;
 
 public final class EmailValidatorTest {
-    private final ValidatorTester tester = new ValidatorTester(new EmailValidator());
+    private final ValidatorTester tester = new ValidatorTester(new EmailValidator(new StubEmailFailureFactory()));
 
     @Test
     public void testValidEmail() {

@@ -2,6 +2,14 @@ package com.agropredict.domain.input_validation;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import com.agropredict.domain.input_validation.requirement.DigitRequirement;
+import com.agropredict.domain.input_validation.requirement.ICharacterRequirement;
+import com.agropredict.domain.input_validation.requirement.LowercaseRequirement;
+import com.agropredict.domain.input_validation.requirement.PasswordPolicy;
+import com.agropredict.domain.input_validation.requirement.SpecialCharacterRequirement;
+import com.agropredict.domain.input_validation.requirement.UppercaseRequirement;
+
 import org.junit.Test;
 import java.util.List;
 

@@ -1,30 +1,31 @@
 package com.agropredict.infrastructure.persistence.repository;
 
-import android.content.ContentValues;
 import com.agropredict.domain.identifier.IdentifierFactory;
-import com.agropredict.infrastructure.persistence.database.Database;
+import com.agropredict.infrastructure.persistence.database.SqliteRow;
+import com.agropredict.infrastructure.persistence.database.SqliteRowFactory;
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.TimeZone;
 
 public final class SqliteReportSharing {
     private static final int DURATION_DAYS = 30;
-    private final Database database;
+    private final SqliteRowFactory rowFactory;
 
-    public SqliteReportSharing(Database database) {
-        this.database = database;
+    public SqliteReportSharing(SqliteRowFactory rowFactory) {
+        this.rowFactory = Objects.requireNonNull(rowFactory, "report sharing requires a row factory");
     }
 
-    public void share(String reportIdentifier, String generatedAt) {
-        ContentValues values = new ContentValues();
-        values.put("id", IdentifierFactory.generate("report_sharing"));
-        values.put("report_id", reportIdentifier);
-        values.put("qr_code", token());
-        values.put("created_at", generatedAt);
-        values.put("expiration", expiration());
-        database.getWritableDatabase().insert("report_sharing", null, values);
+    public void share(String reportIdentifier) {
+        SqliteRow row = rowFactory.open();
+        row.record("id", IdentifierFactory.generate("report_sharing"));
+        row.record("report_id", reportIdentifier);
+        row.record("qr_code", token());
+        row.stamp("created_at");
+        row.record("expiration", expiration());
+        row.flush("report_sharing");
     }
 
     private String token() {

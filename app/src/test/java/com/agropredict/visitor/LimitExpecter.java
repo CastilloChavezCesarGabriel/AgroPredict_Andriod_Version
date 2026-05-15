@@ -1,6 +1,6 @@
 package com.agropredict.visitor;
 
-import com.agropredict.domain.user.IOccupationListener;
+import com.agropredict.domain.user.occupation.IOccupationListener;
 
 public final class LimitExpecter implements IOccupationListener {
     @Override

@@ -64,71 +64,118 @@
                 android:orientation="vertical"
                 android:padding="@dimen/spacing_16">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilCropType"
-                    style="@style/AgroPredict.TextInput"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/spacing_12"
-                    android:hint="@string/crop_type_hint">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etCropType"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="text" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilLocation"
-                    style="@style/AgroPredict.TextInput"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/spacing_12"
-                    android:hint="@string/location_hint">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etLocation"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="text" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
                 <Spinner
-                    android:id="@+id/spnSoilType"
+                    android:id="@+id/spnCropChoice"
                     style="@style/AgroPredict.Spinner"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/spinner_height"
                     android:layout_marginBottom="@dimen/spacing_12" />
 
-                <Spinner
-                    android:id="@+id/spnStage"
-                    style="@style/AgroPredict.Spinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/spinner_height"
-                    android:layout_marginBottom="@dimen/spacing_12" />
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/tilPlantingDate"
-                    style="@style/AgroPredict.TextInput"
+                <LinearLayout
+                    android:id="@+id/groupNewCropFields"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/planting_date_hint">
+                    android:orientation="vertical">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etPlantingDate"
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilCropType"
+                        style="@style/AgroPredict.TextInput"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:focusableInTouchMode="false"
-                        android:longClickable="false"
-                        android:cursorVisible="false"
-                        android:inputType="none" />
+                        android:layout_marginBottom="@dimen/spacing_12"
+                        android:hint="@string/crop_type_hint">
 
-                </com.google.android.material.textfield.TextInputLayout>
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etCropType"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="text" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilFieldName"
+                        style="@style/AgroPredict.TextInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/spacing_12"
+                        android:hint="@string/field_name_label">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etFieldName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="text" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilLocation"
+                        style="@style/AgroPredict.TextInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/spacing_12"
+                        android:hint="@string/location_hint">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etLocation"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="text" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilArea"
+                        style="@style/AgroPredict.TextInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/spacing_12"
+                        android:hint="@string/area_label">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etArea"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="numberDecimal" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <Spinner
+                        android:id="@+id/spnSoilType"
+                        style="@style/AgroPredict.Spinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/spinner_height"
+                        android:layout_marginBottom="@dimen/spacing_12" />
+
+                    <Spinner
+                        android:id="@+id/spnStage"
+                        style="@style/AgroPredict.Spinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/spinner_height"
+                        android:layout_marginBottom="@dimen/spacing_12" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/tilPlantingDate"
+                        style="@style/AgroPredict.TextInput"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/planting_date_hint">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/etPlantingDate"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:focusableInTouchMode="false"
+                            android:longClickable="false"
+                            android:cursorVisible="false"
+                            android:inputType="none" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
 
             </LinearLayout>
 

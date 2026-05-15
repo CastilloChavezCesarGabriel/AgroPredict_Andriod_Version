@@ -6,7 +6,7 @@ import com.agropredict.R;
 import com.agropredict.application.factory.IAccessFactory;
 import com.agropredict.application.authentication.usecase.CheckSessionUseCase;
 import com.agropredict.application.profile.FindUserUseCase;
-import com.agropredict.domain.user.User;
+import com.agropredict.domain.user.IUser;
 import com.agropredict.domain.user.visitor.IEmailConsumer;
 import com.agropredict.domain.user.visitor.IOccupationConsumer;
 import com.agropredict.domain.user.visitor.IPhoneConsumer;
@@ -43,8 +43,7 @@ public final class ProfileActivity extends BaseActivity implements
 
     private void populate(String identifier, String occupation) {
         if (identifier == null || identifier.isEmpty()) return;
-        User user = findUserUseCase.find(identifier);
-        if (user == null) return;
+        IUser user = findUserUseCase.find(identifier);
         user.describe(this);
         user.contact(this);
         user.enroll(this);

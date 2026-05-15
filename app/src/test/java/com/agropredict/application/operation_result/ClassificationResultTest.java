@@ -1,7 +1,7 @@
 package com.agropredict.application.operation_result;
 
-import com.agropredict.domain.diagnostic.ConfidentClassification;
-import com.agropredict.domain.diagnostic.UnconfidentClassification;
+import com.agropredict.domain.diagnostic.classification.ConfidentClassification;
+import com.agropredict.domain.diagnostic.classification.UnconfidentClassification;
 import com.agropredict.visitor.ConfidentExpecter;
 import com.agropredict.visitor.UnconfidentExpecter;
 import org.junit.Test;

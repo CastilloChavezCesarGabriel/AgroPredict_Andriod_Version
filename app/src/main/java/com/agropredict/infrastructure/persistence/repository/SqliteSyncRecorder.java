@@ -1,42 +1,42 @@
 package com.agropredict.infrastructure.persistence.repository;
 
-import android.content.ContentValues;
 import com.agropredict.application.repository.ISessionRepository;
 import com.agropredict.domain.identifier.IdentifierFactory;
-import com.agropredict.domain.authentication.ISession;
-import com.agropredict.infrastructure.persistence.database.Clock;
-import com.agropredict.infrastructure.persistence.database.Database;
+import com.agropredict.domain.authentication.session.ISession;
+import com.agropredict.infrastructure.persistence.database.SqliteRow;
+import com.agropredict.infrastructure.persistence.database.SqliteRowFactory;
+import java.util.Objects;
 
 public final class SqliteSyncRecorder {
-    private final Database database;
     private final ISessionRepository sessionRepository;
+    private final SqliteRowFactory rowFactory;
 
-    public SqliteSyncRecorder(Database database, ISessionRepository sessionRepository) {
-        this.database = database;
-        this.sessionRepository = sessionRepository;
+    public SqliteSyncRecorder(ISessionRepository sessionRepository, SqliteRowFactory rowFactory) {
+        this.sessionRepository = Objects.requireNonNull(sessionRepository, "sync recorder requires a session repository");
+        this.rowFactory = Objects.requireNonNull(rowFactory, "sync recorder requires a row factory");
     }
 
     public void insert(String table, String identifier) {
-        write(table, "INSERT", identifier);
+        write(table, SyncOperation.INSERT, identifier);
     }
 
     public void update(String table, String identifier) {
-        write(table, "UPDATE", identifier);
+        write(table, SyncOperation.UPDATE, identifier);
     }
 
     public void delete(String table, String identifier) {
-        write(table, "DELETE", identifier);
+        write(table, SyncOperation.DELETE, identifier);
     }
 
-    private void write(String table, String operation, String identifier) {
-        ContentValues values = new ContentValues();
-        values.put("id", IdentifierFactory.generate("sync"));
+    private void write(String table, SyncOperation operation, String identifier) {
+        SqliteRow row = rowFactory.open();
+        row.record("id", IdentifierFactory.generate("sync"));
         ISession session = sessionRepository.recall();
-        session.report((userIdentifier, occupation) -> values.put("user_id", userIdentifier));
-        values.put("table_name", table);
-        values.put("operation", operation);
-        values.put("json_data", "{\"id\":\"" + identifier + "\"}");
-        values.put("created_at", Clock.read());
-        database.getWritableDatabase().insert("sync_pending", null, values);
+        session.report((userIdentifier, occupation) -> row.record("user_id", userIdentifier));
+        row.record("table_name", table);
+        operation.record(row);
+        row.record("json_data", "{\"id\":\"" + identifier + "\"}");
+        row.stamp("created_at");
+        row.flush("sync_pending");
     }
 }

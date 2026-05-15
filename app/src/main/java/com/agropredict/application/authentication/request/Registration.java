@@ -1,5 +1,6 @@
 package com.agropredict.application.authentication.request;
 
+import com.agropredict.application.operation_result.IUseCaseResult;
 import com.agropredict.application.repository.ICatalogRepository;
 import com.agropredict.application.service.IPasswordHasher;
 import com.agropredict.domain.user.visitor.ICredentialConsumer;
@@ -11,10 +12,10 @@ import java.util.Objects;
 
 public final class Registration {
     private final Registrant personal;
-    private final Credential credential;
+    private final CredentialDraft credential;
     private final Profile profile;
 
-    public Registration(Registrant personal, Credential credential, Profile profile) {
+    public Registration(Registrant personal, CredentialDraft credential, Profile profile) {
         this.personal = Objects.requireNonNull(personal, "registration requires a registrant");
         this.credential = Objects.requireNonNull(credential, "registration requires a credential");
         this.profile = Objects.requireNonNull(profile, "registration requires a profile");
@@ -44,5 +45,9 @@ public final class Registration {
 
     public void classify(IOccupationConsumer consumer, ICatalogRepository catalog) {
         profile.classify(consumer, catalog);
+    }
+
+    public IUseCaseResult succeed() {
+        return profile.succeed();
     }
 }

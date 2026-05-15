@@ -2,8 +2,8 @@ package com.agropredict.application.usecase.diagnostic;
 
 import com.agropredict.application.diagnostic_submission.usecase.ClassifyImageUseCase;
 import com.agropredict.application.service.IImageClassifier;
-import com.agropredict.domain.diagnostic.ConfidentClassification;
-import com.agropredict.domain.diagnostic.UnconfidentClassification;
+import com.agropredict.domain.diagnostic.classification.ConfidentClassification;
+import com.agropredict.domain.diagnostic.classification.UnconfidentClassification;
 import com.agropredict.visitor.ConfidentExpecter;
 import com.agropredict.visitor.UnconfidentExpecter;
 
