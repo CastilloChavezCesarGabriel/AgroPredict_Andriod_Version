@@ -33,4 +33,9 @@ public final class DiagnosticTable implements ITable {
         database.execSQL("CREATE INDEX IF NOT EXISTS index_diagnostic_user ON diagnostic(user_id)");
         database.execSQL("CREATE INDEX IF NOT EXISTS index_diagnostic_created ON diagnostic(created_at)");
     }
+
+    @Override
+    public void drop(SQLiteDatabase database) {
+        database.execSQL("DROP TABLE IF EXISTS diagnostic");
+    }
 }

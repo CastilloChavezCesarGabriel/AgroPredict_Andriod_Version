@@ -31,4 +31,10 @@ public final class SupportTable implements ITable {
         database.execSQL("CREATE INDEX IF NOT EXISTS index_sync_user ON sync_pending(user_id)");
         database.execSQL("CREATE INDEX IF NOT EXISTS index_log_user ON log_entry(user_id)");
     }
+
+    @Override
+    public void drop(SQLiteDatabase database) {
+        database.execSQL("DROP TABLE IF EXISTS log_entry");
+        database.execSQL("DROP TABLE IF EXISTS sync_pending");
+    }
 }

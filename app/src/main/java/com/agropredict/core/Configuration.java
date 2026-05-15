@@ -16,8 +16,8 @@ import com.agropredict.application.backup.BackupSchedule;
 import com.agropredict.application.backup.IBackup;
 import com.agropredict.application.repository.ISessionRepository;
 import com.agropredict.application.service.IClock;
-import com.agropredict.application.service.IReportServiceBuilder;
 import com.agropredict.application.service.IReportServiceCatalog;
+import com.agropredict.application.service.ReportFormat;
 import com.agropredict.domain.diagnostic.severity.GravitySeverityResolver;
 import com.agropredict.domain.diagnostic.severity.ISeverityResolver;
 import com.agropredict.domain.diagnostic.severity.SeverityClassifier;
@@ -39,19 +39,17 @@ import com.agropredict.infrastructure.factory.UserPersistence;
 import com.agropredict.infrastructure.persistence.database.Database;
 import com.agropredict.infrastructure.persistence.database.SqliteRowFactory;
 import com.agropredict.infrastructure.persistence.database.SystemClock;
-import com.agropredict.infrastructure.persistence.database.UtcTimestamp;
 import com.agropredict.infrastructure.persistence.repository.DiagnosticContext;
 import com.agropredict.infrastructure.persistence.repository.SessionRepository;
 import com.agropredict.infrastructure.report_export.AndroidReportServiceCatalog;
-import com.agropredict.infrastructure.report_export.CsvReportServiceBuilder;
-import com.agropredict.infrastructure.report_export.PdfReportServiceBuilder;
+import com.agropredict.infrastructure.report_export.CsvReportService;
+import com.agropredict.infrastructure.report_export.PdfReportService;
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 public final class Configuration {
     private static final String DATABASE_NAME = "agro_diagnostic.db";
-    private static final String BACKUP_SUBDIRECTORY = "backups";
-    private static final long BACKUP_INTERVAL_MILLIS = 24L * 60 * 60 * 1000;
     private final Context context;
     private final Database database;
     private final IClock clock;
@@ -114,22 +112,27 @@ public final class Configuration {
     }
 
     public IReportServiceCatalog createReportServiceCatalog() {
-        List<IReportServiceBuilder> builders = List.of(
-                new CsvReportServiceBuilder(),
-                new PdfReportServiceBuilder());
-        return new AndroidReportServiceCatalog(context, builders);
+        File reportsDirectory = new File(context.getExternalFilesDir(null), "reports");
+        if (!reportsDirectory.exists() && !reportsDirectory.mkdirs()) {
+            throw new IllegalStateException("cannot create reports directory: " + reportsDirectory.getAbsolutePath());
+        }
+        return new AndroidReportServiceCatalog(Map.of(
+                ReportFormat.CSV, new CsvReportService(reportsDirectory, clock),
+                ReportFormat.PDF, new PdfReportService(reportsDirectory, clock)));
     }
 
     public IBackup createBackup() {
-        BackupSchedule schedule = new BackupSchedule(new BackupPolicy(BACKUP_INTERVAL_MILLIS), clock);
+        long backupIntervalMillis = 24L * 60 * 60 * 1000;
+        String backupSubdirectory = "backups";
+        BackupSchedule schedule = new BackupSchedule(new BackupPolicy(backupIntervalMillis), clock);
         File source = context.getDatabasePath(DATABASE_NAME);
-        File destination = new File(context.getExternalFilesDir(null), BACKUP_SUBDIRECTORY + File.separator + DATABASE_NAME);
+        File destination = new File(context.getExternalFilesDir(null), backupSubdirectory + File.separator + DATABASE_NAME);
         DatabaseBackup databaseBackup = new DatabaseBackup(source, destination);
         return () -> databaseBackup.backup(schedule);
     }
 
     private SqliteRowFactory createRowFactory() {
-        return new SqliteRowFactory(database, new UtcTimestamp(clock));
+        return new SqliteRowFactory(database, clock);
     }
 
     private ISeverityResolver createSeverityResolver(ISeverityFactory severityFactory) {

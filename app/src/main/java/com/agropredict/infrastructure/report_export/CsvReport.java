@@ -10,17 +10,15 @@ public final class CsvReport implements IReportWriter {
     private static final String DELIMITER = ",";
     private final StringBuilder headerLine = new StringBuilder();
     private final StringBuilder valueLine = new StringBuilder();
-    private boolean started;
 
     @Override
     public void write(String label, String value) {
-        if (started) {
+        if (headerLine.length() > 0) {
             headerLine.append(DELIMITER);
             valueLine.append(DELIMITER);
         }
         headerLine.append(label);
         valueLine.append(escape(value));
-        started = true;
     }
 
     public void export(File file) throws IOException {

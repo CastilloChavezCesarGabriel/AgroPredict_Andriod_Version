@@ -16,7 +16,7 @@ public final class DiagnosticReportComposer implements IPredictionConsumer, ISum
                 "diagnostic report composer requires a report writer");
     }
 
-    public void write(Diagnostic diagnostic) {
+    public void compose(Diagnostic diagnostic) {
         diagnostic.classify(this);
         diagnostic.summarize(this);
         diagnostic.recommend(this);

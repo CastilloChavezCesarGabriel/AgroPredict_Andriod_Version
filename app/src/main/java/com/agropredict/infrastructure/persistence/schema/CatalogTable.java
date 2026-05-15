@@ -17,4 +17,9 @@ public final class CatalogTable implements ITable {
             + "id TEXT PRIMARY KEY, "
             + "name TEXT NOT NULL UNIQUE)");
     }
+
+    @Override
+    public void drop(SQLiteDatabase database) {
+        database.execSQL("DROP TABLE IF EXISTS " + name);
+    }
 }

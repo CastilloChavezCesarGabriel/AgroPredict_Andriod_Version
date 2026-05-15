@@ -19,4 +19,9 @@ public final class ImageTable implements ITable {
         database.execSQL("CREATE INDEX IF NOT EXISTS index_image_crop ON image(crop_id)");
         database.execSQL("CREATE INDEX IF NOT EXISTS index_image_user ON image(user_id)");
     }
+
+    @Override
+    public void drop(SQLiteDatabase database) {
+        database.execSQL("DROP TABLE IF EXISTS image");
+    }
 }

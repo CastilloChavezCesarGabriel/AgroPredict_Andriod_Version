@@ -31,4 +31,11 @@ public final class QuestionnaireTable implements ITable {
             + "text_value TEXT, "
             + "created_at TEXT NOT NULL)");
     }
+
+    @Override
+    public void drop(SQLiteDatabase database) {
+        database.execSQL("DROP TABLE IF EXISTS ai_user_response");
+        database.execSQL("DROP TABLE IF EXISTS ai_option");
+        database.execSQL("DROP TABLE IF EXISTS ai_question");
+    }
 }

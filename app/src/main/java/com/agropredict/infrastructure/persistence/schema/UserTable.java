@@ -18,4 +18,9 @@ public final class UserTable implements ITable {
             + "updated_at TEXT NOT NULL, "
             + "is_active INTEGER NOT NULL)");
     }
+
+    @Override
+    public void drop(SQLiteDatabase database) {
+        database.execSQL("DROP TABLE IF EXISTS user");
+    }
 }

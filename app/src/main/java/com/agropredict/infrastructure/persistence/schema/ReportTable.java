@@ -39,4 +39,11 @@ public final class ReportTable implements ITable {
     private void index(SQLiteDatabase database) {
         database.execSQL("CREATE INDEX IF NOT EXISTS index_report_user ON report(user_id)");
     }
+
+    @Override
+    public void drop(SQLiteDatabase database) {
+        database.execSQL("DROP TABLE IF EXISTS report_sharing");
+        database.execSQL("DROP TABLE IF EXISTS report_diagnostic");
+        database.execSQL("DROP TABLE IF EXISTS report");
+    }
 }

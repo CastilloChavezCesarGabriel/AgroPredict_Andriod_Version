@@ -38,4 +38,10 @@ public final class CropTable implements ITable {
         database.execSQL("CREATE INDEX IF NOT EXISTS index_crop_user ON crop(user_id)");
         database.execSQL("CREATE INDEX IF NOT EXISTS index_crop_type ON crop(crop_type)");
     }
+
+    @Override
+    public void drop(SQLiteDatabase database) {
+        database.execSQL("DROP TABLE IF EXISTS crop_history");
+        database.execSQL("DROP TABLE IF EXISTS crop");
+    }
 }

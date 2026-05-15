@@ -1,53 +1,43 @@
 package com.agropredict.infrastructure.report_export;
 
-import android.util.Log;
 import com.agropredict.application.operation_result.IUseCaseResult;
 import com.agropredict.application.operation_result.SuccessfulOperation;
 import com.agropredict.application.operation_result.FailedOperation;
+import com.agropredict.application.service.IClock;
 import com.agropredict.application.service.IReportService;
-import com.agropredict.application.service.IReportWriter;
-import com.agropredict.application.report_generation.usecase.DiagnosticReportComposer;
 import com.agropredict.domain.crop.Crop;
 import com.agropredict.domain.diagnostic.Diagnostic;
+import com.agropredict.infrastructure.persistence.database.UtcTimestamp;
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import java.util.Objects;
 
 public abstract class ReportService implements IReportService {
-    private static final String TAG = "ReportService";
-    private static final String FILE_FORMAT = "yyyy-MM-dd_HH-mm-ss";
     protected final File outputDirectory;
+    protected final IClock clock;
+    private final UtcTimestamp filenameTimestamp;
 
-    protected ReportService(File outputDirectory) {
-        this.outputDirectory = outputDirectory;
+    protected ReportService(File outputDirectory, IClock clock) {
+        this.outputDirectory = Objects.requireNonNull(outputDirectory,
+                "report service requires an output directory");
+        this.clock = Objects.requireNonNull(clock,
+                "report service requires a clock");
+        this.filenameTimestamp = new UtcTimestamp("yyyy-MM-dd_HH-mm-ss");
     }
 
     @Override
-    public IUseCaseResult generate(Crop crop, Diagnostic diagnostic) {
+    public final IUseCaseResult generate(Crop crop, Diagnostic diagnostic) {
         try {
-            String timestamp = stamp();
-            IReportWriter writer = prepare(timestamp);
-            new DiagnosticReportComposer(writer).write(diagnostic);
-            File file = complete(writer, timestamp);
+            File file = produce(crop, diagnostic);
             return new SuccessfulOperation(file.getAbsolutePath());
-        } catch (IOException exception) {
-            Log.e(TAG, "Failed to generate report into " + outputDirectory.getAbsolutePath()
-                    + ". Check storage permission and free space.", exception);
-            return new FailedOperation();
-        } catch (RuntimeException exception) {
-            Log.e(TAG, "Report writer threw a runtime error (often: missing diagnostic fields"
-                    + " when API submit failed earlier).", exception);
+        } catch (IOException | RuntimeException reportFailure) {
             return new FailedOperation();
         }
     }
 
-    protected abstract IReportWriter prepare(String timestamp) throws IOException;
+    protected abstract File produce(Crop crop, Diagnostic diagnostic) throws IOException;
 
-    protected abstract File complete(IReportWriter writer, String timestamp) throws IOException;
-
-    protected String stamp() {
-        return new SimpleDateFormat(FILE_FORMAT, Locale.getDefault()).format(new Date());
+    protected final String stamp() {
+        return filenameTimestamp.serialize(clock.read());
     }
 }

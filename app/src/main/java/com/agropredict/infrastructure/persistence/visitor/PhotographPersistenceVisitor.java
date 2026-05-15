@@ -5,9 +5,6 @@ import com.agropredict.domain.photograph.IPhotographConsumer;
 import com.agropredict.domain.authentication.session.ISessionConsumer;
 import com.agropredict.infrastructure.persistence.database.SqliteRow;
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 public final class PhotographPersistenceVisitor implements IPhotographConsumer, ISessionConsumer {
     private final SqliteRow row;
@@ -37,9 +34,7 @@ public final class PhotographPersistenceVisitor implements IPhotographConsumer, 
         if (dot > 0) row.record("format", name.substring(dot + 1).toLowerCase());
         double megabytes = file.length() / (1024.0 * 1024.0);
         row.record("size_in_megabytes", String.valueOf(megabytes));
-        String captured = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-                .format(new Date(file.lastModified()));
-        row.record("captured_at", captured);
+        row.imprint("captured_at", file.lastModified());
     }
 
     @Override
