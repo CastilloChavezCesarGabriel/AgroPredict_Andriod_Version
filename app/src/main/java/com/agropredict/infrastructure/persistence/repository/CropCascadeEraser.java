@@ -10,7 +10,7 @@ public final class CropCascadeEraser implements IRecordEraser {
     private static final String[] DEPENDENT_TABLES = {"diagnostic", "image", "report"};
     private static final String CROP_TABLE = "crop";
     private static final String IS_ACTIVE = "is_active";
-    private static final String DEPENDENT_KEY = "crop_id = ?";
+    private static final String DEPENDENT_FOREIGN_KEY = "crop_id = ?";
     private static final String CROP_KEY = "id = ?";
     private final Database database;
 
@@ -27,7 +27,7 @@ public final class CropCascadeEraser implements IRecordEraser {
         writable.beginTransaction();
         try {
             for (String table : DEPENDENT_TABLES) {
-                writable.update(table, deactivation, DEPENDENT_KEY, arguments);
+                writable.update(table, deactivation, DEPENDENT_FOREIGN_KEY, arguments);
             }
             writable.update(CROP_TABLE, deactivation, CROP_KEY, arguments);
             writable.setTransactionSuccessful();
