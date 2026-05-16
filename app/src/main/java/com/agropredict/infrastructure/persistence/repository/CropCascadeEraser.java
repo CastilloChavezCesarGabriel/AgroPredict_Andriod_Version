@@ -15,7 +15,8 @@ public final class CropCascadeEraser implements IRecordEraser {
     private final Database database;
 
     public CropCascadeEraser(Database database) {
-        this.database = Objects.requireNonNull(database, "crop cascade eraser requires a database");
+        this.database = Objects.requireNonNull(database,
+                "crop cascade eraser requires a database");
     }
 
     @Override
