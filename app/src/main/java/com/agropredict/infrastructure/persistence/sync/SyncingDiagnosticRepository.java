@@ -3,17 +3,18 @@ package com.agropredict.infrastructure.persistence.sync;
 import com.agropredict.application.repository.IDiagnosticRepository;
 import com.agropredict.application.repository.IRecordEraser;
 import com.agropredict.domain.diagnostic.Diagnostic;
-import com.agropredict.infrastructure.persistence.repository.SqliteDiagnosticRepository;
 
 import java.util.List;
 import java.util.Objects;
 
 public final class SyncingDiagnosticRepository implements IDiagnosticRepository, IRecordEraser {
-    private final SqliteDiagnosticRepository delegate;
+    private final IDiagnosticRepository delegate;
+    private final IRecordEraser eraser;
     private final SqliteSyncRecorder recorder;
 
-    public SyncingDiagnosticRepository(SqliteDiagnosticRepository delegate, SqliteSyncRecorder recorder) {
+    public SyncingDiagnosticRepository(IDiagnosticRepository delegate, IRecordEraser eraser, SqliteSyncRecorder recorder) {
         this.delegate = Objects.requireNonNull(delegate, "syncing diagnostic repository requires a delegate");
+        this.eraser = Objects.requireNonNull(eraser, "syncing diagnostic repository requires an eraser");
         this.recorder = Objects.requireNonNull(recorder, "syncing diagnostic repository requires a sync recorder");
     }
 
@@ -25,7 +26,7 @@ public final class SyncingDiagnosticRepository implements IDiagnosticRepository,
 
     @Override
     public void erase(String diagnosticIdentifier) {
-        delegate.erase(diagnosticIdentifier);
+        eraser.erase(diagnosticIdentifier);
         recorder.delete("diagnostic", diagnosticIdentifier);
     }
 

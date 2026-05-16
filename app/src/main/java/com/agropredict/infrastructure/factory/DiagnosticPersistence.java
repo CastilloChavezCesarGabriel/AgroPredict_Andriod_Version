@@ -22,8 +22,8 @@ public final class DiagnosticPersistence {
     }
 
     public IDiagnosticRepository createDiagnosticRepository() {
-        return new SyncingDiagnosticRepository(
-                new SqliteDiagnosticRepository(database, context, rowFactory),
+        SqliteDiagnosticRepository sqliteDiagnostic = new SqliteDiagnosticRepository(database, context, rowFactory);
+        return new SyncingDiagnosticRepository(sqliteDiagnostic, sqliteDiagnostic,
                 context.track(rowFactory));
     }
 

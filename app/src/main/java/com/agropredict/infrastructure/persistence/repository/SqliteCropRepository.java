@@ -1,10 +1,8 @@
 package com.agropredict.infrastructure.persistence.repository;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import com.agropredict.application.repository.ICropRepository;
-import com.agropredict.application.repository.IRecordEraser;
 import com.agropredict.application.crop_management.request.CropUpdateRequest;
 import com.agropredict.domain.history.HistoryRecord;
 import com.agropredict.domain.history.HistoryTransition;
@@ -27,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public final class SqliteCropRepository implements ICropRepository, IRecordEraser {
+public final class SqliteCropRepository implements ICropRepository {
     private static final String SELECT_CROP = "SELECT c.id, c.crop_type, c.field_name, "
             + "c.location, c.planting_date, c.area, c.user_id, "
             + "c.soil_type_id, c.phenological_stage_id, "
@@ -107,24 +105,6 @@ public final class SqliteCropRepository implements ICropRepository, IRecordErase
     @Override
     public Crop find(String cropIdentifier) {
         return store.locate(SELECT_CROP + "WHERE c.id = ?", cropIdentifier, this::recover);
-    }
-
-    @Override
-    public void erase(String cropIdentifier) {
-        SQLiteDatabase writable = database.getWritableDatabase();
-        ContentValues deactivation = new ContentValues();
-        deactivation.put("is_active", 0);
-        String[] cropArgs = new String[]{cropIdentifier};
-        writable.beginTransaction();
-        try {
-            writable.update("diagnostic", deactivation, "crop_id = ?", cropArgs);
-            writable.update("image", deactivation, "crop_id = ?", cropArgs);
-            writable.update("report", deactivation, "crop_id = ?", cropArgs);
-            writable.update("crop", deactivation, "id = ?", cropArgs);
-            writable.setTransactionSuccessful();
-        } finally {
-            writable.endTransaction();
-        }
     }
 
     private Crop recover(Cursor cursor) {

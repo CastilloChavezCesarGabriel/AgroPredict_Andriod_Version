@@ -10,18 +10,21 @@ import com.agropredict.domain.diagnostic.visitor.ISeverityLevelConsumer;
 import com.agropredict.domain.diagnostic.visitor.ISummaryConsumer;
 import com.agropredict.domain.diagnostic.visitor.IDiagnosticTargetConsumer;
 import com.agropredict.infrastructure.persistence.database.SqliteRow;
+import java.util.Objects;
 
 public final class DiagnosticPersistenceVisitor implements
         IIdentifierConsumer, IPredictionConsumer, ISeverityLevelConsumer,
         ISummaryConsumer, IRecommendationConsumer, IDiagnosticTargetConsumer, ISessionConsumer {
     private final SqliteRow row;
+    private final ISession session;
 
     public DiagnosticPersistenceVisitor(SqliteRow row, ISession session) {
-        this.row = row;
-        session.report(this);
+        this.row = Objects.requireNonNull(row, "diagnostic persistence visitor requires a row");
+        this.session = Objects.requireNonNull(session, "diagnostic persistence visitor requires a session");
     }
 
     public void persist(Diagnostic diagnostic) {
+        session.report(this);
         diagnostic.identify(this);
         diagnostic.classify(this);
         diagnostic.review(this);

@@ -75,18 +75,7 @@ public final class SqliteUserRepository implements IUserRepository {
     private ISessionSubject confirm(Cursor cursor, String email, String password) {
         String storedHash = cursor.getString(cursor.getColumnIndexOrThrow("password_hash"));
         if (!hasher.verify(password, storedHash)) return new AnonymousUser();
-        ContactInformation identity = new ContactInformation(
-                cursor.getString(cursor.getColumnIndexOrThrow("full_name")),
-                Phone.resolve(cursor.getString(cursor.getColumnIndexOrThrow("phone_number"))));
-        Credential credential = new Credential(email, storedHash);
-        Account account = new Account(
-                cursor.getString(cursor.getColumnIndexOrThrow("username")),
-                credential,
-                new OccupationCatalog().classify(cursor.getString(cursor.getColumnIndexOrThrow("occupation_id"))));
-        return new User(
-                cursor.getString(cursor.getColumnIndexOrThrow("id")),
-                identity,
-                account);
+        return assemble(cursor, email, storedHash);
     }
 
     @Override
@@ -110,12 +99,16 @@ public final class SqliteUserRepository implements IUserRepository {
     }
 
     private User rebuild(Cursor cursor) {
+        return assemble(cursor,
+                cursor.getString(cursor.getColumnIndexOrThrow("email")),
+                cursor.getString(cursor.getColumnIndexOrThrow("password_hash")));
+    }
+
+    private User assemble(Cursor cursor, String email, String passwordHash) {
         ContactInformation identity = new ContactInformation(
                 cursor.getString(cursor.getColumnIndexOrThrow("full_name")),
                 Phone.resolve(cursor.getString(cursor.getColumnIndexOrThrow("phone_number"))));
-        Credential credential = new Credential(
-                cursor.getString(cursor.getColumnIndexOrThrow("email")),
-                cursor.getString(cursor.getColumnIndexOrThrow("password_hash")));
+        Credential credential = new Credential(email, passwordHash);
         Account account = new Account(
                 cursor.getString(cursor.getColumnIndexOrThrow("username")),
                 credential,

@@ -5,6 +5,7 @@ import com.agropredict.application.repository.IPhotographRepository;
 import com.agropredict.application.repository.ISessionRepository;
 import com.agropredict.infrastructure.persistence.database.Database;
 import com.agropredict.infrastructure.persistence.database.SqliteRowFactory;
+import com.agropredict.infrastructure.persistence.repository.CropCascadeEraser;
 import com.agropredict.infrastructure.persistence.repository.SqliteCropRepository;
 import com.agropredict.infrastructure.persistence.repository.SqlitePhotographRepository;
 import com.agropredict.infrastructure.persistence.sync.SqliteSyncRecorder;
@@ -24,9 +25,8 @@ public final class CropPersistence {
     }
 
     public ICropRepository createCropRepository() {
-        return new SyncingCropRepository(
-                new SqliteCropRepository(database, session, rowFactory),
-                new SqliteSyncRecorder(session, rowFactory));
+        return new SyncingCropRepository(new SqliteCropRepository(database, session, rowFactory),
+                new CropCascadeEraser(database), new SqliteSyncRecorder(session, rowFactory));
     }
 
     public IPhotographRepository createPhotographRepository() {

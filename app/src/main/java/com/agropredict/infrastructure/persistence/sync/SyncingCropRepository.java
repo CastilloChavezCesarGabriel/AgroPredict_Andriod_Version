@@ -5,17 +5,17 @@ import com.agropredict.application.repository.IRecordEraser;
 import com.agropredict.application.crop_management.request.CropUpdateRequest;
 import com.agropredict.domain.crop.Crop;
 import com.agropredict.domain.history.HistoryRecord;
-import com.agropredict.infrastructure.persistence.repository.SqliteCropRepository;
-
 import java.util.List;
 import java.util.Objects;
 
 public final class SyncingCropRepository implements ICropRepository, IRecordEraser {
-    private final SqliteCropRepository delegate;
+    private final ICropRepository delegate;
+    private final IRecordEraser eraser;
     private final SqliteSyncRecorder recorder;
 
-    public SyncingCropRepository(SqliteCropRepository delegate, SqliteSyncRecorder recorder) {
+    public SyncingCropRepository(ICropRepository delegate, IRecordEraser eraser, SqliteSyncRecorder recorder) {
         this.delegate = Objects.requireNonNull(delegate, "syncing crop repository requires a delegate");
+        this.eraser = Objects.requireNonNull(eraser, "syncing crop repository requires an eraser");
         this.recorder = Objects.requireNonNull(recorder, "syncing crop repository requires a sync recorder");
     }
 
@@ -33,7 +33,7 @@ public final class SyncingCropRepository implements ICropRepository, IRecordEras
 
     @Override
     public void erase(String cropIdentifier) {
-        delegate.erase(cropIdentifier);
+        eraser.erase(cropIdentifier);
         recorder.delete("crop", cropIdentifier);
     }
 
