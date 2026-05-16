@@ -1,4 +1,4 @@
-package com.agropredict.infrastructure.persistence.repository;
+package com.agropredict.infrastructure.persistence.session;
 
 import android.content.Context;
 import android.content.SharedPreferences;

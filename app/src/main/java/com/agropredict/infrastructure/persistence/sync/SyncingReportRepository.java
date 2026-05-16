@@ -1,8 +1,10 @@
-package com.agropredict.infrastructure.persistence.repository;
+package com.agropredict.infrastructure.persistence.sync;
 
 import com.agropredict.application.repository.IReportRepository;
 import com.agropredict.application.report_generation.request.Destination;
 import com.agropredict.application.report_generation.request.ReportRequest;
+import com.agropredict.infrastructure.persistence.report.SqliteReportRepository;
+
 import java.util.Objects;
 
 public final class SyncingReportRepository implements IReportRepository {

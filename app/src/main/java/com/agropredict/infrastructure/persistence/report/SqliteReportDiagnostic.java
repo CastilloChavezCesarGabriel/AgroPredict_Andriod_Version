@@ -1,4 +1,4 @@
-package com.agropredict.infrastructure.persistence.repository;
+package com.agropredict.infrastructure.persistence.report;
 
 import android.content.ContentValues;
 import com.agropredict.infrastructure.persistence.database.Database;

@@ -6,7 +6,7 @@ import com.agropredict.application.factory.IImageClassificationFactory;
 import com.agropredict.application.service.IImageClassifier;
 import com.agropredict.application.service.IImageCompressor;
 import com.agropredict.application.service.IImageValidator;
-import com.agropredict.infrastructure.image_classification.BitmapCompressor;
+import com.agropredict.infrastructure.image_classification.preprocessing.BitmapCompressor;
 import com.agropredict.infrastructure.image_classification.TFLiteClassifier;
 import java.util.Objects;
 

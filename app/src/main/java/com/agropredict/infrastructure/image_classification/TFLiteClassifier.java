@@ -2,6 +2,8 @@ package com.agropredict.infrastructure.image_classification;
 
 import com.agropredict.application.service.IImageClassifier;
 import com.agropredict.domain.diagnostic.visitor.IClassificationResult;
+import com.agropredict.infrastructure.image_classification.preprocessing.ImageProcessor;
+
 import java.nio.ByteBuffer;
 import java.util.Objects;
 

@@ -6,6 +6,8 @@ import com.agropredict.domain.authentication.session.ISession;
 import com.agropredict.domain.diagnostic.severity.ISeverityResolver;
 import com.agropredict.domain.diagnostic.severity.ISeverity;
 import com.agropredict.infrastructure.persistence.database.SqliteRowFactory;
+import com.agropredict.infrastructure.persistence.sync.SqliteSyncRecorder;
+
 import java.util.Objects;
 
 public final class DiagnosticPersistenceContext {

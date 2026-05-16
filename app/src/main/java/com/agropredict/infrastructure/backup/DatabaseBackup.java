@@ -1,4 +1,4 @@
-package com.agropredict.infrastructure.database_backup;
+package com.agropredict.infrastructure.backup;
 
 import android.util.Log;
 import com.agropredict.application.backup.BackupSchedule;

@@ -1,4 +1,4 @@
-package com.agropredict.infrastructure.persistence.repository;
+package com.agropredict.infrastructure.persistence.report;
 
 import com.agropredict.application.repository.IReportRepository;
 import com.agropredict.application.report_generation.request.ReportRequest;
@@ -6,6 +6,7 @@ import com.agropredict.application.report_generation.request.Destination;
 import com.agropredict.infrastructure.persistence.database.Database;
 import com.agropredict.infrastructure.persistence.database.SqliteRow;
 import com.agropredict.infrastructure.persistence.database.SqliteRowFactory;
+import com.agropredict.infrastructure.persistence.repository.SqliteReportSharing;
 import com.agropredict.infrastructure.persistence.visitor.ReportPersistenceVisitor;
 import java.util.Objects;
 

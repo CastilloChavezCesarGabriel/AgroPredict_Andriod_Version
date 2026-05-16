@@ -2,7 +2,7 @@ package com.agropredict.infrastructure.ai_model_asset;
 
 import android.content.Context;
 import com.agropredict.application.service.IAssetService;
-import com.agropredict.infrastructure.database_backup.StreamCopier;
+import com.agropredict.infrastructure.backup.StreamCopier;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;

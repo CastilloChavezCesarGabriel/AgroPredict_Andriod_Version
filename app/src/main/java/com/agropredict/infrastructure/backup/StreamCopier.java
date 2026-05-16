@@ -1,4 +1,4 @@
-package com.agropredict.infrastructure.database_backup;
+package com.agropredict.infrastructure.backup;
 
 import java.io.IOException;
 import java.io.InputStream;

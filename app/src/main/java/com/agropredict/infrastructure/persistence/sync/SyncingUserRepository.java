@@ -1,4 +1,4 @@
-package com.agropredict.infrastructure.persistence.repository;
+package com.agropredict.infrastructure.persistence.sync;
 
 import com.agropredict.application.repository.ICatalogRepository;
 import com.agropredict.application.repository.IUserRepository;

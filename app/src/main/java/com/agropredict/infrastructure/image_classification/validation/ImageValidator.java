@@ -1,4 +1,4 @@
-package com.agropredict.infrastructure.image_classification;
+package com.agropredict.infrastructure.image_classification.validation;
 
 import android.content.Context;
 import android.net.Uri;

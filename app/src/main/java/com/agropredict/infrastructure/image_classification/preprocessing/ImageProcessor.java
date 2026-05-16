@@ -1,4 +1,4 @@
-package com.agropredict.infrastructure.image_classification;
+package com.agropredict.infrastructure.image_classification.preprocessing;
 
 import com.agropredict.application.diagnostic_submission.rejection.IImageRejection;
 import com.agropredict.domain.diagnostic.visitor.IClassificationResult;

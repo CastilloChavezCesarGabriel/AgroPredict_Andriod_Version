@@ -1,8 +1,10 @@
-package com.agropredict.infrastructure.persistence.repository;
+package com.agropredict.infrastructure.persistence.sync;
 
 import com.agropredict.application.repository.IDiagnosticRepository;
 import com.agropredict.application.repository.IRecordEraser;
 import com.agropredict.domain.diagnostic.Diagnostic;
+import com.agropredict.infrastructure.persistence.repository.SqliteDiagnosticRepository;
+
 import java.util.List;
 import java.util.Objects;
 

@@ -1,10 +1,12 @@
-package com.agropredict.infrastructure.persistence.repository;
+package com.agropredict.infrastructure.persistence.sync;
 
 import com.agropredict.application.repository.ICropRepository;
 import com.agropredict.application.repository.IRecordEraser;
 import com.agropredict.application.crop_management.request.CropUpdateRequest;
 import com.agropredict.domain.crop.Crop;
 import com.agropredict.domain.history.HistoryRecord;
+import com.agropredict.infrastructure.persistence.repository.SqliteCropRepository;
+
 import java.util.List;
 import java.util.Objects;
 

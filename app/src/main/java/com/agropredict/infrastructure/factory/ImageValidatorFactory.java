@@ -2,11 +2,11 @@ package com.agropredict.infrastructure.factory;
 
 import android.content.Context;
 import com.agropredict.application.factory.IImageRejectionFactory;
-import com.agropredict.infrastructure.image_classification.DimensionChecker;
-import com.agropredict.infrastructure.image_classification.FormatChecker;
-import com.agropredict.infrastructure.image_classification.IImageChecker;
-import com.agropredict.infrastructure.image_classification.ImageValidator;
-import com.agropredict.infrastructure.image_classification.SizeChecker;
+import com.agropredict.infrastructure.image_classification.validation.DimensionChecker;
+import com.agropredict.infrastructure.image_classification.validation.FormatChecker;
+import com.agropredict.infrastructure.image_classification.validation.IImageChecker;
+import com.agropredict.infrastructure.image_classification.validation.ImageValidator;
+import com.agropredict.infrastructure.image_classification.validation.SizeChecker;
 import java.util.List;
 import java.util.Objects;
 

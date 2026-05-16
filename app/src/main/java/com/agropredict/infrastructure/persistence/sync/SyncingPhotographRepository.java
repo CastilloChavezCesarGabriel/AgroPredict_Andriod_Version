@@ -1,7 +1,9 @@
-package com.agropredict.infrastructure.persistence.repository;
+package com.agropredict.infrastructure.persistence.sync;
 
 import com.agropredict.application.repository.IPhotographRepository;
 import com.agropredict.domain.photograph.Photograph;
+import com.agropredict.infrastructure.persistence.repository.SqlitePhotographRepository;
+
 import java.util.Objects;
 
 public final class SyncingPhotographRepository implements IPhotographRepository {

@@ -4,9 +4,9 @@ import com.agropredict.application.repository.IReportRepository;
 import com.agropredict.application.repository.ISessionRepository;
 import com.agropredict.infrastructure.persistence.database.Database;
 import com.agropredict.infrastructure.persistence.database.SqliteRowFactory;
-import com.agropredict.infrastructure.persistence.repository.SqliteReportRepository;
-import com.agropredict.infrastructure.persistence.repository.SqliteSyncRecorder;
-import com.agropredict.infrastructure.persistence.repository.SyncingReportRepository;
+import com.agropredict.infrastructure.persistence.report.SqliteReportRepository;
+import com.agropredict.infrastructure.persistence.sync.SqliteSyncRecorder;
+import com.agropredict.infrastructure.persistence.sync.SyncingReportRepository;
 import java.util.Objects;
 
 public final class ReportPersistence {

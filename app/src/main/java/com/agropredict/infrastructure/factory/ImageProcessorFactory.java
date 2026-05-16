@@ -1,8 +1,8 @@
 package com.agropredict.infrastructure.factory;
 
 import com.agropredict.application.factory.IImageRejectionFactory;
-import com.agropredict.infrastructure.image_classification.ImagePreprocessor;
-import com.agropredict.infrastructure.image_classification.ImageProcessor;
+import com.agropredict.infrastructure.image_classification.preprocessing.ImagePreprocessor;
+import com.agropredict.infrastructure.image_classification.preprocessing.ImageProcessor;
 import java.util.Objects;
 
 public final class ImageProcessorFactory {

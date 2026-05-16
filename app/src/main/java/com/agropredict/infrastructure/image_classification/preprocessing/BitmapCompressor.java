@@ -1,4 +1,4 @@
-package com.agropredict.infrastructure.image_classification;
+package com.agropredict.infrastructure.image_classification.preprocessing;
 
 import android.content.Context;
 import android.graphics.Bitmap;

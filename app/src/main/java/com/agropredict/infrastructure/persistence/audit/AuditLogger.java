@@ -1,4 +1,4 @@
-package com.agropredict.infrastructure.persistence;
+package com.agropredict.infrastructure.persistence.audit;
 
 import com.agropredict.application.service.IAuditLogger;
 import com.agropredict.domain.identifier.IdentifierFactory;

@@ -7,9 +7,9 @@ import com.agropredict.infrastructure.persistence.database.Database;
 import com.agropredict.infrastructure.persistence.database.SqliteRowFactory;
 import com.agropredict.infrastructure.persistence.repository.SqliteCropRepository;
 import com.agropredict.infrastructure.persistence.repository.SqlitePhotographRepository;
-import com.agropredict.infrastructure.persistence.repository.SqliteSyncRecorder;
-import com.agropredict.infrastructure.persistence.repository.SyncingCropRepository;
-import com.agropredict.infrastructure.persistence.repository.SyncingPhotographRepository;
+import com.agropredict.infrastructure.persistence.sync.SqliteSyncRecorder;
+import com.agropredict.infrastructure.persistence.sync.SyncingCropRepository;
+import com.agropredict.infrastructure.persistence.sync.SyncingPhotographRepository;
 import java.util.Objects;
 
 public final class CropPersistence {

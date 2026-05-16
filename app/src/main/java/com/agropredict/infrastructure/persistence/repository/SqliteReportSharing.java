@@ -3,6 +3,9 @@ package com.agropredict.infrastructure.persistence.repository;
 import com.agropredict.domain.identifier.IdentifierFactory;
 import com.agropredict.infrastructure.persistence.database.SqliteRow;
 import com.agropredict.infrastructure.persistence.database.SqliteRowFactory;
+import com.agropredict.infrastructure.persistence.report.QrCodeToken;
+import com.agropredict.infrastructure.persistence.report.ReportExpiration;
+
 import java.util.Objects;
 
 public final class SqliteReportSharing {

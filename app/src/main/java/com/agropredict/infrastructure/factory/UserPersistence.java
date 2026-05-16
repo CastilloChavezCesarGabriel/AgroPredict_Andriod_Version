@@ -4,12 +4,12 @@ import com.agropredict.application.repository.ISessionRepository;
 import com.agropredict.application.repository.IUserRepository;
 import com.agropredict.application.service.IAuditLogger;
 import com.agropredict.application.service.IPasswordHasher;
-import com.agropredict.infrastructure.persistence.AuditLogger;
+import com.agropredict.infrastructure.persistence.audit.AuditLogger;
 import com.agropredict.infrastructure.persistence.database.Database;
 import com.agropredict.infrastructure.persistence.database.SqliteRowFactory;
-import com.agropredict.infrastructure.persistence.repository.SqliteSyncRecorder;
+import com.agropredict.infrastructure.persistence.sync.SqliteSyncRecorder;
 import com.agropredict.infrastructure.persistence.repository.SqliteUserRepository;
-import com.agropredict.infrastructure.persistence.repository.SyncingUserRepository;
+import com.agropredict.infrastructure.persistence.sync.SyncingUserRepository;
 import com.agropredict.infrastructure.security.PasswordHasher;
 import java.util.Objects;
 

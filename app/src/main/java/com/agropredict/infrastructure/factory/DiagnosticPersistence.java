@@ -7,7 +7,7 @@ import com.agropredict.infrastructure.persistence.database.SqliteRowFactory;
 import com.agropredict.infrastructure.persistence.repository.DiagnosticPersistenceContext;
 import com.agropredict.infrastructure.persistence.repository.SqliteDiagnosticRepository;
 import com.agropredict.infrastructure.persistence.repository.SqliteQuestionnaireRepository;
-import com.agropredict.infrastructure.persistence.repository.SyncingDiagnosticRepository;
+import com.agropredict.infrastructure.persistence.sync.SyncingDiagnosticRepository;
 import java.util.Objects;
 
 public final class DiagnosticPersistence {
