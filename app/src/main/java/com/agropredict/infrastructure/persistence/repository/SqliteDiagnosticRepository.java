@@ -67,7 +67,7 @@ public final class SqliteDiagnosticRepository implements IDiagnosticRepository, 
     @Override
     public List<Diagnostic> filter(String userIdentifier, String cropType) {
         return store.fetch(SELECT_DIAGNOSTIC
-                + "WHERE d.user_id = ? AND d.predicted_crop = ? AND d.is_active = 1 ORDER BY d.created_at DESC",
+                + "WHERE d.user_id = ? AND c.crop_type = ? AND d.is_active = 1 ORDER BY d.created_at DESC",
                 new String[]{userIdentifier, cropType}, this::recover);
     }
 
@@ -93,11 +93,18 @@ public final class SqliteDiagnosticRepository implements IDiagnosticRepository, 
         String severityValue = cursor.getString(cursor.getColumnIndexOrThrow("severity"));
         String summary = cursor.getString(cursor.getColumnIndexOrThrow("short_summary"));
         String advice = cursor.getString(cursor.getColumnIndexOrThrow("recommendation_text"));
-        if (severityValue != null && (summary != null || advice != null)) {
+        boolean hasSummary = summary != null && !summary.isEmpty();
+        boolean hasAdvice = advice != null && !advice.isEmpty();
+        if (severityValue != null && !severityValue.isEmpty() && (hasSummary || hasAdvice)) {
             ISeverity severity = context.classify(severityValue);
-            ISummary summaryPart = summary == null ? new NoSummary() : new Summary(summary);
-            IAdvice advicePart = advice == null ? new NoAdvice() : new Advice(advice);
-            return diagnostic.conclude(severity, new Recommendation(summaryPart, advicePart));
+            ISummary summaryPart = hasSummary ? new Summary(summary) : new NoSummary();
+            IAdvice advicePart = hasAdvice ? new Advice(advice) : new NoAdvice();
+            diagnostic = diagnostic.conclude(severity, new Recommendation(summaryPart, advicePart));
+        }
+        String cropId = cursor.getString(cursor.getColumnIndexOrThrow("crop_id"));
+        String imageId = cursor.getString(cursor.getColumnIndexOrThrow("image_id"));
+        if (cropId != null && !cropId.isEmpty() && imageId != null && !imageId.isEmpty()) {
+            diagnostic = diagnostic.link(cropId, imageId);
         }
         return diagnostic;
     }

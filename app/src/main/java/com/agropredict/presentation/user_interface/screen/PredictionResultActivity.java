@@ -3,7 +3,7 @@ package com.agropredict.presentation.user_interface.screen;
 import android.os.Bundle;
 import com.agropredict.R;
 import com.agropredict.application.factory.IReviewFactory;
-import com.agropredict.application.repository.IPhotographRepository;
+import com.agropredict.application.photograph.LoadPhotographUseCase;
 import com.agropredict.application.diagnostic_history.FindDiagnosticUseCase;
 import com.agropredict.domain.diagnostic.Diagnostic;
 import com.agropredict.domain.photograph.Photograph;
@@ -14,7 +14,7 @@ import com.agropredict.presentation.viewmodel.prediction_diagnosis.PredictionRes
 public final class PredictionResultActivity extends BaseActivity implements IPredictionResultView {
     private PredictionResultViewModel viewModel;
     private PredictionResultDisplay predictionResult;
-    private IPhotographRepository photographRepository;
+    private LoadPhotographUseCase loadPhotograph;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,7 +33,7 @@ public final class PredictionResultActivity extends BaseActivity implements IPre
     private void initialize() {
         IReviewFactory factory = (IReviewFactory) getApplication();
         FindDiagnosticUseCase useCase = new FindDiagnosticUseCase(factory.createDiagnosticRepository());
-        photographRepository = factory.createPhotographRepository();
+        loadPhotograph = new LoadPhotographUseCase(factory.createPhotographRepository());
         viewModel = new PredictionResultViewModel(useCase, this);
     }
 
@@ -45,18 +45,18 @@ public final class PredictionResultActivity extends BaseActivity implements IPre
         String identifier = IntentExtra.DIAGNOSTIC_IDENTIFIER.read(getIntent());
         if (identifier == null) return;
         viewModel.load(identifier);
-        Photograph photograph = photographRepository.find(identifier);
-        if (photograph != null) display(photograph);
+        Photograph photograph = loadPhotograph.find(identifier);
+        if (photograph != null) show(photograph);
     }
 
     @Override
-    public void display(Diagnostic diagnostic) {
+    public void present(Diagnostic diagnostic) {
         predictionResult.display(diagnostic);
     }
 
     @Override
-    public void display(Photograph photograph) {
-        predictionResult.display(photograph);
+    public void show(Photograph photograph) {
+        predictionResult.show(photograph);
     }
 
     @Override

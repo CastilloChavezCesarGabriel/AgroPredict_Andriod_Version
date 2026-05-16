@@ -11,6 +11,6 @@ public abstract class SpinnerOption {
     }
 
     public void populate(Spinner spinner) {
-        SpinnerPopulator.populate(spinner, options);
+        new SpinnerPopulator().populate(spinner, options);
     }
 }

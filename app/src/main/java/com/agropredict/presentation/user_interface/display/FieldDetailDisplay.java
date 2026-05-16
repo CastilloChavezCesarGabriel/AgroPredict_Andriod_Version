@@ -39,7 +39,7 @@ public final class FieldDetailDisplay extends DiagnosticDisplay implements IPhot
         recommendationsLabel.setText(text);
     }
 
-    public void display(Photograph photograph) {
+    public void show(Photograph photograph) {
         photograph.expose(this);
     }
 

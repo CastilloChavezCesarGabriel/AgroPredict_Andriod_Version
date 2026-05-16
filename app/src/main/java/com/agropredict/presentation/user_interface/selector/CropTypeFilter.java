@@ -18,13 +18,14 @@ public final class CropTypeFilter implements ICropIdentityConsumer, AdapterView.
         this.spinner = spinner;
         this.listener = listener;
         this.types = new ArrayList<>();
-        spinner.setOnItemSelectedListener(this);
     }
 
     public void populate(List<Crop> crops) {
+        spinner.setOnItemSelectedListener(null);
         types.clear();
         for (Crop crop : crops) crop.describe(this);
-        SpinnerPopulator.populate(spinner, types);
+        new SpinnerPopulator().populate(spinner, types);
+        spinner.setOnItemSelectedListener(this);
     }
 
     @Override

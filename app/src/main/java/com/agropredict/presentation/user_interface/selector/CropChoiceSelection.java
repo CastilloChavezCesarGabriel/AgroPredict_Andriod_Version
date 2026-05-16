@@ -33,7 +33,7 @@ public final class CropChoiceSelection implements ICropDescriptionConsumer, Adap
         for (Crop crop : crops) {
             crop.represent(this);
         }
-        SpinnerPopulator.populate(spinner, labels);
+        new SpinnerPopulator().populate(spinner, labels);
     }
 
     public String resolve() {

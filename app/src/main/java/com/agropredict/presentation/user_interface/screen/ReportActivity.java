@@ -1,10 +1,7 @@
 package com.agropredict.presentation.user_interface.screen;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Button;
-import androidx.core.content.FileProvider;
 import com.agropredict.R;
 import com.agropredict.application.factory.ICatalogFactory;
 import com.agropredict.application.factory.IReportingFactory;
@@ -16,20 +13,23 @@ import com.agropredict.application.crop_management.usecase.ListCropUseCase;
 import com.agropredict.application.diagnostic_history.ResolveDiagnosticUseCase;
 import com.agropredict.application.report_generation.usecase.StoreReportUseCase;
 import com.agropredict.domain.crop.Crop;
+import com.agropredict.presentation.user_interface.export.IExportedFile;
+import com.agropredict.presentation.user_interface.export.IntentCsvSharer;
+import com.agropredict.presentation.user_interface.export.LaunchedPdfOpener;
 import com.agropredict.presentation.user_interface.form.ReportForm;
-import com.agropredict.presentation.user_interface.navigation.PdfLauncher;
 import com.agropredict.presentation.user_interface.selector.DateSelection;
+import com.agropredict.presentation.viewmodel.report_generation.ExportPresentation;
 import com.agropredict.presentation.viewmodel.report_generation.IReportView;
 import com.agropredict.presentation.viewmodel.report_generation.ReportViewModel;
 import com.agropredict.presentation.viewmodel.report_generation.ReportingData;
-import java.io.File;
+import com.agropredict.presentation.viewmodel.report_generation.ReportingSource;
 import java.util.List;
 
 public final class ReportActivity extends BaseActivity implements IReportView {
     private ReportViewModel viewModel;
     private ReportForm reportForm;
     private ListCropUseCase listCrops;
-    private String generatedFilePath;
+    private IExportedFile generatedArtifact;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +55,11 @@ public final class ReportActivity extends BaseActivity implements IReportView {
                 new FindCropUseCase(catalogFactory.createCropRepository()),
                 new ResolveDiagnosticUseCase(reviewFactory.createDiagnosticRepository()),
                 new StoreReportUseCase(reportingFactory.createReportRepository()));
-        viewModel = new ReportViewModel(data, reportCatalog, this);
+        ReportingSource source = new ReportingSource(data, reportCatalog);
+        ExportPresentation presentation = new ExportPresentation(
+                new LaunchedPdfOpener(this),
+                new IntentCsvSharer(this));
+        viewModel = new ReportViewModel(source, presentation, this);
         sessionUseCase.check((identifier, occupation) -> start(identifier));
     }
 
@@ -80,14 +84,7 @@ public final class ReportActivity extends BaseActivity implements IReportView {
     }
 
     private void share() {
-        if (generatedFilePath == null) return;
-        Uri uri = FileProvider.getUriForFile(this,
-                getPackageName() + ".fileprovider", new File(generatedFilePath));
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("application/octet-stream");
-        intent.putExtra(Intent.EXTRA_STREAM, uri);
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        startActivity(Intent.createChooser(intent, getString(R.string.share_report)));
+        if (generatedArtifact != null) generatedArtifact.present();
     }
 
     @Override
@@ -106,14 +103,12 @@ public final class ReportActivity extends BaseActivity implements IReportView {
     }
 
     @Override
-    public void offer(String filePath) {
-        generatedFilePath = filePath;
-        runOnUiThread(() -> present(filePath));
-    }
-
-    private void present(String filePath) {
-        reportForm.offer();
-        if (filePath.endsWith(".pdf")) PdfLauncher.open(this, filePath);
+    public void offer(IExportedFile artifact) {
+        generatedArtifact = artifact;
+        runOnUiThread(() -> {
+            reportForm.offer();
+            artifact.present();
+        });
     }
 
     @Override

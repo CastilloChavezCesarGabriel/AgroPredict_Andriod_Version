@@ -29,7 +29,7 @@ public final class CropSelection implements ICropIdentityConsumer, AdapterView.O
         for (Crop crop : crops) {
             crop.describe(this);
         }
-        SpinnerPopulator.populate(spinner, labels);
+        new SpinnerPopulator().populate(spinner, labels);
     }
 
     public String resolve() {

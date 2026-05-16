@@ -5,13 +5,14 @@ import android.content.Intent;
 import android.net.Uri;
 import android.widget.Toast;
 import androidx.core.content.FileProvider;
+import com.agropredict.R;
 import java.io.File;
 
 public final class PdfLauncher {
-    public static void open(Context context, String filePath) {
+    public void open(Context context, String filePath) {
         File file = new File(filePath);
         if (!file.exists()) {
-            Toast.makeText(context, "File not found", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, R.string.file_not_found, Toast.LENGTH_SHORT).show();
             return;
         }
         Uri uri = FileProvider.getUriForFile(context,

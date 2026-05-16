@@ -36,17 +36,17 @@ public final class FieldEditor implements IFieldConsumer, ISoilConsumer, IPlanti
         return new CropUpdateRequest(identifier, new CropProfile(new Plot(field, soil), cycle));
     }
 
-    public void populate(Crop crop) {
+    public void apply(Crop crop) {
         crop.locate(this);
         crop.analyze(this);
         crop.track(this);
     }
 
-    public void populate(SoilTypeOption soilTypeOption) {
+    public void furnish(SoilTypeOption soilTypeOption) {
         soilTypeOption.populate(activity.findViewById(R.id.spnSoilType));
     }
 
-    public void populate(StageOption stageOption) {
+    public void arrange(StageOption stageOption) {
         stageOption.populate(activity.findViewById(R.id.spnStage));
     }
 

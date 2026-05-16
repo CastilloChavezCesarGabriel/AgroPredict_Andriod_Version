@@ -18,20 +18,20 @@ public final class EditFieldViewModel {
     }
 
     public void populate(ListCatalogUseCase soilTypes, ListCatalogUseCase stages) {
-        view.populate(new SoilTypeOption(soilTypes.list()));
-        view.populate(new StageOption(stages.list()));
+        view.furnish(new SoilTypeOption(soilTypes.list()));
+        view.arrange(new StageOption(stages.list()));
     }
 
     public void load(FindCropUseCase loadUseCase, String cropIdentifier) {
         Crop crop = loadUseCase.find(cropIdentifier);
         if (crop != null) {
-            view.populate(crop);
+            view.apply(crop);
         }
     }
 
     public void save(CropUpdateRequest request) {
         updateCropUseCase.update(request);
-        view.notify("Cambios guardados exitosamente");
+        view.confirm();
         view.dismiss();
     }
 }

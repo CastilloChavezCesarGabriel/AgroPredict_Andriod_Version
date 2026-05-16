@@ -18,7 +18,7 @@ public final class FieldDetailViewModel implements ISeverityConsumer {
     public void load(String diagnosticIdentifier) {
         Diagnostic diagnostic = loadDetailUseCase.find(diagnosticIdentifier);
         if (diagnostic != null) {
-            view.display(diagnostic);
+            view.present(diagnostic);
             diagnostic.label(this);
         }
     }

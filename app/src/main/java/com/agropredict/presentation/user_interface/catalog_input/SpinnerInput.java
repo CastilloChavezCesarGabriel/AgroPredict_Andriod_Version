@@ -10,6 +10,6 @@ public abstract class SpinnerInput {
     }
 
     protected void fill(Spinner spinner, String... options) {
-        SpinnerPopulator.populate(spinner, Arrays.asList(options));
+        new SpinnerPopulator().populate(spinner, Arrays.asList(options));
     }
 }

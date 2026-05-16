@@ -176,6 +176,7 @@
     <string name="select_option">Select an option</string>
     <string name="password_updated">Password reset for %1$s. Check your email.</string>
     <string name="recovery_failure">Could not update. Please verify your email.</string>
+    <string name="file_not_found">File not found</string>
 
     <!-- Authentication failure messages -->
     <string name="authentication_incorrect_credential">Incorrect credentials</string>

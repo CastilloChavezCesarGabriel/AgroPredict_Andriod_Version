@@ -5,9 +5,10 @@ import com.agropredict.presentation.user_interface.catalog_input.SoilTypeOption;
 import com.agropredict.presentation.user_interface.catalog_input.StageOption;
 
 public interface IEditFieldView {
-    void populate(Crop crop);
-    void populate(SoilTypeOption soilTypeOption);
-    void populate(StageOption stageOption);
+    void apply(Crop crop);
+    void furnish(SoilTypeOption soilTypeOption);
+    void arrange(StageOption stageOption);
     void notify(String message);
+    void confirm();
     void dismiss();
 }

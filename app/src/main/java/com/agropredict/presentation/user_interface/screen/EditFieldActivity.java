@@ -53,18 +53,23 @@ public final class EditFieldActivity extends BaseActivity implements IEditFieldV
     }
 
     @Override
-    public void populate(Crop crop) {
-        fieldEditor.populate(crop);
+    public void apply(Crop crop) {
+        fieldEditor.apply(crop);
     }
 
     @Override
-    public void populate(SoilTypeOption soilTypeOption) {
-        fieldEditor.populate(soilTypeOption);
+    public void furnish(SoilTypeOption soilTypeOption) {
+        fieldEditor.furnish(soilTypeOption);
     }
 
     @Override
-    public void populate(StageOption stageOption) {
-        fieldEditor.populate(stageOption);
+    public void arrange(StageOption stageOption) {
+        fieldEditor.arrange(stageOption);
+    }
+
+    @Override
+    public void confirm() {
+        notify(getString(R.string.changes_saved));
     }
 
     @Override

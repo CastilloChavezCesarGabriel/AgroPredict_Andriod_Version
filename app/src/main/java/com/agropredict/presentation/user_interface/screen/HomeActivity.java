@@ -78,7 +78,7 @@ public final class HomeActivity extends BaseActivity implements IHomeView, IUser
     private void guide() {
         try {
             String filePath = assetService.extract(PEST_GUIDE_PATH);
-            PdfLauncher.open(this, filePath);
+            new PdfLauncher().open(this, filePath);
         } catch (UncheckedIOException exception) {
             Toast.makeText(this, R.string.error_general, Toast.LENGTH_SHORT).show();
         }

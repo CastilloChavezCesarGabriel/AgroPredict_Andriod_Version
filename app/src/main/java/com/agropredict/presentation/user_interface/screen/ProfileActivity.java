@@ -1,27 +1,17 @@
 package com.agropredict.presentation.user_interface.screen;
 
 import android.os.Bundle;
-import android.widget.TextView;
 import com.agropredict.R;
 import com.agropredict.application.factory.IAccessFactory;
 import com.agropredict.application.authentication.usecase.CheckSessionUseCase;
 import com.agropredict.application.profile.FindUserUseCase;
 import com.agropredict.domain.user.IUser;
-import com.agropredict.domain.user.visitor.IEmailConsumer;
-import com.agropredict.domain.user.visitor.IOccupationConsumer;
-import com.agropredict.domain.user.visitor.IPhoneConsumer;
-import com.agropredict.domain.user.visitor.IUserIdentityConsumer;
-import com.agropredict.domain.user.visitor.IUsernameConsumer;
+import com.agropredict.presentation.viewmodel.profile.ProfilePresenter;
 
-public final class ProfileActivity extends BaseActivity implements
-        IUserIdentityConsumer,
-        IPhoneConsumer,
-        IUsernameConsumer,
-        IOccupationConsumer,
-        IEmailConsumer {
-
+public final class ProfileActivity extends BaseActivity {
     private FindUserUseCase findUserUseCase;
     private CheckSessionUseCase checkSessionUseCase;
+    private ProfilePresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +25,7 @@ public final class ProfileActivity extends BaseActivity implements
         IAccessFactory factory = (IAccessFactory) getApplication();
         findUserUseCase = new FindUserUseCase(factory.createUserRepository());
         checkSessionUseCase = new CheckSessionUseCase(factory.createSessionRepository());
+        presenter = new ProfilePresenter(this);
     }
 
     private void load() {
@@ -44,36 +35,6 @@ public final class ProfileActivity extends BaseActivity implements
     private void populate(String identifier, String occupation) {
         if (identifier == null || identifier.isEmpty()) return;
         IUser user = findUserUseCase.find(identifier);
-        user.describe(this);
-        user.contact(this);
-        user.enroll(this);
-        user.classify(this);
-        user.mail(this);
-    }
-
-    @Override
-    public void describe(String identifier, String fullName) {
-        ((TextView) findViewById(R.id.tvFullName)).setText(fullName);
-    }
-
-    @Override
-    public void contact(String number) {
-        TextView phoneField = findViewById(R.id.tvPhone);
-        phoneField.setText(number == null || number.isEmpty() ? getString(R.string.not_specified) : number);
-    }
-
-    @Override
-    public void enroll(String username) {
-        ((TextView) findViewById(R.id.tvUsername)).setText(username);
-    }
-
-    @Override
-    public void classify(String occupation) {
-        ((TextView) findViewById(R.id.tvOccupation)).setText(occupation);
-    }
-
-    @Override
-    public void mail(String email) {
-        ((TextView) findViewById(R.id.tvEmail)).setText(email);
+        presenter.render(user);
     }
 }

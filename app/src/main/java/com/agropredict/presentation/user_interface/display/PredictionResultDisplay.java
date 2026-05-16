@@ -40,7 +40,7 @@ public final class PredictionResultDisplay extends DiagnosticDisplay implements 
         recommendationsLabel.setText(text);
     }
 
-    public void display(Photograph photograph) {
+    public void show(Photograph photograph) {
         photograph.expose(this);
     }
 

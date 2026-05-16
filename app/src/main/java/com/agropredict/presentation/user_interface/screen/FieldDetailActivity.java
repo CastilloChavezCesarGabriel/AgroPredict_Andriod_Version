@@ -6,27 +6,27 @@ import android.os.Bundle;
 import android.widget.Toast;
 import com.agropredict.R;
 import com.agropredict.application.factory.IReviewFactory;
-import com.agropredict.application.repository.IPhotographRepository;
+import com.agropredict.application.photograph.LoadPhotographUseCase;
 import com.agropredict.application.repository.IRecordEraser;
 import com.agropredict.application.DeleteUseCase;
 import com.agropredict.application.crop_management.usecase.TraceCropHistoryUseCase;
 import com.agropredict.application.diagnostic_history.FindDiagnosticUseCase;
-import com.agropredict.application.operation_result.IOperationResult;
 import com.agropredict.domain.diagnostic.Diagnostic;
 import com.agropredict.domain.photograph.Photograph;
 import com.agropredict.domain.history.HistoryRecord;
 import com.agropredict.presentation.user_interface.display.FieldDetailDisplay;
 import com.agropredict.presentation.user_interface.display.HistoryDialogRenderer;
+import com.agropredict.presentation.viewmodel.crop_management.DeleteFieldOutcome;
 import com.agropredict.presentation.viewmodel.crop_management.FieldDetailViewModel;
+import com.agropredict.presentation.viewmodel.crop_management.FieldInspection;
 import com.agropredict.presentation.viewmodel.crop_management.IFieldDetailView;
 import java.util.List;
 
-public final class FieldDetailActivity extends BaseActivity implements IFieldDetailView, IOperationResult {
+public final class FieldDetailActivity extends BaseActivity implements IFieldDetailView {
     private FieldDetailViewModel viewModel;
     private FieldDetailDisplay fieldDetail;
-    private DeleteUseCase removeUseCase;
-    private TraceCropHistoryUseCase traceUseCase;
-    private IPhotographRepository photographRepository;
+    private FieldInspection inspection;
+    private String diagnosticIdentifier;
     private String cropIdentifier;
 
     @Override
@@ -40,42 +40,54 @@ public final class FieldDetailActivity extends BaseActivity implements IFieldDet
     }
 
     private void bind() {
-        cropIdentifier = IntentExtra.DIAGNOSTIC_IDENTIFIER.read(getIntent());
+        diagnosticIdentifier = IntentExtra.DIAGNOSTIC_IDENTIFIER.read(getIntent());
         fieldDetail = new FieldDetailDisplay(this);
     }
 
     private void initialize() {
         IReviewFactory factory = (IReviewFactory) getApplication();
         FindDiagnosticUseCase findUseCase = new FindDiagnosticUseCase(factory.createDiagnosticRepository());
-        removeUseCase = new DeleteUseCase((IRecordEraser) factory.createCropRepository());
-        traceUseCase = new TraceCropHistoryUseCase(factory.createCropRepository());
-        photographRepository = factory.createPhotographRepository();
+        DeleteUseCase deleteUseCase = new DeleteUseCase((IRecordEraser) factory.createCropRepository());
+        TraceCropHistoryUseCase traceUseCase = new TraceCropHistoryUseCase(factory.createCropRepository());
+        LoadPhotographUseCase loadPhotograph = new LoadPhotographUseCase(factory.createPhotographRepository());
+        inspection = new FieldInspection(deleteUseCase, traceUseCase, loadPhotograph);
         viewModel = new FieldDetailViewModel(findUseCase, this);
     }
 
     private void listen() {
         findViewById(R.id.btnViewHistory).setOnClickListener(view -> trace());
-        findViewById(R.id.btnEditField).setOnClickListener(view -> navigate(cropIdentifier));
+        findViewById(R.id.btnEditField).setOnClickListener(view -> edit());
         findViewById(R.id.btnDeleteField).setOnClickListener(view -> confirm());
     }
 
     private void load() {
-        if (cropIdentifier == null) return;
-        viewModel.load(cropIdentifier);
-        Photograph photograph = photographRepository.find(cropIdentifier);
-        if (photograph != null) display(photograph);
+        if (diagnosticIdentifier == null) return;
+        viewModel.load(diagnosticIdentifier);
+        Photograph photograph = inspection.find(diagnosticIdentifier);
+        if (photograph != null) show(photograph);
     }
 
     private void trace() {
-        List<HistoryRecord> records = traceUseCase.trace(cropIdentifier);
+        List<HistoryRecord> records = inspection.trace(cropIdentifier);
         if (records.isEmpty()) {
             Toast.makeText(this, R.string.no_modifications, Toast.LENGTH_SHORT).show();
             return;
         }
-        present(records);
+        unfold(records);
     }
 
-    private void present(List<HistoryRecord> records) {
+    private void edit() {
+        if (lacks()) return;
+        navigate(cropIdentifier);
+    }
+
+    private boolean lacks() {
+        if (cropIdentifier != null) return false;
+        notify(getString(R.string.error_general));
+        return true;
+    }
+
+    private void unfold(List<HistoryRecord> records) {
         HistoryDialogRenderer renderer = new HistoryDialogRenderer();
         renderer.render(records);
         new AlertDialog.Builder(this)
@@ -95,33 +107,19 @@ public final class FieldDetailActivity extends BaseActivity implements IFieldDet
     }
 
     private void delete() {
-        removeUseCase.delete(cropIdentifier).accept(this);
+        if (lacks()) return;
+        inspection.delete(cropIdentifier, new DeleteFieldOutcome(this));
     }
 
     @Override
-    public void onSucceed(String value) {
-        Toast.makeText(this, R.string.field_deleted, Toast.LENGTH_SHORT).show();
-        finish();
-    }
-
-    @Override
-    public void onFail() {
-        Toast.makeText(this, R.string.error_general, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onReject(String reason) {
-        Toast.makeText(this, R.string.error_general, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void display(Diagnostic diagnostic) {
+    public void present(Diagnostic diagnostic) {
+        diagnostic.bind((cropId, imageId) -> this.cropIdentifier = cropId);
         fieldDetail.display(diagnostic);
     }
 
     @Override
-    public void display(Photograph photograph) {
-        fieldDetail.display(photograph);
+    public void show(Photograph photograph) {
+        fieldDetail.show(photograph);
     }
 
     @Override

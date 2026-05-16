@@ -15,7 +15,7 @@ public final class PredictionResultViewModel {
     public void load(String diagnosticIdentifier) {
         Diagnostic diagnostic = loadDetailUseCase.find(diagnosticIdentifier);
         if (diagnostic == null) return;
-        view.display(diagnostic);
+        view.present(diagnostic);
         if (!diagnostic.isConfident()) {
             view.warn();
         }

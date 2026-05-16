@@ -6,7 +6,7 @@ import android.widget.Spinner;
 import java.util.List;
 
 public final class SpinnerPopulator {
-    public static void populate(Spinner spinner, List<String> items) {
+    public void populate(Spinner spinner, List<String> items) {
         Context context = spinner.getContext();
         ArrayAdapter<String> adapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, items);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

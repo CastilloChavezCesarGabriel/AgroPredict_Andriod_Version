@@ -23,6 +23,7 @@ public final class HistoryActivity extends BaseActivity implements IHistoryView 
     private DiagnosticHistory diagnosticHistory;
     private CropTypeFilter cropFilter;
     private ListCropUseCase cropUseCase;
+    private CheckSessionUseCase sessionUseCase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +34,12 @@ public final class HistoryActivity extends BaseActivity implements IHistoryView 
         listen();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        sessionUseCase.check((identifier, occupation) -> start(identifier));
+    }
+
     private void bind() {
         diagnosticHistory = new DiagnosticHistory(this);
     }
@@ -41,11 +48,10 @@ public final class HistoryActivity extends BaseActivity implements IHistoryView 
         IReviewFactory factory = (IReviewFactory) getApplication();
         ListDiagnosticUseCase listUseCase = new ListDiagnosticUseCase(factory.createDiagnosticRepository());
         DeleteUseCase deleteUseCase = new DeleteUseCase((IRecordEraser) factory.createDiagnosticRepository());
-        CheckSessionUseCase sessionUseCase = new CheckSessionUseCase(factory.createSessionRepository());
+        sessionUseCase = new CheckSessionUseCase(factory.createSessionRepository());
         cropUseCase = new ListCropUseCase(factory.createCropRepository());
         viewModel = new HistoryViewModel(new HistoryWorkflow(listUseCase, deleteUseCase), this);
         cropFilter = new CropTypeFilter(findViewById(R.id.spnCropFilter), viewModel::filter);
-        sessionUseCase.check((identifier, occupation) -> start(identifier));
     }
 
     private void listen() {

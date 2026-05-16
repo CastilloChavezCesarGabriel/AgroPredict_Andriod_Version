@@ -1,21 +1,20 @@
 package com.agropredict.presentation.user_interface.screen;
 
 import android.os.Bundle;
-import android.widget.EditText;
 import com.agropredict.R;
 import com.agropredict.application.factory.IAccessFactory;
 import com.agropredict.application.repository.ISessionRepository;
 import com.agropredict.application.service.IAuditLogger;
 import com.agropredict.application.authentication.usecase.CheckSessionUseCase;
 import com.agropredict.application.authentication.usecase.LoginUseCase;
+import com.agropredict.presentation.user_interface.questionnaire_input.LoginCredentialInput;
 import com.agropredict.presentation.viewmodel.authentication.AndroidAuthenticationFailureFactory;
 import com.agropredict.presentation.viewmodel.authentication.ILoginView;
 import com.agropredict.presentation.viewmodel.authentication.LoginViewModel;
 
 public final class LoginActivity extends BaseActivity implements ILoginView {
     private LoginViewModel viewModel;
-    private EditText emailInput;
-    private EditText passwordInput;
+    private LoginCredentialInput credentialInput;
     private IAuditLogger auditLogger;
     private ISessionRepository sessionRepository;
 
@@ -29,8 +28,7 @@ public final class LoginActivity extends BaseActivity implements ILoginView {
     }
 
     private void bind() {
-        emailInput = findViewById(R.id.etEmail);
-        passwordInput = findViewById(R.id.etPassword);
+        credentialInput = new LoginCredentialInput(this);
     }
 
     private void initialize() {
@@ -53,13 +51,7 @@ public final class LoginActivity extends BaseActivity implements ILoginView {
     }
 
     private void authenticate() {
-        String email = emailInput.getText().toString().trim();
-        String password = passwordInput.getText().toString();
-        if (email.isEmpty() || password.isEmpty()) {
-            notify(getString(R.string.field_required));
-            return;
-        }
-        viewModel.login(email, password);
+        credentialInput.submit(viewModel::login, () -> notify(getString(R.string.field_required)));
     }
 
     @Override
