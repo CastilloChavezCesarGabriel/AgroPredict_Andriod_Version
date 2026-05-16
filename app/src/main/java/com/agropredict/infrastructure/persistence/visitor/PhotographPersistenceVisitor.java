@@ -2,19 +2,24 @@ package com.agropredict.infrastructure.persistence.visitor;
 
 import com.agropredict.domain.authentication.session.ISession;
 import com.agropredict.domain.photograph.IPhotographConsumer;
+import com.agropredict.domain.photograph.Photograph;
 import com.agropredict.domain.authentication.session.ISessionConsumer;
 import com.agropredict.infrastructure.persistence.database.SqliteRow;
 import java.io.File;
+import java.util.Objects;
 
 public final class PhotographPersistenceVisitor implements IPhotographConsumer, ISessionConsumer {
     private final SqliteRow row;
+    private final ISession session;
 
     public PhotographPersistenceVisitor(SqliteRow row, ISession session) {
-        this.row = row;
-        session.report(this);
+        this.row = Objects.requireNonNull(row, "photograph persistence visitor requires a row");
+        this.session = Objects.requireNonNull(session, "photograph persistence visitor requires a session");
     }
 
-    public void link(String cropIdentifier) {
+    public void record(Photograph photograph, String cropIdentifier) {
+        session.report(this);
+        photograph.expose(this);
         row.record("crop_id", cropIdentifier);
     }
 

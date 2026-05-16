@@ -9,17 +9,20 @@ import com.agropredict.domain.authentication.session.ISessionConsumer;
 import com.agropredict.domain.crop.visitor.ISoilConsumer;
 import com.agropredict.domain.identifier.IIdentifierConsumer;
 import com.agropredict.infrastructure.persistence.database.SqliteRow;
+import java.util.Objects;
 
 public final class CropPersistenceVisitor implements
         ICropIdentityConsumer, IIdentifierConsumer, IFieldConsumer, ISoilConsumer, IPlantingConsumer, ISessionConsumer {
     private final SqliteRow row;
+    private final ISession session;
 
     public CropPersistenceVisitor(SqliteRow row, ISession session) {
-        this.row = row;
-        session.report(this);
+        this.row = Objects.requireNonNull(row, "crop persistence visitor requires a row");
+        this.session = Objects.requireNonNull(session, "crop persistence visitor requires a session");
     }
 
     public void persist(Crop crop) {
+        session.report(this);
         crop.describe(this);
         crop.locate(this);
         crop.analyze(this);

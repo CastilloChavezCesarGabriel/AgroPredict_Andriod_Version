@@ -25,9 +25,7 @@ public final class SqlitePhotographRepository implements IPhotographRepository {
     @Override
     public void store(Photograph photograph, String cropIdentifier) {
         SqliteRow row = rowFactory.open();
-        PhotographPersistenceVisitor visitor = new PhotographPersistenceVisitor(row, sessionRepository.recall());
-        photograph.expose(visitor);
-        visitor.link(cropIdentifier);
+        new PhotographPersistenceVisitor(row, sessionRepository.recall()).record(photograph, cropIdentifier);
         row.stamp("created_at");
         row.mark("is_active", 1);
         row.flush("image");
